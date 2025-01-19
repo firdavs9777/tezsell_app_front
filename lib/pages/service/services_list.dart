@@ -1,5 +1,6 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/products/product_detail.dart';
+import 'package:app/pages/service/service_detail.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,12 @@ class ServiceList extends ConsumerWidget {
     return GestureDetector(
       onTap: () {
         // Navigate to ProductDetail page
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ProductDetail(product: service),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ServiceDetail(service: service),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),

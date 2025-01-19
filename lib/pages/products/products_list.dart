@@ -1,4 +1,5 @@
 import 'package:app/pages/products/main_products.dart';
+import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,25 +17,55 @@ class ProductsList extends ConsumerWidget {
     final productsList = ref.watch(productsProvider);
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: productsList.when(
-          data: (item) {
-            if (item.isEmpty) {
-              return const Center(child: Text('No products available.'));
-            }
-            return ListView.builder(
-              itemCount: item.length,
-              itemBuilder: (context, index) {
-                final product = item[index];
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, bottom: 10.0, top: 8.0, right: 10.0),
+            child: Row(
+              children: [
+                const SizedBox(width: 8),
+                GestureDetector(
+                    onTap: () {
+                      // Navigate to category filter screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const ProductFilter(),
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.filter_list_sharp,
+                      color: Colors.black,
+                    )),
+              ],
+            ),
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: productsList.when(
+                data: (item) {
+                  if (item.isEmpty) {
+                    return const Center(child: Text('No products available.'));
+                  }
+                  return ListView.builder(
+                    itemCount: item.length,
+                    itemBuilder: (context, index) {
+                      final product = item[index];
 
-                return ProductMain(product: product);
-              },
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Error: $error $stack')),
-        ),
+                      return ProductMain(product: product);
+                    },
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) =>
+                    Center(child: Text('Error: $error $stack')),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
