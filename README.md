@@ -1,16 +1,37 @@
-# app
+# Flutter Product Display App
 
-A new Flutter project.
+This Flutter project displays product details in a list and allows navigation to a detailed product page. The application is built with Flutter and uses Riverpod for state management.
+
+## Features
+
+- Display a list of products with images, titles, descriptions, and prices.
+- Price formatting with thousands separator.
+- Responsive layout to handle long texts.
+- Navigate to a product detail page upon tapping a product item.
+
+## Dependencies
+
+This project uses the following dependencies:
+
+- `flutter_riverpod`: For state management.
+- `intl`: For formatting numbers (thousands separator).
+- `flutter`: The Flutter framework.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Follow these steps to set up and run the project:
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Make sure you have the following installed:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Flutter](https://flutter.dev/docs/get-started/install)
+- [Dart SDK](https://dart.dev/get-dart)
+- A code editor like [Visual Studio Code](https://code.visualstudio.com/) or [Android Studio](https://developer.android.com/studio)
+
+### Installation
+
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/your-username/your-repository-name.git
