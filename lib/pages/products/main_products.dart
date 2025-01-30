@@ -24,7 +24,7 @@ class ProductMain extends ConsumerWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
@@ -113,7 +113,7 @@ class ProductMain extends ConsumerWidget {
                   '$formattedPrice ${product.currency}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                     color: Colors.green,
                   ),
                 ),

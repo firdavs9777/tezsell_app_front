@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
@@ -60,39 +61,59 @@ class AuthenticationService {
     String userName,
     String regionName,
     String districtName,
+    File? profileImage, // Add the image parameter
   ) async {
     final url = Uri.parse('$baseUrl$REGISTER_URL');
-    final body = jsonEncode({
-      'phone_number': phoneNumber,
-      'password': password,
-      'user_type': 'regular',
-      'location': {
-        'country': 'Uzbekistan',
-        'region': regionName,
-        'district': districtName
-      },
-      'username': userName
+
+    final locationData = jsonEncode({
+      'country': 'Uzbekistan',
+      'region': regionName,
+      'district': districtName,
     });
+    final request = http.MultipartRequest('POST', url)
+      ..fields['phone_number'] = phoneNumber
+      ..fields['password'] = password
+      ..fields['user_type'] = 'regular'
+      ..fields['username'] = userName
+      ..fields['location[country]'] = 'Uzbekistan'
+      ..fields['location[region]'] = regionName
+      ..fields['location'] = locationData; // Send location as a JSON string
+
+    // ..fields['location'] = jsonEncode({
+    //   'country': 'Uzbekistan',
+    //   'region': regionName,
+    //   'district': districtName
+    // });
+
+    print(request);
+    // If a profile image is provided, add it to the request
+    if (profileImage != null) {
+      final imageFile =
+          await http.MultipartFile.fromPath('profile_image', profileImage.path);
+      request.files.add(imageFile);
+    }
 
     try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: body,
-      );
+      final response = await request.send();
 
+      // Handle the response
+      final resBody = await response.stream.bytesToString();
+      print(resBody);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final userData = jsonDecode(response.body);
+        final userData = jsonDecode(resBody);
+        print(userData);
         final token = userData['token'] as String;
         final userId = userData['user_info']['id'].toString();
         final userLocation = userData['user_info']['location']['id'].toString();
+
+        // Save the token and user data in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('token', token);
         prefs.setString('userId', userId);
         prefs.setString('userLocation', userLocation);
+
         return Token(token: token);
       } else {
-        // Handle non-200 status code
         print('Registration failed with status code: ${response.statusCode}');
         return null;
       }

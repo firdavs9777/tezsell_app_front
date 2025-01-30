@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/store/providers/authentication_provider.dart';
@@ -34,10 +33,11 @@ class _PasswordResetState extends State<PasswordReset> {
   List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
-  // Function to pick multiple images
+  // Function to pick a single image
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery); // Use pickImage for a single image
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -228,8 +228,17 @@ class _PasswordResetState extends State<PasswordReset> {
                 return;
               }
 
-              final check = await authService.register(widget.phone_number,
-                  password, userName, widget.regionName, widget.districtName);
+              // Pass the selected images to the registration service
+              final check = await authService.register(
+                widget.phone_number,
+                password,
+                userName,
+                widget.regionName,
+                widget.districtName,
+                _selectedImages.isNotEmpty
+                    ? _selectedImages[0]
+                    : null, // Passing the image
+              );
               print(check);
               if (check != null) {
                 Navigator.of(context).pushReplacement(

@@ -223,7 +223,7 @@ class ProductDetail extends ConsumerWidget {
                   ),
                   const SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: FutureBuilder<List<Products>>(
                       future:
                           ref.watch(productsServiceProvider).getSingleProduct(

@@ -1,6 +1,6 @@
 import 'package:app/providers/provider_models/category_model.dart';
-import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
+import 'package:app/providers/provider_models/user_model.dart';
 
 class Services {
   const Services({
@@ -24,7 +24,7 @@ class Services {
   final Location location;
   final List<Comment> comments;
   final List<ImageData> images;
-  final UserName userName;
+  final UserInfo userName;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -41,7 +41,7 @@ class Services {
       comments: (json['comments'] as List)
           .map((commentJson) => Comment.fromJson(commentJson))
           .toList(),
-      userName: UserName.fromJson(json['userName']),
+      userName: UserInfo.fromJson(json['userName']),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -57,14 +57,14 @@ class Comment {
   });
 
   final int id;
-  final UserName user;
+  final UserInfo user;
   final String text;
   final DateTime createdAt;
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['id'],
-      user: UserName.fromJson(json['user']),
+      user: UserInfo.fromJson(json['user']),
       text: json['text'],
       createdAt: DateTime.parse(json['created_at']),
     );

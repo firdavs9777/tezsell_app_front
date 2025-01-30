@@ -90,7 +90,8 @@ class _TownsListState extends State<TownsList> {
           filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
           child: AlertDialog(
             title: const Text('Tasdiqlash'),
-            content: Text('$town viloyatini tanlamoqchimisiz?'),
+            content:
+                Text('${widget.city_name} viloyati -  $town tanlamoqchimisiz?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

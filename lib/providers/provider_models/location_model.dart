@@ -11,9 +11,9 @@ class Location {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      id: json['id'],
-      region: json['region'],
-      district: json['district'],
+      id: json['id'] != null ? int.tryParse(json['id'].toString()) ?? 0 : 0,
+      region: json['region'] ?? '',
+      district: json['district'] ?? '',
     );
   }
 }
