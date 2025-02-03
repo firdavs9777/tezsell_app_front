@@ -5,15 +5,20 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductsList extends ConsumerWidget {
+class ProductsList extends ConsumerStatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Future<void> refresh() async {
-      ref.refresh(productsProvider);
-    }
+  ConsumerState<ProductsList> createState() => _ProductsListState();
+}
 
+class _ProductsListState extends ConsumerState<ProductsList> {
+  Future<void> refresh() async {
+    ref.refresh(productsProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final productsList = ref.watch(productsProvider);
 
     return Scaffold(
@@ -35,9 +40,13 @@ class ProductsList extends ConsumerWidget {
                         ),
                       );
                     },
-                    child: Icon(
-                      Icons.filter_list_sharp,
-                      color: Colors.black,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.filter_list_sharp,
+                        size: 28,
+                        color: Colors.black,
+                      ),
                     )),
               ],
             ),

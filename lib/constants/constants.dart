@@ -12,3 +12,6 @@ const String SEND_SMS = '/accounts/send-sms/';
 const String VERIFY_SMS = '/accounts/verify-code/';
 const String USER_PRODUCT = '/products/api/user/products';
 const String USER_SERVICE = '/services/api/user/services';
+const String FAVORITE_ITEMS = '/global/liked-items/';
+const String PRODUCT_LIKE = '/global/like/product/';
+const String PRODUCT_DISLIKE = '/global/unlike/product/';

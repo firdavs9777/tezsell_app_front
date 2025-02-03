@@ -1,10 +1,12 @@
 import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/habar/habar.dart';
 import 'package:app/pages/products/product_new.dart';
+import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,11 +24,13 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     // TODO: implement initState
     super.initState();
     ref.refresh(productsProvider);
+    ref.refresh(servicesProvider);
   }
 
   void _selectPage(int index) {
     setState(() {
       ref.refresh(productsProvider);
+      ref.refresh(servicesProvider);
       _selectedPageIndex = index;
     });
   }
@@ -84,12 +88,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: IconButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(
-                              builder: (ctx) => const ProductNew()))
-                          .then((_) {
-                        // ref.refresh(momentsProvider);
-                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const ProductSearch(),
+                        ),
+                      );
                     },
                     icon: const Icon(
                       Icons.search,

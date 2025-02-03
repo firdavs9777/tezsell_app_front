@@ -1,3 +1,4 @@
+import 'package:app/pages/products/filtered_products.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,40 @@ class ProductFilter extends ConsumerStatefulWidget {
 
 class _ProductFilterState extends ConsumerState<ProductFilter> {
   List<CategoryModel> availableCategories = [];
-  List<int> selectedCategories = [];
+  final String selectedCategory = '';
+  Map<String, IconData> iconMap = {
+    'phone_android': Icons.phone_android,
+    'weekend': Icons.weekend,
+    'directions_walk': Icons.directions_walk,
+    'child_care': Icons.child_care,
+    'toys': Icons.toys,
+    'directions_car': Icons.directions_car,
+    'kitchen': Icons.kitchen,
+    'home': Icons.home,
+    'apartment': Icons.apartment,
+    'fastfood': Icons.fastfood,
+    'checkroom': Icons.checkroom,
+    'shopping_bag': Icons.shopping_bag,
+    'spa': Icons.spa,
+    'local_florist': Icons.local_florist,
+    'medical_services': Icons.medical_services,
+    'health_and_safety': Icons.health_and_safety,
+    'build': Icons.build,
+    'sports_baseball': Icons.sports_baseball,
+    'restaurant': Icons.restaurant,
+    'music_note': Icons.music_note,
+    'book': Icons.book,
+    'pets': Icons.pets,
+    'more_horiz': Icons.more_horiz,
+    'car_repair': Icons.car_repair,
+    'laptop_mac': Icons.laptop_mac,
+    'bed': Icons.bed,
+    'school': Icons.school,
+    'motorcycle': Icons.motorcycle,
+    'desktop_windows': Icons.desktop_windows,
+    'tablet': Icons.tablet,
+    'tv': Icons.tv,
+  };
 
   @override
   void initState() {
@@ -34,9 +68,13 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
     }
   }
 
-  void _applyFilter() {
-    // Navigate back with selected categories
-    Navigator.pop(context, selectedCategories);
+  void _applyFilter(String categoryName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => FilteredProducts(categoryName: categoryName),
+      ),
+    );
   }
 
   @override
@@ -51,37 +89,48 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
           children: [
             const SizedBox(height: 20),
             const Text(
-              'Select Categories to Filter',
+              'Select Category to filter',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // Number of items per row
+                  crossAxisSpacing: 15, // Horizontal space between items
+                  mainAxisSpacing: 10, // Vertical space between items
+                ),
                 itemCount: availableCategories.length,
+                shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    title: Text(availableCategories[index].name),
-                    value: selectedCategories
-                        .contains(availableCategories[index].id),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value == true) {
-                          selectedCategories.add(availableCategories[index].id);
-                        } else {
-                          selectedCategories
-                              .remove(availableCategories[index].id);
-                        }
-                      });
+                  IconData? iconData = iconMap[availableCategories[index].icon];
+
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle item tap if necessary
                     },
+                    child: GestureDetector(
+                      onTap: () =>
+                          _applyFilter(availableCategories[index].name),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            iconData ?? Icons.help_outline,
+                            color: Theme.of(context)
+                                .primaryColor, // Default to a fallback icon
+                            size: 30, // Adjust the icon size as needed
+                          ),
+                          SizedBox(height: 5), // Space between icon and text
+                          Text(
+                            availableCategories[index].name,
+                            textAlign: TextAlign.center, // Center the text
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: _applyFilter,
-                child: const Text('Apply Filter'),
               ),
             ),
           ],

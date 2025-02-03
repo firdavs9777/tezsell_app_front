@@ -25,11 +25,42 @@ class ProductsService {
     }
   }
 
+  Future<List<Products>> getFilteredProducts({
+    int currentPage = 1,
+    int pageSize = 12,
+    String categoryName = "",
+    String regionName = "",
+    String districtName = "",
+    String productTitle = "",
+  }) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl$PRODUCTS_URL').replace(
+        queryParameters: {
+          'page': currentPage.toString(),
+          'page_size': pageSize.toString(),
+          'category_name': categoryName,
+          'region_name': regionName,
+          'district_name': districtName,
+          'product_title': productTitle,
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print(data['results']);
+      return (data['results'] as List)
+          .map((postJson) => Products.fromJson(postJson))
+          .toList();
+    } else {
+      throw Exception('Failed to load filtered products');
+    }
+  }
+
   Future<List<CategoryModel>> getCategories() async {
     final response = await http.get(Uri.parse('$baseUrl$CATEGORY_URL'));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-    print(token);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return (data as List)
@@ -115,7 +146,7 @@ class ProductsService {
 
   // Future<void> uploadMomentPhotos(
   //     String momentId, List<File> imageFiles) async {
-  //   print(momentId);
+
   //   final url = Uri.parse(
   //       '${Endpoints.baseURL}${Endpoints.momentsURL}/$momentId/photo');
   //   final request = http.MultipartRequest('PUT', url);
@@ -132,11 +163,10 @@ class ProductsService {
   //
   //   try {
   //     final response = await request.send();
-  //     print(response);
+
   //     if (response.statusCode == 200) {
-  //       print("Uploaded!");
+
   //     } else {
-  //       print("Upload failed with status: ${response.statusCode}");
   //       response.stream.transform(utf8.decoder).listen((value) {
   //         print(value);
   //       });

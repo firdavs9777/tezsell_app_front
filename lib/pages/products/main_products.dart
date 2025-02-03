@@ -1,18 +1,25 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/products/product_detail.dart';
 import 'package:app/providers/provider_models/product_model.dart';
+import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class ProductMain extends ConsumerWidget {
+class ProductMain extends ConsumerStatefulWidget {
   final Products product;
   const ProductMain({super.key, required this.product});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductMain> createState() => _ProductMainState();
+}
+
+class _ProductMainState extends ConsumerState<ProductMain> {
+  @override
+  Widget build(BuildContext context) {
     final formattedPrice =
-        NumberFormat('#,##0', 'en_US').format(int.parse(product.price));
+        NumberFormat('#,##0', 'en_US').format(int.parse(widget.product.price));
 
     return GestureDetector(
       onTap: () {
@@ -20,8 +27,8 @@ class ProductMain extends ConsumerWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ProductDetail(product: product)),
-        );
+              builder: (context) => ProductDetail(product: widget.product)),
+        ).then((_) => ref.refresh(productsProvider));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -42,9 +49,9 @@ class ProductMain extends ConsumerWidget {
             // Product Image
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: product.images.isNotEmpty
+              child: widget.product.images.isNotEmpty
                   ? Image.network(
-                      '${baseUrl}/products${product.images[0].image}',
+                      '${baseUrl}/products${widget.product.images[0].image}',
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
@@ -64,7 +71,7 @@ class ProductMain extends ConsumerWidget {
                 children: [
                   // Title and Category
                   Text(
-                    product.title,
+                    widget.product.title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
@@ -75,7 +82,7 @@ class ProductMain extends ConsumerWidget {
                   const SizedBox(height: 4.0),
                   // Description and Location
                   Text(
-                    product.description,
+                    widget.product.description,
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12.0,
@@ -88,12 +95,12 @@ class ProductMain extends ConsumerWidget {
                     children: [
                       Icon(
                         Icons.location_on,
-                        size: 14.0,
-                        color: Colors.grey,
+                        size: 16,
+                        color: Colors.redAccent,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        '${product.location.region}, ${product.location.district}',
+                        '${widget.product.location.region}, ${widget.product.location.district}',
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12.0,
@@ -110,7 +117,7 @@ class ProductMain extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '$formattedPrice ${product.currency}',
+                  '$formattedPrice ${widget.product.currency}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 12.0,
@@ -120,27 +127,39 @@ class ProductMain extends ConsumerWidget {
                 const SizedBox(height: 8.0),
                 Row(
                   children: [
-                    Icon(
-                      Icons.thumb_up,
-                      color: product.likeCount > 0 ? Colors.red : Colors.grey,
-                      size: 16.0,
-                    ),
+                    FutureBuilder(
+                        future: ref
+                            .watch(profileServiceProvider)
+                            .getUserFavoriteItems(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Center(
+                                child: Text('Error loading favorite items'));
+                          }
+                          if (snapshot.hasData) {
+                            final likedItems = snapshot.data!;
+                            bool isLiked = likedItems.likedProducts
+                                .any((item) => item.id == widget.product.id);
+                            return Icon(
+                              isLiked ? Icons.favorite : Icons.favorite_border,
+                              color: isLiked ? Colors.red : Colors.grey,
+                              size: 22.0,
+                            );
+                          }
+                          return const Center(
+                              child: Text('No favorite items found.'));
+                        }),
                     const SizedBox(width: 4.0),
                     Text(
-                      '${product.likeCount}',
+                      '${widget.product.likeCount}',
                       style: const TextStyle(fontSize: 12.0),
                     ),
-                    const SizedBox(width: 12.0),
-                    // Icon(
-                    //   Icons.comment,
-                    //   color: Colors.grey,
-                    //   size: 16.0,
-                    // ),
-                    // const SizedBox(width: 4.0),
-                    // Text(
-                    //   '${product.commentCount}',
-                    //   style: const TextStyle(fontSize: 12.0),
-                    // ),
                   ],
                 ),
               ],

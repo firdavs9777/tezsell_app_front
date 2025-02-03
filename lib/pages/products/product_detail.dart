@@ -1,22 +1,83 @@
 import 'package:app/constants/constants.dart';
-import 'package:app/models/post_list.dart';
+
 import 'package:app/pages/products/main_products.dart';
+import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:app/store/providers/post_provider.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ProductDetail extends ConsumerWidget {
+class ProductDetail extends ConsumerStatefulWidget {
   const ProductDetail({super.key, required this.product});
   final Products product;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductDetail> createState() => _ProductDetailState();
+}
+
+class _ProductDetailState extends ConsumerState<ProductDetail> {
+  void _likeProduct() async {
+    try {
+      final product = await ref
+          .watch(profileServiceProvider)
+          .likeSingleProduct(productId: widget.product.id.toString());
+
+      if (product != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(milliseconds: 1000),
+            content: Text('Product liked successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        ref.refresh(profileServiceProvider).getUserFavoriteItems();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1000),
+          content: Text('Error liking product: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _dislikeProduct() async {
+    try {
+      final product = await ref
+          .watch(profileServiceProvider)
+          .dislikeProductItem(productId: widget.product.id.toString());
+
+      if (product != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(milliseconds: 1000),
+            content: Text('Product disliked successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        ref.refresh(profileServiceProvider).getUserFavoriteItems();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: 1000),
+          content: Text('Error liking product: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Creating a list of images
-    List<ImageProvider> images = product.images.isNotEmpty
-        ? product.images
+    List<ImageProvider> images = widget.product.images.isNotEmpty
+        ? widget.product.images
             .map((image) => NetworkImage('${baseUrl}/products${image.image}')
                 as ImageProvider)
             .toList()
@@ -27,11 +88,6 @@ class ProductDetail extends ConsumerWidget {
 
     // PageController for controlling the PageView and page transitions
     PageController _pageController = PageController();
-
-    // Fetching the recommended products
-    final productsList = ref
-        .watch(productsServiceProvider)
-        .getSingleProduct(productId: product.id.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +146,7 @@ class ProductDetail extends ConsumerWidget {
                             int currentPage = _pageController.page!.toInt();
                             if (currentPage < images.length - 1) {
                               _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
+                                duration: const Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
                               );
                             }
@@ -102,7 +158,7 @@ class ProductDetail extends ConsumerWidget {
                 ),
               ),
             ),
-
+            Text(widget.product.id.toString()),
             // Dots Indicator (at the bottom of the image slider)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -125,10 +181,10 @@ class ProductDetail extends ConsumerWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
                     radius: 21,
-                    backgroundImage: product
-                            .userName.profileImage.image.isNotEmpty
+                    backgroundImage: widget
+                            .product.userName.profileImage.image.isNotEmpty
                         ? NetworkImage(
-                            '${baseUrl}${product.userName.profileImage.image}')
+                            '${baseUrl}${widget.product.userName.profileImage.image}')
                         : null,
                   ),
                 ),
@@ -137,14 +193,14 @@ class ProductDetail extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      product.userName.username,
+                      widget.product.userName.username,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      '${product.userName.location.region}, ${product.userName.location.district}',
+                      '${widget.product.userName.location.region}, ${widget.product.userName.location.district}',
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.grey,
@@ -163,7 +219,7 @@ class ProductDetail extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    product.title!,
+                    widget.product.title!,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -179,7 +235,7 @@ class ProductDetail extends ConsumerWidget {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  product.category.name,
+                  widget.product.category.name,
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,
@@ -198,7 +254,7 @@ class ProductDetail extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    product.title!,
+                    widget.product.title!,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.normal,
@@ -224,11 +280,12 @@ class ProductDetail extends ConsumerWidget {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: FutureBuilder<List<Products>>(
-                      future:
-                          ref.watch(productsServiceProvider).getSingleProduct(
-                                productId: product.id.toString(),
-                              ),
+                    child: FutureBuilder<List<dynamic>>(
+                      future: Future.wait([
+                        ref.watch(productsServiceProvider).getSingleProduct(
+                              productId: widget.product.id.toString(),
+                            ),
+                      ]),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -242,7 +299,8 @@ class ProductDetail extends ConsumerWidget {
                         }
 
                         if (snapshot.hasData) {
-                          final recommendedProducts = snapshot.data!;
+                          final recommendedProducts = snapshot.data![0];
+
                           if (recommendedProducts.isEmpty) {
                             return const Center(
                                 child:
@@ -285,18 +343,58 @@ class ProductDetail extends ConsumerWidget {
                 MainAxisAlignment.spaceBetween, // Distribute elements evenly
             children: [
               // Left side: Heart sticker for like and price
+
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.favorite_border,
-                        color: Colors.black), // Heart icon
-                    onPressed: () {
-                      // Define action for liking the product
-                      print('Heart button pressed');
+                  FutureBuilder<FavoriteItems>(
+                    future: ref
+                        .watch(profileServiceProvider)
+                        .getUserFavoriteItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return const Center(
+                            child: Text('Error loading favorite items'));
+                      }
+
+                      if (snapshot.hasData) {
+                        final likedItems = snapshot.data!;
+                        bool isLiked = likedItems.likedProducts
+                            .any((item) => item.id == widget.product.id);
+
+                        return TweenAnimationBuilder<double>(
+                          duration: Duration(milliseconds: 300),
+                          tween: Tween<double>(
+                              begin: 1.0, end: isLiked ? 1.1 : 1.0),
+                          curve: Curves.elasticInOut, // Adds a bounce effect
+                          builder: (context, scale, child) {
+                            return Transform.scale(
+                              scale: scale,
+                              child: IconButton(
+                                icon: Icon(
+                                  isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: Colors.red,
+                                  size: 24.0, // Make the icon bigger
+                                ),
+                                onPressed:
+                                    isLiked ? _dislikeProduct : _likeProduct,
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      return const Center(
+                          child: Text('No favorite items found.'));
                     },
                   ),
                   Text(
-                    '${product.price.toString()} So\'m', // Example price
+                    '${widget.product.price.toString()} So\'m', // Example price
                     style: TextStyle(
                       color: Colors.black, // Price text color
                       fontSize: 18,
