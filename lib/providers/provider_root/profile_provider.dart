@@ -131,6 +131,28 @@ class ProfileService {
     }
   }
 
+  Future<Services> likeSingleService({required String serviceId}) async {
+    final url = Uri.parse('$baseUrl$SERVICE_LIKE$serviceId/');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      // Check if the response body contains the success message "done"
+      return Services.fromJson(data['liked_service']);
+    } else {
+      throw Exception('Failed to load service');
+    }
+  }
+
   Future<Products> dislikeProductItem({required String productId}) async {
     final url = Uri.parse('$baseUrl$PRODUCT_DISLIKE$productId/');
 
@@ -149,6 +171,28 @@ class ProfileService {
       final data = json.decode(response.body);
       // Check if the response body contains the success message "done"
       return Products.fromJson(data['disliked_product']);
+    } else {
+      throw Exception('Failed to load service');
+    }
+  }
+
+  Future<Services> dislikeSingleService({required String serviceId}) async {
+    final url = Uri.parse('$baseUrl$SERVICE_DISLIKE$serviceId/');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      // Check if the response body contains the success message "done"
+      return Services.fromJson(data['disliked_service']);
     } else {
       throw Exception('Failed to load service');
     }

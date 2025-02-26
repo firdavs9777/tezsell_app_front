@@ -44,7 +44,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                       padding: const EdgeInsets.all(4.0),
                       child: Icon(
                         Icons.filter_list_sharp,
-                        size: 28,
+                        size: 30,
                         color: Colors.black,
                       ),
                     )),

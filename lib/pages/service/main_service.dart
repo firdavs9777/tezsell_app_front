@@ -1,4 +1,5 @@
-import 'package:app/pages/products/product_new.dart';
+import 'package:app/pages/service/service-filter.dart';
+import 'package:app/pages/service/service_new.dart';
 import 'package:app/pages/service/services_list.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,32 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const SizedBox(width: 10),
+                GestureDetector(
+                    onTap: () {
+                      // Navigate to category filter screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const ServiceFilter(),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.filter_list_sharp,
+                        size: 30,
+                        color: Colors.black,
+                      ),
+                    )),
+              ],
+            ),
+          ),
           Expanded(
             child: RefreshIndicator(
                 onRefresh: refresh,
@@ -37,7 +64,8 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                         itemCount: item.length,
                         itemBuilder: (context, index) {
                           final service = item[index];
-                          return ServiceList(service: service);
+                          return ServiceList(
+                              service: service, refresh: refresh);
                         });
                   },
                   error: (error, stack) =>
@@ -53,7 +81,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
         child: FloatingActionButton.extended(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) => const ProductNew(),
+              builder: (ctx) => const ServiceNew(),
             ));
           },
           backgroundColor: const Color(0xFFFFA500),

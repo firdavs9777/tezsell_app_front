@@ -1,5 +1,6 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/shaxsiy/my_products.dart';
+import 'package:app/pages/shaxsiy/product_edit.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
@@ -92,7 +93,12 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       color: Colors.grey[600],
                     ),
                     onTap: () {
-                      // Handle onTap, navigate to another screen if needed
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(),
+                        ),
+                      );
                     },
                   ),
                 ),

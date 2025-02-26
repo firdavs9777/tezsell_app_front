@@ -3,6 +3,7 @@ import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/thousand_separator.dart';
 
 import 'package:flutter/material.dart';
@@ -13,14 +14,14 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 
-class ProductNew extends ConsumerStatefulWidget {
-  const ProductNew({super.key});
+class ServiceNew extends ConsumerStatefulWidget {
+  const ServiceNew({super.key});
 
   @override
-  ConsumerState<ProductNew> createState() => _ProductNewState();
+  ConsumerState<ServiceNew> createState() => _ServiceNewState();
 }
 
-class _ProductNewState extends ConsumerState<ProductNew> {
+class _ServiceNewState extends ConsumerState<ServiceNew> {
   final _formatter = NumberFormat('#,##0', 'en_US');
   @override
   void initState() {
@@ -32,13 +33,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _amountController.dispose();
+
     super.dispose();
   }
 
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
+
   List<CategoryModel> availableCategories = [];
 
   int? selectedCategory;
@@ -47,8 +48,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   Future<void> _fetchCategories() async {
     try {
-      final categories =
-          await ref.read(productsServiceProvider).getCategories();
+      final categories = await ref.read(serviceMainProvider).getCategories();
       setState(() {
         availableCategories = categories;
       });
@@ -85,48 +85,36 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   }
 
   Future<void> _submitProduct() async {
-    if (_titleController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
-        _amountController.text.isEmpty) {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all the fields')),
       );
       return;
     }
-    int? price = int.tryParse(_amountController.text);
-    if (price == null) {
+
+    final service = await ref.read(serviceMainProvider).createService(
+        name: _titleController.text,
+        description: _descriptionController.text,
+        categoryId: selectedCategory!,
+        imageFiles: _selectedImages);
+    if (service != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const TabsScreen(
+                  initialIndex: 1,
+                )),
+      );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Invalid price entered. Please enter a valid number.'),
+        content: Text('Service successfully added'),
         duration: const Duration(seconds: 3),
       ));
-    } else if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please select a valid category.'),
-        duration: const Duration(seconds: 3),
-      ));
-    } else {
-      final product = await ref.read(productsServiceProvider).createProduct(
-          title: _titleController.text,
-          description: _descriptionController.text,
-          price: price,
-          categoryId: selectedCategory!,
-          imageFiles: _selectedImages);
-      if (product != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TabsScreen()),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Product successfully added'),
-          duration: const Duration(seconds: 3),
-        ));
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(productsServiceProvider).getCategories();
+    final categories = ref.watch(serviceMainProvider).getCategories();
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -142,7 +130,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    'Yangi mahsulot post yaratish',
+                    'Yangi service yaratish',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -151,46 +139,22 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Mahsulot Nomi'),
+                _buildSectionTitle('Service Name'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _titleController,
-                  labelText: 'Mahsulot Nomi',
+                  labelText: 'Service Name',
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Mahsulot haqida batafsil'),
+                _buildSectionTitle('Service haqida batafsil'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: 'Mahsulot haqida yozing',
+                  labelText: 'Service haqida yozing',
                   maxLines: 5,
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Narxi'),
-                const SizedBox(height: 10),
-                // _buildTextField(
-                //   controller: _amountController,
-                //   labelText: 'Narxi',
-                //   keyboardType: TextInputType.number,
-                //   inputFormatters: [
-                //     ThousandsFormatter(),
-                //     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                //   ],
-                // ),
-                TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    ThousandsFormatter(), // Add the custom formatter
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                    labelText: 'Narxi',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle('Kategoriyani tanlash'),
+                _buildSectionTitle('Service Kategoriyani tanlash'),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -218,13 +182,19 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                 const SizedBox(height: 20),
                 _buildSectionTitle('Image'),
                 const SizedBox(height: 10),
-                IconButton(
-                  color: Colors.red,
-                  icon: const Icon(
-                    Icons.upload_file,
-                    size: 30,
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Button color
+                    foregroundColor: Colors.white, // Icon and text color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
                   ),
                   onPressed: () => _pickImage(isMulti: true),
+                  icon: const Icon(Icons.upload_file, size: 24),
+                  label: const Text("Upload", style: TextStyle(fontSize: 16)),
                 ),
                 const SizedBox(height: 10),
                 if (_selectedImages.isEmpty)
@@ -240,30 +210,34 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
+                      crossAxisSpacing: 3.0,
+                      mainAxisSpacing: 3.0,
                     ),
                     itemCount: _selectedImages.length,
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
-                          Image.file(
-                            _selectedImages[index],
-                            fit: BoxFit.cover,
-                          ),
+                          Image.file(_selectedImages[index],
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover),
                           Positioned(
-                            top: 2,
-                            right: 2,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.red,
+                            top: 1,
+                            right: 0.1,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red.withOpacity(1),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedImages.removeAt(index);
-                                });
-                              },
+                              child: IconButton(
+                                icon: const Icon(Icons.close,
+                                    color: Colors.white, size: 18),
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedImages.removeAt(index);
+                                  });
+                                },
+                              ),
                             ),
                           ),
                         ],

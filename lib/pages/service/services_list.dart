@@ -3,24 +3,31 @@ import 'package:app/pages/products/product_detail.dart';
 import 'package:app/pages/service/service_detail.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ServiceList extends ConsumerWidget {
   final Services service;
-  const ServiceList({super.key, required this.service});
+  final VoidCallback refresh;
+
+  const ServiceList({super.key, required this.service, required this.refresh});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Navigate to ProductDetail page
+
+        final Services singleService = await ref
+            .watch(serviceMainProvider)
+            .getSingleService(serviceId: service.id.toString());
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ServiceDetail(service: service),
+            builder: (context) => ServiceDetail(service: singleService),
           ),
-        );
+        ).then((_) => ref.refresh(servicesProvider));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -112,7 +119,7 @@ class ServiceList extends ConsumerWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${service.comments.length} Comments',
+                            '${service.comments.length} ',
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.grey,
@@ -125,13 +132,14 @@ class ServiceList extends ConsumerWidget {
                       Row(
                         children: [
                           Icon(
-                            Icons.thumb_up,
-                            size: 16,
+                            Icons.favorite_outline_outlined,
+                            size: 18,
                             color: Colors.grey,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '123 Likes', // Replace with actual data
+                            service.likeCount
+                                .toString(), // Replace with actual data
                             style: const TextStyle(
                               fontSize: 13,
                               color: Colors.grey,

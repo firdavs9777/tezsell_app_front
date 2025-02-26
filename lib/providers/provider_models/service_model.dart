@@ -1,4 +1,5 @@
 import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 
@@ -6,6 +7,7 @@ class Services {
   const Services({
     required this.id,
     required this.name,
+    required this.likeCount,
     required this.description,
     required this.category,
     required this.location,
@@ -17,12 +19,13 @@ class Services {
   });
 
   final int id;
+  final int likeCount;
   final String name;
   final String description;
 
   final CategoryModel category;
   final Location location;
-  final List<Comment> comments;
+  final List<Comments> comments;
   final List<ImageData> images;
   final UserInfo userName;
   final DateTime createdAt;
@@ -39,34 +42,12 @@ class Services {
           .map((imageJson) => ImageData.fromJson(imageJson))
           .toList(),
       comments: (json['comments'] as List)
-          .map((commentJson) => Comment.fromJson(commentJson))
+          .map((commentJson) => Comments.fromJson(commentJson))
           .toList(),
+      likeCount: json['likeCount'],
       userName: UserInfo.fromJson(json['userName']),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-    );
-  }
-}
-
-class Comment {
-  const Comment({
-    required this.id,
-    required this.user,
-    required this.text,
-    required this.createdAt,
-  });
-
-  final int id;
-  final UserInfo user;
-  final String text;
-  final DateTime createdAt;
-
-  factory Comment.fromJson(Map<String, dynamic> json) {
-    return Comment(
-      id: json['id'],
-      user: UserInfo.fromJson(json['user']),
-      text: json['text'],
-      createdAt: DateTime.parse(json['created_at']),
     );
   }
 }
