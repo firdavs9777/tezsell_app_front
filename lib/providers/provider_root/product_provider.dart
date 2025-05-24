@@ -13,7 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsService {
   Future<List<Products>> getProducts() async {
-    final response = await http.get(Uri.parse('$baseUrl$PRODUCTS_URL'));
+    final response = await http.get(Uri.parse('$baseUrl$PRODUCTS_URL/'));
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
@@ -34,7 +35,7 @@ class ProductsService {
     String productTitle = "",
   }) async {
     final response = await http.get(
-      Uri.parse('$baseUrl$PRODUCTS_URL').replace(
+      Uri.parse('$baseUrl$PRODUCTS_URL/').replace(
         queryParameters: {
           'page': currentPage.toString(),
           'page_size': pageSize.toString(),
@@ -58,7 +59,7 @@ class ProductsService {
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl$CATEGORY_URL'));
+    final response = await http.get(Uri.parse('$baseUrl$CATEGORY_URL/'));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     if (response.statusCode == 200) {
@@ -73,7 +74,7 @@ class ProductsService {
 
   Future<List<Products>> getSingleProduct({required String productId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$PRODUCTS_URL/$productId'));
+        await http.get(Uri.parse('$baseUrl$PRODUCTS_URL/$productId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 

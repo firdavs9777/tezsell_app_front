@@ -1,59 +1,56 @@
-import 'package:app/constants/constants.dart';
-import 'package:app/pages/products/product_detail.dart';
-import 'package:app/providers/provider_models/product_model.dart';
+import 'package:app/providers/provider_models/service_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
-class MyProducts extends ConsumerStatefulWidget {
-  final List<Products> products;
+class MyServices extends ConsumerStatefulWidget {
+  final List<Services> services;
 
-  const MyProducts({super.key, required this.products});
+  const MyServices({super.key, required this.services});
 
   @override
-  ConsumerState<MyProducts> createState() => _MyProductsState();
+  ConsumerState<MyServices> createState() => _MyServicesState();
 }
 
-class _MyProductsState extends ConsumerState<MyProducts> {
-  late List<Products> _products;
+class _MyServicesState extends ConsumerState<MyServices> {
+  late List<Services> _services;
 
   @override
   void initState() {
     super.initState();
-    _products = List.from(widget.products);
+    _services = List.from(widget.services);
   }
 
   void _deleteProduct(int index) {
     setState(() {
-      _products.removeAt(index);
+      _services.removeAt(index);
     });
   }
 
   void _editProduct(int index) {
-    // Navigate to the edit product screen (implement ProductEdit page)
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEdit(product: _products[index])));
+    // Navigate to the edit service screen (implement ProductEdit page)
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEdit(service: _services[index])));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Products'),
+        title: const Text('My Services'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: _products.length,
+          itemCount: _services.length,
           itemBuilder: (context, index) {
-            final product = _products[index];
-            final formattedPrice =
-                NumberFormat('#,##0', 'en_US').format(int.parse(product.price));
+            final service = _services[index];
+            // final formattedPrice =
+            //     NumberFormat('#,##0', 'en_US').format(int.parse(service.price));
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                key: ValueKey(product.id),
+                key: ValueKey(service.id),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.0),
@@ -71,9 +68,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                     // Product Image
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: product.images.isNotEmpty
+                      child: service.images.isNotEmpty
                           ? Image.network(
-                              product.images[0].image,
+                              service.images[0].image,
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
@@ -92,7 +89,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product.title,
+                            service.name,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.0,
@@ -101,7 +98,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                           ),
                           const SizedBox(height: 4.0),
                           Text(
-                            product.description,
+                            service.description,
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 12.0,
@@ -119,7 +116,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                               ),
                               const SizedBox(width: 4.0),
                               Text(
-                                '${product.location.region}, ${product.location.district.substring(0, 7)}...',
+                                '${service.location.region}, ${service.location.district.substring(0, 7)}...',
                                 style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12.0,
@@ -135,24 +132,15 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          '$formattedPrice ${product.currency}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                            color: Colors.green,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
                         Row(
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () => _editProduct(product.id),
+                              onPressed: () => _editProduct(service.id),
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteProduct(product.id),
+                              onPressed: () => _deleteProduct(service.id),
                             ),
                           ],
                         ),

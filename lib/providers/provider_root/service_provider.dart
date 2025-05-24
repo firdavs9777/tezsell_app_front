@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceProvider {
   Future<List<Services>> getServices() async {
-    final response = await http.get(Uri.parse('$baseUrl$SERVICES_URL'));
+    final response = await http.get(Uri.parse('$baseUrl$SERVICES_URL/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       print(data);
@@ -24,7 +24,7 @@ class ServiceProvider {
 
   Future<Services> getSingleService({required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId'));
+        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Services.fromJson(data['service']);
@@ -36,7 +36,7 @@ class ServiceProvider {
   Future<List<Services>> getRecommendedServices(
       {required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId'));
+        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return (data['recommended_services'] as List)
@@ -48,7 +48,7 @@ class ServiceProvider {
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY'));
+    final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       print(response.body);

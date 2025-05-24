@@ -21,7 +21,7 @@ class _RegisterState extends State<Register> {
   List<String> filteredCities = []; // List to store filtered towns
   TextEditingController searchController = TextEditingController();
 
-  final String URL = 'http://127.0.0.1:8000/accounts/regions';
+  final String URL = 'https://api.tezsell.com/accounts/regions/';
   List<String> cities = [];
   // List<List<String>> towns = [];
   List<String> cityId = [];
@@ -30,8 +30,8 @@ class _RegisterState extends State<Register> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse(URL));
+      print(response.body);
       if (response.statusCode == 200) {
-        print(response);
         setState(() {
           cities = (json.decode(response.body)['regions'] as List)
                   ?.map<String>(

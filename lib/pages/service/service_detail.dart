@@ -227,8 +227,8 @@ class ServiceImageSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ImageProvider> images = service.images.isNotEmpty
         ? service.images
-            .map((image) => NetworkImage('${baseUrl}/services${image.image}')
-                as ImageProvider)
+            .map((image) =>
+                NetworkImage('${baseUrl}${image.image}') as ImageProvider)
             .toList()
         : [
             const AssetImage('assets/logo/logo_no_background.png')
@@ -335,7 +335,7 @@ class ServiceDetailsSection extends StatelessWidget {
               ),
             ],
           ),
-          Text(service.category.name,
+          Text(service.category.nameEn,
               style: const TextStyle(
                   fontSize: 14, decoration: TextDecoration.underline)),
           const SizedBox(height: 10),

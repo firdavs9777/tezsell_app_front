@@ -53,8 +53,7 @@ class ServiceList extends ConsumerWidget {
             CircleAvatar(
               radius: 40,
               backgroundImage: service.images.isNotEmpty
-                  ? NetworkImage(
-                      '${baseUrl}/services${service.images[0].image}')
+                  ? NetworkImage('${baseUrl}${service.images[0].image}')
                   : const AssetImage('assets/logo/logo_no_background.png')
                       as ImageProvider,
             ),
@@ -73,7 +72,7 @@ class ServiceList extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    service.category.name,
+                    service.category.nameRu,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.blueAccent,

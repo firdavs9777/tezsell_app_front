@@ -78,8 +78,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     // Creating a list of images
     List<ImageProvider> images = widget.product.images.isNotEmpty
         ? widget.product.images
-            .map((image) => NetworkImage('${baseUrl}/products${image.image}')
-                as ImageProvider)
+            .map((image) =>
+                NetworkImage('${baseUrl}${image.image}') as ImageProvider)
             .toList()
         : [
             const AssetImage('assets/logo/logo_no_background.png')
@@ -235,7 +235,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  widget.product.category.name,
+                  widget.product.category.nameRu,
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,

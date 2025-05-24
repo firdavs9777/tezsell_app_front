@@ -1,15 +1,16 @@
 import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/habar/habar.dart';
-import 'package:app/pages/products/product_new.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/service/service_search.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/providers/provider_models/user_model.dart';
 
 class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key, this.initialIndex = 0});
@@ -24,8 +25,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   void initState() {
     _selectedPageIndex = widget.initialIndex;
     super.initState();
-    ref.refresh(productsProvider);
-    ref.refresh(servicesProvider);
+    // final user = ref.watch(profileServiceProvider).getUserInfo();
+    // ref.refresh(productsProvider);
+    // ref.refresh(servicesProvider);
   }
 
   void _selectPage(int index) {
@@ -64,17 +66,34 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
               width: 120,
               child: Row(
                 children: [
-                  // Your text goes here
-                  Text(
-                    'Oltinko\'l',
+                  FutureBuilder<UserInfo>(
+                    future: ref.watch(profileServiceProvider).getUserInfo(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData) {
+                        return const Center(
+                            child: Text('No user data available.'));
+                      }
+                      final user = snapshot.data!;
+                      final district = user.location.district;
+                      final firstPart = district.contains(' ')
+                          ? district.split(' ')[0]
+                          : district;
+                      final displayedText = firstPart.length > 10
+                          ? firstPart.substring(0, 5) + '...'
+                          : firstPart;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Text(displayedText),
+                      );
+                    },
                   ),
                   Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
                     child: Icon(Icons.keyboard_arrow_down_sharp),
-                  ))
-                  // Adjust spacing between text and icon
-                  // Your icon goes here
+                  ),
                 ],
               ),
             ),

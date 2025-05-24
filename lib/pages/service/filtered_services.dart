@@ -2,6 +2,7 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/products/products_list.dart';
+import 'package:app/pages/service/service_search.dart';
 import 'package:app/pages/service/services_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -52,19 +53,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => const ProductSearch(),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.category), // Category icon
-            onPressed: () {
-              // Implement category selection functionality
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (ctx) => const ProductFilter(),
+                  builder: (ctx) => const ServiceSearch(),
                 ),
               );
             },

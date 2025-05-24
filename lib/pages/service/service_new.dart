@@ -167,7 +167,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                   items: availableCategories
                       .map((category) => DropdownMenuItem(
                             value: category,
-                            child: Text(category.name),
+                            child: Text(category.nameEn),
                           ))
                       .toList(),
                   onChanged: (CategoryModel? value) {

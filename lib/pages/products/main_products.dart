@@ -51,7 +51,7 @@ class _ProductMainState extends ConsumerState<ProductMain> {
               borderRadius: BorderRadius.circular(8.0),
               child: widget.product.images.isNotEmpty
                   ? Image.network(
-                      '${baseUrl}/products${widget.product.images[0].image}',
+                      '${baseUrl}${widget.product.images[0].image}',
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
@@ -100,7 +100,7 @@ class _ProductMainState extends ConsumerState<ProductMain> {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        '${widget.product.location.region}, ${widget.product.location.district}',
+                        '${('${widget.product.location.region}, ${widget.product.location.district}').substring(0, ('${widget.product.location.region}, ${widget.product.location.district}').length > 10 ? 10 : '${widget.product.location.region}, ${widget.product.location.district}'.length)}',
                         style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12.0,

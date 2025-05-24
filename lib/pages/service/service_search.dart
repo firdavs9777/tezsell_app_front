@@ -1,11 +1,8 @@
-import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/service/services_list.dart';
 import 'package:app/providers/provider_models/service_model.dart';
-import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app/providers/provider_models/product_model.dart';
 
 class ServiceSearch extends ConsumerStatefulWidget {
   const ServiceSearch({super.key});
@@ -56,7 +53,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
         ],
       ),
       body: _searchResults == null
-          ? const Center(child: Text("Enter a search term to find products"))
+          ? const Center(child: Text("Enter a search term to find services"))
           : FutureBuilder<List<Services>>(
               future: _searchResults,
               builder: (context, snapshot) {
@@ -65,7 +62,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No products found"));
+                  return const Center(child: Text("No services found"));
                 }
                 final filteredServices = snapshot.data!;
                 return ListView.builder(

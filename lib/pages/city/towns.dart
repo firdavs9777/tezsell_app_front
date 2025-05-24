@@ -14,7 +14,7 @@ class TownsList extends StatefulWidget {
 }
 
 class _TownsListState extends State<TownsList> {
-  final String URL = 'http://127.0.0.1:8000/accounts/districts';
+  final String URL = 'https://api.tezsell.com/accounts/districts';
   List<String> towns = [];
   List<String> filteredTowns = [];
   final TextEditingController searchController = TextEditingController();
@@ -33,7 +33,7 @@ class _TownsListState extends State<TownsList> {
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('$URL/${widget.city_id}'));
+      final response = await http.get(Uri.parse('$URL/${widget.city_id}/'));
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         List<dynamic> townData = responseData['districts'];

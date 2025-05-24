@@ -1,5 +1,7 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/pages/shaxsiy/favorite_products.dart';
+import 'package:app/pages/shaxsiy/favorite_services.dart';
 import 'package:app/pages/shaxsiy/my_products.dart';
+import 'package:app/pages/shaxsiy/my_services.dart';
 import 'package:app/pages/shaxsiy/product_edit.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -211,7 +213,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                MyProducts(products: products)),
+                                MyServices(services: services)),
                       );
                     },
                   ),
@@ -262,8 +264,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                MyProducts(products: products)),
+                            builder: (context) => FavoriteProducts(
+                                products: favorite_items.likedProducts)),
                       );
                     },
                   ),
@@ -314,8 +316,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                MyProducts(products: products)),
+                            builder: (context) => FavoriteServices(
+                                services: favorite_items.likedServices)),
                       );
                     },
                   ),

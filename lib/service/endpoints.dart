@@ -1,5 +1,5 @@
 class Endpoints {
-  static String baseURL = "http://localhost:5004/api/v1/";
+  static String baseURL = "https://api.tezsell.com/api/v1/";
   static String loginURL = "auth/login";
   static String registerURL = "auth/register";
   static String productsURL = "products";

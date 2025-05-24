@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:app/pages/city/towns.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class CityList extends StatefulWidget {
   CityList({super.key, required this.cityList, required this.cityId});
@@ -87,6 +85,6 @@ class _CityListState extends State<CityList> {
               },
             ),
           )
-        : Text('There is an error while loading a data');
+        : Text('There is an error while loading a data lol');
   }
 }

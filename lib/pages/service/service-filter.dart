@@ -112,7 +112,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                     },
                     child: GestureDetector(
                       onTap: () =>
-                          _applyFilter(availableCategories[index].name),
+                          _applyFilter(availableCategories[index].nameEn),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -124,7 +124,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                           ),
                           SizedBox(height: 5), // Space between icon and text
                           Text(
-                            availableCategories[index].name,
+                            availableCategories[index].nameEn,
                             textAlign: TextAlign.center, // Center the text
                           ),
                         ],

@@ -1,20 +1,20 @@
 import 'package:app/constants/constants.dart';
-import 'package:app/pages/products/product_detail.dart';
+
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class MyProducts extends ConsumerStatefulWidget {
+class FavoriteProducts extends ConsumerStatefulWidget {
   final List<Products> products;
 
-  const MyProducts({super.key, required this.products});
+  const FavoriteProducts({super.key, required this.products});
 
   @override
-  ConsumerState<MyProducts> createState() => _MyProductsState();
+  ConsumerState<FavoriteProducts> createState() => _FavoriteProductsState();
 }
 
-class _MyProductsState extends ConsumerState<MyProducts> {
+class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
   late List<Products> _products;
 
   @override
@@ -38,7 +38,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Products'),
+        title: const Text('Favorite Products'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -68,12 +68,14 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                 ),
                 child: Row(
                   children: [
-                    // Product Image
+                    // Text(baseUrl),
+                    // // Product Image
+                    // Text(product.images[0].image.toString()),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: product.images.isNotEmpty
                           ? Image.network(
-                              product.images[0].image,
+                              '$baseUrl/products${product.images[0].image}',
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
@@ -144,18 +146,6 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () => _editProduct(product.id),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteProduct(product.id),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ],
