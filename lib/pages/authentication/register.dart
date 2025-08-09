@@ -21,7 +21,7 @@ class _RegisterState extends State<Register> {
   List<String> filteredCities = []; // List to store filtered towns
   TextEditingController searchController = TextEditingController();
 
-  final String URL = 'https://api.tezsell.com/accounts/regions/';
+  final String URL = 'https://api.webtezsell.com/accounts/regions/';
   List<String> cities = [];
   // List<List<String>> towns = [];
   List<String> cityId = [];

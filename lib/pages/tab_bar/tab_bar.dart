@@ -4,10 +4,15 @@ import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/service/service_search.dart';
+// Add these imports for real estate
+import 'package:app/pages/real_estate/real_estate_main.dart';
+import 'package:app/pages/real_estate/real_estate_search.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+// Add real estate provider import
+// import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/user_model.dart';
@@ -15,43 +20,73 @@ import 'package:app/providers/provider_models/user_model.dart';
 class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key, this.initialIndex = 0});
   final int initialIndex;
+
   @override
   ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   late int _selectedPageIndex = 0;
+
   @override
   void initState() {
     _selectedPageIndex = widget.initialIndex;
     super.initState();
-    // final user = ref.watch(profileServiceProvider).getUserInfo();
-    // ref.refresh(productsProvider);
-    // ref.refresh(servicesProvider);
   }
 
   void _selectPage(int index) {
     setState(() {
-      ref.refresh(productsProvider);
-      ref.refresh(servicesProvider);
+      // Only refresh providers when switching to avoid unnecessary reloads
+      if (index != _selectedPageIndex) {
+        switch (index) {
+          case 0:
+            ref.invalidate(productsProvider);
+            break;
+          case 1:
+            ref.invalidate(servicesProvider);
+            break;
+          case 2:
+            // Add real estate provider refresh when you create it
+            // ref.invalidate(realEstateProvider);
+            break;
+          // case 3 is Habarlar - no need to refresh
+          // case 4 is Profile - refreshed when needed
+        }
+      }
       _selectedPageIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var activePageTitle = 'Products';
-    Widget activePage = const ProductsList();
+    // Updated page titles and widgets for 5 tabs
+    String activePageTitle;
+    Widget activePage;
 
-    if (_selectedPageIndex == 1) {
-      activePageTitle = 'Services';
-      activePage = const ServiceMain();
-    } else if (_selectedPageIndex == 2) {
-      activePageTitle = 'Habarlar';
-      activePage = const HabarMain();
-    } else if (_selectedPageIndex == 3) {
-      activePageTitle = 'Shaxsiy Hisob';
-      activePage = const ShaxsiyPage();
+    switch (_selectedPageIndex) {
+      case 0:
+        activePageTitle = 'Products';
+        activePage = const ProductsList();
+        break;
+      case 1:
+        activePageTitle = 'Services';
+        activePage = const ServiceMain();
+        break;
+      case 2:
+        activePageTitle = 'Real Estate';
+        activePage = const RealEstateMain(); // You'll need to create this
+        break;
+      case 3:
+        activePageTitle = 'Habarlar';
+        activePage = const HabarMain();
+        break;
+      case 4:
+        activePageTitle = 'Shaxsiy Hisob';
+        activePage = const ShaxsiyPage();
+        break;
+      default:
+        activePageTitle = 'Products';
+        activePage = const ProductsList();
     }
 
     return Scaffold(
@@ -59,10 +94,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
         leading: Builder(builder: (BuildContext context) {
           return GestureDetector(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyHomeTown()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomeTown()),
+              );
             },
-            child: Container(
+            child: SizedBox(
               width: 140,
               child: Row(
                 children: [
@@ -70,13 +107,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     future: ref.watch(profileServiceProvider).getUserInfo(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return Center(child: Text('Error:  ${snapshot.error}'));
+                        return const Center(child: Text('Error'));
                       } else if (!snapshot.hasData) {
-                        return const Center(
-                            child: Text('No user data available.'));
+                        return const Center(child: Text('Loading...'));
                       }
                       final user = snapshot.data!;
-                      final district = user.location.district;
+                      final district = user.location?.district ?? 'Location';
                       final firstPart = district.contains(' ')
                           ? district.split(' ')[0]
                           : district;
@@ -85,11 +121,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                           : firstPart;
                       return Padding(
                         padding: const EdgeInsets.only(left: 4.0),
-                        child: Text(displayedText),
+                        child: Text(
+                          displayedText,
+                          style: const TextStyle(fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       );
                     },
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Icon(Icons.keyboard_arrow_down_sharp),
                   ),
                 ],
@@ -98,40 +138,44 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           );
         }),
         actions: [
+          // Show search icon for Products, Services, and Real Estate
           if (activePageTitle == 'Products' ||
-              activePageTitle ==
-                  'Services') // Check if the title is either 'Products' or 'Services'
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    onPressed: () {
-                      // Check if the active page is Products or Services
-                      if (activePageTitle == 'Products') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => const ProductSearch(),
-                          ),
-                        );
-                      } else if (activePageTitle == 'Services') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) =>
-                                const ServiceSearch(), // Replace with your ServiceSearch screen
-                          ),
-                        );
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.search,
-                      size: 34,
-                    ),
-                  ),
+              activePageTitle == 'Services' ||
+              activePageTitle == 'Real Estate')
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () {
+                  // Navigate to appropriate search page
+                  if (activePageTitle == 'Products') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => const ProductSearch(),
+                      ),
+                    );
+                  } else if (activePageTitle == 'Services') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => const ServiceSearch(),
+                      ),
+                    );
+                  } else if (activePageTitle == 'Real Estate') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) =>
+                            const RealEstateSearch(), // You'll need to create this
+                      ),
+                    );
+                  }
+                },
+                icon: const Icon(
+                  Icons.search,
+                  size: 34,
                 ),
-              ],
+              ),
             ),
         ],
         title: Text(activePageTitle),
@@ -139,11 +183,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       ),
       body: activePage,
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: Colors.grey, // Set your desired border color
-              width: 1.0, // Set the width of the border
+              color: Colors.grey,
+              width: 1.0,
             ),
           ),
         ),
@@ -153,14 +197,30 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           onTap: _selectPage,
           currentIndex: _selectedPageIndex,
           selectedItemColor: Colors.blue,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Asosiy'),
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 12,
+          unselectedFontSize: 10,
+          items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.post_add), label: 'Services'),
-            // BottomNavigationBarItem(
-            //     icon: Icon(Icons.not_listed_location), label: 'Atrofimda'),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Habarlar'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Shaxsiy'),
+              icon: Icon(Icons.home),
+              label: 'Asosiy',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.post_add),
+              label: 'Services',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.apartment), // Real estate icon
+              label: 'Ko\'chmas',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Habarlar',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Shaxsiy',
+            ),
           ],
         ),
       ),
