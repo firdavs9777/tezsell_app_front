@@ -1,9 +1,7 @@
-import 'package:app/pages/authentication/login.dart';
-import 'package:app/pages/home.dart';
 import 'package:app/pages/tab_bar/splash_screen.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 var kColorScheme =
     ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 96, 59, 181));
@@ -20,6 +18,7 @@ class Welcome extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+        locale: Locale('en'),
         darkTheme: ThemeData.dark().copyWith(
             colorScheme: kDarkColorSchema,
             elevatedButtonTheme: ElevatedButtonThemeData(

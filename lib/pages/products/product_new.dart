@@ -112,13 +112,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           categoryId: selectedCategory!,
           imageFiles: _selectedImages);
       if (product != null) {
-        Navigator.push(
+        await Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => TabsScreen()),
         );
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Product successfully added'),
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ));
       }
     }

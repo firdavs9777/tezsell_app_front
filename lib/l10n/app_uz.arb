@@ -1,0 +1,31 @@
+{
+  "@@locale": "uz",
+  "appTitle": "Sabzi Bozori",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Xush kelibsiz",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "settings": "Sozlamalar",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  "home": "Bosh sahifa",
+  "@home": {
+    "description": "Home page title"
+  },
+  "profile": "Profil",
+  "@profile": {
+    "description": "Profile page title"
+  },
+  "cart": "Savatcha",
+  "@cart": {
+    "description": "Shopping cart"
+  },
+  "search": "Qidirish",
+  "@search": {
+    "description": "Search functionality"
+  }
+}

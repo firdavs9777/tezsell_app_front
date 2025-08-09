@@ -14,12 +14,14 @@ class ProfileService {
   Future<UserInfo> getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+    print(token);
 
     final response = await http.get(Uri.parse('$baseUrl$USER_INFO'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
@@ -45,7 +47,7 @@ class ProfileService {
           .map((postJson) => Products.fromJson(postJson))
           .toList();
     } else {
-      throw Exception('Failed to load posts');
+      throw Exception('Failed to load post product');
     }
   }
 
@@ -58,6 +60,7 @@ class ProfileService {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
@@ -65,7 +68,7 @@ class ProfileService {
           .map((postJson) => Services.fromJson(postJson))
           .toList();
     } else {
-      throw Exception('Failed to load posts');
+      throw Exception('Failed to load postssss');
     }
   }
 
@@ -89,7 +92,7 @@ class ProfileService {
 
   Future<Products> getSingleUserProduct({required String productId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$USER_PRODUCT/$productId'));
+        await http.get(Uri.parse('$baseUrl$USER_PRODUCT/$productId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Products.fromJson(data);
@@ -100,7 +103,7 @@ class ProfileService {
 
   Future<Services> getSingleUserService({required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId'));
+        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Services.fromJson(data);

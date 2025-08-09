@@ -1,0 +1,31 @@
+{
+  "@@locale": "en",
+  "appTitle": "Sabzi Market",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Home page title"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile page title"
+  },
+  "cart": "Cart",
+  "@cart": {
+    "description": "Shopping cart"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Search functionality"
+  }
+}

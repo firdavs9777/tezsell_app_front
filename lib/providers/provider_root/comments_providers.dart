@@ -13,7 +13,7 @@ class CommentsService {
     String? token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL'),
+      Uri.parse('$baseUrl$SERVICES_URL/$serviceId/$COMMENT_URL'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -47,6 +47,7 @@ class CommentsService {
         'Authorization': 'Token $token'
       },
     );
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Comments.fromJson(

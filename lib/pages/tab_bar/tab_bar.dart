@@ -63,16 +63,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   MaterialPageRoute(builder: (context) => MyHomeTown()));
             },
             child: Container(
-              width: 120,
+              width: 140,
               child: Row(
                 children: [
                   FutureBuilder<UserInfo>(
                     future: ref.watch(profileServiceProvider).getUserInfo(),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error:  ${snapshot.error}'));
                       } else if (!snapshot.hasData) {
                         return const Center(
                             child: Text('No user data available.'));
@@ -82,8 +80,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                       final firstPart = district.contains(' ')
                           ? district.split(' ')[0]
                           : district;
-                      final displayedText = firstPart.length > 10
-                          ? firstPart.substring(0, 5) + '...'
+                      final displayedText = firstPart.length > 7
+                          ? '${firstPart.substring(0, 4)}...'
                           : firstPart;
                       return Padding(
                         padding: const EdgeInsets.only(left: 4.0),

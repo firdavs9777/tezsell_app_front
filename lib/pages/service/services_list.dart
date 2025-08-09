@@ -1,7 +1,5 @@
 import 'package:app/constants/constants.dart';
-import 'package:app/pages/products/product_detail.dart';
 import 'package:app/pages/service/service_detail.dart';
-import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +70,7 @@ class ServiceList extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    service.category.nameRu,
+                    service.category.nameEn,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.blueAccent,
