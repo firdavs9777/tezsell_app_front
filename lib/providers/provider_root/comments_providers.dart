@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
+import 'package:app/providers/provider_models/replies_model.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -104,6 +105,33 @@ class CommentsService {
     } catch (e) {
       print('Error deleting comment: $e');
       return false;
+    }
+  }
+
+  Future<List<Reply>> getReplies({required commmentId}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/services/api$COMMENT_URL/$commmentId/replies/'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final repliesResponse = RepliesResponse.fromJson(data);
+
+      if (repliesResponse.success) {
+        return repliesResponse.data; // Return List<Reply>
+      } else {
+        return []; // Return empty list if not successful
+      }
+    } else {
+      throw Exception('Failed to load replies');
     }
   }
 

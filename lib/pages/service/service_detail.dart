@@ -33,6 +33,11 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   Comments? editingComment;
   String editingCommentText = '';
 
+  // Reply state variables
+  bool isReplyingToComment = false;
+  Comments? replyingToComment;
+  String replyCommentText = '';
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +74,21 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       isEditingComment = true;
       editingComment = comment;
       editingCommentText = comment.text.toString();
+      // Cancel reply mode if active
+      isReplyingToComment = false;
+      replyingToComment = null;
+    });
+  }
+
+  // Function to start replying to a comment
+  void _startReplyingToComment(Comments comment) {
+    setState(() {
+      isReplyingToComment = true;
+      replyingToComment = comment;
+      replyCommentText = '';
+      // Cancel edit mode if active
+      isEditingComment = false;
+      editingComment = null;
     });
   }
 
@@ -81,20 +101,25 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     });
   }
 
+  // Function to cancel replying
+  void _cancelReplyingComment() {
+    setState(() {
+      isReplyingToComment = false;
+      replyingToComment = null;
+      replyCommentText = '';
+    });
+  }
+
   // Function to save edited comment
   void _saveEditedComment() async {
     if (editingComment != null && editingCommentText.isNotEmpty) {
       try {
-        // TODO: Implement your edit comment API call here
-
         await ref.read(commentsServiceProvider).editComment(
               title: editingCommentText,
               serviceId: widget.service.id.toString(),
-              commentId:
-                  editingComment!.id.toString(), // The comment ID to edit
+              commentId: editingComment!.id.toString(),
             );
 
-        // Refresh the comments provider
         ref.refresh(commentsServiceProvider);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -117,15 +142,43 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     }
   }
 
+  // Function to save reply comment
+  void _saveReplyComment() async {
+    if (replyingToComment != null && replyCommentText.isNotEmpty) {
+      try {
+        // TODO: Implement your reply comment API call here
+        // await ref.read(commentsServiceProvider).replyToComment(
+        //   parentCommentId: replyingToComment!.id.toString(),
+        //   text: replyCommentText,
+        // );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Reply added successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        _cancelReplyingComment();
+        _refreshServiceDetail();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error adding reply: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _deleteComment(Comments comment) async {
     try {
       await ref.read(commentsServiceProvider).deleteComment(
             serviceId: widget.service.id.toString(),
-            commentId: comment.id
-                .toString(), // Use the comment parameter, not editingComment
+            commentId: comment.id.toString(),
           );
 
-      // Refresh the comments provider
       ref.refresh(commentsServiceProvider);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -135,7 +188,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         ),
       );
 
-      _refreshServiceDetail(); // Only call this once
+      _refreshServiceDetail();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -151,7 +204,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       final service = await ref
           .watch(profileServiceProvider)
           .likeSingleService(serviceId: widget.service.id.toString());
-      print(service);
 
       if (service != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,7 +215,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         );
         ref.refresh(profileServiceProvider).getUserFavoriteItems();
         setState(() {
-          _serviceData = service; // Update state with new service data
+          _serviceData = service;
         });
       }
     } catch (e) {
@@ -193,7 +245,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         );
         ref.refresh(profileServiceProvider).getUserFavoriteItems();
         setState(() {
-          _serviceData = service; // Update state with new service data
+          _serviceData = service;
         });
       }
     } catch (e) {
@@ -244,8 +296,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                               duration: Duration(milliseconds: 300),
                               tween: Tween<double>(
                                   begin: 1.0, end: isLiked ? 1.1 : 1.0),
-                              curve:
-                                  Curves.elasticInOut, // Adds a bounce effect
+                              curve: Curves.elasticInOut,
                               builder: (context, scale, child) {
                                 return Transform.scale(
                                   scale: scale,
@@ -255,7 +306,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                                           ? Icons.favorite
                                           : Icons.favorite_border,
                                       color: Colors.red,
-                                      size: 24.0, // Make the icon bigger
+                                      size: 24.0,
                                     ),
                                     onPressed: isLiked
                                         ? _dislikeService
@@ -288,32 +339,207 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                     comments: _serviceData!.comments,
                     onEditComment: _startEditingComment,
                     onDeleteComment: _deleteComment,
+                    onReplyComment: _startReplyingToComment, // Added this line
                   ),
                   RecommendedServicesSection(
                       recommendedServices: _recommendedServices),
                 ],
               ),
             ),
-      bottomNavigationBar: isEditingComment
-          ? EditCommentWidget(
-              commentText: editingCommentText,
-              onTextChanged: (text) {
-                setState(() {
-                  editingCommentText = text;
-                });
-              },
-              onSave: _saveEditedComment,
-              onCancel: _cancelEditingComment,
-            )
-          : CreateComment(
-              id: widget.service.id.toString(),
-              onCommentAdded: _refreshServiceDetail,
+      bottomNavigationBar: _buildBottomWidget(),
+    );
+  }
+
+  // Helper method to determine which bottom widget to show
+  Widget _buildBottomWidget() {
+    if (isEditingComment) {
+      return EditCommentWidget(
+        commentText: editingCommentText,
+        onTextChanged: (text) {
+          setState(() {
+            editingCommentText = text;
+          });
+        },
+        onSave: _saveEditedComment,
+        onCancel: _cancelEditingComment,
+      );
+    } else if (isReplyingToComment) {
+      return ReplyCommentWidget(
+        parentComment: replyingToComment!,
+        replyText: replyCommentText,
+        onTextChanged: (text) {
+          setState(() {
+            replyCommentText = text;
+          });
+        },
+        onSave: _saveReplyComment,
+        onCancel: _cancelReplyingComment,
+      );
+    } else {
+      return CreateComment(
+        id: widget.service.id.toString(),
+        onCommentAdded: _refreshServiceDetail,
+      );
+    }
+  }
+}
+
+// New widget for replying to comments
+class ReplyCommentWidget extends StatefulWidget {
+  final Comments parentComment;
+  final String replyText;
+  final Function(String) onTextChanged;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
+
+  const ReplyCommentWidget({
+    Key? key,
+    required this.parentComment,
+    required this.replyText,
+    required this.onTextChanged,
+    required this.onSave,
+    required this.onCancel,
+  }) : super(key: key);
+
+  @override
+  _ReplyCommentWidgetState createState() => _ReplyCommentWidgetState();
+}
+
+class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.replyText);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header showing who we're replying to
+            Row(
+              children: [
+                const Icon(Icons.reply, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Replying to ${widget.parentComment.user.username}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: widget.onCancel,
+                  child: const Text('Cancel'),
+                ),
+              ],
             ),
+            // Show parent comment preview
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 16,
+                    backgroundImage: widget.parentComment.user.profileImage !=
+                            null
+                        ? NetworkImage(
+                            '${baseUrl}${widget.parentComment.user.profileImage!.image}')
+                        : null,
+                    backgroundColor: Colors.grey[300],
+                    child: widget.parentComment.user.profileImage == null
+                        ? const Icon(Icons.person, size: 16, color: Colors.grey)
+                        : null,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.parentComment.user.username ?? 'Anonymous',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          widget.parentComment.text.toString(),
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Reply text input
+            TextField(
+              controller: _controller,
+              onChanged: widget.onTextChanged,
+              maxLines: 3,
+              decoration: const InputDecoration(
+                hintText: 'Write your reply...',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(12),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: widget.onSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: const Text(
+                  'Post Reply',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-// New widget for editing comments
+// Existing edit comment widget
 class EditCommentWidget extends StatefulWidget {
   final String commentText;
   final Function(String) onTextChanged;
