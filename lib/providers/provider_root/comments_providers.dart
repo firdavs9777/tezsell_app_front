@@ -57,6 +57,56 @@ class CommentsService {
     }
   }
 
+  Future<Comments> editComment(
+      {required title, required serviceId, required commentId}) async {
+    final url =
+        Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/${commentId}/');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    final response = await http.put(
+      url,
+      body: jsonEncode({
+        'text': title,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Token $token'
+      },
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Comments.fromJson(
+          data); // Assuming 'data' is a map representing the new moment
+    } else {
+      throw Exception('Failed to create moment');
+    }
+  }
+
+  Future<bool> deleteComment({required serviceId, required commentId}) async {
+    final url =
+        Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/${commentId}/');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token'
+        },
+      );
+
+      // Return true for successful deletion (204 or 200)
+      return response.statusCode == 204 || response.statusCode == 200;
+    } catch (e) {
+      print('Error deleting comment: $e');
+      return false;
+    }
+  }
+
   Future<List<Comments>> getSingleComment({required String id}) async {
     try {
       print(id);

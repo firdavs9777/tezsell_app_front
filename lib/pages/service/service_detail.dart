@@ -4,6 +4,8 @@ import 'package:app/pages/comments/create_comment.dart';
 import 'package:app/pages/service/services_list.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_models/comments_model.dart';
+import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,11 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   late Future<List<Services>> _recommendedServices;
   final FocusNode commentFocusNode = FocusNode();
   bool showCommentField = false;
+
+  // Edit state variables
+  bool isEditingComment = false;
+  Comments? editingComment;
+  String editingCommentText = '';
 
   @override
   void initState() {
@@ -54,6 +61,89 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
 
   void _refreshServiceDetail() {
     _fetchSingleService();
+  }
+
+  // Function to start editing a comment
+  void _startEditingComment(Comments comment) {
+    setState(() {
+      isEditingComment = true;
+      editingComment = comment;
+      editingCommentText = comment.text.toString();
+    });
+  }
+
+  // Function to cancel editing
+  void _cancelEditingComment() {
+    setState(() {
+      isEditingComment = false;
+      editingComment = null;
+      editingCommentText = '';
+    });
+  }
+
+  // Function to save edited comment
+  void _saveEditedComment() async {
+    if (editingComment != null && editingCommentText.isNotEmpty) {
+      try {
+        // TODO: Implement your edit comment API call here
+
+        await ref.read(commentsServiceProvider).editComment(
+              title: editingCommentText,
+              serviceId: widget.service.id.toString(),
+              commentId:
+                  editingComment!.id.toString(), // The comment ID to edit
+            );
+
+        // Refresh the comments provider
+        ref.refresh(commentsServiceProvider);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Comment updated successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        _cancelEditingComment();
+        _refreshServiceDetail();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating comment: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _deleteComment(Comments comment) async {
+    try {
+      await ref.read(commentsServiceProvider).deleteComment(
+            serviceId: widget.service.id.toString(),
+            commentId: comment.id
+                .toString(), // Use the comment parameter, not editingComment
+          );
+
+      // Refresh the comments provider
+      ref.refresh(commentsServiceProvider);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Comment deleted successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      _refreshServiceDetail(); // Only call this once
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error deleting comment: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _likeService() async {
@@ -196,23 +286,138 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                   CommentsMain(
                     id: _serviceData!.id.toString(),
                     comments: _serviceData!.comments,
+                    onEditComment: _startEditingComment,
+                    onDeleteComment: _deleteComment,
                   ),
                   RecommendedServicesSection(
                       recommendedServices: _recommendedServices),
                 ],
               ),
             ),
-      bottomNavigationBar: CreateComment(
-        id: widget.service.id.toString(),
-        onCommentAdded: _refreshServiceDetail, // Refresh after adding a comment
+      bottomNavigationBar: isEditingComment
+          ? EditCommentWidget(
+              commentText: editingCommentText,
+              onTextChanged: (text) {
+                setState(() {
+                  editingCommentText = text;
+                });
+              },
+              onSave: _saveEditedComment,
+              onCancel: _cancelEditingComment,
+            )
+          : CreateComment(
+              id: widget.service.id.toString(),
+              onCommentAdded: _refreshServiceDetail,
+            ),
+    );
+  }
+}
+
+// New widget for editing comments
+class EditCommentWidget extends StatefulWidget {
+  final String commentText;
+  final Function(String) onTextChanged;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
+
+  const EditCommentWidget({
+    Key? key,
+    required this.commentText,
+    required this.onTextChanged,
+    required this.onSave,
+    required this.onCancel,
+  }) : super(key: key);
+
+  @override
+  _EditCommentWidgetState createState() => _EditCommentWidgetState();
+}
+
+class _EditCommentWidgetState extends State<EditCommentWidget> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.commentText);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.edit, color: Colors.blue),
+                const SizedBox(width: 8),
+                const Text(
+                  'Edit Comment',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: widget.onCancel,
+                  child: const Text('Cancel'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _controller,
+              onChanged: widget.onTextChanged,
+              maxLines: 3,
+              decoration: const InputDecoration(
+                hintText: 'Edit your comment...',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(12),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: widget.onSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-// -----------------------
-// IMAGE SLIDER WIDGET
-// -----------------------
+// Keep the existing classes (ServiceImageSlider, ServiceDetailsSection, RecommendedServicesSection)
 class ServiceImageSlider extends StatelessWidget {
   const ServiceImageSlider({
     super.key,
@@ -350,9 +555,6 @@ class ServiceDetailsSection extends StatelessWidget {
   }
 }
 
-// -----------------------
-// RECOMMENDED SERVICES WIDGET
-// -----------------------
 class RecommendedServicesSection extends StatelessWidget {
   const RecommendedServicesSection(
       {super.key, required this.recommendedServices});
@@ -366,7 +568,7 @@ class RecommendedServicesSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Recommended Products',
+          const Text('Recommended Services',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           FutureBuilder<List<Services>>(

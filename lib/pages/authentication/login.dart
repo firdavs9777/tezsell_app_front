@@ -5,6 +5,7 @@ import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'dart:developer' as developer;
 
 class Login extends ConsumerStatefulWidget {
@@ -19,6 +20,9 @@ class _LoginState extends ConsumerState<Login> {
   late final TextEditingController _passwordController;
   late final AuthenticationService _authService;
 
+  String _countryCode = '+998'; // Default to Uzbekistan
+  String _countryName = 'Uzbekistan';
+
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
@@ -26,6 +30,10 @@ class _LoginState extends ConsumerState<Login> {
   final Stopwatch _totalLoginTime = Stopwatch();
   final Map<String, int> _performanceMetrics = {};
   DateTime? _loginStartTime;
+
+  // Get full phone number with country code
+  String get fullPhoneNumber =>
+      '$_countryCode${_phoneNumberController.text.trim()}';
 
   @override
   void initState() {
@@ -159,7 +167,7 @@ class _LoginState extends ConsumerState<Login> {
 
       // Data preparation timing
       final dataTimer = Stopwatch()..start();
-      final String phoneNumber = '+82${_phoneNumberController.text.trim()}';
+      final String phoneNumber = fullPhoneNumber;
       final String password = _passwordController.text.trim();
       dataTimer.stop();
       _logPerformance('Data Preparation', dataTimer.elapsed.inMilliseconds);
@@ -275,264 +283,303 @@ class _LoginState extends ConsumerState<Login> {
         absorbing: _isLoading, // Disable all interactions during loading
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    'Hisobga Kirish',
-                    style: TextStyle(fontSize: 20, color: Colors.black87),
-                  ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  'Hisobga Kirish',
+                  style: TextStyle(fontSize: 20, color: Colors.black87),
                 ),
               ),
-              const SizedBox(height: 16.0),
+            ),
+            const SizedBox(height: 16.0),
 
-              // Phone number input
-              Row(
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: _isLoading ? Colors.grey.shade300 : Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                color: _isLoading ? Colors.grey.shade100 : null,
+              ),
+              child: Row(
                 children: [
-                  // Fixed country code
-                  Container(
-                    height: 50,
-                    width: 70,
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                      color: _isLoading ? Colors.grey.shade100 : null,
-                    ),
-                    child: const Center(
-                      child: Text(
+                  // Country Code Picker with constrained width
+                  SizedBox(
+                    width: 150, // Fixed width to give less space
+                    child: CountryCodePicker(
+                      onChanged: _isLoading
+                          ? null
+                          : (country) {
+                              setState(() {
+                                _countryCode = country.dialCode!;
+                                _countryName = country.name!;
+                              });
+                            },
+                      initialSelection: 'UZ', // Uzbekistan as default
+                      favorite: [
+                        '+998',
+                        'UZ',
                         '+82',
-                        style: TextStyle(fontSize: 16),
+                        'KR',
+                        '+1',
+                        'US',
+                        '+91',
+                        'IN'
+                      ],
+                      showCountryOnly: false,
+                      showFlag: true,
+                      showDropDownButton: true,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 4), // Reduced padding
+                      textStyle: TextStyle(
+                        fontSize: 14, // Slightly smaller font
+                        color: _isLoading ? Colors.grey.shade400 : Colors.black,
                       ),
+                      enabled: !_isLoading,
+                      flagWidth: 20, // Smaller flag
                     ),
                   ),
-                  const SizedBox(width: 8.0),
 
-                  // Editable phone number
+                  // Divider line
+                  Container(
+                    height: 50,
+                    width: 1,
+                    color: _isLoading
+                        ? Colors.grey.shade300
+                        : Colors.grey.shade400,
+                  ),
                   Expanded(
                     child: TextField(
                       controller: _phoneNumberController,
                       keyboardType: TextInputType.number,
                       enabled: !_isLoading, // Disable during loading
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color:
-                                _isLoading ? Colors.grey.shade300 : Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color:
-                                _isLoading ? Colors.grey.shade300 : Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        labelText: 'Telefon Raqam',
-                        labelStyle: TextStyle(
+                        border: InputBorder.none,
+                        hintText: 'Enter phone number',
+                        hintStyle: TextStyle(
                           color: _isLoading
                               ? Colors.grey.shade400
-                              : Theme.of(context).colorScheme.primary,
+                              : Colors.grey.shade600,
                         ),
-                        filled: _isLoading,
-                        fillColor: _isLoading ? Colors.grey.shade100 : null,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                       ),
                     ),
                   ),
                 ],
               ),
+            ),
+            SizedBox(height: 8),
 
-              const SizedBox(height: 20.0),
-
-              // Password input
-              TextField(
-                controller: _passwordController,
-                obscureText: !_isPasswordVisible,
-                enabled: !_isLoading, // Disable during loading
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  labelText: 'Parol',
-                  labelStyle: TextStyle(
-                    color: _isLoading
-                        ? Colors.grey.shade400
-                        : Theme.of(context).colorScheme.primary,
-                  ),
-                  filled: _isLoading,
-                  fillColor: _isLoading ? Colors.grey.shade100 : null,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: _isLoading ? Colors.grey.shade400 : null,
-                    ),
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
+            // Show selected country and full number preview
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Selected: $_countryName ($_countryCode)',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 24.0),
-
-              // Login button with live timing display
-              SizedBox(
-                width: 200.0,
-                height: 48.0, // Fixed height to prevent jumping
-                child: ElevatedButton(
-                  onPressed:
-                      _isLoading ? null : _handleLogin, // Disable when loading
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        _isLoading ? Colors.grey.shade400 : Colors.blueAccent,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 12.0,
+                if (_phoneNumberController.text.isNotEmpty)
+                  Text(
+                    'Full: $fullPhoneNumber',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue[600],
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  child: _isLoading
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
+              ],
+            ),
+
+            const SizedBox(height: 20.0),
+
+            // Password input
+            TextField(
+              controller: _passwordController,
+              obscureText: !_isPasswordVisible,
+              enabled: !_isLoading, // Disable during loading
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: _isLoading ? Colors.grey.shade300 : Colors.grey,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: _isLoading ? Colors.grey.shade300 : Colors.grey,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                labelText: 'Parol',
+                labelStyle: TextStyle(
+                  color: _isLoading
+                      ? Colors.grey.shade400
+                      : Theme.of(context).colorScheme.primary,
+                ),
+                filled: _isLoading,
+                fillColor: _isLoading ? Colors.grey.shade100 : null,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: _isLoading ? Colors.grey.shade400 : null,
+                  ),
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24.0),
+
+            // Login button with live timing display
+            SizedBox(
+              width: 200.0,
+              height: 48.0, // Fixed height to prevent jumping
+              child: ElevatedButton(
+                onPressed:
+                    _isLoading ? null : _handleLogin, // Disable when loading
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      _isLoading ? Colors.grey.shade400 : Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                ),
+                child: _isLoading
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
-                            const SizedBox(width: 8),
-                            // Show loading text
-                            const Text(
-                              'Loading...',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        )
-                      : const Text(
-                          'Kirish',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
                           ),
-                        ),
-                ),
-              ),
-
-              const SizedBox(height: 8.0),
-
-              // Action buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            // Implement forgot password logic
-                            _showError('Forgot password feature coming soon');
-                          },
-                    child: Text(
-                      'Parolni unutdingizmi?',
-                      style: TextStyle(
-                        color: _isLoading
-                            ? Colors.grey.shade400
-                            : Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const Register(),
-                              ),
-                            );
-                          },
-                    child: Text(
-                      'Ro\'yhatdan o\'tish',
-                      style: TextStyle(
-                        color: _isLoading ? Colors.grey.shade400 : Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // Debug performance display (only in debug mode)
-              if (kDebugMode && _performanceMetrics.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        '⚡ Performance Monitor',
+                          const SizedBox(width: 8),
+                          // Show loading text
+                          const Text(
+                            'Loading...',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      )
+                    : const Text(
+                        'Kirish',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      ...(_performanceMetrics.entries.take(3).map((entry) {
-                        final emoji = entry.value < 50
-                            ? '🟢'
-                            : entry.value < 200
-                                ? '🟡'
-                                : entry.value < 500
-                                    ? '🟠'
-                                    : '🔴';
-                        return Text(
-                          '$emoji ${entry.key}: ${entry.value}ms',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 10,
-                          ),
-                        );
-                      })),
-                    ],
+              ),
+            ),
+
+            const SizedBox(height: 8.0),
+
+            // Action buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          // Implement forgot password logic
+                          _showError('Forgot password feature coming soon');
+                        },
+                  child: Text(
+                    'Parolni unutdingizmi?',
+                    style: TextStyle(
+                      color: _isLoading
+                          ? Colors.grey.shade400
+                          : Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const Register(),
+                            ),
+                          );
+                        },
+                  child: Text(
+                    'Ro\'yhatdan o\'tish',
+                    style: TextStyle(
+                      color: _isLoading ? Colors.grey.shade400 : Colors.black54,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ],
-            ],
-          ),
+            ),
+
+            // Debug performance display (only in debug mode)
+            // if (kDebugMode && _performanceMetrics.isNotEmpty) ...[
+            //   const SizedBox(height: 16),
+            //   Container(
+            //     padding: const EdgeInsets.all(8),
+            //     decoration: BoxDecoration(
+            //       color: Colors.black87,
+            //       borderRadius: BorderRadius.circular(8),
+            //     ),
+            //     child: Column(
+            //       mainAxisSize: MainAxisSize.min,
+            //       children: [
+            //         const Text(
+            //           '⚡ Performance Monitor',
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontWeight: FontWeight.bold,
+            //             fontSize: 12,
+            //           ),
+            //         ),
+            //         const SizedBox(height: 4),
+            //         ...(_performanceMetrics.entries.take(3).map((entry) {
+            //           final emoji = entry.value < 50
+            //               ? '🟢'
+            //               : entry.value < 200
+            //                   ? '🟡'
+            //                   : entry.value < 500
+            //                       ? '🟠'
+            //                       : '🔴';
+            //           return Text(
+            //             '$emoji ${entry.key}: ${entry.value}ms',
+            //             style: const TextStyle(
+            //               color: Colors.white70,
+            //               fontSize: 10,
+            //             ),
+            //           );
+            //         })),
+            //       ],
+            //     ),
+            //   ),
+            //   ],
+          ]),
         ),
       ),
     );

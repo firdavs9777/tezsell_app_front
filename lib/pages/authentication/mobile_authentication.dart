@@ -1,6 +1,7 @@
 import 'package:app/pages/authentication/password_set.dart';
 import 'package:flutter/material.dart';
 import 'package:app/service/mobile_authentication.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'dart:async'; // Import the async library for Timer
 
 class MobileAuthentication extends StatefulWidget {
@@ -14,10 +15,13 @@ class MobileAuthentication extends StatefulWidget {
 }
 
 class _MobileAuthenticationState extends State<MobileAuthentication> {
-  final TextEditingController _phoneNumberController =
-      TextEditingController(text: '+82');
+  final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _verificationCodeController =
       TextEditingController();
+
+  String _countryCode = '+998';
+  String _countryName = 'Uzbekistan';
+
   bool columnVisible = false;
   bool isSendingCode = false;
   bool isResendingCode = false;
@@ -25,9 +29,12 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   Timer? _timer; // Timer to track 5 minutes
   int _timeLeft = 300; // 5 minutes in seconds
 
+  // Get full phone number with country code
+  String get fullPhoneNumber => '$_countryCode${_phoneNumberController.text}';
+
   // Verifying the code and navigating to the next step if valid
   Future<void> _verifyCode() async {
-    final phoneNumber = _phoneNumberController.text;
+    final phoneNumber = fullPhoneNumber;
     final otp = _verificationCodeController.text;
 
     bool verificationSuccess = await verifyVerificationCode(phoneNumber, otp);
@@ -52,15 +59,23 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
 
   // Sending the verification code to the phone number
   Future<void> _sendCode() async {
+    if (_phoneNumberController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter your phone number')),
+      );
+      return;
+    }
+
     setState(() {
       isSendingCode = true;
     });
 
-    final phoneNumber = _phoneNumberController.text;
+    final phoneNumber = fullPhoneNumber;
     if (await sendVerificationCode(phoneNumber)) {
       setState(() {
         columnVisible = true;
         isSendingCode = false;
+        _timeLeft = 300; // Reset timer
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Verification code sent successfully')),
@@ -84,10 +99,11 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       isResendingCode = true;
     });
 
-    final phoneNumber = _phoneNumberController.text;
+    final phoneNumber = fullPhoneNumber;
     if (await sendVerificationCode(phoneNumber)) {
       setState(() {
         isResendingCode = false;
+        _timeLeft = 300; // Reset timer
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Verification code resent successfully')),
@@ -135,6 +151,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   @override
   void dispose() {
     _timer?.cancel(); // Cancel the timer when the widget is disposed
+    _phoneNumberController.dispose();
+    _verificationCodeController.dispose();
     super.dispose();
   }
 
@@ -144,6 +162,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       appBar: AppBar(
         title: Text('Telefon No\'merni Tasdiqlash'),
         backgroundColor: Colors.blueAccent,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -160,36 +179,103 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
 
-            // Phone number input field
-            TextField(
-              controller: _phoneNumberController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'Telefon Raqam',
-                hintText: '+82 123-456-7890',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.grey[200],
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            // Country Code Picker + Phone number input
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[200],
+              ),
+              child: Row(
+                children: [
+                  // Country Code Picker
+                  CountryCodePicker(
+                    onChanged: (country) {
+                      setState(() {
+                        _countryCode = country.dialCode!;
+                        _countryName = country.name!;
+                      });
+                    },
+                    initialSelection: 'UZ',
+                    favorite: [
+                      '+998',
+                      'UZ',
+                      '+82',
+                      'KR',
+                      '+1',
+                      'US',
+                      '+91',
+                      'IN'
+                    ],
+                    showCountryOnly: false,
+                    showFlag: true,
+                    showDropDownButton: true,
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    textStyle: TextStyle(fontSize: 16),
+                  ),
+
+                  // Divider line
+                  Container(
+                    height: 50,
+                    width: 1,
+                    color: Colors.grey.shade400,
+                  ),
+
+                  // Phone number input
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneNumberController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: 'Enter phone number',
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 20),
+
+            SizedBox(height: 10),
+
+            // Show selected country and full number preview
+            Text(
+              'Selected: $_countryName ($_countryCode)',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+            if (_phoneNumberController.text.isNotEmpty)
+              Text(
+                'Full number: $fullPhoneNumber',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.blue[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+            SizedBox(height: 30),
+
             ElevatedButton(
               onPressed: isSendingCode ? null : _sendCode,
               child: isSendingCode
                   ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Kod Junatish'),
+                  : Text('Kod Junatish', style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, 55),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
             ),
             SizedBox(height: 20),
+
             // Verification code section
             if (columnVisible)
               Column(
@@ -201,7 +287,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                     decoration: InputDecoration(
                       labelText: 'Enter verification code',
                       hintText: '123456',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       filled: true,
                       fillColor: Colors.grey[200],
                       contentPadding:
@@ -215,22 +303,38 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                       ElevatedButton(
                         onPressed: isResendingCode ? null : _resendCode,
                         child: isResendingCode
-                            ? CircularProgressIndicator(color: Colors.white)
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
                             : Text('Resend Code'),
                         style: ElevatedButton.styleFrom(
-                          minimumSize: Size(150, 50),
-                          primary: Colors.orange,
+                          minimumSize: Size(120, 45),
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                       ),
-                      Text(
-                        'Expires in: $formattedTime', // Timer next to input
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.red[200]!),
+                        ),
+                        child: Text(
+                          'Expires: $formattedTime',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red[700],
+                          ),
                         ),
                       ),
                     ],
@@ -238,9 +342,11 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _verifyCode,
-                    child: Text('Verify and Continue'),
+                    child: Text('Verify and Continue',
+                        style: TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
+                      minimumSize: Size(double.infinity, 55),
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

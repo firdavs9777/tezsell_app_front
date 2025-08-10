@@ -196,7 +196,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           elevation: 0,
           onTap: _selectPage,
           currentIndex: _selectedPageIndex,
-          selectedItemColor: Colors.blue,
+          selectedItemColor:
+              Colors.blue, // This makes active icon and label blue
           unselectedItemColor: Colors.grey,
           selectedFontSize: 12,
           unselectedFontSize: 10,
@@ -210,7 +211,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
               label: 'Services',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.apartment), // Real estate icon
+              icon: Icon(Icons.apartment),
               label: 'Ko\'chmas',
             ),
             BottomNavigationBarItem(

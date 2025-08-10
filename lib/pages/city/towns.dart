@@ -14,7 +14,7 @@ class TownsList extends StatefulWidget {
 }
 
 class _TownsListState extends State<TownsList> {
-  final String URL = 'https://api.tezsell.com/accounts/districts';
+  final String URL = 'https://api.webtezsell.com/accounts/districts';
   List<String> towns = [];
   List<String> filteredTowns = [];
   final TextEditingController searchController = TextEditingController();

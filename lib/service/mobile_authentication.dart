@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<bool> sendVerificationCode(String phoneNumber) async {
-  final url = Uri.parse('https://api.tezsell.com/accounts/send-sms/');
+  final url = Uri.parse('https://api.webtezsell.com/accounts/send-sms/');
   final response = await http.post(
     url,
     headers: {'Content-Type': 'application/json'},
