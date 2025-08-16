@@ -1,7 +1,6 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart'; // Import new model
-import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

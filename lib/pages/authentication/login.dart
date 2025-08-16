@@ -1,10 +1,10 @@
 import 'package:app/pages/authentication/register.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
-import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'dart:developer' as developer;
 
@@ -20,7 +20,7 @@ class _LoginState extends ConsumerState<Login> {
   late final TextEditingController _passwordController;
   late final AuthenticationService _authService;
 
-  String _countryCode = '+998'; // Default to Uzbekistan
+  String _countryCode = '+998';
   String _countryName = 'Uzbekistan';
 
   bool _isPasswordVisible = false;
@@ -144,12 +144,14 @@ class _LoginState extends ConsumerState<Login> {
       final validationTimer = Stopwatch()..start();
 
       if (_phoneNumberController.text.trim().isEmpty) {
-        _showError('Please enter your phone number');
+        _showError(AppLocalizations.of(context)?.pleaseEnterPhoneNumber ??
+            'Please enter your phone number');
         return;
       }
 
       if (_passwordController.text.trim().isEmpty) {
-        _showError('Please enter your password');
+        _showError(AppLocalizations.of(context)?.pleaseEnterPassword ??
+            'Please enter your password');
         return;
       }
 
@@ -219,7 +221,8 @@ class _LoginState extends ConsumerState<Login> {
         print('💥 Login error: $e');
       }
       if (mounted) {
-        _showError('An unexpected error occurred. Please try again.');
+        _showError(AppLocalizations.of(context)?.unexpectedError ??
+            'An unexpected error occurred. Please try again.');
       }
     } finally {
       // Stop total timing
@@ -273,9 +276,9 @@ class _LoginState extends ConsumerState<Login> {
     final widget = Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
-        title: const Text(
-          'Hisobga Kirish',
-          style: TextStyle(color: Colors.black),
+        title: Text(
+          AppLocalizations.of(context)?.loginToAccount ?? 'Login to Account',
+          style: const TextStyle(color: Colors.black),
         ),
       ),
       backgroundColor: Theme.of(context).colorScheme.onSecondary,
@@ -284,12 +287,13 @@ class _LoginState extends ConsumerState<Login> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: Text(
-                  'Hisobga Kirish',
-                  style: TextStyle(fontSize: 20, color: Colors.black87),
+                  AppLocalizations.of(context)?.loginToAccount ??
+                      'Login to Account',
+                  style: const TextStyle(fontSize: 20, color: Colors.black87),
                 ),
               ),
             ),
@@ -331,7 +335,7 @@ class _LoginState extends ConsumerState<Login> {
                       showCountryOnly: false,
                       showFlag: true,
                       showDropDownButton: true,
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           horizontal: 4), // Reduced padding
                       textStyle: TextStyle(
                         fontSize: 14, // Slightly smaller font
@@ -357,28 +361,30 @@ class _LoginState extends ConsumerState<Login> {
                       enabled: !_isLoading, // Disable during loading
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Enter phone number',
+                        hintText:
+                            AppLocalizations.of(context)?.enterPhoneNumber ??
+                                'Enter phone number',
                         hintStyle: TextStyle(
                           color: _isLoading
                               ? Colors.grey.shade400
                               : Colors.grey.shade600,
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 15),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
 
             // Show selected country and full number preview
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Selected: $_countryName ($_countryCode)',
+                  '${AppLocalizations.of(context)?.selectedCountryLabel ?? "Selected:"} $_countryName ($_countryCode)',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],
@@ -386,7 +392,7 @@ class _LoginState extends ConsumerState<Login> {
                 ),
                 if (_phoneNumberController.text.isNotEmpty)
                   Text(
-                    'Full: $fullPhoneNumber',
+                    '${AppLocalizations.of(context)?.fullPhoneLabel ?? "Full:"} $fullPhoneNumber',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.blue[600],
@@ -416,7 +422,7 @@ class _LoginState extends ConsumerState<Login> {
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                labelText: 'Parol',
+                labelText: AppLocalizations.of(context)?.password ?? 'Password',
                 labelStyle: TextStyle(
                   color: _isLoading
                       ? Colors.grey.shade400
@@ -479,15 +485,16 @@ class _LoginState extends ConsumerState<Login> {
                           ),
                           const SizedBox(width: 8),
                           // Show loading text
-                          const Text(
-                            'Loading...',
-                            style: TextStyle(fontSize: 12),
+                          Text(
+                            AppLocalizations.of(context)?.loading ??
+                                'Loading...',
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ],
                       )
-                    : const Text(
-                        'Kirish',
-                        style: TextStyle(
+                    : Text(
+                        AppLocalizations.of(context)?.login ?? 'Login',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -506,10 +513,13 @@ class _LoginState extends ConsumerState<Login> {
                       ? null
                       : () {
                           // Implement forgot password logic
-                          _showError('Forgot password feature coming soon');
+                          _showError(AppLocalizations.of(context)
+                                  ?.forgotPasswordComingSoon ??
+                              'Forgot password feature coming soon');
                         },
                   child: Text(
-                    'Parolni unutdingizmi?',
+                    AppLocalizations.of(context)?.forgotPassword ??
+                        'Forgot password?',
                     style: TextStyle(
                       color: _isLoading
                           ? Colors.grey.shade400
@@ -528,7 +538,7 @@ class _LoginState extends ConsumerState<Login> {
                           );
                         },
                   child: Text(
-                    'Ro\'yhatdan o\'tish',
+                    AppLocalizations.of(context)?.registerNow ?? 'Register Now',
                     style: TextStyle(
                       color: _isLoading ? Colors.grey.shade400 : Colors.black54,
                       fontSize: 18,
@@ -537,48 +547,6 @@ class _LoginState extends ConsumerState<Login> {
                 ),
               ],
             ),
-
-            // Debug performance display (only in debug mode)
-            // if (kDebugMode && _performanceMetrics.isNotEmpty) ...[
-            //   const SizedBox(height: 16),
-            //   Container(
-            //     padding: const EdgeInsets.all(8),
-            //     decoration: BoxDecoration(
-            //       color: Colors.black87,
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //     child: Column(
-            //       mainAxisSize: MainAxisSize.min,
-            //       children: [
-            //         const Text(
-            //           '⚡ Performance Monitor',
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.bold,
-            //             fontSize: 12,
-            //           ),
-            //         ),
-            //         const SizedBox(height: 4),
-            //         ...(_performanceMetrics.entries.take(3).map((entry) {
-            //           final emoji = entry.value < 50
-            //               ? '🟢'
-            //               : entry.value < 200
-            //                   ? '🟡'
-            //                   : entry.value < 500
-            //                       ? '🟠'
-            //                       : '🔴';
-            //           return Text(
-            //             '$emoji ${entry.key}: ${entry.value}ms',
-            //             style: const TextStyle(
-            //               color: Colors.white70,
-            //               fontSize: 10,
-            //             ),
-            //           );
-            //         })),
-            //       ],
-            //     ),
-            //   ),
-            //   ],
           ]),
         ),
       ),

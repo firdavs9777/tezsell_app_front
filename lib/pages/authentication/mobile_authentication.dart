@@ -2,6 +2,7 @@ import 'package:app/pages/authentication/password_set.dart';
 import 'package:flutter/material.dart';
 import 'package:app/service/mobile_authentication.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:async'; // Import the async library for Timer
 
 class MobileAuthentication extends StatefulWidget {
@@ -52,7 +53,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     } else {
       // If verification failed, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid verification code')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.invalidVerificationCode ??
+              'Invalid verification code'),
+        ),
       );
     }
   }
@@ -61,7 +65,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   Future<void> _sendCode() async {
     if (_phoneNumberController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter your phone number')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.pleaseEnterPhoneNumber ??
+              'Please enter your phone number'),
+        ),
       );
       return;
     }
@@ -78,7 +85,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         _timeLeft = 300; // Reset timer
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Verification code sent successfully')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.verificationCodeSent ??
+              'Verification code sent successfully'),
+        ),
       );
 
       // Start the 5-minute timer after the code is sent
@@ -88,7 +98,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         isSendingCode = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to send verification code')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.failedToSendCode ??
+              'Failed to send verification code'),
+        ),
       );
     }
   }
@@ -106,7 +119,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         _timeLeft = 300; // Reset timer
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Verification code resent successfully')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.verificationCodeResent ??
+              'Verification code resent successfully'),
+        ),
       );
 
       // Restart the timer if the code is resent
@@ -116,7 +132,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         isResendingCode = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to resend verification code')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.failedToResendCode ??
+              'Failed to resend verification code'),
+        ),
       );
     }
   }
@@ -160,7 +179,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Telefon No\'merni Tasdiqlash'),
+        title: Text(AppLocalizations.of(context)?.phoneVerification ??
+            'Telefon No\'merni Tasdiqlash'),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
       ),
@@ -171,7 +191,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Iltimos telefon raqamingizni kiriting',
+              AppLocalizations.of(context)?.enterPhonePrompt ??
+                  'Iltimos telefon raqamingizni kiriting',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -229,7 +250,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                       controller: _phoneNumberController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        hintText: 'Enter phone number',
+                        hintText: AppLocalizations.of(context)
+                                ?.enterPhoneNumberHint ??
+                            'Enter phone number',
                         border: InputBorder.none,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -244,7 +267,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
 
             // Show selected country and full number preview
             Text(
-              'Selected: $_countryName ($_countryCode)',
+              AppLocalizations.of(context)
+                      ?.selectedCountry(_countryName, _countryCode) ??
+                  'Selected: $_countryName ($_countryCode)',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],
@@ -252,7 +277,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
             ),
             if (_phoneNumberController.text.isNotEmpty)
               Text(
-                'Full number: $fullPhoneNumber',
+                AppLocalizations.of(context)?.fullNumber(fullPhoneNumber) ??
+                    'Full number: $fullPhoneNumber',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.blue[600],
@@ -266,7 +292,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
               onPressed: isSendingCode ? null : _sendCode,
               child: isSendingCode
                   ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Kod Junatish', style: TextStyle(fontSize: 16)),
+                  : Text(
+                      AppLocalizations.of(context)?.sendCode ?? 'Kod Yuborish',
+                      style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 55),
                 shape: RoundedRectangleBorder(
@@ -285,8 +313,12 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                     controller: _verificationCodeController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Enter verification code',
-                      hintText: '123456',
+                      labelText:
+                          AppLocalizations.of(context)?.enterVerificationCode ??
+                              'Enter verification code',
+                      hintText:
+                          AppLocalizations.of(context)?.verificationCodeHint ??
+                              '123456',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -311,7 +343,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text('Resend Code'),
+                            : Text(AppLocalizations.of(context)?.resendCode ??
+                                'Resend Code'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(120, 45),
                           backgroundColor: Colors.orange,
@@ -329,7 +362,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                           border: Border.all(color: Colors.red[200]!),
                         ),
                         child: Text(
-                          'Expires: $formattedTime',
+                          AppLocalizations.of(context)
+                                  ?.expires(formattedTime) ??
+                              'Expires: $formattedTime',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -342,7 +377,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _verifyCode,
-                    child: Text('Verify and Continue',
+                    child: Text(
+                        AppLocalizations.of(context)?.verifyAndContinue ??
+                            'Verify and Continue',
                         style: TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 55),

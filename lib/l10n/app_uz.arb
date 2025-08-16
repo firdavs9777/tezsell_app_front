@@ -1,31 +1,219 @@
 {
   "@@locale": "uz",
-  "appTitle": "Sabzi Bozori",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "welcome": "Xush kelibsiz",
-  "@welcome": {
-    "description": "Welcome message"
-  },
-  "settings": "Sozlamalar",
-  "@settings": {
-    "description": "Settings page title"
-  },
+  "chooseLanguage": "Tilingizni tanlang",
+  "selectPreferredLanguage": "Ilova uchun kerakli tilingizni tanlang",
+  "continueButton": "Davom etish",
+  "sellAndBuyProducts": "Har qanday mahsulotingizni faqat bizda soting va sotib oling",
+  "usedProductsMarket": "Ishlatilgan mahsulotlar yoki ikkinchi qo'l bozori",
+  "register": "Ro'yhatdan o'tish",
+  "alreadyHaveAccount": "Allaqachon hisob mavjud",
+  "login": "Kirish",
+  "loginToAccount": "Hisobga kirish",
+  "enterPhoneNumber": "Telefon raqamingizni kiriting",
+  "password": "Parol",
+  "enterPassword": "Parolingizni kiriting",
+  "forgotPassword": "Parolni unutdingizmi?",
+  "registerNow": "Ro'yhatdan o'tish",
+  "loading": "Yuklanmoqda...",
+  "pleaseEnterPhoneNumber": "Iltimos, telefon raqamingizni kiriting",
+  "pleaseEnterPassword": "Iltimos, parolingizni kiriting",
+  "unexpectedError": "Kutilmagan xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+  "forgotPasswordComingSoon": "Parolni tiklash funksiyasi tez orada paydo bo'ladi",
+  "selectedCountryLabel": "Tanlangan:",
+  "fullPhoneLabel": "To'liq:",
   "home": "Bosh sahifa",
-  "@home": {
-    "description": "Home page title"
-  },
+  "settings": "Sozlamalar",
   "profile": "Profil",
-  "@profile": {
-    "description": "Profile page title"
-  },
-  "cart": "Savatcha",
-  "@cart": {
-    "description": "Shopping cart"
-  },
   "search": "Qidirish",
-  "@search": {
-    "description": "Search functionality"
-  }
+  "notifications": "Bildirishnomalar",
+  "error": "Xatolik",
+  "retry": "Qayta urinish",
+  "cancel": "Bekor qilish",
+  "save": "Saqlash",
+  "appTitle": "Tezsell",
+    "selectRegion": "Iltimos Viloyatingizni tanlang",
+    "searchHint": "Tuman yoki shaharni qidirish",
+    "apiError": "Api chaqirganda muamo yuzaga keldi",
+    "ok": "OK",
+    "confirm": "Tasdiqlash",
+    "yes": "Ha",
+    "no": "Yoq",
+    "emptyList": "Bo'sh ro'yxat",
+    "@emptyList": {
+      "description": "Ro'yxat bo'sh bo'lganda ko'rsatiladigan xabar"
+    },
+    "dataLoadingError": "Ma'lumotlarni yuklashda xatolik yuz berdi",
+    "@dataLoadingError": {
+      "description": "Ma'lumotlar yuklanmay qolganda xato xabari"
+    },
+    "confirmRegionSelection": "{regionName} viloyatini tanlamoqchimisiz?",
+     "selectDistrictOrCity": "Iltimos, tuman yoki shaharingizni tanlang",
+      "@selectDistrictOrCity": {
+        "description": "Tuman yoki shahar tanlash ko'rsatmasi"
+      },
+      "confirmDistrictSelection": "{regionName} viloyati - {districtName} tanlamoqchimisiz?",
+      "@confirmDistrictSelection": {
+        "description": "Tuman tanlashni tasdiqlash xabari",
+        "placeholders": {
+          "regionName": {
+            "type": "String"
+          },
+          "districtName": {
+            "type": "String"
+          }
+        }
+      },
+      "noResultsFound": "Hech qanday natija topilmadi.",
+      "@noResultsFound": {
+        "description": "Qidiruv natijasi topilmaganda ko'rsatiladigan xabar"
+      },
+      "errorWithCode": "Xato: {errorCode}",
+      "@errorWithCode": {
+        "description": "Xato kodi bilan xato xabari",
+        "placeholders": {
+          "errorCode": {
+            "type": "String"
+          }
+        }
+      },
+      "failedToLoadData": "Ma'lumotlarni yuklashda xatolik. Xato: {error}",
+      "@failedToLoadData": {
+        "description": "Ma'lumotlar yuklanmay qolganda xato xabari",
+        "placeholders": {
+          "error": {
+            "type": "String"
+          }
+        }
+      },
+       "phoneVerification": "Telefon No'merni Tasdiqlash",
+        "@phoneVerification": {
+          "description": "Telefon tasdiqlash sahifasi sarlavhasi"
+        },
+        "enterPhonePrompt": "Iltimos telefon raqamingizni kiriting",
+        "@enterPhonePrompt": {
+          "description": "Telefon raqamini kiritish uchun taklif"
+        },
+        "enterPhoneNumberHint": "Telefon raqamini kiriting",
+        "@enterPhoneNumberHint": {
+          "description": "Telefon raqami kiritish maydoni uchun maslahat"
+        },
+        "selectedCountry": "Tanlangan: {countryName} ({countryCode})",
+        "@selectedCountry": {
+          "description": "Tanlangan mamlakat va kodini ko'rsatadi",
+          "placeholders": {
+            "countryName": {
+              "type": "String"
+            },
+            "countryCode": {
+              "type": "String"
+            }
+          }
+        },
+        "fullNumber": "To'liq raqam: {phoneNumber}",
+        "@fullNumber": {
+          "description": "To'liq telefon raqamini ko'rsatadi",
+          "placeholders": {
+            "phoneNumber": {
+              "type": "String"
+            }
+          }
+        },
+        "sendCode": "Kod Yuborish",
+        "@sendCode": {
+          "description": "Tasdiqlash kodi yuborish tugmasi matni"
+        },
+        "enterVerificationCode": "Tasdiqlash kodini kiriting",
+        "@enterVerificationCode": {
+          "description": "Tasdiqlash kodi kiritish maydoni belgisi"
+        },
+        "verificationCodeHint": "123456",
+        "@verificationCodeHint": {
+          "description": "Tasdiqlash kodi formati uchun maslahat"
+        },
+        "resendCode": "Kodni Qayta Yuborish",
+        "@resendCode": {
+          "description": "Tasdiqlash kodini qayta yuborish tugmasi matni"
+        },
+        "expires": "Muddati tugaydi: {time}",
+        "@expires": {
+          "description": "Tugash vaqtini ko'rsatadi",
+          "placeholders": {
+            "time": {
+              "type": "String"
+            }
+          }
+        },
+        "verifyAndContinue": "Tasdiqlang va Davom Eting",
+        "@verifyAndContinue": {
+          "description": "Tasdiqlash va davom etish tugmasi matni"
+        },
+        "invalidVerificationCode": "Noto'g'ri tasdiqlash kodi",
+        "@invalidVerificationCode": {
+          "description": "Noto'g'ri tasdiqlash kodi uchun xato xabari"
+        },
+        "pleaseEnterPhoneNumber": "Iltimos telefon raqamingizni kiriting",
+        "@pleaseEnterPhoneNumber": {
+          "description": "Telefon raqami bo'sh bo'lganda xato xabari"
+        },
+        "verificationCodeSent": "Tasdiqlash kodi muvaffaqiyatli yuborildi",
+        "@verificationCodeSent": {
+          "description": "Kod yuborilganda muvaffaqiyat xabari"
+        },
+        "failedToSendCode": "Tasdiqlash kodini yuborib bo'lmadi",
+        "@failedToSendCode": {
+          "description": "Kod yuborishda xatolik xabari"
+        },
+        "verificationCodeResent": "Tasdiqlash kodi muvaffaqiyatli qayta yuborildi",
+        "@verificationCodeResent": {
+          "description": "Kod qayta yuborilganda muvaffaqiyat xabari"
+        },
+        "failedToResendCode": "Tasdiqlash kodini qayta yuborib bo'lmadi",
+        "@failedToResendCode": {
+          "description": "Kod qayta yuborishda xatolik xabari"
+        },
+        "passwordVerification": "Parol Tasdiqlash",
+          "@passwordVerification": {
+            "description": "Parol tasdiqlash sahifasi sarlavhasi"
+          },
+          "completeRegistrationPrompt": "Foydalanuvchi ismini va parol kiriting va ro'yxatdan o'tishni yakunlang",
+          "@completeRegistrationPrompt": {
+            "description": "Ro'yxatdan o'tishni yakunlash uchun ko'rsatma"
+          },
+          "username": "Foydalanuvchi Ism",
+          "@username": {
+            "description": "Foydalanuvchi ismi kiritish maydoni belgisi"
+          },
+          "usernameHint": "Kimsanboy77",
+          "@usernameHint": {
+            "description": "Foydalanuvchi ismi kiritish uchun maslahat"
+          },
+          "enterPassword": "Parolni Kiriting",
+          "@enterPassword": {
+            "description": "Parol kiritish maydoni belgisi"
+          },
+          "confirmPassword": "Parolni tasdiqlang",
+          "@confirmPassword": {
+            "description": "Parol tasdiqlash maydoni belgisi"
+          },
+          "profileImage": "Profil Rasmi",
+          "@profileImage": {
+            "description": "Profil rasmi tanlash belgisi"
+          },
+          "imageInstructions": "Rasmlar shu yerda ko'rinadi, iltimos profil rasmini bosing",
+          "@imageInstructions": {
+            "description": "Rasm tanlash uchun ko'rsatma"
+          },
+          "finish": "Yakunlash",
+          "@finish": {
+            "description": "Ro'yxatdan o'tishni yakunlash tugmasi matni"
+          },
+          "passwordsDoNotMatch": "Parollar mos kelmayapti",
+          "@passwordsDoNotMatch": {
+            "description": "Parollar mos kelmaganda xato xabari"
+          },
+          "registrationError": "Ro'yxatdan o'tish xatolik",
+          "@registrationError": {
+            "description": "Ro'yxatdan o'tishda xatolik xabari"
+          }
 }

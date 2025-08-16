@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:app/pages/city/towns.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CityList extends StatefulWidget {
   CityList({super.key, required this.cityList, required this.cityId});
@@ -33,8 +34,12 @@ class _CityListState extends State<CityList> {
                             return BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
                               child: AlertDialog(
-                                title: const Text('Tasdiqlash'),
-                                content: Text(
+                                title: Text(
+                                    AppLocalizations.of(context)?.confirm ??
+                                        'Tasdiqlash'),
+                                content: Text(AppLocalizations.of(context)
+                                        ?.confirmRegionSelection(
+                                            widget.cityList[index]) ??
                                     ' ${widget.cityList[index]} viloyatini tanlamoqchimisiz?'),
                                 actions: <Widget>[
                                   TextButton(
@@ -42,14 +47,18 @@ class _CityListState extends State<CityList> {
                                       Navigator.of(context)
                                           .pop(false); // User pressed "No"
                                     },
-                                    child: const Text('Yo\'q'),
+                                    child: Text(
+                                        AppLocalizations.of(context)?.no ??
+                                            'Yo\'q'),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context)
                                           .pop(true); // User pressed "Yes"
                                     },
-                                    child: const Text('Ha'),
+                                    child: Text(
+                                        AppLocalizations.of(context)?.yes ??
+                                            'Ha'),
                                   ),
                                 ],
                               ),
@@ -76,7 +85,8 @@ class _CityListState extends State<CityList> {
                                   color: ThemeData().colorScheme.primary),
                             )
                           : Text(
-                              'Empty List',
+                              AppLocalizations.of(context)?.emptyList ??
+                                  'Empty List',
                               style: TextStyle(color: Colors.black12),
                             ),
                     ),
@@ -85,6 +95,7 @@ class _CityListState extends State<CityList> {
               },
             ),
           )
-        : Text('There is an error while loading a data lol');
+        : Text(AppLocalizations.of(context)?.dataLoadingError ??
+            'There is an error while loading a data lol');
   }
 }

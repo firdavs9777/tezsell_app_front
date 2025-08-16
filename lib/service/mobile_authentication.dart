@@ -18,7 +18,7 @@ Future<bool> sendVerificationCode(String phoneNumber) async {
 }
 
 Future<bool> verifyVerificationCode(String phoneNumber, String otp) async {
-  final url = Uri.parse('https://api.tezsell.com/accounts/verify-code/');
+  final url = Uri.parse('https://api.webtezsell.com/accounts/verify-code/');
   final response = await http.post(
     url,
     headers: {'Content-Type': 'application/json'},

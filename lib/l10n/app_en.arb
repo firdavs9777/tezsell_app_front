@@ -1,31 +1,328 @@
 {
   "@@locale": "en",
-  "appTitle": "Sabzi Market",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "welcome": "Welcome",
   "@welcome": {
     "description": "Welcome message"
   },
-  "settings": "Settings",
-  "@settings": {
-    "description": "Settings page title"
+  "chooseLanguage": "Choose Your Language",
+  "@chooseLanguage": {
+    "description": "Title for language selection screen"
+  },
+  "selectPreferredLanguage": "Select your preferred language for the app",
+  "@selectPreferredLanguage": {
+    "description": "Subtitle for language selection screen"
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Text for continue button"
+  },
+  "sellAndBuyProducts": "Sell and buy any of your products only with us",
+  "@sellAndBuyProducts": {
+    "description": "Main heading text on home screen"
+  },
+  "usedProductsMarket": "Used products or second-hand market",
+  "@usedProductsMarket": {
+    "description": "Subtitle text on home screen"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Register button text"
+  },
+  "alreadyHaveAccount": "Already have an account",
+  "@alreadyHaveAccount": {
+    "description": "Login button text"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login screen title and button"
+  },
+  "loginToAccount": "Login to Account",
+  "@loginToAccount": {
+    "description": "Login screen header text"
+  },
+  "enterPhoneNumber": "Enter phone number",
+  "@enterPhoneNumber": {
+    "description": "Phone number input placeholder"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password input label"
+  },
+  "enterPassword": "Enter password",
+  "@enterPassword": {
+    "description": "Password input placeholder"
+  },
+  "forgotPassword": "Forgot password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "registerNow": "Register Now",
+  "@registerNow": {
+    "description": "Register link text on login screen"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "pleaseEnterPhoneNumber": "Please enter your phone number",
+  "@pleaseEnterPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  "pleaseEnterPassword": "Please enter your password",
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "unexpectedError": "An unexpected error occurred. Please try again.",
+  "@unexpectedError": {
+    "description": "Generic error message"
+  },
+  "forgotPasswordComingSoon": "Forgot password feature coming soon",
+  "@forgotPasswordComingSoon": {
+    "description": "Forgot password placeholder message"
+  },
+  "selectedCountryLabel": "Selected:",
+  "@selectedCountryLabel": {
+    "description": "Selected country label"
+  },
+  "fullPhoneLabel": "Full:",
+  "@fullPhoneLabel": {
+    "description": "Full phone number label"
   },
   "home": "Home",
   "@home": {
-    "description": "Home page title"
+    "description": "Home tab label"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab label"
   },
   "profile": "Profile",
   "@profile": {
-    "description": "Profile page title"
-  },
-  "cart": "Cart",
-  "@cart": {
-    "description": "Shopping cart"
+    "description": "Profile tab label"
   },
   "search": "Search",
   "@search": {
-    "description": "Search functionality"
-  }
+    "description": "Search tab label"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications tab label"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error text"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  "appTitle": "Tezsell",
+    "@appTitle": {
+      "description": "Application title"
+    },
+    "selectRegion": "Please select your region",
+    "@selectRegion": {
+      "description": "Instruction to select region"
+    },
+    "searchHint": "Search district or city",
+    "@searchHint": {
+      "description": "Search input hint text"
+    },
+    "apiError": "A problem occurred while calling the API",
+    "@apiError": {
+      "description": "API error message"
+    },
+    "ok": "OK",
+    "@ok": {
+      "description": "OK button text"
+    },
+    "emptyList": "Empty List",
+    "@emptyList": {
+      "description": "Message shown when list is empty"
+    },
+    "dataLoadingError": "There is an error while loading data",
+    "@dataLoadingError": {
+      "description": "Error message when data fails to load"
+    },
+    "confirm": "Confirm",
+     "yes": "Yes",
+     "no": "No",
+     "confirmRegionSelection": "Do you want to select {regionName} region?",
+      "selectDistrictOrCity": "Please select your district or city",
+       "@selectDistrictOrCity": {
+         "description": "Instruction to select district or city"
+       },
+       "confirmDistrictSelection": "Do you want to select {regionName} region - {districtName}?",
+       "@confirmDistrictSelection": {
+         "description": "Confirmation message for district selection",
+         "placeholders": {
+           "regionName": {
+             "type": "String"
+           },
+           "districtName": {
+             "type": "String"
+           }
+         }
+       },
+       "noResultsFound": "No results found.",
+       "@noResultsFound": {
+         "description": "Message when search returns no results"
+       },
+       "errorWithCode": "Error: {errorCode}",
+       "@errorWithCode": {
+         "description": "Error message with error code",
+         "placeholders": {
+           "errorCode": {
+             "type": "String"
+           }
+         }
+       },
+       "failedToLoadData": "Failed to load data. Error: {error}",
+       "@failedToLoadData": {
+         "description": "Data loading failure message",
+         "placeholders": {
+           "error": {
+             "type": "String"
+           }
+         }
+       },
+       "phoneVerification": "Phone Number Verification",
+         "@phoneVerification": {
+           "description": "Title for phone verification screen"
+         },
+         "enterPhonePrompt": "Please enter your phone number",
+         "@enterPhonePrompt": {
+           "description": "Prompt to enter phone number"
+         },
+         "enterPhoneNumberHint": "Enter phone number",
+         "@enterPhoneNumberHint": {
+           "description": "Hint text for phone number input"
+         },
+         "selectedCountry": "Selected: {countryName} ({countryCode})",
+         "@selectedCountry": {
+           "description": "Shows selected country and code",
+           "placeholders": {
+             "countryName": {
+               "type": "String"
+             },
+             "countryCode": {
+               "type": "String"
+             }
+           }
+         },
+         "fullNumber": "Full number: {phoneNumber}",
+         "@fullNumber": {
+           "description": "Shows complete phone number",
+           "placeholders": {
+             "phoneNumber": {
+               "type": "String"
+             }
+           }
+         },
+         "sendCode": "Send Code",
+         "@sendCode": {
+           "description": "Button text to send verification code"
+         },
+         "enterVerificationCode": "Enter verification code",
+         "@enterVerificationCode": {
+           "description": "Label for verification code input"
+         },
+         "verificationCodeHint": "123456",
+         "@verificationCodeHint": {
+           "description": "Hint for verification code format"
+         },
+         "resendCode": "Resend Code",
+         "@resendCode": {
+           "description": "Button text to resend verification code"
+         },
+         "expires": "Expires: {time}",
+         "@expires": {
+           "description": "Shows expiration time",
+           "placeholders": {
+             "time": {
+               "type": "String"
+             }
+           }
+         },
+         "verifyAndContinue": "Verify and Continue",
+         "@verifyAndContinue": {
+           "description": "Button text to verify and continue"
+         },
+         "invalidVerificationCode": "Invalid verification code",
+         "@invalidVerificationCode": {
+           "description": "Error message for invalid verification code"
+         },
+         "pleaseEnterPhoneNumber": "Please enter your phone number",
+         "@pleaseEnterPhoneNumber": {
+           "description": "Error message when phone number is empty"
+         },
+         "verificationCodeSent": "Verification code sent successfully",
+         "@verificationCodeSent": {
+           "description": "Success message when code is sent"
+         },
+         "failedToSendCode": "Failed to send verification code",
+         "@failedToSendCode": {
+           "description": "Error message when code sending fails"
+         },
+         "verificationCodeResent": "Verification code resent successfully",
+         "@verificationCodeResent": {
+           "description": "Success message when code is resent"
+         },
+         "failedToResendCode": "Failed to resend verification code",
+         "@failedToResendCode": {
+           "description": "Error message when code resending fails"
+         },
+         "passwordVerification": "Password Verification",
+           "@passwordVerification": {
+             "description": "Title for password verification screen"
+           },
+           "completeRegistrationPrompt": "Enter username and password to complete registration",
+           "@completeRegistrationPrompt": {
+             "description": "Instruction text for completing registration"
+           },
+           "username": "Username",
+           "@username": {
+             "description": "Label for username input field"
+           },
+           "usernameHint": "Username123",
+           "@usernameHint": {
+             "description": "Hint text for username input"
+           },
+           "enterPassword": "Enter Password",
+           "@enterPassword": {
+             "description": "Label for password input field"
+           },
+           "confirmPassword": "Confirm Password",
+           "@confirmPassword": {
+             "description": "Label for password confirmation field"
+           },
+           "profileImage": "Profile Image",
+           "@profileImage": {
+             "description": "Label for profile image selection"
+           },
+           "imageInstructions": "Images will appear here, please press profile image",
+           "@imageInstructions": {
+             "description": "Instructions for image selection"
+           },
+           "finish": "Finish",
+           "@finish": {
+             "description": "Button text to complete registration"
+           },
+           "passwordsDoNotMatch": "Passwords do not match",
+           "@passwordsDoNotMatch": {
+             "description": "Error message when passwords don't match"
+           },
+           "registrationError": "Registration error",
+           "@registrationError": {
+             "description": "Error message when registration fails"
+           }
+
 }

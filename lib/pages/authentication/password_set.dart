@@ -4,6 +4,7 @@ import 'package:app/service/authentication_service.dart';
 import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PasswordReset extends StatefulWidget {
   final String regionName;
@@ -57,7 +58,8 @@ class _PasswordResetState extends State<PasswordReset> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Password Verification'),
+        title: Text(AppLocalizations.of(context)?.passwordVerification ??
+            'Password Verification'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -66,8 +68,10 @@ class _PasswordResetState extends State<PasswordReset> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                'Foydalinuvchi ismini va parol kiriting va ro\'yhatdan o\'tishni yakunlang',
+                AppLocalizations.of(context)?.completeRegistrationPrompt ??
+                    'Foydalanuvchi ismini va parol kiriting va ro\'yxatdan o\'tishni yakunlang',
                 style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -77,8 +81,10 @@ class _PasswordResetState extends State<PasswordReset> {
             child: TextField(
               controller: _userNameController,
               decoration: InputDecoration(
-                labelText: 'Foydalinuvchi Ism',
-                hintText: 'Kimsanboy77',
+                labelText: AppLocalizations.of(context)?.username ??
+                    'Foydalanuvchi Ism',
+                hintText:
+                    AppLocalizations.of(context)?.usernameHint ?? 'Kimsanboy77',
                 border: OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.grey[200],
@@ -109,7 +115,8 @@ class _PasswordResetState extends State<PasswordReset> {
                   borderSide: const BorderSide(color: Colors.grey),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                labelText: 'Parolni Kiriting',
+                labelText: AppLocalizations.of(context)?.enterPassword ??
+                    'Parolni Kiriting',
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.grey, width: 2),
                   borderRadius: BorderRadius.circular(15),
@@ -145,7 +152,8 @@ class _PasswordResetState extends State<PasswordReset> {
                   borderSide: const BorderSide(color: Colors.grey),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                labelText: 'Parolni tasdiqlang',
+                labelText: AppLocalizations.of(context)?.confirmPassword ??
+                    'Parolni tasdiqlang',
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.grey, width: 2),
                   borderRadius: BorderRadius.circular(15),
@@ -158,26 +166,35 @@ class _PasswordResetState extends State<PasswordReset> {
             ),
           ),
           SizedBox(height: 15),
-          TextFormField(
-            controller: TextEditingController(),
-            decoration: InputDecoration(
-              filled: true,
-              border: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.grey),
-                borderRadius: BorderRadius.circular(20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: TextEditingController(),
+              decoration: InputDecoration(
+                filled: true,
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                hintText: AppLocalizations.of(context)?.profileImage ??
+                    'Profile Image',
+                prefixIcon: Icon(Icons.image_outlined),
               ),
-              hintText: 'Profile Image',
-              prefixIcon: Icon(Icons.image_outlined),
+              readOnly: true,
+              onTap: _pickImage,
             ),
-            readOnly: true,
-            onTap: _pickImage,
           ),
           if (_selectedImages.isEmpty)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                  child: Text(
-                      'Images will appear here, please press profile image')),
+                child: Text(
+                  AppLocalizations.of(context)?.imageInstructions ??
+                      'Images will appear here, please press profile image',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ),
             ),
           if (_selectedImages.isNotEmpty)
             GridView.builder(
@@ -214,55 +231,66 @@ class _PasswordResetState extends State<PasswordReset> {
               },
             ),
           SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: () async {
-              String userName = _userNameController.text;
-              String password = _passwordController.text;
-              String passwordConfirmation =
-                  _passwordConfirmationController.text;
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                String userName = _userNameController.text;
+                String password = _passwordController.text;
+                String passwordConfirmation =
+                    _passwordConfirmationController.text;
 
-              if (password != passwordConfirmation) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Parollar mos kelmayapti')),
-                );
-                return;
-              }
+                if (password != passwordConfirmation) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          AppLocalizations.of(context)?.passwordsDoNotMatch ??
+                              'Parollar mos kelmayapti'),
+                    ),
+                  );
+                  return;
+                }
 
-              // Pass the selected images to the registration service
-              final check = await authService.register(
-                widget.phone_number,
-                password,
-                userName,
-                widget.regionName,
-                widget.districtName,
-                _selectedImages.isNotEmpty
-                    ? _selectedImages[0]
-                    : null, // Passing the image
-              );
-              print(check);
-              if (check != null) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (ctx) => const TabsScreen()),
+                // Pass the selected images to the registration service
+                final check = await authService.register(
+                  widget.phone_number,
+                  password,
+                  userName,
+                  widget.regionName,
+                  widget.districtName,
+                  _selectedImages.isNotEmpty
+                      ? _selectedImages[0]
+                      : null, // Passing the image
                 );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Ro\'yhatdan o\'tish xatolik')),
-                );
-              }
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Text(
-                'Yakunlash',
-                style: TextStyle(fontSize: 16),
+                print(check);
+                if (check != null) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (ctx) => const TabsScreen()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          AppLocalizations.of(context)?.registrationError ??
+                              'Ro\'yxatdan o\'tish xatolik'),
+                    ),
+                  );
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  AppLocalizations.of(context)?.finish ?? 'Yakunlash',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
-            ),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
               ),
             ),

@@ -1,0 +1,235 @@
+{
+  "@@locale": "ru",
+  "welcome": "Добро пожаловать",
+  "chooseLanguage": "Выберите ваш язык",
+  "selectPreferredLanguage": "Выберите предпочитаемый язык для приложения",
+  "continueButton": "Продолжить",
+  "sellAndBuyProducts": "Продавайте и покупайте любые ваши товары только у нас",
+  "usedProductsMarket": "Рынок подержанных товаров или вторичный рынок",
+  "register": "Регистрация",
+  "alreadyHaveAccount": "Уже есть аккаунт",
+  "login": "Вход",
+  "loginToAccount": "Вход в аккаунт",
+  "enterPhoneNumber": "Введите номер телефона",
+  "password": "Пароль",
+  "enterPassword": "Введите пароль",
+  "forgotPassword": "Забыли пароль?",
+  "registerNow": "Зарегистрироваться",
+  "loading": "Загрузка...",
+  "pleaseEnterPhoneNumber": "Пожалуйста, введите номер телефона",
+  "pleaseEnterPassword": "Пожалуйста, введите пароль",
+  "unexpectedError": "Произошла неожиданная ошибка. Попробуйте еще раз.",
+  "forgotPasswordComingSoon": "Функция восстановления пароля скоро появится",
+  "selectedCountryLabel": "Выбрано:",
+  "fullPhoneLabel": "Полный:",
+  "home": "Главная",
+  "settings": "Настройки",
+  "profile": "Профиль",
+  "search": "Поиск",
+  "notifications": "Уведомления",
+  "error": "Ошибка",
+  "retry": "Повторить",
+  "cancel": "Отмена",
+  "save": "Сохранить",
+  "appTitle": "Tezsell",
+    "@appTitle": {
+      "description": "Application title"
+    },
+    "selectRegion": "Пожалуйста, выберите ваш регион",
+    "@selectRegion": {
+      "description": "Instruction to select region"
+    },
+    "searchHint": "Поиск района или города",
+    "@searchHint": {
+      "description": "Search input hint text"
+    },
+    "apiError": "Произошла ошибка при вызове API",
+    "@apiError": {
+      "description": "API error message"
+    },
+    "ok": "OK",
+    "@ok": {
+      "description": "OK button text"
+    },
+    "confirm": "Подтвердить",
+    "confirmRegionSelection": "Хотите выбрать {regionName} область?",
+    "yes": "Да",
+    "no": "Нет",
+    "emptyList": "Пустой список",
+    "@emptyList": {
+      "description": "Сообщение при пустом списке"
+    },
+    "dataLoadingError": "Ошибка при загрузке данных",
+    "@dataLoadingError": {
+      "description": "Сообщение об ошибке при загрузке данных"
+    },
+     "selectDistrictOrCity": "Пожалуйста, выберите ваш район или город",
+      "@selectDistrictOrCity": {
+        "description": "Инструкция по выбору района или города"
+      },
+      "confirmDistrictSelection": "Хотите выбрать {regionName} область - {districtName}?",
+      "@confirmDistrictSelection": {
+        "description": "Сообщение подтверждения выбора района",
+        "placeholders": {
+          "regionName": {
+            "type": "String"
+          },
+          "districtName": {
+            "type": "String"
+          }
+        }
+      },
+      "noResultsFound": "Результаты не найдены.",
+      "@noResultsFound": {
+        "description": "Сообщение когда поиск не дал результатов"
+      },
+      "errorWithCode": "Ошибка: {errorCode}",
+      "@errorWithCode": {
+        "description": "Сообщение об ошибке с кодом ошибки",
+        "placeholders": {
+          "errorCode": {
+            "type": "String"
+          }
+        }
+      },
+      "failedToLoadData": "Не удалось загрузить данные. Ошибка: {error}",
+      "@failedToLoadData": {
+        "description": "Сообщение об ошибке загрузки данных",
+        "placeholders": {
+          "error": {
+            "type": "String"
+          }
+        }
+      },
+      "phoneVerification": "Подтверждение Номера Телефона",
+        "@phoneVerification": {
+          "description": "Заголовок экрана подтверждения телефона"
+        },
+        "enterPhonePrompt": "Пожалуйста, введите ваш номер телефона",
+        "@enterPhonePrompt": {
+          "description": "Приглашение ввести номер телефона"
+        },
+        "enterPhoneNumberHint": "Введите номер телефона",
+        "@enterPhoneNumberHint": {
+          "description": "Подсказка для поля ввода номера телефона"
+        },
+        "selectedCountry": "Выбрано: {countryName} ({countryCode})",
+        "@selectedCountry": {
+          "description": "Показывает выбранную страну и код",
+          "placeholders": {
+            "countryName": {
+              "type": "String"
+            },
+            "countryCode": {
+              "type": "String"
+            }
+          }
+        },
+        "fullNumber": "Полный номер: {phoneNumber}",
+        "@fullNumber": {
+          "description": "Показывает полный номер телефона",
+          "placeholders": {
+            "phoneNumber": {
+              "type": "String"
+            }
+          }
+        },
+        "sendCode": "Отправить Код",
+        "@sendCode": {
+          "description": "Текст кнопки отправки кода подтверждения"
+        },
+        "enterVerificationCode": "Введите код подтверждения",
+        "@enterVerificationCode": {
+          "description": "Метка для поля ввода кода подтверждения"
+        },
+        "verificationCodeHint": "123456",
+        "@verificationCodeHint": {
+          "description": "Подсказка для формата кода подтверждения"
+        },
+        "resendCode": "Отправить Повторно",
+        "@resendCode": {
+          "description": "Текст кнопки повторной отправки кода"
+        },
+        "expires": "Истекает: {time}",
+        "@expires": {
+          "description": "Показывает время истечения",
+          "placeholders": {
+            "time": {
+              "type": "String"
+            }
+          }
+        },
+        "verifyAndContinue": "Подтвердить и Продолжить",
+        "@verifyAndContinue": {
+          "description": "Текст кнопки подтверждения и продолжения"
+        },
+        "invalidVerificationCode": "Неверный код подтверждения",
+        "@invalidVerificationCode": {
+          "description": "Сообщение об ошибке для неверного кода подтверждения"
+        },
+        "pleaseEnterPhoneNumber": "Пожалуйста, введите ваш номер телефона",
+        "@pleaseEnterPhoneNumber": {
+          "description": "Сообщение об ошибке когда номер телефона пустой"
+        },
+        "verificationCodeSent": "Код подтверждения успешно отправлен",
+        "@verificationCodeSent": {
+          "description": "Сообщение об успехе при отправке кода"
+        },
+        "failedToSendCode": "Не удалось отправить код подтверждения",
+        "@failedToSendCode": {
+          "description": "Сообщение об ошибке при отправке кода"
+        },
+        "verificationCodeResent": "Код подтверждения успешно отправлен повторно",
+        "@verificationCodeResent": {
+          "description": "Сообщение об успехе при повторной отправке кода"
+        },
+        "failedToResendCode": "Не удалось повторно отправить код подтверждения",
+        "@failedToResendCode": {
+          "description": "Сообщение об ошибке при повторной отправке кода"
+        },
+        "passwordVerification": "Подтверждение Пароля",
+          "@passwordVerification": {
+            "description": "Заголовок экрана подтверждения пароля"
+          },
+          "completeRegistrationPrompt": "Введите имя пользователя и пароль для завершения регистрации",
+          "@completeRegistrationPrompt": {
+            "description": "Инструкция для завершения регистрации"
+          },
+          "username": "Имя пользователя",
+          "@username": {
+            "description": "Метка для поля ввода имени пользователя"
+          },
+          "usernameHint": "Пользователь123",
+          "@usernameHint": {
+            "description": "Подсказка для ввода имени пользователя"
+          },
+          "enterPassword": "Введите Пароль",
+          "@enterPassword": {
+            "description": "Метка для поля ввода пароля"
+          },
+          "confirmPassword": "Подтвердите Пароль",
+          "@confirmPassword": {
+            "description": "Метка для поля подтверждения пароля"
+          },
+          "profileImage": "Фото Профиля",
+          "@profileImage": {
+            "description": "Метка для выбора фото профиля"
+          },
+          "imageInstructions": "Изображения появятся здесь, пожалуйста нажмите на фото профиля",
+          "@imageInstructions": {
+            "description": "Инструкции для выбора изображения"
+          },
+          "finish": "Завершить",
+          "@finish": {
+            "description": "Текст кнопки для завершения регистрации"
+          },
+          "passwordsDoNotMatch": "Пароли не совпадают",
+          "@passwordsDoNotMatch": {
+            "description": "Сообщение об ошибке когда пароли не совпадают"
+          },
+          "registrationError": "Ошибка регистрации",
+          "@registrationError": {
+            "description": "Сообщение об ошибке при регистрации"
+          }
+
+}

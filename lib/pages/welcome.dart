@@ -1,7 +1,9 @@
 import 'package:app/pages/tab_bar/splash_screen.dart';
+import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this back!
 
 var kColorScheme =
     ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 96, 59, 181));
@@ -17,13 +19,28 @@ class Welcome extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
+    print('Current locale in Welcome: ${locale?.languageCode}'); // Debug print
+
     return MaterialApp(
-        locale: Locale('en'),
+        locale: locale ?? const Locale('en'), // Default to English if null
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('ru'), // Russian
+          Locale('uz'), // Uzbek
+        ],
         darkTheme: ThemeData.dark().copyWith(
             colorScheme: kDarkColorSchema,
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: kColorScheme.primaryContainer)),
+                    backgroundColor: kColorScheme.primaryContainer,
+                    foregroundColor: kColorScheme.onPrimaryContainer)),
             cardTheme: const CardTheme().copyWith(
                 color: kDarkColorSchema.secondaryContainer,
                 margin:
@@ -40,7 +57,8 @@ class Welcome extends ConsumerWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
             elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: kColorScheme.primaryContainer)),
+                    backgroundColor: kColorScheme.primaryContainer,
+                    foregroundColor: kColorScheme.onPrimaryContainer)),
             textTheme: ThemeData().textTheme.copyWith(
                   titleLarge: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -48,10 +66,6 @@ class Welcome extends ConsumerWidget {
                       fontSize: 16),
                 )),
         debugShowCheckedModeBanner: false,
-        home: const SplashScreen()
-        // home: SafeArea(
-        //   child: Home(),
-        // ),
-        );
+        home: const SplashScreen());
   }
 }

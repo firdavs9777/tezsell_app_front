@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app/pages/city/city_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -45,7 +46,6 @@ class _RegisterState extends State<Register> {
                       (cityData) => cityData?['region']?.toString() ?? '')
                   .toList() ??
               [];
-          print(cityId);
           filteredCities = List.from(cities);
           filteredCityId = List.from(cityId);
           // towns = [];
@@ -63,14 +63,16 @@ class _RegisterState extends State<Register> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Xato'),
-          content: Text('Api chaqirganda muamo yuzaga keldi'),
+          title: Text(AppLocalizations.of(context)?.error ?? 'Error'),
+          content: Text(AppLocalizations.of(context)?.apiError ??
+              AppLocalizations.of(context)?.apiError ??
+              'Api chaqirganda muamo yuzaga keldi'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
             ),
           ],
         );
@@ -104,7 +106,7 @@ class _RegisterState extends State<Register> {
         appBar: AppBar(
           backgroundColor: Colors.orange,
           title: Text(
-            'Tezsell',
+            AppLocalizations.of(context)?.appTitle ?? 'Tezsell',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
           ),
         ),
@@ -117,7 +119,8 @@ class _RegisterState extends State<Register> {
             ),
             SizedBox(height: 10),
             Text(
-              'Iltimos Viloyatingizni tanlang',
+              AppLocalizations.of(context)?.selectRegion ??
+                  'Iltimos Viloyatingizni tanlang',
               style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 18,
@@ -129,8 +132,9 @@ class _RegisterState extends State<Register> {
                 controller: searchController,
                 onChanged: _filterCities,
                 decoration: InputDecoration(
-                  labelText: 'Izlash',
-                  hintText: 'Tuman yoki shaharni qidirish',
+                  labelText: AppLocalizations.of(context)?.search ?? 'Izlash',
+                  hintText: AppLocalizations.of(context)?.searchHint ??
+                      'Tuman yoki shaharni qidirish',
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),

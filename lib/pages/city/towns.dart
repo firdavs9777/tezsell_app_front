@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:app/pages/authentication/mobile_authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TownsList extends StatefulWidget {
   const TownsList({super.key, required this.city_id, required this.city_name});
@@ -45,10 +46,14 @@ class _TownsListState extends State<TownsList> {
           filteredTowns = List.from(towns);
         });
       } else {
-        _showErrorDialog('Error: ${response.statusCode}');
+        _showErrorDialog(AppLocalizations.of(context)
+                ?.errorWithCode(response.statusCode.toString()) ??
+            'Error: ${response.statusCode}');
       }
     } catch (error) {
-      _showErrorDialog('Failed to load data. Error: $error');
+      _showErrorDialog(
+          AppLocalizations.of(context)?.failedToLoadData(error.toString()) ??
+              'Failed to load data. Error: $error');
     }
   }
 
@@ -57,14 +62,14 @@ class _TownsListState extends State<TownsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: Text(AppLocalizations.of(context)?.error ?? 'Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
             ),
           ],
         );
@@ -89,22 +94,22 @@ class _TownsListState extends State<TownsList> {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
           child: AlertDialog(
-            title: const Text('Tasdiqlash'),
-            content:
-                Text('${widget.city_name} viloyati -  $town tanlamoqchimisiz?'),
+            title: Text(AppLocalizations.of(context)?.confirm ?? 'Tasdiqlash'),
+            content: Text(AppLocalizations.of(context)
+                    ?.confirmDistrictSelection(widget.city_name, town) ??
+                '${widget.city_name} viloyati -  $town tanlamoqchimisiz?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false); // User pressed "No"
                 },
-                child: const Text('Yo\'q'),
+                child: Text(AppLocalizations.of(context)?.no ?? 'Yo\'q'),
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true); // User pressed "Yes"
-                },
-                child: const Text('Ha'),
-              ),
+                  onPressed: () {
+                    Navigator.of(context).pop(true); // User pressed "Yes"
+                  },
+                  child: Text(AppLocalizations.of(context)?.yes ?? 'Ha')),
             ],
           ),
         );
@@ -147,7 +152,8 @@ class _TownsListState extends State<TownsList> {
             padding: const EdgeInsets.only(top: 10),
             child: Center(
               child: Text(
-                'Iltimos, tuman yoki shaharingizni tanlang',
+                AppLocalizations.of(context)?.selectDistrictOrCity ??
+                    'Iltimos, tuman yoki shaharingizni tanlang',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 18,
@@ -163,8 +169,9 @@ class _TownsListState extends State<TownsList> {
               controller: searchController,
               onChanged: _filterTowns,
               decoration: InputDecoration(
-                labelText: 'Izlash',
-                hintText: 'Tuman yoki shaharni qidirish',
+                labelText: AppLocalizations.of(context)?.search ?? 'Izlash',
+                hintText: AppLocalizations.of(context)?.searchHint ??
+                    'Tuman yoki shaharni qidirish',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -192,10 +199,11 @@ class _TownsListState extends State<TownsList> {
                       );
                     },
                   )
-                : const Center(
+                : Center(
                     child: Text(
-                      'Hech qanday natija topilmadi.',
-                      style: TextStyle(color: Colors.grey),
+                      AppLocalizations.of(context)?.noResultsFound ??
+                          'Hech qanday natija topilmadi.',
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
           ),

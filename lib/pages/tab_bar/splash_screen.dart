@@ -1,67 +1,75 @@
-import 'package:app/pages/home.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
+import 'package:app/pages/language/language_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(Duration(seconds: 3), () {
-      // Navigate to the home screen after 3 seconds
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    });
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Show splash screen for 3 seconds
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    // Always navigate to language selection after splash
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const LanguageSelectionScreen(),
+      ),
+    );
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Simulate a loading delay
-
     return Scaffold(
-      backgroundColor: Color(0xFFfdf8e4),
+      backgroundColor: const Color(0xFFfdf8e4),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/logo/logo.png'),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            // Your existing logo
+            Image.asset(
+              'assets/logo/logo.png',
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback if logo doesn't load
+                return Icon(
+                  Icons.apps,
+                  size: 100,
+                  color: Theme.of(context).colorScheme.primary,
+                );
+              },
+            ),
+            const SizedBox(height: 20),
 
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Screen'),
-      ),
-      body: Center(
-        child: Text(
-          'Welcome Home!',
-          style: TextStyle(fontSize: 24),
+            // Optional: Add loading indicator
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
         ),
       ),
     );
