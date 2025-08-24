@@ -1221,5 +1221,17 @@
   "customer_terms": "Условия и положения",
   "region": "Регион",
   "district": "Район",
-  "tap_change_profile": "Нажмите, чтобы изменить фото"
+  "tap_change_profile": "Нажмите, чтобы изменить фото",
+  "language_settings": "Настройки языка",
+  "selectLanguage": "Выберите язык",
+  "select_theme": "Выберите тему",
+  "theme": "Тема",
+  "location_settings": "Настройки местоположения",
+  "security": "Безопасность",
+  "data_storage": "Данные и хранилище",
+  "accessibility": "Специальные возможности",
+  "privacy": "Конфиденциальность",
+  "light_theme": "Светлая",
+  "dark_theme": "Тёмная",
+  "system_theme": "Системная по умолчанию"
 }

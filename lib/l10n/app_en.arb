@@ -1312,6 +1312,18 @@
             "customer_terms": "Terms and Conditions",
             "region": "Region",
             "district": "District",
-             "tap_change_profile": "Tap to change photo"
+             "tap_change_profile": "Tap to change photo",
+             "language_settings": "Language Settings",
+             "selectLanguage" : "Select a language",
+             "select_theme":  "Select Theme",
+              "theme": "Theme",
+              "location_settings": "Location Settings",
+              "security" : "Security",
+              "data_storage": "Data & Storage",
+              "accessibility" : "Accessibilty",
+               "privacy": "Privacy",
+              "light_theme" : "Light",
+              "dark_theme": "Dark",
+              "system_theme" : "System Default"
 
 }

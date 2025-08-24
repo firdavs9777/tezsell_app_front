@@ -1255,5 +1255,18 @@
   "customer_terms": "Shartlar va qoidalar",
   "region": "Viloyat",
   "district": "Tuman",
-  "tap_change_profile": "Rasmni o'zgartirish uchun bosing"
+  "tap_change_profile": "Rasmni o'zgartirish uchun bosing",
+  "language_settings": "Til sozlamalari",
+  "selectLanguage": "Tilni tanlang",
+  "select_theme": "Mavzuni tanlang",
+  "theme": "Mavzu",
+  "location_settings": "Joylashuv sozlamalari",
+  "security": "Xavfsizlik",
+  "data_storage": "Ma’lumotlar va saqlash",
+  "accessibility": "Qulayliklar",
+  "privacy": "Maxfiylik",
+  "light_theme": "Yorugʻ",
+  "dark_theme": "Qorongʻi",
+  "system_theme": "Tizim bo‘yicha standart"
+
 }
