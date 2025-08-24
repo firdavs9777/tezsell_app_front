@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:app/providers/provider_models/location_model.dart';
 
 class UserInfo {
@@ -66,15 +68,18 @@ class ProfileImage {
 
 class ImageData {
   const ImageData({
+    required this.id,
     required this.image,
     required this.altText,
   });
 
+  final int id;
   final String image;
   final String altText;
 
   factory ImageData.fromJson(Map<String, dynamic> json) {
     return ImageData(
+      id: json['id'] ?? 0,
       image: json['image'] ?? '', // default to empty string if null
       altText: json['alt_text'] ?? '', // default to empty string if null
     );

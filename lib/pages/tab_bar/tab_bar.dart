@@ -1,21 +1,19 @@
 import 'package:app/pages/change_city/change_city.dart';
-import 'package:app/pages/habar/habar.dart';
+import 'package:app/pages/messages/messages.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/service/service_search.dart';
-// Add these imports for real estate
 import 'package:app/pages/real_estate/real_estate_main.dart';
 import 'package:app/pages/real_estate/real_estate_search.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
-// Add real estate provider import
-// import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/user_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key, this.initialIndex = 0});
@@ -59,33 +57,35 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     // Updated page titles and widgets for 5 tabs
     String activePageTitle;
     Widget activePage;
 
     switch (_selectedPageIndex) {
       case 0:
-        activePageTitle = 'Products';
+        activePageTitle = localizations?.productsTitle ?? 'Products';
         activePage = const ProductsList();
         break;
       case 1:
-        activePageTitle = 'Services';
+        activePageTitle = localizations?.servicesTitle ?? 'Services';
         activePage = const ServiceMain();
         break;
       case 2:
-        activePageTitle = 'Real Estate';
+        activePageTitle = localizations?.realEstate ?? 'Real Estate';
         activePage = const RealEstateMain(); // You'll need to create this
         break;
       case 3:
-        activePageTitle = 'Habarlar';
-        activePage = const HabarMain();
+        activePageTitle = localizations?.chat ?? 'Habarlar';
+        activePage = Messages();
         break;
       case 4:
-        activePageTitle = 'Shaxsiy Hisob';
+        activePageTitle = localizations?.profile ?? 'Shaxsiy Hisob';
         activePage = const ShaxsiyPage();
         break;
       default:
-        activePageTitle = 'Products';
+        activePageTitle = localizations?.productsTitle ?? 'Products';
         activePage = const ProductsList();
     }
 
@@ -107,12 +107,16 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     future: ref.watch(profileServiceProvider).getUserInfo(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        return const Center(child: Text('Error'));
+                        return Center(
+                            child: Text(localizations?.error ?? 'Error'));
                       } else if (!snapshot.hasData) {
-                        return const Center(child: Text('Loading...'));
+                        return Center(
+                            child:
+                                Text(localizations?.loading ?? 'Loading...'));
                       }
                       final user = snapshot.data!;
-                      final district = user.location?.district ?? 'Location';
+                      final district = user.location?.district ??
+                          (localizations?.searchLocation ?? 'Location');
                       final firstPart = district.contains(' ')
                           ? district.split(' ')[0]
                           : district;
@@ -139,29 +143,29 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
         }),
         actions: [
           // Show search icon for Products, Services, and Real Estate
-          if (activePageTitle == 'Products' ||
-              activePageTitle == 'Services' ||
-              activePageTitle == 'Real Estate')
+          if (_selectedPageIndex == 0 ||
+              _selectedPageIndex == 1 ||
+              _selectedPageIndex == 2)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                 onPressed: () {
                   // Navigate to appropriate search page
-                  if (activePageTitle == 'Products') {
+                  if (_selectedPageIndex == 0) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (ctx) => const ProductSearch(),
                       ),
                     );
-                  } else if (activePageTitle == 'Services') {
+                  } else if (_selectedPageIndex == 1) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (ctx) => const ServiceSearch(),
                       ),
                     );
-                  } else if (activePageTitle == 'Real Estate') {
+                  } else if (_selectedPageIndex == 2) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -201,26 +205,26 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
           unselectedItemColor: Colors.grey,
           selectedFontSize: 12,
           unselectedFontSize: 10,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Asosiy',
+              label: localizations?.main ?? 'Asosiy',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.post_add),
-              label: 'Services',
+              label: localizations?.servicesTitle ?? 'Services',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.apartment),
-              label: 'Ko\'chmas',
+              label: localizations?.realEstate ?? 'Ko\'chmas',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),
-              label: 'Habarlar',
+              label: localizations?.chat ?? 'Habarlar',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'Shaxsiy',
+              label: localizations?.profile ?? 'Shaxsiy',
             ),
           ],
         ),

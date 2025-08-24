@@ -4,6 +4,7 @@ import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductsList extends ConsumerStatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -57,7 +58,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               child: productsList.when(
                 data: (item) {
                   if (item.isEmpty) {
-                    return const Center(child: Text('No products available.'));
+                    return Center(
+                        child: Text(
+                            AppLocalizations.of(context)?.productError ??
+                                'No products available.'));
                   }
                   return ListView.builder(
                     itemCount: item.length,
@@ -91,8 +95,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
             color: Colors.black,
             size: 24,
           ), // Black icon
-          label: const Text(
-            'Yuklash',
+          label: Text(
+            AppLocalizations.of(context)?.upload ?? 'Yuklash',
             style: TextStyle(fontSize: 18, color: Colors.black), // Black text
           ),
         ),

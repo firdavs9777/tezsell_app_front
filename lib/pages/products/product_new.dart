@@ -1,5 +1,4 @@
-import 'package:app/common_wdigets/common_button.dart';
-import 'package:app/pages/products/products_list.dart';
+import 'package:app/common_widgets/common_button.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
@@ -12,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductNew extends ConsumerStatefulWidget {
   const ProductNew({super.key});
@@ -45,6 +45,20 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   List<File> _selectedImages = [];
   final picker = ImagePicker();
 
+  // Function to get the appropriate category name based on current locale
+  String getCategoryName(CategoryModel category) {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return category.nameUz;
+      case 'ru':
+        return category.nameRu;
+      case 'en':
+      default:
+        return category.nameEn;
+    }
+  }
+
   Future<void> _fetchCategories() async {
     try {
       final categories =
@@ -53,8 +67,12 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         availableCategories = categories;
       });
     } catch (e) {
+      final localizations = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading categories: $e')),
+        SnackBar(
+          content: Text(
+              '${localizations?.loadingCategoryError ?? "Error loading categories:"} $e'),
+        ),
       );
     }
   }
@@ -78,30 +96,47 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         }
       }
     } catch (e) {
+      final localizations = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking images: $e')),
+        SnackBar(
+          content: Text(
+              '${localizations?.errorMessage ?? "Error picking images:"} $e'),
+        ),
       );
     }
   }
 
   Future<void> _submitProduct() async {
+    final localizations = AppLocalizations.of(context);
+
     if (_titleController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all the fields')),
+        SnackBar(
+          content: Text(localizations?.pleaseFillAllRequired ??
+              'Please fill all the fields'),
+        ),
       );
       return;
     }
-    int? price = int.tryParse(_amountController.text);
+    int? price = int.tryParse(_amountController.text.replaceAll(',', ''));
     if (price == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Invalid price entered. Please enter a valid number.'),
+        content: Text(localizations?.priceRequiredMessage ??
+            'Invalid price entered. Please enter a valid number.'),
         duration: const Duration(seconds: 3),
       ));
     } else if (selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please select a valid category.'),
+        content: Text(localizations?.categoryRequiredMessage ??
+            'Please select a valid category.'),
+        duration: const Duration(seconds: 3),
+      ));
+    } else if (_selectedImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(localizations?.oneImageConfirmMessage ??
+            'At least one product image is required'),
         duration: const Duration(seconds: 3),
       ));
     } else {
@@ -117,7 +152,14 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           MaterialPageRoute(builder: (context) => TabsScreen()),
         );
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Product successfully added'),
+          content: Text(localizations?.productCreatedSuccess ??
+              'Product successfully added'),
+          duration: Duration(seconds: 3),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(localizations?.errorCreatingProduct ??
+              'Error while creating product'),
           duration: Duration(seconds: 3),
         ));
       }
@@ -126,12 +168,15 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     final categories = ref.watch(productsServiceProvider).getCategories();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Yangi mahsulot post yaratish'),
+          title: Text(localizations?.addNewProductBtn ??
+              'Yangi mahsulot post yaratish'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -142,7 +187,8 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    'Yangi mahsulot post yaratish',
+                    localizations?.addNewProductBtn ??
+                        'Yangi mahsulot post yaratish',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -151,32 +197,26 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Mahsulot Nomi'),
+                _buildSectionTitle(
+                    localizations?.newProductTitle ?? 'Mahsulot Nomi'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _titleController,
-                  labelText: 'Mahsulot Nomi',
+                  labelText: localizations?.newProductTitle ?? 'Mahsulot Nomi',
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Mahsulot haqida batafsil'),
+                _buildSectionTitle(localizations?.newProductDescription ??
+                    'Mahsulot haqida batafsil'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: 'Mahsulot haqida yozing',
+                  labelText: localizations?.newProductDescription ??
+                      'Mahsulot haqida yozing',
                   maxLines: 5,
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Narxi'),
+                _buildSectionTitle(localizations?.newProductPrice ?? 'Narxi'),
                 const SizedBox(height: 10),
-                // _buildTextField(
-                //   controller: _amountController,
-                //   labelText: 'Narxi',
-                //   keyboardType: TextInputType.number,
-                //   inputFormatters: [
-                //     ThousandsFormatter(),
-                //     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                //   ],
-                // ),
                 TextField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
@@ -185,12 +225,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Narxi',
+                    labelText: localizations?.newProductPrice ?? 'Narxi',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Kategoriyani tanlash'),
+                _buildSectionTitle(localizations?.newProductCategory ??
+                    'Kategoriyani tanlash'),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -203,7 +244,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   items: availableCategories
                       .map((category) => DropdownMenuItem(
                             value: category,
-                            child: Text(category.nameEn),
+                            child: Text(getCategoryName(category)),
                           ))
                       .toList(),
                   onChanged: (CategoryModel? value) {
@@ -213,10 +254,11 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                       });
                     }
                   },
-                  hint: const Text('Kategoriyani tanlang'),
+                  hint: Text(
+                      localizations?.selectCategory ?? 'Kategoriyani tanlang'),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Image'),
+                _buildSectionTitle(localizations?.newProductImages ?? 'Image'),
                 const SizedBox(height: 10),
                 IconButton(
                   color: Colors.red,
@@ -228,9 +270,10 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                 ),
                 const SizedBox(height: 10),
                 if (_selectedImages.isEmpty)
-                  const Center(
+                  Center(
                     child: Text(
-                      'Images will appear here. Please press the upload icon above.',
+                      localizations?.imageInstructions ??
+                          'Images will appear here. Please press the upload icon above.',
                     ),
                   )
                 else
@@ -247,23 +290,40 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
-                          Image.file(
-                            _selectedImages[index],
-                            fit: BoxFit.cover,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              _selectedImages[index],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
                           ),
                           Positioned(
                             top: 2,
                             right: 2,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
+                            child: Container(
+                              decoration: BoxDecoration(
                                 color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedImages.removeAt(index);
-                                });
-                              },
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedImages.removeAt(index);
+                                  });
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(
+                                  minWidth: 24,
+                                  minHeight: 24,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -280,7 +340,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             color: Colors.orange,
             height: 60,
             child: CommonButton(
-              buttonText: 'Yuklash',
+              buttonText: localizations?.upload ?? 'Yuklash',
               onPressed: _submitProduct,
             ),
           ),

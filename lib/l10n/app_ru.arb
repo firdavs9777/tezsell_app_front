@@ -199,7 +199,10 @@
           "@username": {
             "description": "Метка для поля ввода имени пользователя"
           },
+          "username_required": "Имя пользователя обязательно",
+          "username_min_length": "Имя пользователя должно содержать не менее 2 символов",
           "usernameHint": "Пользователь123",
+
           "@usernameHint": {
             "description": "Подсказка для ввода имени пользователя"
           },
@@ -230,6 +233,993 @@
           "registrationError": "Ошибка регистрации",
           "@registrationError": {
             "description": "Сообщение об ошибке при регистрации"
-          }
+          },
 
+            "about": "О нас",
+            "@about": {
+              "description": "Пункт меню о нас"
+            },
+            "chat": "Чат",
+            "@chat": {
+              "description": "Функция чата"
+            },
+            "realEstate": "Недвижимость",
+            "@realEstate": {
+              "description": "Раздел недвижимости"
+            },
+            "language": "РУС",
+            "@language": {
+              "description": "Отображение выбора языка"
+            },
+            "languageEn": "Английский",
+            "@languageEn": {
+              "description": "Вариант английского языка"
+            },
+            "languageRu": "Русский",
+            "@languageRu": {
+              "description": "Вариант русского языка"
+            },
+            "languageUz": "Узбекский",
+            "@languageUz": {
+              "description": "Вариант узбекского языка"
+            },
+            "serviceLiked": "Услуга понравилась",
+            "@serviceLiked": {
+              "description": "Сообщение о том, что услуга понравилась"
+            },
+            "support": "Поддержка",
+            "@support": {
+              "description": "Пункт меню поддержки"
+            },
+            "register": "Регистрация",
+            "@register": {
+              "description": "Текст кнопки регистрации"
+            },
+            "login": "Войти",
+            "@login": {
+              "description": "Текст кнопки входа"
+            },
+            "service": "Бизнес Услуги",
+            "@service": {
+              "description": "Раздел бизнес услуг"
+            },
+            "aboutContent": "TezSell - это быстрая и простая площадка для покупки и продажи новых и подержанных товаров. Наша миссия - создать самую удобную и эффективную платформу для каждого пользователя, обеспечивая плавные транзакции и удобный пользовательский опыт. Независимо от того, хотите ли вы продавать или покупать, TezSell упрощает подключение и завершение транзакций всего за несколько шагов. Мы приоритизируем безопасность и конфиденциальность наших пользователей. Все транзакции тщательно отслеживаются для обеспечения безопасности и соответствия, предоставляя спокойствие как покупателям, так и продавцам. Наш простой и интуитивный интерфейс позволяет пользователям быстро размещать товары и находить то, что им нужно. Мы также облегчаем общение в реальном времени через Telegram, делая процесс покупки и продажи еще более плавным.",
+            "@aboutContent": {
+              "description": "Описание содержания о нас"
+            },
+            "errorMessage": "Произошла ошибка, пожалуйста проверьте сервер",
+            "@errorMessage": {
+              "description": "Общее сообщение об ошибке"
+            },
+            "searchLocation": "Местоположение",
+            "@searchLocation": {
+              "description": "Метка поиска местоположения"
+            },
+            "searchCategory": "Категории",
+            "@searchCategory": {
+              "description": "Метка поиска категории"
+            },
+            "searchProductPlaceholder": "Поиск товаров",
+            "@searchProductPlaceholder": {
+              "description": "Заглушка поиска товаров"
+            },
+            "searchServicePlaceholder": "Поиск услуг",
+            "@searchServicePlaceholder": {
+              "description": "Заглушка поиска услуг"
+            },
+            "searchText": "Поиск",
+            "@searchText": {
+              "description": "Текст кнопки поиска"
+            },
+            "selectedCategory": "Выбранная категория: ",
+            "@selectedCategory": {
+              "description": "Префикс выбранной категории"
+            },
+            "selectedLocation": "Выбранное местоположение: ",
+            "@selectedLocation": {
+              "description": "Префикс выбранного местоположения"
+            },
+            "productError": "Товары недоступны",
+            "@productError": {
+              "description": "Сообщение об ошибке отсутствия товаров"
+            },
+            "serviceError": "Услуги недоступны",
+            "@serviceError": {
+              "description": "Сообщение об ошибке отсутствия услуг"
+            },
+            "locationHeader": "Выберите местоположение",
+            "@locationHeader": {
+              "description": "Заголовок выбора местоположения"
+            },
+            "locationPlaceholder": "Поиск региона здесь",
+            "@locationPlaceholder": {
+              "description": "Заглушка поиска местоположения"
+            },
+            "categoryHeader": "Выберите категорию",
+            "@categoryHeader": {
+              "description": "Заголовок выбора категории"
+            },
+            "categoryPlaceholder": "Поиск категорий",
+            "@categoryPlaceholder": {
+              "description": "Заглушка поиска категории"
+            },
+            "categoryError": "Категории недоступны",
+            "@categoryError": {
+              "description": "Сообщение об ошибке отсутствия категорий"
+            },
+            "paginationFirst": "Первая",
+            "@paginationFirst": {
+              "description": "Кнопка первой страницы"
+            },
+            "paginationPrevious": "Предыдущая",
+            "@paginationPrevious": {
+              "description": "Кнопка предыдущей страницы"
+            },
+            "pageInfo": "Страница из",
+            "@pageInfo": {
+              "description": "Текст информации о странице"
+            },
+            "pageNext": "Следующая",
+            "@pageNext": {
+              "description": "Кнопка следующей страницы"
+            },
+            "pageLast": "Последняя",
+            "@pageLast": {
+              "description": "Кнопка последней страницы"
+            },
+            "loadingMessageProduct": "Загрузка товаров...",
+            "@loadingMessageProduct": {
+              "description": "Сообщение загрузки товаров"
+            },
+            "loadingMessageError": "Ошибка при загрузке",
+            "@loadingMessageError": {
+              "description": "Сообщение об ошибке загрузки"
+            },
+            "likeProductError": "Произошла ошибка при лайке товара",
+            "@likeProductError": {
+              "description": "Сообщение об ошибке лайка товара"
+            },
+            "dislikeProductError": "Произошла ошибка при дизлайке товара",
+            "@dislikeProductError": {
+              "description": "Сообщение об ошибке дизлайка товара"
+            },
+            "loadingMessageLocation": "Загрузка местоположения...",
+            "@loadingMessageLocation": {
+              "description": "Сообщение загрузки местоположения"
+            },
+            "loadingLocationError": "Ошибка при загрузке местоположения",
+            "@loadingLocationError": {
+              "description": "Ошибка загрузки местоположения"
+            },
+            "loadingMessageCategory": "Загрузка категорий...",
+            "@loadingMessageCategory": {
+              "description": "Сообщение загрузки категорий"
+            },
+            "loadingCategoryError": "Ошибка загрузки категорий:",
+            "@loadingCategoryError": {
+              "description": "Ошибка загрузки категории"
+            },
+            "profileUpdateSuccessMessage": "Профиль успешно обновлен",
+            "@profileUpdateSuccessMessage": {
+              "description": "Сообщение об успешном обновлении профиля"
+            },
+            "profileUpdateFailMessage": "Не удалось обновить профиль",
+            "@profileUpdateFailMessage": {
+              "description": "Сообщение о неудачном обновлении профиля"
+            },
+            "seeMoreBtn": "Смотреть больше",
+            "@seeMoreBtn": {
+              "description": "Текст кнопки смотреть больше"
+            },
+            "profilePageTitle": "Страница профиля",
+            "@profilePageTitle": {
+              "description": "Заголовок страницы профиля"
+            },
+            "editProfileModalTitle": "Редактировать профиль",
+            "@editProfileModalTitle": {
+              "description": "Заголовок модального окна редактирования профиля"
+            },
+            "usernameLabel": "Имя пользователя",
+            "@usernameLabel": {
+              "description": "Метка поля имени пользователя"
+            },
+            "locationLabel": "Текущее местоположение",
+            "@locationLabel": {
+              "description": "Метка поля местоположения"
+            },
+            "profileImageLabel": "Фото профиля",
+            "@profileImageLabel": {
+              "description": "Метка поля фото профиля"
+            },
+            "chooseFileLabel": "Выберите файл",
+            "@chooseFileLabel": {
+              "description": "Метка выбора файла"
+            },
+            "uploadBtnLabel": "Обновить",
+            "@uploadBtnLabel": {
+              "description": "Метка кнопки загрузки"
+            },
+            "uploadingBtnLabel": "Обновляется...",
+            "@uploadingBtnLabel": {
+              "description": "Метка кнопки загрузки в процессе"
+            },
+            "cancelBtnLabel": "Отмена",
+            "@cancelBtnLabel": {
+              "description": "Метка кнопки отмены"
+            },
+            "productsTitle": "Товары",
+            "@productsTitle": {
+              "description": "Заголовок раздела товаров"
+            },
+            "servicesTitle": "Услуги",
+            "@servicesTitle": {
+              "description": "Заголовок раздела услуг"
+            },
+            "myProductsTitle": "Мои товары",
+            "@myProductsTitle": {
+              "description": "Заголовок раздела моих товаров"
+            },
+            "myServicesTitle": "Мои услуги",
+            "@myServicesTitle": {
+              "description": "Заголовок раздела моих услуг"
+            },
+            "favoriteProductsTitle": "Избранные товары",
+            "@favoriteProductsTitle": {
+              "description": "Заголовок раздела избранных товаров"
+            },
+            "favoriteServicesTitle": "Избранные услуги",
+            "@favoriteServicesTitle": {
+              "description": "Заголовок раздела избранных услуг"
+            },
+            "noFavorites": "Нет избранных",
+            "@noFavorites": {
+              "description": "Сообщение об отсутствии избранных"
+            },
+            "addNewProductBtn": "Добавить новый товар",
+            "@addNewProductBtn": {
+              "description": "Кнопка добавления нового товара"
+            },
+            "addNew": "Новый",
+            "@addNew": {
+              "description": "Кнопка добавления нового элемента"
+            },
+            "addNewServiceBtn": "Добавить новую услугу",
+            "@addNewServiceBtn": {
+              "description": "Кнопка добавления новой услуги"
+            },
+            "downloadMobileApp": "Скачать мобильное приложение",
+            "@downloadMobileApp": {
+              "description": "Сообщение о скачивании мобильного приложения"
+            },
+            "registerPhoneNumberSuccess": "Номер телефона подтвержден! Вы можете перейти к следующему шагу.",
+            "@registerPhoneNumberSuccess": {
+              "description": "Сообщение об успешном подтверждении телефона"
+            },
+            "regionSelectedMessage": "Регион выбран:",
+            "@regionSelectedMessage": {
+              "description": "Сообщение о выбранном регионе"
+            },
+            "districtSelectMessage": "Район выбран:",
+            "@districtSelectMessage": {
+              "description": "Сообщение о выбранном районе"
+            },
+            "phoneNumberEmptyMessage": "Пожалуйста, подтвердите ваш номер телефона перед продолжением",
+            "@phoneNumberEmptyMessage": {
+              "description": "Ошибка пустого номера телефона"
+            },
+            "regionEmptyMessage": "Пожалуйста, сначала выберите регион",
+            "@regionEmptyMessage": {
+              "description": "Ошибка пустого региона"
+            },
+            "districtEmptyMessage": " Пожалуйста, выберите район",
+            "@districtEmptyMessage": {
+              "description": "Ошибка пустого района"
+            },
+            "usernamePasswordEmptyMessage": "Пожалуйста, введите имя пользователя и пароль",
+            "@usernamePasswordEmptyMessage": {
+              "description": "Ошибка пустого имени пользователя и пароля"
+            },
+            "registerTitle": "Регистрация",
+            "@registerTitle": {
+              "description": "Заголовок экрана регистрации"
+            },
+            "previousButton": "Предыдущий",
+            "@previousButton": {
+              "description": "Текст кнопки предыдущий"
+            },
+            "nextButton": "Следующий",
+            "@nextButton": {
+              "description": "Текст кнопки следующий"
+            },
+            "completeButton": "Завершить",
+            "@completeButton": {
+              "description": "Текст кнопки завершить"
+            },
+            "stepIndicator": "Шаг {currentStep} из 4",
+            "@stepIndicator": {
+              "description": "Текст индикатора шага",
+              "placeholders": {
+                "currentStep": {
+                  "type": "int"
+                }
+              }
+            },
+            "districtSelectTitle": "Список районов",
+            "@districtSelectTitle": {
+              "description": "Заголовок выбора района"
+            },
+            "districtSelectParagraph": "Выберите район:",
+            "@districtSelectParagraph": {
+              "description": "Инструкция выбора района"
+            },
+            "phoneNumber": "Номер телефона",
+            "@phoneNumber": {
+              "description": "Метка номера телефона"
+            },
+            "sendOtp": "Отправить OTP",
+            "@sendOtp": {
+              "description": "Кнопка отправки OTP"
+            },
+            "enterVerificationCode": "Введите код подтверждения",
+            "@enterVerificationCode": {
+              "description": "Метка ввода кода подтверждения"
+            },
+            "sendAgain": "Отправить снова",
+            "@sendAgain": {
+              "description": "Кнопка отправить снова"
+            },
+            "verify": "Подтвердить",
+            "@verify": {
+              "description": "Кнопка подтверждения"
+            },
+            "failedToSendOtp": "Не удалось отправить OTP. Сервер вернул false.",
+            "@failedToSendOtp": {
+              "description": "Сообщение о неудачной отправке OTP"
+            },
+            "errorSendingOtp": "Произошла ошибка при отправке OTP.",
+            "@errorSendingOtp": {
+              "description": "Сообщение об ошибке отправки OTP"
+            },
+            "invalidPhoneNumber": "Пожалуйста, введите действительный номер телефона.",
+            "@invalidPhoneNumber": {
+              "description": "Ошибка недействительного номера телефона"
+            },
+            "verificationSuccess": "Успешно подтверждено",
+            "@verificationSuccess": {
+              "description": "Сообщение об успешном подтверждении"
+            },
+            "verificationError": "Произошла ошибка. Пожалуйста, попробуйте позже.",
+            "@verificationError": {
+              "description": "Сообщение об ошибке подтверждения"
+            },
+            "regionsList": "Список регионов",
+            "@regionsList": {
+              "description": "Заголовок списка регионов"
+            },
+            "selectRegion": "Выберите регион",
+            "@selectRegion": {
+              "description": "Инструкция выбора региона"
+            },
+            "username": "Имя пользователя",
+            "@username": {
+              "description": "Поле имени пользователя"
+            },
+            "enterUsername": "Введите ваше имя пользователя",
+            "@enterUsername": {
+              "description": "Заглушка ввода имени пользователя"
+            },
+            "welcomeMessage": "Добро пожаловать в Tezsell, войдите с вашим номером телефона",
+            "@welcomeMessage": {
+              "description": "Приветственное сообщение входа"
+            },
+            "enterPhoneNumber": "Введите ваш номер телефона: 941234567",
+            "@enterPhoneNumber": {
+              "description": "Инструкция ввода номера телефона"
+            },
+            "password": "Пароль",
+            "@password": {
+              "description": "Метка поля пароля"
+            },
+            "enterPassword": "Введите ваш пароль",
+            "@enterPassword": {
+              "description": "Заглушка ввода пароля"
+            },
+            "forgotPassword": "Забыли пароль?",
+            "@forgotPassword": {
+              "description": "Ссылка восстановления пароля"
+            },
+            "noAccount": "Еще нет аккаунта? Зарегистрируйтесь здесь",
+            "@noAccount": {
+              "description": "Текст ссылки регистрации"
+            },
+            "successLogin": "Успешный вход",
+            "@successLogin": {
+              "description": "Сообщение об успешном входе"
+            },
+            "myProfile": "Мой профиль",
+            "@myProfile": {
+              "description": "Пункт меню мой профиль"
+            },
+            "logout": "выйти",
+            "@logout": {
+              "description": "Кнопка выхода"
+            },
+            "newProductTitle": "Название",
+            "@newProductTitle": {
+              "description": "Поле названия товара"
+            },
+            "newProductDescription": "Описание",
+            "@newProductDescription": {
+              "description": "Поле описания товара"
+            },
+            "newProductPrice": "Цена",
+            "@newProductPrice": {
+              "description": "Поле цены товара"
+            },
+            "newProductCondition": "Состояние",
+            "@newProductCondition": {
+              "description": "Поле состояния товара"
+            },
+            "newProductCategory": "Категория",
+            "@newProductCategory": {
+              "description": "Поле категории товара"
+            },
+            "newProductImages": "Изображения",
+            "@newProductImages": {
+              "description": "Поле изображений товара"
+            },
+            "addNewService": "Добавить новую услугу",
+            "@addNewService": {
+              "description": "Заголовок добавления новой услуги"
+            },
+            "loading": "Загрузка...",
+            "@loading": {
+              "description": "Текст загрузки"
+            },
+            "creating": "Создание...",
+            "@creating": {
+              "description": "Текст создания"
+            },
+            "serviceName": "Название услуги ",
+            "@serviceName": {
+              "description": "Поле названия услуги"
+            },
+            "serviceNamePlaceholder": "Введите название услуги",
+            "@serviceNamePlaceholder": {
+              "description": "Заглушка названия услуги"
+            },
+            "serviceDescription": "Описание услуги ",
+            "@serviceDescription": {
+              "description": "Поле описания услуги"
+            },
+            "serviceDescriptionPlaceholder": "Введите описание услуги",
+            "@serviceDescriptionPlaceholder": {
+              "description": "Заглушка описания услуги"
+            },
+            "serviceCategory": "Категория услуги ",
+            "@serviceCategory": {
+              "description": "Поле категории услуги"
+            },
+            "selectCategory": "Выберите категорию",
+            "@selectCategory": {
+              "description": "Инструкция выбора категории"
+            },
+            "loadingCategories": "Загрузка...",
+            "@loadingCategories": {
+              "description": "Текст загрузки категорий"
+            },
+            "errorLoadingCategories": "Ошибка загрузки категорий",
+            "@errorLoadingCategories": {
+              "description": "Ошибка загрузки категории"
+            },
+            "serviceImages": "Изображения услуги",
+            "@serviceImages": {
+              "description": "Поле изображений услуги"
+            },
+            "imageUploadHelper": "Нажмите значок + для добавления изображений (максимум 10)",
+            "@imageUploadHelper": {
+              "description": "Текст помощи загрузки изображений"
+            },
+            "maxImagesError": "Вы можете загрузить максимум 10 изображений",
+            "@maxImagesError": {
+              "description": "Ошибка максимального количества изображений"
+            },
+            "categoryNotFound": "Категория не найдена",
+            "@categoryNotFound": {
+              "description": "Ошибка категория не найдена"
+            },
+            "productCreatedSuccess": "Товар успешно создан",
+            "@productCreatedSuccess": {
+              "description": "Успешное создание товара"
+            },
+            "productLikeSuccess": "Товар успешно лайкнут",
+            "@productLikeSuccess": {
+              "description": "Успешный лайк товара"
+            },
+            "productDislikeSuccess": "Товар успешно дизлайкнут",
+            "@productDislikeSuccess": {
+              "description": "Успешный дизлайк товара"
+            },
+            "errorCreatingService": "Ошибка при создании услуги",
+            "@errorCreatingService": {
+              "description": "Ошибка создания услуги"
+            },
+            "errorCreatingProduct": "Ошибка при создании товара",
+            "@errorCreatingProduct": {
+              "description": "Ошибка создания товара"
+            },
+            "unknownError": "Произошла неизвестная ошибка при создании услуги",
+            "@unknownError": {
+              "description": "Сообщение о неизвестной ошибке"
+            },
+            "submit": "Отправить",
+            "@submit": {
+              "description": "Кнопка отправки"
+            },
+            "selectCategoryAction": "Выбрать категорию",
+            "@selectCategoryAction": {
+              "description": "Действие выбора категории"
+            },
+            "selectCondition": "Выбрать состояние",
+            "@selectCondition": {
+              "description": "Действие выбора состояния"
+            },
+            "sum": "Сумма",
+            "@sum": {
+              "description": "Метка суммы/итога"
+            },
+            "noComments": " Пока нет комментариев. Будьте первым, кто оставит комментарий!",
+            "@noComments": {
+              "description": "Сообщение об отсутствии комментариев"
+            },
+            "commentLikeSuccess": "Комментарий успешно лайкнут",
+            "@commentLikeSuccess": {
+              "description": "Успешный лайк комментария"
+            },
+            "commentLikeError": "Ошибка при лайке комментария",
+            "@commentLikeError": {
+              "description": "Ошибка лайка комментария"
+            },
+            "unknownErrorMessage": "Произошла неизвестная ошибка",
+            "@unknownErrorMessage": {
+              "description": "Общее сообщение о неизвестной ошибке"
+            },
+            "commentDislikeSuccess": "Комментарий успешно дизлайкнут",
+            "@commentDislikeSuccess": {
+              "description": "Успешный дизлайк комментария"
+            },
+            "commentDislikeError": "Ошибка при дизлайке комментария",
+            "@commentDislikeError": {
+              "description": "Ошибка дизлайка комментария"
+            },
+            "replyInfo": "Пожалуйста, сначала введите ответ",
+            "@replyInfo": {
+              "description": "Сообщение валидации ответа"
+            },
+            "replySuccessMessage": "Ответ успешно добавлен",
+            "@replySuccessMessage": {
+              "description": "Сообщение об успешном ответе"
+            },
+            "replyErrorMessage": "Произошла ошибка при создании ответа",
+            "@replyErrorMessage": {
+              "description": "Сообщение об ошибке ответа"
+            },
+            "commentUpdateSuccess": "Комментарий успешно обновлен",
+            "@commentUpdateSuccess": {
+              "description": "Успешное обновление комментария"
+            },
+            "commentUpdateError": "Ошибка обновления элемента комментария",
+            "@commentUpdateError": {
+              "description": "Ошибка обновления комментария"
+            },
+            "deleteConfirmationMessage": "Вы уверены, что хотите удалить этот комментарий?",
+            "@deleteConfirmationMessage": {
+              "description": "Сообщение подтверждения удаления"
+            },
+            "commentDeleteSuccess": "Комментарий успешно удален",
+            "@commentDeleteSuccess": {
+              "description": "Успешное удаление комментария"
+            },
+            "commentDeleteError": "Ошибка удаления комментария",
+            "@commentDeleteError": {
+              "description": "Ошибка удаления комментария"
+            },
+            "editLabel": "Редактировать",
+            "@editLabel": {
+              "description": "Метка кнопки редактирования"
+            },
+            "deleteLabel": "Удалить",
+            "@deleteLabel": {
+              "description": "Метка кнопки удаления"
+            },
+            "saveLabel": "Сохранить",
+            "@saveLabel": {
+              "description": "Метка кнопки сохранения"
+            },
+            "replyLabel": "Ответить",
+            "@replyLabel": {
+              "description": "Метка кнопки ответа"
+            },
+            "replyTitle": "ответы",
+            "@replyTitle": {
+              "description": "Заголовок раздела ответов"
+            },
+            "replyPlaceholder": "Написать ответ...",
+            "@replyPlaceholder": {
+              "description": "Заглушка ввода ответа"
+            },
+            "chatLoginMessage": "Вы должны войти в систему, чтобы начать чат",
+            "@chatLoginMessage": {
+              "description": "Сообщение о необходимости входа для чата"
+            },
+            "chatYourselfMessage": "Вы не можете чатиться с самим собой.",
+            "@chatYourselfMessage": {
+              "description": "Сообщение о невозможности чата с самим собой"
+            },
+            "chatRoomMessage": "Комната чата создана!",
+            "@chatRoomMessage": {
+              "description": "Сообщение о создании комнаты чата"
+            },
+            "chatRoomError": "Не удалось создать чат!",
+            "@chatRoomError": {
+              "description": "Ошибка создания комнаты чата"
+            },
+            "chatCreationError": "Создание чата не удалось!",
+            "@chatCreationError": {
+              "description": "Ошибка создания чата"
+            },
+            "productsTotal": "Всего товаров",
+            "@productsTotal": {
+              "description": "Общее количество товаров"
+            },
+            "perPage": "элементов",
+            "@perPage": {
+              "description": "Элементов на странице"
+            },
+            "clearAllFilters": "Очистить все фильтры",
+            "@clearAllFilters": {
+              "description": "Кнопка очистки фильтров"
+            },
+            "clickToUpload": "Нажмите для загрузки",
+            "@clickToUpload": {
+              "description": "Инструкция загрузки"
+            },
+            "productInStock": "В наличии",
+            "@productInStock": {
+              "description": "Статус товара в наличии"
+            },
+            "productOutStock": "Нет в наличии",
+            "@productOutStock": {
+              "description": "Статус товара нет в наличии"
+            },
+            "productBack": "Вернуться к товарам",
+            "@productBack": {
+              "description": "Кнопка возврата к товарам"
+            },
+            "messageSeller": "Чат",
+            "@messageSeller": {
+              "description": "Кнопка сообщения продавцу"
+            },
+            "recommendedProducts": "Рекомендуемые товары",
+            "@recommendedProducts": {
+              "description": "Раздел рекомендуемых товаров"
+            },
+            "deleteConfirmationProduct": "Вы уверены, что хотите удалить этот товар?",
+            "@deleteConfirmationProduct": {
+              "description": "Подтверждение удаления товара"
+            },
+            "productDeleteSuccess": "Товар успешно удален",
+            "@productDeleteSuccess": {
+              "description": "Успешное удаление товара"
+            },
+            "productDeleteError": "Ошибка удаления товара",
+            "@productDeleteError": {
+              "description": "Ошибка удаления товара"
+            },
+            "newCondition": "Новый",
+            "@newCOndition": {
+              "description": "Новое состояние"
+            },
+            "used": "Б/у",
+            "@used": {
+              "description": "Состояние б/у"
+            },
+            "imageValidType": "Некоторые файлы не были добавлены. Пожалуйста, используйте файлы JPG, PNG, GIF или WebP размером менее 5МБ.",
+            "@imageValidType": {
+              "description": "Ошибка валидации изображения"
+            },
+            "imageConfirmMessage": "Вы уверены, что хотите удалить это изображение?",
+            "@imageConfirmMessage": {
+              "description": "Подтверждение удаления изображения"
+            },
+            "titleRequiredMessage": "Название обязательно",
+            "@titleRequiredMessage": {
+              "description": "Валидация обязательного названия"
+            },
+            "descRequiredMessage": "Описание обязательно",
+            "@descRequiredMessage": {
+              "description": "Валидация обязательного описания"
+            },
+            "priceRequiredMessage": "Цена обязательна",
+            "@priceRequiredMessage": {
+              "description": "Валидация обязательной цены"
+            },
+            "conditionRequiredMessage": "Состояние обязательно",
+            "@conditionRequiredMessage": {
+              "description": "Валидация обязательного состояния"
+            },
+            "pleaseFillAllRequired": "Пожалуйста, заполните обязательные поля",
+            "@pleaseFillAllRequired": {
+              "description": "Сообщение о заполнении обязательных полей"
+            },
+            "oneImageConfirmMessage": "Необходимо как минимум одно изображение товара",
+            "@oneImageConfirmMessage": {
+              "description": "Валидация обязательного одного изображения"
+            },
+            "categoryRequiredMessage": "Категория обязательна",
+            "@categoryRequiredMessage": {
+              "description": "Валидация обязательной категории"
+            },
+            "locationInfoError": "Информация о местоположении пользователя отсутствует",
+            "@locationInfoError": {
+              "description": "Ошибка отсутствия информации о местоположении"
+            },
+            "editProductTitle": "Редактировать товар",
+            "@editProductTitle": {
+              "description": "Заголовок редактирования товара"
+            },
+            "imageUploadRequirements": "Необходимо как минимум одно изображение. Вы можете загрузить до 10 изображений (JPG, PNG, GIF, WebP менее 5МБ каждое).",
+            "@imageUploadRequirements": {
+              "description": "Требования к загрузке изображений"
+            },
+            "productUpdatedSuccess": "Товар успешно обновлен",
+            "@productUpdatedSuccess": {
+              "description": "Успешное обновление товара"
+            },
+            "productUpdateFailed": "Обновление товара не удалось",
+            "@productUpdateFailed": {
+              "description": "Неудачное обновление товара"
+            },
+            "errorUpdatingProduct": "Произошла ошибка при обновлении товара",
+            "@errorUpdatingProduct": {
+              "description": "Ошибка обновления товара"
+            },
+            "serviceBack": "Вернуться к услугам",
+            "@serviceBack": {
+              "description": "Кнопка возврата к услугам"
+            },
+            "likeLabel": "Нравится",
+            "@likeLabel": {
+              "description": "Метка кнопки нравится"
+            },
+            "commentsLabel": "Комментарии",
+            "@commentsLabel": {
+              "description": "Метка раздела комментариев"
+            },
+            "writeComment": "Написать комментарий...",
+            "@writeComment": {
+              "description": "Заглушка написания комментария"
+            },
+            "postingLabel": "Публикация...",
+            "@postingLabel": {
+              "description": "Текст публикации комментария"
+            },
+            "commentCreated": "Комментарий создан",
+            "@commentCreated": {
+              "description": "Успешное создание комментария"
+            },
+            "postCommentLabel": "Опубликовать комментарий",
+            "@postCommentLabel": {
+              "description": "Кнопка публикации комментария"
+            },
+            "loginPrompt": "Пожалуйста, войдите в систему для просмотра и публикации комментариев.",
+            "@loginPrompt": {
+              "description": "Необходимость входа для комментариев"
+            },
+            "recommendedServices": "Рекомендуемые услуги",
+            "@recommendedServices": {
+              "description": "Раздел рекомендуемых услуг"
+            },
+            "commentsVisibilityNotice": "Комментарии видны только авторизованным пользователям.",
+            "@commentsVisibilityNotice": {
+              "description": "Уведомление о видимости комментариев"
+            },
+            "comingSoon": "Скоро",
+            "@comingSoon": {
+              "description": "Текст скоро"
+            },
+            "serviceUpdateSuccess": "Услуга успешно обновлена",
+            "@serviceUpdateSuccess": {
+              "description": "Успешное обновление услуги"
+            },
+            "serviceUpdateError": "Ошибка обновления элемента услуги",
+            "@serviceUpdateError": {
+              "description": "Ошибка обновления услуги"
+            },
+            "editServiceModalTitle": "Редактировать услугу",
+            "@editServiceModalTitle": {
+              "description": "Заголовок модального окна редактирования услуги"
+            },
+            "enterPhoneNumberWithoutCode": "Введите номер телефона без кода",
+            "@enterPhoneNumberWithoutCode": {
+              "description": "Инструкция ввода номера телефона без кода страны"
+            },
+            "heroTitle": "TezSell",
+            "@heroTitle": {
+              "description": "Заголовок главного раздела"
+            },
+            "heroSubtitle": "Ваша быстрая и простая площадка для Узбекистана",
+            "@heroSubtitle": {
+              "description": "Подзаголовок главного раздела"
+            },
+            "startSelling": "Начать продавать",
+            "@startSelling": {
+              "description": "Кнопка начать продавать"
+            },
+            "browseProducts": "Просмотреть товары",
+            "@browseProducts": {
+              "description": "Кнопка просмотра товаров"
+            },
+            "featuresTitle": "Почему выбрать TezSell?",
+            "@featuresTitle": {
+              "description": "Заголовок раздела особенностей"
+            },
+            "listingTitle": "Простое размещение товаров",
+            "@listingTitle": {
+              "description": "Заголовок особенности размещения"
+            },
+            "listingDescription": "Размещайте ваши товары всего за несколько кликов. Добавляйте фото, устанавливайте цену и мгновенно связывайтесь с покупателями.",
+            "@listingDescription": {
+              "description": "Описание особенности размещения"
+            },
+            "locationTitle": "Просмотр по местоположению",
+            "@locationTitle": {
+              "description": "Заголовок особенности местоположения"
+            },
+            "locationDescription": "Находите предложения рядом с вами. Наша система на основе местоположения помогает вам открывать товары в вашем районе.",
+            "@locationDescription": {
+              "description": "Описание особенности местоположения"
+            },
+            "categoryTitle": "Фильтрация по категориям",
+            "@categoryTitle": {
+              "description": "Заголовок особенности категорий"
+            },
+            "categoryDescription": "Легко перемещайтесь по различным категориям, чтобы найти именно то, что вы ищете.",
+            "@categoryDescription": {
+              "description": "Описание особенности категорий"
+            },
+            "inspirationTitle": "Вдохновлен корейским Морковным рынком",
+            "@inspirationTitle": {
+              "description": "Заголовок раздела вдохновения"
+            },
+            "inspirationDescription1": "Мы создали TezSell, вдохновившись успешным корейским Морковным рынком (당근마켓), но адаптировали его специально для удовлетворения уникальных потребностей местных сообществ Узбекистана.",
+            "@inspirationDescription1": {
+              "description": "Описание вдохновения 1"
+            },
+            "inspirationDescription2": "Наша миссия - создать надежную платформу, где соседи могут легко покупать, продавать и общаться друг с другом.",
+            "@inspirationDescription2": {
+              "description": "Описание вдохновения 2"
+            },
+            "comingSoonTitle": "Скоро в TezSell",
+            "@comingSoonTitle": {
+              "description": "Заголовок раздела скоро"
+            },
+            "inAppChat": "Внутриприложенческий чат",
+            "@inAppChat": {
+              "description": "Особенность внутриприложенческого чата"
+            },
+            "secureTransactions": "Безопасные транзакции",
+            "@secureTransactions": {
+              "description": "Особенность безопасных транзакций"
+            },
+            "realEstateListings": "Листинги недвижимости",
+            "@realEstateListings": {
+              "description": "Особенность листингов недвижимости"
+            },
+            "stayUpdated": "Оставайтесь в курсе",
+            "@stayUpdated": {
+              "description": "Текст оставайтесь в курсе"
+            },
+            "comingSoonBadge": "Скоро",
+            "@comingSoonBadge": {
+              "description": "Значок скоро"
+            },
+            "ctaTitle": "Присоединяйтесь к сообществу TezSell сегодня!",
+            "@ctaTitle": {
+              "description": "Заголовок раздела CTA"
+            },
+            "ctaDescription": "Станьте частью создания лучшего опыта торговой площадки для Узбекистана. Поделитесь своими отзывами и помогите нам расти!",
+            "@ctaDescription": {
+              "description": "Описание раздела CTA"
+            },
+            "createAccount": "Создать аккаунт",
+            "@createAccount": {
+              "description": "Кнопка создания аккаунта"
+            },
+            "learnMore": "Узнать больше",
+            "@learnMore": {
+              "description": "Кнопка узнать больше"
+            },
+            "replyUpdateSuccess": "Ответ успешно обновлен",
+            "@replyUpdateSuccess": {
+              "description": "Успешное обновление ответа"
+            },
+            "replyUpdateError": "Не удалось обновить ответ",
+            "@replyUpdateError": {
+              "description": "Ошибка обновления ответа"
+            },
+            "replyDeleteSuccess": "Ответ успешно удален",
+            "@replyDeleteSuccess": {
+              "description": "Успешное удаление ответа"
+            },
+            "replyDeleteError": "Не удалось удалить ответ",
+            "@replyDeleteError": {
+              "description": "Ошибка удаления ответа"
+            },
+            "replyDeleteConfirmation": "Вы уверены, что хотите удалить этот ответ?",
+            "@replyDeleteConfirmation": {
+              "description": "Подтверждение удаления ответа"
+            },
+            "authenticationRequired": "Требуется аутентификация",
+            "@authenticationRequired": {
+              "description": "Сообщение о необходимости аутентификации"
+            },
+            "enterValidReply": "Пожалуйста, введите действительный текст ответа",
+            "@enterValidReply": {
+              "description": "Требуется действительный текст ответа"
+            },
+            "saving": "Сохранение...",
+            "@saving": {
+              "description": "Текст сохранения"
+            },
+            "deleting": "Удаление...",
+            "@deleting": {
+              "description": "Текст удаления"
+            },
+            "properties": "Недвижимость",
+            "@properties": {
+              "description": "Раздел недвижимости"
+            },
+            "agents": "Агенты",
+            "@agents": {
+              "description": "Раздел агентов"
+            },
+            "becomeAgent": "Стать агентом",
+            "@becomeAgent": {
+              "description": "Кнопка стать агентом"
+            },
+            "main": "Главная",
+            "@main": {
+              "description": "Главная/Основная метка"
+            },
+            "upload": "Добавить",
+            "@upload": {
+              "description": "Текст кнопки добавления нового продукта"
+            },
+            "filtered_products": "Отфильтрованные товары",
+            "@filtered_products": {
+              "description": "Заголовок для отфильтрованных товаров"
+            },
+            "productDetail": "Детали Товара",
+            "unknownUser": "Неизвестный Пользователь",
+            "locationNotAvailable": "Местоположение недоступно",
+            "noTitle": "Нет Названия",
+            "noCategory": "Нет Категории",
+            "noDescription": "Нет Описания",
+            "som": "Сум",
+            "about_me": "Обо мне",
+           "@about_me": {
+          "description": "About me menu item"
+     },
+  "my_name": "Мое имя",
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "customer_support": "Поддержка клиентов",
+  "customer_center": "Центр поддержки",
+  "customer_inquiries": "Запросы",
+  "customer_terms": "Условия и положения",
+  "region": "Регион",
+  "district": "Район",
+  "tap_change_profile": "Нажмите, чтобы изменить фото"
 }

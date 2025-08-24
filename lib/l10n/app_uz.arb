@@ -1,6 +1,7 @@
 {
   "@@locale": "uz",
   "welcome": "Xush kelibsiz",
+
   "chooseLanguage": "Tilingizni tanlang",
   "selectPreferredLanguage": "Ilova uchun kerakli tilingizni tanlang",
   "continueButton": "Davom etish",
@@ -32,188 +33,1227 @@
   "cancel": "Bekor qilish",
   "save": "Saqlash",
   "appTitle": "Tezsell",
-    "selectRegion": "Iltimos Viloyatingizni tanlang",
-    "searchHint": "Tuman yoki shaharni qidirish",
-    "apiError": "Api chaqirganda muamo yuzaga keldi",
-    "ok": "OK",
-    "confirm": "Tasdiqlash",
-    "yes": "Ha",
-    "no": "Yoq",
-    "emptyList": "Bo'sh ro'yxat",
-    "@emptyList": {
-      "description": "Ro'yxat bo'sh bo'lganda ko'rsatiladigan xabar"
-    },
-    "dataLoadingError": "Ma'lumotlarni yuklashda xatolik yuz berdi",
-    "@dataLoadingError": {
-      "description": "Ma'lumotlar yuklanmay qolganda xato xabari"
-    },
-    "confirmRegionSelection": "{regionName} viloyatini tanlamoqchimisiz?",
-     "selectDistrictOrCity": "Iltimos, tuman yoki shaharingizni tanlang",
-      "@selectDistrictOrCity": {
-        "description": "Tuman yoki shahar tanlash ko'rsatmasi"
+  "selectRegion": "Iltimos Viloyatingizni tanlang",
+  "searchHint": "Tuman yoki shaharni qidirish",
+  "apiError": "Api chaqirganda muamo yuzaga keldi",
+  "ok": "OK",
+  "confirm": "Tasdiqlash",
+  "yes": "Ha",
+  "no": "Yoq",
+  "emptyList": "Bo'sh ro'yxat",
+  "@emptyList": {
+    "description": "Ro'yxat bo'sh bo'lganda ko'rsatiladigan xabar"
+  },
+  "dataLoadingError": "Ma'lumotlarni yuklashda xatolik yuz berdi",
+  "@dataLoadingError": {
+    "description": "Ma'lumotlar yuklanmay qolganda xato xabari"
+  },
+  "confirmRegionSelection": "{regionName} viloyatini tanlamoqchimisiz?",
+  "selectDistrictOrCity": "Iltimos, tuman yoki shaharingizni tanlang",
+  "@selectDistrictOrCity": {
+    "description": "Tuman yoki shahar tanlash ko'rsatmasi"
+  },
+  "confirmDistrictSelection": "{regionName} viloyati - {districtName} tanlamoqchimisiz?",
+  "@confirmDistrictSelection": {
+    "description": "Tuman tanlashni tasdiqlash xabari",
+    "placeholders": {
+      "regionName": {
+        "type": "String"
       },
-      "confirmDistrictSelection": "{regionName} viloyati - {districtName} tanlamoqchimisiz?",
-      "@confirmDistrictSelection": {
-        "description": "Tuman tanlashni tasdiqlash xabari",
+      "districtName": {
+        "type": "String"
+      }
+    }
+  },
+  "noResultsFound": "Hech qanday natija topilmadi.",
+  "@noResultsFound": {
+    "description": "Qidiruv natijasi topilmaganda ko'rsatiladigan xabar"
+  },
+  "errorWithCode": "Xato: {errorCode}",
+  "@errorWithCode": {
+    "description": "Xato kodi bilan xato xabari",
+    "placeholders": {
+      "errorCode": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToLoadData": "Ma'lumotlarni yuklashda xatolik. Xato: {error}",
+  "@failedToLoadData": {
+    "description": "Ma'lumotlar yuklanmay qolganda xato xabari",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneVerification": "Telefon No'merni Tasdiqlash",
+  "@phoneVerification": {
+    "description": "Telefon tasdiqlash sahifasi sarlavhasi"
+  },
+  "enterPhonePrompt": "Iltimos telefon raqamingizni kiriting",
+  "@enterPhonePrompt": {
+    "description": "Telefon raqamini kiritish uchun taklif"
+  },
+  "enterPhoneNumberHint": "Telefon raqamini kiriting",
+  "@enterPhoneNumberHint": {
+    "description": "Telefon raqami kiritish maydoni uchun maslahat"
+  },
+  "selectedCountry": "Tanlangan: {countryName} ({countryCode})",
+  "@selectedCountry": {
+    "description": "Tanlangan mamlakat va kodini ko'rsatadi",
+    "placeholders": {
+      "countryName": {
+        "type": "String"
+      },
+      "countryCode": {
+        "type": "String"
+      }
+    }
+  },
+  "fullNumber": "To'liq raqam: {phoneNumber}",
+  "@fullNumber": {
+    "description": "To'liq telefon raqamini ko'rsatadi",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "sendCode": "Kod Yuborish",
+  "@sendCode": {
+    "description": "Tasdiqlash kodi yuborish tugmasi matni"
+  },
+  "enterVerificationCode": "Tasdiqlash kodini kiriting",
+  "@enterVerificationCode": {
+    "description": "Tasdiqlash kodi kiritish maydoni belgisi"
+  },
+  "verificationCodeHint": "123456",
+  "@verificationCodeHint": {
+    "description": "Tasdiqlash kodi formati uchun maslahat"
+  },
+  "resendCode": "Kodni Qayta Yuborish",
+  "@resendCode": {
+    "description": "Tasdiqlash kodini qayta yuborish tugmasi matni"
+  },
+  "expires": "Muddati tugaydi: {time}",
+  "@expires": {
+    "description": "Tugash vaqtini ko'rsatadi",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAndContinue": "Tasdiqlang va Davom Eting",
+  "@verifyAndContinue": {
+    "description": "Tasdiqlash va davom etish tugmasi matni"
+  },
+  "invalidVerificationCode": "Noto'g'ri tasdiqlash kodi",
+  "@invalidVerificationCode": {
+    "description": "Noto'g'ri tasdiqlash kodi uchun xato xabari"
+  },
+  "verificationCodeSent": "Tasdiqlash kodi muvaffaqiyatli yuborildi",
+  "@verificationCodeSent": {
+    "description": "Kod yuborilganda muvaffaqiyat xabari"
+  },
+  "failedToSendCode": "Tasdiqlash kodini yuborib bo'lmadi",
+  "@failedToSendCode": {
+    "description": "Kod yuborishda xatolik xabari"
+  },
+  "verificationCodeResent": "Tasdiqlash kodi muvaffaqiyatli qayta yuborildi",
+  "@verificationCodeResent": {
+    "description": "Kod qayta yuborilganda muvaffaqiyat xabari"
+  },
+  "failedToResendCode": "Tasdiqlash kodini qayta yuborib bo'lmadi",
+  "@failedToResendCode": {
+    "description": "Kod qayta yuborishda xatolik xabari"
+  },
+  "passwordVerification": "Parol Tasdiqlash",
+  "@passwordVerification": {
+    "description": "Parol tasdiqlash sahifasi sarlavhasi"
+  },
+  "completeRegistrationPrompt": "Foydalanuvchi ismini va parol kiriting va ro'yxatdan o'tishni yakunlang",
+  "@completeRegistrationPrompt": {
+    "description": "Ro'yxatdan o'tishni yakunlash uchun ko'rsatma"
+  },
+  "username": "Foydalanuvchi Ism",
+  "@username": {
+    "description": "Foydalanuvchi ismi kiritish maydoni belgisi"
+  },
+  "username_required": "Foydalanuvchi nomi talab qilinadi",
+  "usernameHint": "Kimsanboy77",
+  "username_min_length": "Foydalanuvchi nomi kamida 2 ta belgidan iborat bo'lishi kerak",
+  "@usernameHint": {
+    "description": "Foydalanuvchi ismi kiritish uchun maslahat"
+  },
+  "confirmPassword": "Parolni tasdiqlang",
+  "@confirmPassword": {
+    "description": "Parol tasdiqlash maydoni belgisi"
+  },
+  "profileImage": "Profil Rasmi",
+  "@profileImage": {
+    "description": "Profil rasmi tanlash belgisi"
+  },
+  "imageInstructions": "Rasmlar shu yerda ko'rinadi, iltimos profil rasmini bosing",
+  "@imageInstructions": {
+    "description": "Rasm tanlash uchun ko'rsatma"
+  },
+  "finish": "Yakunlash",
+  "@finish": {
+    "description": "Ro'yxatdan o'tishni yakunlash tugmasi matni"
+  },
+  "passwordsDoNotMatch": "Parollar mos kelmayapti",
+  "@passwordsDoNotMatch": {
+    "description": "Parollar mos kelmaganda xato xabari"
+  },
+  "registrationError": "Ro'yxatdan o'tish xatolik",
+  "@registrationError": {
+    "description": "Ro'yxatdan o'tishda xatolik xabari"
+  },
+  "commentDeleteError": "Sharhni o'chirishda xatolik",
+  "@commentDeleteError": {
+    "description": "Sharh o'chirish xatosi"
+  },
+  "about": "Biz haqimizda",
+  "@about": {
+    "description": "Biz haqimizda menyu elementi"
+  },
+    "chat": "Chat",
+    "@chat": {
+      "description": "Chat funksiyasi"
+    },
+    "realEstate": "Ko'chmas Mulk",
+    "@realEstate": {
+      "description": "Ko'chmas mulk bo'limi"
+    },
+    "language": "UZB",
+    "@language": {
+      "description": "Til tanlovchi ko'rsatish"
+    },
+    "languageEn": "Inglizcha",
+    "@languageEn": {
+      "description": "Ingliz tili varianti"
+    },
+    "languageRu": "Ruscha",
+    "@languageRu": {
+      "description": "Rus tili varianti"
+    },
+    "languageUz": "O'zbekcha",
+    "@languageUz": {
+      "description": "O'zbek tili varianti"
+    },
+    "serviceLiked": "Xizmat yoqtirildi",
+    "@serviceLiked": {
+      "description": "Xizmat yoqtirildi xabari"
+    },
+    "support": "Yordam",
+    "@support": {
+      "description": "Yordam menyu elementi"
+    },
+    "register": "Ro'yxatdan o'tish",
+    "@register": {
+      "description": "Ro'yxatdan o'tish tugmasi matni"
+    },
+    "login": "Kirish",
+    "@login": {
+      "description": "Kirish tugmasi matni"
+    },
+    "service": "Biznes Xizmatlari",
+    "@service": {
+      "description": "Biznes xizmatlari bo'limi"
+    },
+    "aboutContent": "TezSell - yangi va ishlatilgan mahsulotlarni xarid qilish va sotish uchun tez va oson bozor. Bizning maqsadimiz har bir foydalanuvchi uchun eng qulay va samarali platforma yaratish, silliq tranzaksiyalar va foydalanuvchiga qulay tajribani ta'minlashdir. Sotmoqchi yoki sotib olmoqchi bo'lsangiz, TezSell ulanish va tranzaksiyalarni bir necha bosqichda yakunlashni osonlashtiradi. Biz foydalanuvchilarimizning xavfsizligi va maxfiyligini birinchi o'ringa qo'yamiz. Barcha tranzaksiyalar xavfsizlik va muvofiqlik ta'minlash uchun ehtiyotkorlik bilan kuzatiladi, bu xaridorlar va sotuvchilarga xotirjamlik beradi. Bizning sodda va tushunarli interfeys foydalanuvchilarga tezda mahsulotlarni ro'yxatga olish va kerak bo'lgan narsalarni topish imkonini beradi. Shuningdek, biz Telegram orqali real vaqtda muloqotni osonlashtiramiz, bu xarid va sotish jarayonini yanada silliqroq qiladi.",
+    "@aboutContent": {
+      "description": "Biz haqimizda mazmun tavsifi"
+    },
+    "errorMessage": "Xatolik yuz berdi, iltimos serverni tekshiring",
+    "@errorMessage": {
+      "description": "Umumiy xato xabari"
+    },
+    "searchLocation": "Joylashuv",
+    "@searchLocation": {
+      "description": "Joylashuv qidirish belgisi"
+    },
+    "searchCategory": "Kategoriyalar",
+    "@searchCategory": {
+      "description": "Kategoriya qidirish belgisi"
+    },
+    "searchProductPlaceholder": "Mahsulotlarni qidirish",
+    "@searchProductPlaceholder": {
+      "description": "Mahsulot qidirish joyi"
+    },
+    "searchServicePlaceholder": "Xizmatlarni qidirish",
+    "@searchServicePlaceholder": {
+      "description": "Xizmat qidirish joyi"
+    },
+    "searchText": "Qidirish",
+    "@searchText": {
+      "description": "Qidirish tugmasi matni"
+    },
+    "selectedCategory": "Tanlangan kategoriya: ",
+    "@selectedCategory": {
+      "description": "Tanlangan kategoriya prefiksi"
+    },
+    "selectedLocation": "Tanlangan joylashuv: ",
+    "@selectedLocation": {
+      "description": "Tanlangan joylashuv prefiksi"
+    },
+    "productError": "Mahsulotlar mavjud emas",
+    "@productError": {
+      "description": "Mahsulotlar yo'q xato xabari"
+    },
+    "serviceError": "Xizmatlar mavjud emas",
+    "@serviceError": {
+      "description": "Xizmatlar yo'q xato xabari"
+    },
+    "locationHeader": "Joylashuvni tanlang",
+    "@locationHeader": {
+      "description": "Joylashuv tanlash sarlavhasi"
+    },
+    "locationPlaceholder": "Viloyatni shu yerda qidiring",
+    "@locationPlaceholder": {
+      "description": "Joylashuv qidirish joyi"
+    },
+    "categoryHeader": "Kategoriyani tanlang",
+    "@categoryHeader": {
+      "description": "Kategoriya tanlash sarlavhasi"
+    },
+    "categoryPlaceholder": "Kategoriyalarni qidirish",
+    "@categoryPlaceholder": {
+      "description": "Kategoriya qidirish joyi"
+    },
+    "categoryError": "Kategoriyalar mavjud emas",
+    "@categoryError": {
+      "description": "Kategoriyalar yo'q xato xabari"
+    },
+    "paginationFirst": "Birinchi",
+    "@paginationFirst": {
+      "description": "Birinchi sahifa tugmasi"
+    },
+    "paginationPrevious": "Oldingi",
+    "@paginationPrevious": {
+      "description": "Oldingi sahifa tugmasi"
+    },
+    "pageInfo": "Sahifa",
+    "@pageInfo": {
+      "description": "Sahifa ma'lumoti matni"
+    },
+    "pageNext": "Keyingi",
+    "@pageNext": {
+      "description": "Keyingi sahifa tugmasi"
+    },
+    "pageLast": "Oxirgi",
+    "@pageLast": {
+      "description": "Oxirgi sahifa tugmasi"
+    },
+    "loadingMessageProduct": "Mahsulotlar yuklanmoqda...",
+    "@loadingMessageProduct": {
+      "description": "Mahsulotlar yuklanish xabari"
+    },
+    "loadingMessageError": "Yuklashda xatolik",
+    "@loadingMessageError": {
+      "description": "Yuklash xato xabari"
+    },
+    "likeProductError": "Mahsulotni yoqtirishda xatolik yuz berdi",
+    "@likeProductError": {
+      "description": "Mahsulot yoqtirish xato xabari"
+    },
+    "dislikeProductError": "Mahsulotni yoqmaslikda xatolik yuz berdi",
+    "@dislikeProductError": {
+      "description": "Mahsulot yoqmaslik xato xabari"
+    },
+    "loadingMessageLocation": "Joylashuv yuklanmoqda...",
+    "@loadingMessageLocation": {
+      "description": "Joylashuv yuklanish xabari"
+    },
+    "loadingLocationError": "Joylashuvni yuklashda xatolik",
+    "@loadingLocationError": {
+      "description": "Joylashuv yuklash xatosi"
+    },
+    "loadingMessageCategory": "Kategoriyalar yuklanmoqda...",
+    "@loadingMessageCategory": {
+      "description": "Kategoriyalar yuklanish xabari"
+    },
+    "loadingCategoryError": "Kategoriyalarni yuklashda xatolik:",
+    "@loadingCategoryError": {
+      "description": "Kategoriya yuklash xatosi"
+    },
+    "profileUpdateSuccessMessage": "Profil muvaffaqiyatli yangilandi",
+    "@profileUpdateSuccessMessage": {
+      "description": "Profil yangilash muvaffaqiyat xabari"
+    },
+    "profileUpdateFailMessage": "Profilni yangilab bo'lmadi",
+    "@profileUpdateFailMessage": {
+      "description": "Profil yangilash muvaffaqiyatsizlik xabari"
+    },
+    "seeMoreBtn": "Ko'proq ko'rish",
+    "@seeMoreBtn": {
+      "description": "Ko'proq ko'rish tugmasi matni"
+    },
+    "profilePageTitle": "Profil Sahifasi",
+    "@profilePageTitle": {
+      "description": "Profil sahifasi sarlavhasi"
+    },
+    "editProfileModalTitle": "Profilni Tahrirlash",
+    "@editProfileModalTitle": {
+      "description": "Profilni tahrirlash modal sarlavhasi"
+    },
+    "usernameLabel": "Foydalanuvchi nomi",
+    "@usernameLabel": {
+      "description": "Foydalanuvchi nomi maydon belgisi"
+    },
+    "locationLabel": "Joriy Joylashuv",
+    "@locationLabel": {
+      "description": "Joylashuv maydon belgisi"
+    },
+    "profileImageLabel": "Profil Rasmi",
+    "@profileImageLabel": {
+      "description": "Profil rasmi maydon belgisi"
+    },
+    "chooseFileLabel": "Fayl tanlang",
+    "@chooseFileLabel": {
+      "description": "Fayl tanlovchi belgisi"
+    },
+    "uploadBtnLabel": "Yangilash",
+    "@uploadBtnLabel": {
+      "description": "Yuklash tugmasi belgisi"
+    },
+    "uploadingBtnLabel": "Yangilanmoqda...",
+    "@uploadingBtnLabel": {
+      "description": "Yuklanayotgan tugma belgisi"
+    },
+    "cancelBtnLabel": "Bekor qilish",
+    "@cancelBtnLabel": {
+      "description": "Bekor qilish tugmasi belgisi"
+    },
+    "productsTitle": "Mahsulotlar",
+    "@productsTitle": {
+      "description": "Mahsulotlar bo'limi sarlavhasi"
+    },
+    "servicesTitle": "Xizmatlar",
+    "@servicesTitle": {
+      "description": "Xizmatlar bo'limi sarlavhasi"
+    },
+    "myProductsTitle": "Mening Mahsulotlarim",
+    "@myProductsTitle": {
+      "description": "Mening mahsulotlarim bo'limi sarlavhasi"
+    },
+    "myServicesTitle": "Mening Xizmatlarim",
+    "@myServicesTitle": {
+      "description": "Mening xizmatlarim bo'limi sarlavhasi"
+    },
+    "favoriteProductsTitle": "Sevimli Mahsulotlar",
+    "@favoriteProductsTitle": {
+      "description": "Sevimli mahsulotlar bo'limi sarlavhasi"
+    },
+    "favoriteServicesTitle": "Sevimli Xizmatlar",
+    "@favoriteServicesTitle": {
+      "description": "Sevimli xizmatlar bo'limi sarlavhasi"
+    },
+    "noFavorites": "Sevimlilar yo'q",
+    "@noFavorites": {
+      "description": "Sevimlilar yo'q xabari"
+    },
+    "addNewProductBtn": "Yangi Mahsulot Qo'shish",
+    "@addNewProductBtn": {
+      "description": "Yangi mahsulot qo'shish tugmasi"
+    },
+    "addNew": "Yangi",
+    "@addNew": {
+      "description": "Yangi element qo'shish tugmasi"
+    },
+    "addNewServiceBtn": "Yangi Xizmat Qo'shish",
+    "@addNewServiceBtn": {
+      "description": "Yangi xizmat qo'shish tugmasi"
+    },
+    "downloadMobileApp": "Mobil ilovani yuklab oling",
+    "@downloadMobileApp": {
+      "description": "Mobil ilovani yuklab olish xabari"
+    },
+    "registerPhoneNumberSuccess": "Telefon raqam tasdiqlandi! Keyingi bosqichga o'tishingiz mumkin.",
+    "@registerPhoneNumberSuccess": {
+      "description": "Telefon tasdiqlash muvaffaqiyat xabari"
+    },
+    "regionSelectedMessage": "Viloyat tanlandi:",
+    "@regionSelectedMessage": {
+      "description": "Viloyat tanlandi xabari"
+    },
+    "districtSelectMessage": "Tuman tanlandi:",
+    "@districtSelectMessage": {
+      "description": "Tuman tanlandi xabari"
+    },
+    "phoneNumberEmptyMessage": "Davom etishdan oldin telefon raqamingizni tasdiqlang",
+    "@phoneNumberEmptyMessage": {
+      "description": "Telefon raqami bo'sh xatosi"
+    },
+    "regionEmptyMessage": "Iltimos avval viloyatni tanlang",
+    "@regionEmptyMessage": {
+      "description": "Viloyat bo'sh xatosi"
+    },
+    "districtEmptyMessage": " Iltimos tumanni tanlang",
+    "@districtEmptyMessage": {
+      "description": "Tuman bo'sh xatosi"
+    },
+    "usernamePasswordEmptyMessage": "Iltimos foydalanuvchi nomi va parolni kiriting",
+    "@usernamePasswordEmptyMessage": {
+      "description": "Foydalanuvchi nomi parol bo'sh xatosi"
+    },
+    "registerTitle": "Ro'yxatdan o'tish",
+    "@registerTitle": {
+      "description": "Ro'yxatdan o'tish ekrani sarlavhasi"
+    },
+    "previousButton": "Oldingi",
+    "@previousButton": {
+      "description": "Oldingi tugma matni"
+    },
+    "nextButton": "Keyingi",
+    "@nextButton": {
+      "description": "Keyingi tugma matni"
+    },
+    "completeButton": "Yakunlash",
+    "@completeButton": {
+      "description": "Yakunlash tugma matni"
+    },
+    "stepIndicator": "{currentStep}-bosqich 4 tadan",
+    "@stepIndicator": {
+      "description": "Bosqich ko'rsatkich matni",
+      "placeholders": {
+        "currentStep": {
+          "type": "int"
+        }
+      }
+    },
+    "districtSelectTitle": "Tumanlar Ro'yxati",
+    "@districtSelectTitle": {
+      "description": "Tuman tanlash sarlavhasi"
+    },
+    "districtSelectParagraph": "Tumanni tanlang:",
+    "@districtSelectParagraph": {
+      "description": "Tuman tanlash ko'rsatmasi"
+    },
+    "phoneNumber": "Telefon Raqami",
+    "@phoneNumber": {
+      "description": "Telefon raqami belgisi"
+    },
+    "sendOtp": "OTP Yuborish",
+    "@sendOtp": {
+      "description": "OTP yuborish tugmasi"
+    },
+    "enterVerificationCode": "Tasdiqlash kodini kiriting",
+    "@enterVerificationCode": {
+      "description": "Tasdiqlash kodi kiritish belgisi"
+    },
+    "sendAgain": "Qayta yuborish",
+    "@sendAgain": {
+      "description": "Qayta yuborish tugmasi"
+    },
+    "verify": "Tasdiqlash",
+    "@verify": {
+      "description": "Tasdiqlash tugmasi"
+    },
+    "failedToSendOtp": "OTP yuborib bo'lmadi. Server false qaytardi.",
+    "@failedToSendOtp": {
+      "description": "OTP yuborish muvaffaqiyatsizlik xabari"
+    },
+    "errorSendingOtp": "OTP yuborishda xatolik yuz berdi.",
+    "@errorSendingOtp": {
+      "description": "OTP yuborish xato xabari"
+    },
+    "invalidPhoneNumber": "Iltimos to'g'ri telefon raqamini kiriting.",
+    "@invalidPhoneNumber": {
+      "description": "Noto'g'ri telefon raqami xatosi"
+    },
+    "verificationSuccess": "Muvaffaqiyatli tasdiqlandi",
+    "@verificationSuccess": {
+      "description": "Tasdiqlash muvaffaqiyat xabari"
+    },
+    "verificationError": "Xatolik yuz berdi. Iltimos keyinroq qayta urinib ko'ring.",
+    "@verificationError": {
+      "description": "Tasdiqlash xato xabari"
+    },
+    "regionsList": "Viloyatlar Ro'yxati",
+    "@regionsList": {
+      "description": "Viloyatlar ro'yxati sarlavhasi"
+    },
+    "selectRegion": "Viloyatni Tanlang",
+    "@selectRegion": {
+      "description": "Viloyat tanlash ko'rsatmasi"
+    },
+    "username": "Foydalanuvchi nomi",
+    "@username": {
+      "description": "Foydalanuvchi nomi maydoni"
+    },
+    "enterUsername": "Foydalanuvchi nomingizni kiriting",
+    "@enterUsername": {
+      "description": "Foydalanuvchi nomi kiritish joyi"
+    },
+    "welcomeMessage": "Tezsellga xush kelibsiz, telefon raqamingiz bilan kiring",
+    "@welcomeMessage": {
+      "description": "Xush kelibsiz kirish xabari"
+    },
+    "enterPhoneNumber": "Telefon raqamingizni kiriting: 941234567",
+    "@enterPhoneNumber": {
+      "description": "Telefon raqami kiritish ko'rsatmasi"
+    },
+    "password": "Parol",
+    "@password": {
+      "description": "Parol maydon belgisi"
+    },
+    "enterPassword": "Parolingizni kiriting",
+    "@enterPassword": {
+      "description": "Parol kiritish joyi"
+    },
+    "forgotPassword": "Parolni unutdingizmi?",
+    "@forgotPassword": {
+      "description": "Parolni unutish havolasi"
+    },
+    "noAccount": "Hali akkauntingiz yo'qmi? Shu yerda ro'yxatdan o'ting",
+    "@noAccount": {
+      "description": "Ro'yxatdan o'tish havolasi matni"
+    },
+    "successLogin": "Muvaffaqiyatli kirildi",
+    "@successLogin": {
+      "description": "Kirish muvaffaqiyat xabari"
+    },
+    "myProfile": "Mening Profilim",
+    "@myProfile": {
+      "description": "Mening profilim menyu elementi"
+    },
+    "logout": "chiqish",
+    "@logout": {
+      "description": "Chiqish tugmasi"
+    },
+    "newProductTitle": "Sarlavha",
+    "@newProductTitle": {
+      "description": "Mahsulot sarlavhasi maydoni"
+    },
+    "newProductDescription": "Tavsif",
+    "@newProductDescription": {
+      "description": "Mahsulot tavsifi maydoni"
+    },
+    "newProductPrice": "Narx",
+    "@newProductPrice": {
+      "description": "Mahsulot narxi maydoni"
+    },
+    "newProductCondition": "Holati",
+    "@newProductCondition": {
+      "description": "Mahsulot holati maydoni"
+    },
+    "newProductCategory": "Kategoriya",
+    "@newProductCategory": {
+      "description": "Mahsulot kategoriyasi maydoni"
+    },
+    "newProductImages": "Rasmlar",
+    "@newProductImages": {
+      "description": "Mahsulot rasmlari maydoni"
+    },
+    "addNewService": "Yangi Xizmat Qo'shish",
+    "@addNewService": {
+      "description": "Yangi xizmat qo'shish sarlavhasi"
+    },
+    "loading": "Yuklanmoqda...",
+    "@loading": {
+      "description": "Yuklanish matni"
+    },
+    "creating": "Yaratilmoqda...",
+    "@creating": {
+      "description": "Yaratilish matni"
+    },
+    "serviceName": "Xizmat Nomi ",
+    "@serviceName": {
+      "description": "Xizmat nomi maydoni"
+    },
+    "serviceNamePlaceholder": "Xizmat sarlavhasini kiriting",
+    "@serviceNamePlaceholder": {
+      "description": "Xizmat nomi joyi"
+    },
+    "serviceDescription": "Xizmat Tavsifi ",
+    "@serviceDescription": {
+      "description": "Xizmat tavsifi maydoni"
+    },
+    "serviceDescriptionPlaceholder": "Xizmat tavsifini kiriting",
+    "@serviceDescriptionPlaceholder": {
+      "description": "Xizmat tavsifi joyi"
+    },
+    "serviceCategory": "Xizmat Kategoriyasi ",
+    "@serviceCategory": {
+      "description": "Xizmat kategoriyasi maydoni"
+    },
+    "selectCategory": "Kategoriyani tanlang",
+    "@selectCategory": {
+      "description": "Kategoriya tanlash ko'rsatmasi"
+    },
+    "loadingCategories": "Yuklanmoqda...",
+    "@loadingCategories": {
+      "description": "Kategoriyalar yuklanish matni"
+    },
+    "errorLoadingCategories": "Kategoriyalarni yuklashda xatolik",
+    "@errorLoadingCategories": {
+      "description": "Kategoriya yuklash xatosi"
+    },
+    "serviceImages": "Xizmat Rasmlari",
+    "@serviceImages": {
+      "description": "Xizmat rasmlari maydoni"
+    },
+    "imageUploadHelper": "Rasmlar qo'shish uchun + belgisini bosing (maksimum 10)",
+    "@imageUploadHelper": {
+      "description": "Rasm yuklash yordam matni"
+    },
+    "maxImagesError": "Maksimum 10 ta rasm yuklashingiz mumkin",
+    "@maxImagesError": {
+      "description": "Maksimum rasmlar xatosi"
+    },
+    "categoryNotFound": "Kategoriya topilmadi",
+    "@categoryNotFound": {
+      "description": "Kategoriya topilmadi xatosi"
+    },
+    "productCreatedSuccess": "Mahsulot muvaffaqiyatli yaratildi",
+    "@productCreatedSuccess": {
+      "description": "Mahsulot yaratish muvaffaqiyati"
+    },
+    "productLikeSuccess": "Mahsulot muvaffaqiyatli yoqtirildi",
+    "@productLikeSuccess": {
+      "description": "Mahsulot yoqtirish muvaffaqiyati"
+    },
+    "productDislikeSuccess": "Mahsulot muvaffaqiyatli yoqmaslik qilinadi",
+    "@productDislikeSuccess": {
+      "description": "Mahsulot yoqmaslik muvaffaqiyati"
+    },
+    "errorCreatingService": "Xizmat yaratishda xatolik",
+    "@errorCreatingService": {
+      "description": "Xizmat yaratish xatosi"
+    },
+    "errorCreatingProduct": "Mahsulot yaratishda xatolik",
+    "@errorCreatingProduct": {
+      "description": "Mahsulot yaratish xatosi"
+    },
+    "unknownError": "Xizmat yaratishda noma'lum xatolik yuz berdi",
+    "@unknownError": {
+      "description": "Noma'lum xato xabari"
+    },
+    "submit": "Yuborish",
+    "@submit": {
+      "description": "Yuborish tugmasi"
+    },
+    "selectCategoryAction": "Kategoriya Tanlash",
+    "@selectCategoryAction": {
+      "description": "Kategoriya tanlash harakati"
+    },
+    "selectCondition": "Holatni Tanlash",
+    "@selectCondition": {
+      "description": "Holat tanlash harakati"
+    },
+    "sum": "Jami",
+    "@sum": {
+      "description": "Jami/Yig'indi belgisi"
+    },
+    "noComments": " Hali sharhlar yo'q. Birinchi bo'lib sharh qoldiring!",
+    "@noComments": {
+      "description": "Sharhlar yo'q xabari"
+    },
+    "commentLikeSuccess": "Sharh muvaffaqiyatli yoqtirildi",
+    "@commentLikeSuccess": {
+      "description": "Sharh yoqtirish muvaffaqiyati"
+    },
+    "commentLikeError": "Sharhni yoqtirishda xatolik",
+    "@commentLikeError": {
+      "description": "Sharh yoqtirish xatosi"
+    },
+    "unknownErrorMessage": "Noma'lum xatolik yuz berdi",
+    "@unknownErrorMessage": {
+      "description": "Noma'lum xato xabari umumiy"
+    },
+    "commentDislikeSuccess": "Sharh muvaffaqiyatli yoqmaslik qilindi",
+    "@commentDislikeSuccess": {
+      "description": "Sharh yoqmaslik muvaffaqiyati"
+    },
+    "commentDislikeError": "Sharhni yoqmaslikda xatolik",
+    "@commentDislikeError": {
+      "description": "Sharh yoqmaslik xatosi"
+    },
+    "replyInfo": "Iltimos avval javob kiriting",
+    "@replyInfo": {
+      "description": "Javob tekshirish xabari"
+    },
+    "replySuccessMessage": "Javob muvaffaqiyatli qo'shildi",
+    "@replySuccessMessage": {
+      "description": "Javob muvaffaqiyat xabari"
+    },
+    "replyErrorMessage": "Javobni yaratishda xatolik yuz berdi",
+    "@replyErrorMessage": {
+      "description": "Javob xato xabari"
+    },
+    "commentUpdateSuccess": "Sharh muvaffaqiyatli yangilandi",
+    "@commentUpdateSuccess": {
+      "description": "Sharh yangilash muvaffaqiyati"
+    },
+    "commentUpdateError": "Sharh elementini yangilashda xatolik",
+    "@commentUpdateError": {
+      "description": "Sharh yangilash xatosi"
+    },
+    "deleteConfirmationMessage": "Bu sharhni o'chirishga ishonchingiz komilmi?",
+    "@deleteConfirmationMessage": {
+      "description": "O'chirish tasdiqlash xabari"
+    },
+    "commentDeleteSuccess": "Sharh muvaffaqiyatli o'chirildi",
+    "@commentDeleteSuccess": {
+      "description": "Sharh o'chirish muvaffaqiyati"
+    },
+    "commentDeleteError": "Sharhni o'chirishda xatolik",
+    "@commentDeleteError": {
+      "description": "Sharh o'chirish xatosi"
+    },
+    "editLabel": "Tahrirlash",
+    "@editLabel": {
+      "description": "Tahrirlash tugma belgisi"
+    },
+    "deleteLabel": "O'chirish",
+    "@deleteLabel": {
+      "description": "O'chirish tugma belgisi"
+    },
+    "saveLabel": "Saqlash",
+    "@saveLabel": {
+      "description": "Saqlash tugma belgisi"
+    },
+    "replyLabel": "Javob berish",
+    "@replyLabel": {
+      "description": "Javob berish tugma belgisi"
+    },
+    "replyTitle": "javoblar",
+    "@replyTitle": {
+      "description": "Javoblar bo'limi sarlavhasi"
+    },
+    "replyPlaceholder": "Javob yozing...",
+    "@replyPlaceholder": {
+      "description": "Javob kiritish joyi"
+    },
+    "chatLoginMessage": "Chat boshlash uchun tizimga kirishingiz kerak",
+    "@chatLoginMessage": {
+      "description": "Chat kirish talab qilingan xabari"
+    },
+    "chatYourselfMessage": "O'zingiz bilan chat qila olmaysiz.",
+    "@chatYourselfMessage": {
+      "description": "O'zingiz bilan chat qila olmaysiz xabari"
+    },
+    "chatRoomMessage": "Chat xonasi yaratildi!",
+    "@chatRoomMessage": {
+      "description": "Chat xonasi yaratildi xabari"
+    },
+    "chatRoomError": "Chat yaratib bo'lmadi!",
+    "@chatRoomError": {
+      "description": "Chat xonasi yaratish xatosi"
+    },
+    "chatCreationError": "Chat yaratish muvaffaqiyatsiz!",
+    "@chatCreationError": {
+      "description": "Chat yaratish xatosi"
+    },
+    "productsTotal": "Mahsulotlar jami",
+    "@productsTotal": {
+      "description": "Mahsulotlar jami soni"
+    },
+    "perPage": "elementlar",
+    "@perPage": {
+      "description": "Har sahifada elementlar"
+    },
+    "clearAllFilters": "Barcha filtrlarni tozalash",
+    "@clearAllFilters": {
+      "description": "Filtrlarni tozalash tugmasi"
+    },
+    "clickToUpload": "Yuklash uchun bosing",
+    "@clickToUpload": {
+      "description": "Yuklash ko'rsatmasi"
+    },
+    "productInStock": "Mavjud",
+    "@productInStock": {
+      "description": "Mahsulot mavjud holati"
+    },
+    "productOutStock": "Mavjud emas",
+    "@productOutStock": {
+      "description": "Mahsulot mavjud emas holati"
+    },
+    "productBack": "Mahsulotlarga qaytish",
+    "@productBack": {
+      "description": "Mahsulotlarga qaytish tugmasi"
+    },
+    "messageSeller": "Chat",
+    "@messageSeller": {
+      "description": "Sotuvchiga xabar yuborish tugmasi"
+    },
+    "recommendedProducts": "Tavsiya Etilgan Mahsulotlar",
+    "@recommendedProducts": {
+      "description": "Tavsiya etilgan mahsulotlar bo'limi"
+    },
+    "deleteConfirmationProduct": "Bu mahsulotni o'chirishga ishonchingiz komilmi?",
+    "@deleteConfirmationProduct": {
+      "description": "Mahsulot o'chirish tasdiqlash"
+    },
+    "productDeleteSuccess": "Mahsulot muvaffaqiyatli o'chirildi",
+    "@productDeleteSuccess": {
+      "description": "Mahsulot o'chirish muvaffaqiyati"
+    },
+    "productDeleteError": "Mahsulotni o'chirishda xatolik",
+    "@productDeleteError": {
+      "description": "Mahsulot o'chirish xatosi"
+    },
+    "newCondition": "Yangi",
+    "@newCOndition": {
+      "description": "Yangi holat"
+    },
+    "used": "Ishlatilgan",
+    "@used": {
+      "description": "Ishlatilgan holat"
+    },
+    "imageValidType": "Ba'zi fayllar qo'shilmadi. Iltimos 5MB dan kam JPG, PNG, GIF yoki WebP fayllarini ishlating.",
+    "@imageValidType": {
+      "description": "Rasm tekshirish xatosi"
+    },
+    "imageConfirmMessage": "Bu rasmni olib tashlashga ishonchingiz komilmi?",
+    "@imageConfirmMessage": {
+      "description": "Rasm olib tashlash tasdiqlash"
+    },
+    "titleRequiredMessage": "Sarlavha majburiy",
+    "@titleRequiredMessage": {
+      "description": "Sarlavha majburiy tekshirish"
+    },
+    "descRequiredMessage": "Tavsif majburiy",
+    "@descRequiredMessage": {
+      "description": "Tavsif majburiy tekshirish"
+    },
+    "priceRequiredMessage": "Narx majburiy",
+    "@priceRequiredMessage": {
+      "description": "Narx majburiy tekshirish"
+    },
+    "conditionRequiredMessage": "Holat majburiy",
+    "@conditionRequiredMessage": {
+      "description": "Holat majburiy tekshirish"
+    },
+    "pleaseFillAllRequired": "Iltimos majburiy maydonlarni to'ldiring",
+    "@pleaseFillAllRequired": {
+      "description": "Majburiy maydonlarni to'ldirish xabari"
+    },
+    "oneImageConfirmMessage": "Kamida bitta mahsulot rasmi majburiy",
+    "@oneImageConfirmMessage": {
+      "description": "Bitta rasm majburiy tekshirish"
+    },
+    "categoryRequiredMessage": "Kategoriya majburiy",
+    "@categoryRequiredMessage": {
+      "description": "Kategoriya majburiy tekshirish"
+    },
+    "locationInfoError": "Foydalanuvchi joylashuv ma'lumoti mavjud emas",
+    "@locationInfoError": {
+      "description": "Joylashuv ma'lumoti yo'q xatosi"
+    },
+    "editProductTitle": "Mahsulotni Tahrirlash",
+    "@editProductTitle": {
+      "description": "Mahsulotni tahrirlash sarlavhasi"
+    },
+    "imageUploadRequirements": "Kamida bitta rasm majburiy. Har biri 5MB dan kam (JPG, PNG, GIF, WebP) 10 tagacha rasm yuklashingiz mumkin.",
+    "@imageUploadRequirements": {
+      "description": "Rasm yuklash talablari"
+    },
+    "productUpdatedSuccess": "Mahsulot muvaffaqiyatli yangilandi",
+    "@productUpdatedSuccess": {
+      "description": "Mahsulot yangilash muvaffaqiyati"
+    },
+    "productUpdateFailed": "Mahsulot yangilash muvaffaqiyatsiz",
+    "@productUpdateFailed": {
+      "description": "Mahsulot yangilash muvaffaqiyatsiz"
+    },
+    "errorUpdatingProduct": "Mahsulotni yangilashda xatolik yuz berdi",
+    "@errorUpdatingProduct": {
+      "description": "Mahsulot yangilash xatosi"
+    },
+    "serviceBack": "Xizmatlarga qaytish",
+    "@serviceBack": {
+      "description": "Xizmatlarga qaytish tugmasi"
+    },
+    "likeLabel": "Yoqtirish",
+    "@likeLabel": {
+      "description": "Yoqtirish tugma belgisi"
+    },
+    "commentsLabel": "Sharhlar",
+    "@commentsLabel": {
+      "description": "Sharhlar bo'limi belgisi"
+    },
+    "writeComment": "Sharh yozing...",
+    "@writeComment": {
+      "description": "Sharh yozish joyi"
+    },
+    "postingLabel": "Joylanmoqda...",
+    "@postingLabel": {
+      "description": "Sharh joylash matni"
+    },
+    "commentCreated": "Sharh yaratildi",
+    "@commentCreated": {
+      "description": "Sharh yaratildi muvaffaqiyati"
+    },
+    "postCommentLabel": "Sharh Joylash",
+    "@postCommentLabel": {
+      "description": "Sharh joylash tugmasi"
+    },
+    "loginPrompt": "Sharhlarni ko'rish va qoldirish uchun tizimga kiring.",
+    "@loginPrompt": {
+      "description": "Sharhlar uchun kirish talab qilinadi"
+    },
+    "recommendedServices": "Tavsiya Etilgan Xizmatlar",
+    "@recommendedServices": {
+      "description": "Tavsiya etilgan xizmatlar bo'limi"
+    },
+    "commentsVisibilityNotice": "Sharhlar faqat tizimga kirgan foydalanuvchilarga ko'rinadi.",
+    "@commentsVisibilityNotice": {
+      "description": "Sharhlar ko'rinish ogohlantirishlari"
+    },
+    "comingSoon": "Tez orada",
+    "@comingSoon": {
+      "description": "Tez orada matni"
+    },
+    "serviceUpdateSuccess": "Xizmat muvaffaqiyatli yangilandi",
+    "@serviceUpdateSuccess": {
+      "description": "Xizmat yangilash muvaffaqiyati"
+    },
+    "serviceUpdateError": "Xizmat elementini yangilashda xatolik",
+    "@serviceUpdateError": {
+      "description": "Xizmat yangilash xatosi"
+    },
+    "editServiceModalTitle": "Xizmatni Tahrirlash",
+    "@editServiceModalTitle": {
+      "description": "Xizmatni tahrirlash modal sarlavhasi"
+    },
+    "enterPhoneNumberWithoutCode": "Telefon raqamini kodsiz kiriting",
+    "@enterPhoneNumberWithoutCode": {
+      "description": "Mamlakat kodisiz telefon raqami kiritish ko'rsatmasi"
+    },
+    "heroTitle": "TezSell",
+    "@heroTitle": {
+      "description": "Asosiy bo'lim sarlavhasi"
+    },
+    "heroSubtitle": "O'zbekiston uchun Tezkor va Oson Bozor",
+    "@heroSubtitle": {
+      "description": "Asosiy bo'lim kichik sarlavhasi"
+    },
+    "startSelling": "Sotishni Boshlash",
+    "@startSelling": {
+      "description": "Sotishni boshlash tugmasi"
+    },
+    "browseProducts": "Mahsulotlarni Ko'rish",
+    "@browseProducts": {
+      "description": "Mahsulotlarni ko'rish tugmasi"
+    },
+    "featuresTitle": "Nega TezSellni tanlash kerak?",
+    "@featuresTitle": {
+      "description": "Xususiyatlar bo'limi sarlavhasi"
+    },
+    "listingTitle": "Oddiy Mahsulot Ro'yxati",
+    "@listingTitle": {
+      "description": "Ro'yxat xususiyati sarlavhasi"
+    },
+    "listingDescription": "Mahsulotlaringizni bir necha bosish bilan ro'yxatga oling. Rasmlar qo'shing, narxingizni belgilang va xaridorlar bilan darhol bog'laning.",
+    "@listingDescription": {
+      "description": "Ro'yxat xususiyati tavsifi"
+    },
+    "locationTitle": "Joylashuvga Asoslangan Ko'rib Chiqish",
+    "@locationTitle": {
+      "description": "Joylashuv xususiyati sarlavhasi"
+    },
+    "locationDescription": "Yaqiningizda takliflarni toping. Bizning joylashuvga asoslangan tizimimiz mahallangizda narsalarni kashf qilishga yordam beradi.",
+    "@locationDescription": {
+      "description": "Joylashuv xususiyati tavsifi"
+    },
+    "categoryTitle": "Kategoriya Filtrlash",
+    "@categoryTitle": {
+      "description": "Kategoriya xususiyati sarlavhasi"
+    },
+    "categoryDescription": "Aynan izlayotgan narsangizni topish uchun turli kategoriyalar bo'ylab oson harakatlan.",
+    "@categoryDescription": {
+      "description": "Kategoriya xususiyati tavsifi"
+    },
+    "inspirationTitle": "Koreyaning Sabzi Bozoriga Ilhomlangan",
+    "@inspirationTitle": {
+      "description": "Ilhom bo'limi sarlavhasi"
+    },
+    "inspirationDescription1": "Biz TezSellni Koreyaning muvaffaqiyatli Sabzi Bozori (당근마켓) dan ilhomlangan holda qurishdi, lekin uni O'zbekistonning mahalliy jamoalar ehtiyojlariga maxsus moslashtirishdi.",
+    "@inspirationDescription1": {
+      "description": "Ilhom tavsifi 1"
+    },
+    "inspirationDescription2": "Bizning vazifamiz qo'shnilar oson xarid qilish, sotish va bir-biri bilan bog'lanish uchun ishonchli platforma yaratishdir.",
+    "@inspirationDescription2": {
+      "description": "Ilhom tavsifi 2"
+    },
+    "comingSoonTitle": "TezSellga Tez Orada Keladi",
+    "@comingSoonTitle": {
+      "description": "Tez orada bo'limi sarlavhasi"
+    },
+    "inAppChat": "Ilova Ichidagi Chat",
+    "@inAppChat": {
+      "description": "Ilova ichidagi chat xususiyati"
+    },
+    "secureTransactions": "Xavfsiz Tranzaksiyalar",
+    "@secureTransactions": {
+      "description": "Xavfsiz tranzaksiyalar xususiyati"
+    },
+    "realEstateListings": "Ko'chmas Mulk Ro'yxatlari",
+    "@realEstateListings": {
+      "description": "Ko'chmas mulk ro'yxatlari xususiyati"
+    },
+    "stayUpdated": "Yangilikdan Xabardor Bo'ling",
+    "@stayUpdated": {
+      "description": "Yangilikdan xabardor bo'lish matni"
+    },
+    "comingSoonBadge": "Tez Orada",
+    "@comingSoonBadge": {
+      "description": "Tez orada nishoni"
+    },
+    "ctaTitle": "Bugun TezSell Jamiyatiga Qo'shiling!",
+    "@ctaTitle": {
+      "description": "CTA bo'limi sarlavhasi"
+    },
+    "ctaDescription": "O'zbekiston uchun yaxshiroq bozor tajribasini qurishning bir qismi bo'ling. Fikr-mulohazalaringizni baham ko'ring va o'sishimizga yordam bering!",
+    "@ctaDescription": {
+      "description": "CTA bo'limi tavsifi"
+    },
+    "createAccount": "Akkaunt Yaratish",
+    "@createAccount": {
+      "description": "Akkaunt yaratish tugmasi"
+    },
+    "learnMore": "Ko'proq O'rganish",
+    "@learnMore": {
+      "description": "Ko'proq o'rganish tugmasi"
+    },
+    "replyUpdateSuccess": "Javob muvaffaqiyatli yangilandi",
+    "@replyUpdateSuccess": {
+      "description": "Javob yangilash muvaffaqiyati"
+    },
+    "replyUpdateError": "Javobni yangilab bo'lmadi",
+    "@replyUpdateError": {
+      "description": "Javob yangilash xatosi"
+    },
+    "replyDeleteSuccess": "Javob muvaffaqiyatli o'chirildi",
+    "@replyDeleteSuccess": {
+      "description": "Javob o'chirish muvaffaqiyati"
+    },
+    "replyDeleteError": "Javobni o'chirib bo'lmadi",
+    "@replyDeleteError": {
+      "description": "Javob o'chirish xatosi"
+    },
+    "replyDeleteConfirmation": "Bu javobni o'chirishga ishonchingiz komilmi?",
+    "@replyDeleteConfirmation": {
+      "description": "Javob o'chirish tasdiqlash"
+    },
+    "authenticationRequired": "Autentifikatsiya talab qilinadi",
+    "@authenticationRequired": {
+      "description": "Autentifikatsiya talab qilingan xabari"
+    },
+    "enterValidReply": "Iltimos to'g'ri javob matnini kiriting",
+    "@enterValidReply": {
+      "description": "To'g'ri javob matni talab qilinadi"
+    },
+    "saving": "Saqlanmoqda...",
+    "@saving": {
+      "description": "Saqlash matni"
+    },
+    "deleting": "O'chirilmoqda...",
+    "@deleting": {
+      "description": "O'chirish matni"
+    },
+    "properties": "Mulklar",
+    "@properties": {
+      "description": "Mulklar bo'limi"
+    },
+    "agents": "Agentlar",
+    "@agents": {
+      "description": "Agentlar bo'limi"
+    },
+    "becomeAgent": "Agent Bo'lish",
+    "@becomeAgent": {
+      "description": "Agent bo'lish tugmasi"
+    },
+
+      "confirmRegionSelection": "{regionName} viloyatini tanlamoqchimisiz?",
+      "@confirmRegionSelection": {
+        "description": "Viloyat tanlashni tasdiqlash xabari",
         "placeholders": {
           "regionName": {
             "type": "String"
-          },
-          "districtName": {
-            "type": "String"
           }
         }
       },
-      "noResultsFound": "Hech qanday natija topilmadi.",
-      "@noResultsFound": {
-        "description": "Qidiruv natijasi topilmaganda ko'rsatiladigan xabar"
+      "enterUsername": "Foydalanuvchi nomingizni kiriting",
+      "@enterUsername": {
+        "description": "Foydalanuvchi nomi kiritish joyi"
       },
-      "errorWithCode": "Xato: {errorCode}",
-      "@errorWithCode": {
-        "description": "Xato kodi bilan xato xabari",
-        "placeholders": {
-          "errorCode": {
-            "type": "String"
-          }
-        }
+
+      "welcomeMessage": "Tezsellga xush kelibsiz, telefon raqamingiz bilan kiring",
+      "@welcomeMessage": {
+        "description": "Xush kelibsiz kirish xabari"
       },
-      "failedToLoadData": "Ma'lumotlarni yuklashda xatolik. Xato: {error}",
-      "@failedToLoadData": {
-        "description": "Ma'lumotlar yuklanmay qolganda xato xabari",
-        "placeholders": {
-          "error": {
-            "type": "String"
-          }
-        }
+
+      "successLogin": "Muvaffaqiyatli kirildi",
+      "@successLogin": {
+        "description": "Kirish muvaffaqiyat xabari"
       },
-       "phoneVerification": "Telefon No'merni Tasdiqlash",
-        "@phoneVerification": {
-          "description": "Telefon tasdiqlash sahifasi sarlavhasi"
-        },
-        "enterPhonePrompt": "Iltimos telefon raqamingizni kiriting",
-        "@enterPhonePrompt": {
-          "description": "Telefon raqamini kiritish uchun taklif"
-        },
-        "enterPhoneNumberHint": "Telefon raqamini kiriting",
-        "@enterPhoneNumberHint": {
-          "description": "Telefon raqami kiritish maydoni uchun maslahat"
-        },
-        "selectedCountry": "Tanlangan: {countryName} ({countryCode})",
-        "@selectedCountry": {
-          "description": "Tanlangan mamlakat va kodini ko'rsatadi",
-          "placeholders": {
-            "countryName": {
-              "type": "String"
-            },
-            "countryCode": {
-              "type": "String"
-            }
-          }
-        },
-        "fullNumber": "To'liq raqam: {phoneNumber}",
-        "@fullNumber": {
-          "description": "To'liq telefon raqamini ko'rsatadi",
-          "placeholders": {
-            "phoneNumber": {
-              "type": "String"
-            }
-          }
-        },
-        "sendCode": "Kod Yuborish",
-        "@sendCode": {
-          "description": "Tasdiqlash kodi yuborish tugmasi matni"
-        },
-        "enterVerificationCode": "Tasdiqlash kodini kiriting",
-        "@enterVerificationCode": {
-          "description": "Tasdiqlash kodi kiritish maydoni belgisi"
-        },
-        "verificationCodeHint": "123456",
-        "@verificationCodeHint": {
-          "description": "Tasdiqlash kodi formati uchun maslahat"
-        },
-        "resendCode": "Kodni Qayta Yuborish",
-        "@resendCode": {
-          "description": "Tasdiqlash kodini qayta yuborish tugmasi matni"
-        },
-        "expires": "Muddati tugaydi: {time}",
-        "@expires": {
-          "description": "Tugash vaqtini ko'rsatadi",
-          "placeholders": {
-            "time": {
-              "type": "String"
-            }
-          }
-        },
-        "verifyAndContinue": "Tasdiqlang va Davom Eting",
-        "@verifyAndContinue": {
-          "description": "Tasdiqlash va davom etish tugmasi matni"
-        },
-        "invalidVerificationCode": "Noto'g'ri tasdiqlash kodi",
-        "@invalidVerificationCode": {
-          "description": "Noto'g'ri tasdiqlash kodi uchun xato xabari"
-        },
-        "pleaseEnterPhoneNumber": "Iltimos telefon raqamingizni kiriting",
-        "@pleaseEnterPhoneNumber": {
-          "description": "Telefon raqami bo'sh bo'lganda xato xabari"
-        },
-        "verificationCodeSent": "Tasdiqlash kodi muvaffaqiyatli yuborildi",
-        "@verificationCodeSent": {
-          "description": "Kod yuborilganda muvaffaqiyat xabari"
-        },
-        "failedToSendCode": "Tasdiqlash kodini yuborib bo'lmadi",
-        "@failedToSendCode": {
-          "description": "Kod yuborishda xatolik xabari"
-        },
-        "verificationCodeResent": "Tasdiqlash kodi muvaffaqiyatli qayta yuborildi",
-        "@verificationCodeResent": {
-          "description": "Kod qayta yuborilganda muvaffaqiyat xabari"
-        },
-        "failedToResendCode": "Tasdiqlash kodini qayta yuborib bo'lmadi",
-        "@failedToResendCode": {
-          "description": "Kod qayta yuborishda xatolik xabari"
-        },
-        "passwordVerification": "Parol Tasdiqlash",
-          "@passwordVerification": {
-            "description": "Parol tasdiqlash sahifasi sarlavhasi"
-          },
-          "completeRegistrationPrompt": "Foydalanuvchi ismini va parol kiriting va ro'yxatdan o'tishni yakunlang",
-          "@completeRegistrationPrompt": {
-            "description": "Ro'yxatdan o'tishni yakunlash uchun ko'rsatma"
-          },
-          "username": "Foydalanuvchi Ism",
-          "@username": {
-            "description": "Foydalanuvchi ismi kiritish maydoni belgisi"
-          },
-          "usernameHint": "Kimsanboy77",
-          "@usernameHint": {
-            "description": "Foydalanuvchi ismi kiritish uchun maslahat"
-          },
-          "enterPassword": "Parolni Kiriting",
-          "@enterPassword": {
-            "description": "Parol kiritish maydoni belgisi"
-          },
-          "confirmPassword": "Parolni tasdiqlang",
-          "@confirmPassword": {
-            "description": "Parol tasdiqlash maydoni belgisi"
-          },
-          "profileImage": "Profil Rasmi",
-          "@profileImage": {
-            "description": "Profil rasmi tanlash belgisi"
-          },
-          "imageInstructions": "Rasmlar shu yerda ko'rinadi, iltimos profil rasmini bosing",
-          "@imageInstructions": {
-            "description": "Rasm tanlash uchun ko'rsatma"
-          },
-          "finish": "Yakunlash",
-          "@finish": {
-            "description": "Ro'yxatdan o'tishni yakunlash tugmasi matni"
-          },
-          "passwordsDoNotMatch": "Parollar mos kelmayapti",
-          "@passwordsDoNotMatch": {
-            "description": "Parollar mos kelmaganda xato xabari"
-          },
-          "registrationError": "Ro'yxatdan o'tish xatolik",
-          "@registrationError": {
-            "description": "Ro'yxatdan o'tishda xatolik xabari"
-          }
+
+      "myProfile": "Mening Profilim",
+      "@myProfile": {
+        "description": "Mening profilim menyu elementi"
+      },
+
+      "logout": "chiqish",
+      "@logout": {
+        "description": "Chiqish tugmasi"
+      },
+
+      "noAccount": "Hali akkauntingiz yo'qmi? Shu yerda ro'yxatdan o'ting",
+      "@noAccount": {
+        "description": "Ro'yxatdan o'tish havolasi matni"
+      },
+      "confirm": "Tasdiqlash",
+      "@confirm": {
+        "description": "Tasdiqlash tugmasi matni"
+      },
+
+      "yes": "Ha",
+      "@yes": {
+        "description": "Ha tugmasi matni"
+      },
+
+      "no": "Yoq",
+      "@no": {
+        "description": "Yoq tugmasi matni"
+      },
+      "main" : "Asosiy",
+
+      "@main": {
+        "description": "Main/Primary label"
+      },
+      "upload": "Yuklash",
+      "@upload": {
+        "description": "Upload button text for main product"
+      },
+      "filtered_products": "Filtrlangan mahsulotlar",
+      "@filtered_products": {
+        "description": "Filtrlangan mahsulotlar uchun sarlavha"
+      },
+      "productDetail": "Mahsulot Tafsilotlari",
+      "unknownUser": "Noma'lum Foydalanuvchi",
+      "locationNotAvailable": "Joylashuv mavjud emas",
+      "noTitle": "Sarlavha yo'q",
+      "noCategory": "Kategoriya yo'q",
+      "noDescription": "Tavsif yo'q",
+      "som": "So'm",
+  "about_me": "Men haqimda",
+  "@about_me": {
+    "description": "About me menu item"
+  },
+  "my_name": "Mening ismim",
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "customer_support": "Mijozlarni qo'llab-quvvatlash",
+  "customer_center": "Mijozlar markazi",
+  "customer_inquiries": "So'rovlar",
+  "customer_terms": "Shartlar va qoidalar",
+  "region": "Viloyat",
+  "district": "Tuman",
+  "tap_change_profile": "Rasmni o'zgartirish uchun bosing"
 }

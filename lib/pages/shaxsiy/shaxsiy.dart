@@ -1,8 +1,9 @@
-import 'package:app/pages/shaxsiy/favorite_products.dart';
-import 'package:app/pages/shaxsiy/favorite_services.dart';
-import 'package:app/pages/shaxsiy/my_products.dart';
-import 'package:app/pages/shaxsiy/my_services.dart';
-import 'package:app/pages/shaxsiy/product_edit.dart';
+import 'package:app/constants/constants.dart';
+import 'package:app/pages/shaxsiy/favorite_items/favorite_products.dart';
+import 'package:app/pages/shaxsiy/favorite_items/favorite_services.dart';
+import 'package:app/pages/shaxsiy/my-products/my_products.dart';
+import 'package:app/pages/shaxsiy/my-services/my_services.dart';
+import 'package:app/pages/shaxsiy/main_profile/profile_edit.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
@@ -10,6 +11,7 @@ import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShaxsiyPage extends ConsumerStatefulWidget {
   const ShaxsiyPage({super.key});
@@ -19,8 +21,39 @@ class ShaxsiyPage extends ConsumerStatefulWidget {
 }
 
 class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
+  late Future<UserInfo> _userInfoFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userInfoFuture = fetchUserInfo();
+  }
+
+  Future<UserInfo> fetchUserInfo() async {
+    return await ref.read(profileServiceProvider).getUserInfo();
+  }
+
+  void _refreshProfile() {
+    setState(() {
+      _userInfoFuture = fetchUserInfo();
+    });
+  }
+
+  // Add this method to your _ShaxsiyPageState class
+  ImageProvider? _getProfileImage(UserInfo user) {
+    if (user.profileImage?.image != null &&
+        user.profileImage!.image.isNotEmpty) {
+      final imageUrl = user.profileImage!.image.startsWith('http')
+          ? user.profileImage!.image
+          : "$baseUrl${user.profileImage!.image}";
+      return NetworkImage(imageUrl);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       body: FutureBuilder<List<dynamic>>(
         future: Future.wait([
@@ -51,7 +84,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'About Me',
+                      localizations?.about_me ?? 'About Me',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -68,13 +101,18 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
                     leading: CircleAvatar(
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.blue,
-                      ),
+                      radius: 30, // Adjust size as needed
+                      backgroundImage: _getProfileImage(user),
+                      child: _getProfileImage(user) == null
+                          ? const Icon(
+                              Icons.person,
+                              color: Colors.blue,
+                              size: 30,
+                            )
+                          : null,
                     ),
                     title: Text(
-                      'My name',
+                      localizations?.my_name ?? 'About Me',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -94,13 +132,16 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       size: 22,
                       color: Colors.grey[600],
                     ),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
-                        ),
+                            builder: (context) => const ProfileEditScreen()),
                       );
+
+                      if (result == true) {
+                        _refreshProfile(); // This refreshes the data
+                      }
                     },
                   ),
                 ),
@@ -109,7 +150,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'My Page',
+                      localizations?.myProfile ?? 'My Page',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -133,7 +174,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       ),
                     ),
                     title: Text(
-                      'My products',
+                      localizations?.myProductsTitle ?? 'My products',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -153,17 +194,14 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       size: 22,
                       color: Colors.grey[600],
                     ),
-                    onTap: () {
-                      // products.map((product) => ListTile(
-                      //       title: Text(product.title),
-                      //       subtitle: Text('${product.price} ${product.currency}'),
-                      //     )),
+                    onTap: () async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                MyProducts(products: products)),
+                            builder: (context) => const MyProducts()),
                       );
+
+                      // If a product was updated, refresh the entire page
                     },
                   ),
                 ),
@@ -184,7 +222,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       ),
                     ),
                     title: Text(
-                      'My services',
+                      localizations?.myServicesTitle ?? 'My services',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -205,10 +243,6 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       color: Colors.grey[600],
                     ),
                     onTap: () {
-                      // products.map((product) => ListTile(
-                      //       title: Text(product.title),
-                      //       subtitle: Text('${product.price} ${product.currency}'),
-                      //     )),
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -235,7 +269,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       ),
                     ),
                     title: Text(
-                      'Favorite products',
+                      localizations?.favoriteProductsTitle ??
+                          'Favorite products',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -287,7 +322,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       ),
                     ),
                     title: Text(
-                      'Favorite services',
+                      localizations?.favoriteServicesTitle ??
+                          'Favorite services',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -327,7 +363,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Customer Support',
+                      localizations?.customer_support ?? 'Customer Support',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -349,7 +385,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       color: Colors.blue,
                     ),
                     title: Text(
-                      'Customer Center',
+                      localizations?.customer_center ?? 'Customer Center',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -382,7 +418,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       color: Colors.blue,
                     ),
                     title: Text(
-                      'Inquiries',
+                      localizations?.customer_inquiries ?? 'Inquiries',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,
@@ -415,7 +451,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       color: Colors.blue,
                     ),
                     title: Text(
-                      'Terms and Conditions',
+                      localizations?.customer_terms ?? 'Terms and Conditions',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w300,

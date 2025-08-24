@@ -1,12 +1,12 @@
 import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_search.dart';
-import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilteredProducts extends ConsumerStatefulWidget {
   final String categoryName;
@@ -67,7 +67,8 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
             },
           ),
         ],
-        title: Text("Filtered Products"), // Title for the AppBar
+        title: Text(AppLocalizations.of(context)?.filtered_products ??
+            "Filtered Products"), // Title for the AppBar
       ),
       body: Column(
         children: [
@@ -88,8 +89,10 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                   if (snapshot.hasData) {
                     final productsList = snapshot.data!;
                     if (productsList.isEmpty) {
-                      return const Center(
-                          child: Text('No products available.'));
+                      return Center(
+                          child: Text(
+                              AppLocalizations.of(context)?.productError ??
+                                  'No products available.'));
                     }
 
                     return ListView.builder(
@@ -101,7 +104,9 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                     );
                   }
 
-                  return const Center(child: Text('No products available.'));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)?.productError ??
+                          'No products available.'));
                 },
               ),
             ),

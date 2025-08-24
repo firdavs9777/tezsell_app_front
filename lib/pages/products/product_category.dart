@@ -3,6 +3,7 @@ import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductFilter extends ConsumerStatefulWidget {
   const ProductFilter({super.key});
@@ -46,6 +47,7 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
     'desktop_windows': Icons.desktop_windows,
     'tablet': Icons.tablet,
     'tv': Icons.tv,
+    'settings': Icons.settings,
   };
 
   @override
@@ -62,8 +64,12 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
         availableCategories = categories;
       });
     } catch (e) {
+      final localizations = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading categories: $e')),
+        SnackBar(
+          content: Text(
+              '${localizations?.loadingCategoryError ?? "Error loading categories:"} $e'),
+        ),
       );
     }
   }
@@ -77,61 +83,118 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
     );
   }
 
+  // Function to get the appropriate category name based on current locale
+  String getCategoryName(CategoryModel category) {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return category.nameUz;
+      case 'ru':
+        return category.nameRu;
+      case 'en':
+      default:
+        return category.nameEn;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Filter Products'),
+        title: Text(localizations?.categoryHeader ?? 'Filter Products'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Select Category to filter',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              localizations?.categoryPlaceholder ?? 'Select Category to filter',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Number of items per row
-                  crossAxisSpacing: 15, // Horizontal space between items
-                  mainAxisSpacing: 10, // Vertical space between items
-                ),
-                itemCount: availableCategories.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  IconData? iconData = iconMap[availableCategories[index].icon];
-
-                  return GestureDetector(
-                    onTap: () {
-                      // Handle item tap if necessary
-                    },
-                    child: GestureDetector(
-                      onTap: () =>
-                          _applyFilter(availableCategories[index].nameRu),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            iconData ?? Icons.help_outline,
-                            color: Theme.of(context)
-                                .primaryColor, // Default to a fallback icon
-                            size: 30, // Adjust the icon size as needed
-                          ),
-                          SizedBox(height: 5), // Space between icon and text
-                          Text(
-                            availableCategories[index].nameEn,
-                            textAlign: TextAlign.center, // Center the text
-                          ),
-                        ],
+              child: availableCategories.isEmpty
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio:
+                            0.85, // Slightly taller to accommodate text
                       ),
+                      itemCount: availableCategories.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final category = availableCategories[index];
+                        IconData? iconData = iconMap[category.icon];
+
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () => _applyFilter(category.nameUz),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.grey.shade200,
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade100,
+                                    blurRadius: 2,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Icon section - fixed height
+                                  SizedBox(
+                                    height: 40,
+                                    child: Icon(
+                                      iconData ?? Icons.help_outline,
+                                      color: Theme.of(context).primaryColor,
+                                      size: 32,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Text section - flexible but constrained
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        getCategoryName(category),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.2,
+                                        ),
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),

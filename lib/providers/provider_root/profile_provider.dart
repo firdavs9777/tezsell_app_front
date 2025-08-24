@@ -1,33 +1,144 @@
 import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
+import 'package:app/providers/provider_models/location_model.dart';
 
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'dart:io';
+import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileService {
   Future<UserInfo> getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-    print(token);
 
     final response = await http.get(Uri.parse('$baseUrl$USER_INFO'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
       return UserInfo.fromJson(data['data']);
     } else {
       throw Exception('Failed to load posts');
+    }
+  }
+
+  Future<UserInfo> updateUserInfo({
+    required String username,
+    required int locationId,
+    File? profileImage,
+  }) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final formData = FormData.fromMap({
+      'username': username,
+      'location_id': locationId,
+    });
+
+    // Add single profile image if provided
+    if (profileImage != null) {
+      String extension = profileImage.path.split('.').last.toLowerCase();
+      formData.files.add(MapEntry(
+        'profile_image',
+        await MultipartFile.fromFile(
+          profileImage.path,
+          filename:
+              'profile_${DateTime.now().millisecondsSinceEpoch}.$extension',
+        ),
+      ));
+    }
+
+    final dio = Dio();
+
+    final response = await dio.put(
+      '$baseUrl$USER_INFO',
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': 'Token $token',
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        },
+        validateStatus: (status) => status! < 500,
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Handle different response structures
+      try {
+        if (response.data != null) {
+          // Check if response.data has 'data' key
+          if (response.data is Map && response.data['data'] != null) {
+            return UserInfo.fromJson(response.data['data']);
+          }
+          // If response.data itself is the user data
+          else if (response.data is Map) {
+            return UserInfo.fromJson(response.data);
+          }
+        }
+        return await getUserInfo(); // Call your existing getUserInfo method
+      } catch (e) {
+        // Fallback: fetch fresh user info since update was successful
+        return await getUserInfo();
+      }
+    } else {
+      final errorMessage = response.data is Map
+          ? response.data.toString()
+          : 'Failed to update user info';
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        message: errorMessage,
+      );
+    }
+  }
+
+  Future<List<Regions>> getRegionsList() async {
+    final response =
+        await http.get(Uri.parse('$baseUrl$REGIONS_URL'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      return (data['regions'] as List)
+          .map((postJson) => Regions.fromJson(postJson))
+          .toList();
+    } else {
+      throw Exception('Failed to load regions');
+    }
+  }
+
+  Future<List<Districts>> getDistrictsList({
+    required String regionName,
+  }) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl$DISTRICTS_URL$regionName/'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      return (data['districts'] as List)
+          .map((postJson) => Districts.fromJson(postJson))
+          .toList();
+    } else {
+      throw Exception('Failed to load regions');
     }
   }
 
@@ -60,7 +171,6 @@ class ProfileService {
       'Accept': 'application/json',
       'Authorization': 'Token $token',
     });
-    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 

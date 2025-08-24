@@ -1,12 +1,12 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/products/main_products.dart';
-import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetail extends ConsumerStatefulWidget {
   const ProductDetail({super.key, required this.product});
@@ -32,6 +32,20 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     super.dispose();
   }
 
+  // Function to get the appropriate category name based on current locale
+  String getCategoryName() {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return widget.product.category?.nameUz ?? '';
+      case 'ru':
+        return widget.product.category?.nameRu ?? '';
+      case 'en':
+      default:
+        return widget.product.category?.nameEn ?? '';
+    }
+  }
+
   Future<void> _likeProduct() async {
     if (_isLiking) return; // Prevent multiple simultaneous requests
 
@@ -40,15 +54,17 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     });
 
     try {
+      final localizations = AppLocalizations.of(context);
       final product = await ref
           .read(profileServiceProvider) // Use read instead of watch
           .likeSingleProduct(productId: widget.product.id.toString());
 
       if (product != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(milliseconds: 1000),
-            content: Text('Product liked successfully!'),
+          SnackBar(
+            duration: const Duration(milliseconds: 1000),
+            content: Text(localizations?.productLikeSuccess ??
+                'Product liked successfully!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -57,10 +73,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       }
     } catch (e) {
       if (mounted) {
+        final localizations = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(milliseconds: 1000),
-            content: Text('Error liking product: $e'),
+            content: Text(
+                localizations?.likeProductError ?? 'Error liking product: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -82,15 +100,17 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     });
 
     try {
+      final localizations = AppLocalizations.of(context);
       final product = await ref
           .read(profileServiceProvider)
           .dislikeProductItem(productId: widget.product.id.toString());
 
       if (product != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(milliseconds: 1000),
-            content: Text('Product disliked successfully!'),
+          SnackBar(
+            duration: const Duration(milliseconds: 1000),
+            content: Text(localizations?.productDislikeSuccess ??
+                'Product disliked successfully!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -98,10 +118,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       }
     } catch (e) {
       if (mounted) {
+        final localizations = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(milliseconds: 1000),
-            content: Text('Error disliking product: $e'),
+            content: Text(localizations?.dislikeProductError ??
+                'Error disliking product: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -117,6 +139,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     // Creating a list of images
     List<ImageProvider> images = widget.product.images.isNotEmpty
         ? widget.product.images
@@ -130,7 +154,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Page'),
+        title: Text(localizations?.newProductTitle ?? 'Detail Page'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -271,6 +295,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildUserProfile() {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -294,7 +320,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  widget.product.userName?.username ?? 'Unknown User',
+                  widget.product.userName?.username ??
+                      (localizations?.username ?? 'Unknown User'),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -303,7 +330,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 Text(
                   widget.product.userName?.location != null
                       ? '${widget.product.userName!.location!.region ?? ''}, ${widget.product.userName!.location!.district ?? ''}'
-                      : 'Location not available',
+                      : (localizations?.searchLocation ??
+                          'Location not available'),
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -318,12 +346,15 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildProductTitle() {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: Align(
         alignment: Alignment.topLeft,
         child: Text(
-          widget.product.title ?? 'No Title',
+          widget.product.title ??
+              (localizations?.newProductTitle ?? 'No Title'),
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -334,12 +365,16 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildProductCategory() {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8.0),
       child: Align(
         alignment: Alignment.topLeft,
         child: Text(
-          widget.product.category?.nameUz ?? 'No Category',
+          getCategoryName().isNotEmpty
+              ? getCategoryName()
+              : (localizations?.newProductCategory ?? 'No Category'),
           style: const TextStyle(
             color: Colors.black,
             fontSize: 14,
@@ -352,12 +387,15 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildProductDescription() {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
       child: Align(
         alignment: Alignment.topLeft,
         child: Text(
-          widget.product.description ?? 'No Description',
+          widget.product.description ??
+              (localizations?.newProductDescription ?? 'No Description'),
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.normal,
@@ -368,14 +406,16 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildRecommendedProducts() {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text(
-            'Recommended Products',
-            style: TextStyle(
+          Text(
+            localizations?.recommendedProducts ?? 'Recommended Products',
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -405,11 +445,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                       children: [
                         const Icon(Icons.error, color: Colors.red),
                         const SizedBox(height: 8),
-                        Text('Error: ${snapshot.error}'),
+                        Text(
+                            '${localizations?.error ?? "Error"}: ${snapshot.error}'),
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () => setState(() {}), // Retry
-                          child: const Text('Retry'),
+                          child: Text(localizations?.retry ?? 'Retry'),
                         ),
                       ],
                     ),
@@ -418,10 +459,11 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text('No recommended products available.'),
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text(localizations?.productError ??
+                        'No recommended products available.'),
                   ),
                 );
               }
@@ -444,6 +486,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildBottomNavigationBar() {
+    final localizations = AppLocalizations.of(context);
+
     return Container(
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: Colors.black, width: 1.0)),
@@ -461,7 +505,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 _buildLikeButton(),
                 const SizedBox(width: 8),
                 Text(
-                  '${widget.product.price} So\'m',
+                  '${widget.product.price} ${localizations?.sum ?? "So'm"}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 18,
@@ -488,9 +532,9 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  child: const Text(
-                    'Chat',
-                    style: TextStyle(color: Colors.white),
+                  child: Text(
+                    localizations?.chat ?? 'Chat',
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),

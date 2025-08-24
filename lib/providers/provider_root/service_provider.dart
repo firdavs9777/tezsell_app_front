@@ -13,7 +13,6 @@ class ServiceProvider {
     final response = await http.get(Uri.parse('$baseUrl$SERVICES_URL/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print(data);
       return (data['results'] as List)
           .map((postJson) => Services.fromJson(postJson))
           .toList();
@@ -51,7 +50,7 @@ class ServiceProvider {
     final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print(response.body);
+
       return (data as List)
           .map((postJson) => CategoryModel.fromJson(postJson))
           .toList();
@@ -123,7 +122,6 @@ class ServiceProvider {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print(data['results']);
       return (data['results'] as List)
           .map((postJson) => Services.fromJson(postJson))
           .toList();

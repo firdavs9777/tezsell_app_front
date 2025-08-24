@@ -56,7 +56,6 @@ class ProductsService {
         onRequest: (options, handler) {
           final start = DateTime.now().millisecondsSinceEpoch;
           options.extra['request_start'] = start;
-          print('🚀 ${options.method} ${options.uri}');
           handler.next(options);
         },
         onResponse: (response, handler) {
@@ -68,8 +67,6 @@ class ProductsService {
                 : duration < 3000
                     ? '🟡'
                     : '🔴';
-            print(
-                '$emoji Request completed in ${duration}ms (Status: ${response.statusCode})');
           }
           handler.next(response);
         },
@@ -77,8 +74,6 @@ class ProductsService {
           final start = error.requestOptions.extra['request_start'] as int?;
           if (start != null) {
             final duration = DateTime.now().millisecondsSinceEpoch - start;
-            print(
-                '🔴 Request failed after ${duration}ms: ${error.type} - ${error.message}');
           }
 
           // Auto-retry on timeout or connection errors
@@ -92,7 +87,6 @@ class ProductsService {
           if (shouldRetry) {
             final retryCount = error.requestOptions.extra['retryCount'] ?? 0;
             if (retryCount < 2) {
-              print('🔄 Retrying request (attempt ${retryCount + 1}/2)');
               error.requestOptions.extra['retryCount'] = retryCount + 1;
 
               // Retry with exponential backoff
@@ -126,17 +120,11 @@ class ProductsService {
 
     // Check cache first
     if (_productsCache.containsKey(cacheKey)) {
-      if (kDebugMode) {
-        print('🎯 Using cached products');
-      }
       return _productsCache[cacheKey]!;
     }
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
-      if (kDebugMode) {
-        print('🔄 Products request already in progress');
-      }
       return await _pendingRequests[cacheKey] as List<Products>;
     }
 
@@ -160,15 +148,8 @@ class ProductsService {
       timer.stop();
       _logPerformance('FAILED - Get Products', timer.elapsed.inMilliseconds);
 
-      if (kDebugMode) {
-        print('💥 getProducts final error: $e');
-      }
-
       // Return cached data if available, even if old
       if (_productsCache.containsKey(cacheKey)) {
-        if (kDebugMode) {
-          print('🔄 Returning stale cached data due to error');
-        }
         return _productsCache[cacheKey]!;
       }
 
@@ -180,22 +161,12 @@ class ProductsService {
 
   Future<List<Products>> _fetchProducts() async {
     try {
-      if (kDebugMode) {
-        print('🌐 Making request to: ${dio.options.baseUrl}$PRODUCTS_URL');
-        print('🌐 Full URL will be: ${dio.options.baseUrl}$PRODUCTS_URL');
-      }
-
       final response = await dio.get(
         '/$PRODUCTS_URL/',
         options: Options(
           extra: {'retryCount': 0}, // Initialize retry count
         ),
       );
-
-      if (kDebugMode) {
-        print('📊 Response received - Status: ${response.statusCode}');
-        print('📊 Response data type: ${response.data.runtimeType}');
-      }
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -219,19 +190,10 @@ class ProductsService {
               'Expected List for results but got ${results.runtimeType}');
         }
 
-        if (kDebugMode) {
-          print('📊 Products response size: ${jsonEncode(data).length} bytes');
-          print('📊 Products count: ${results.length}');
-        }
-
         return results.map((productJson) {
           try {
             return Products.fromJson(productJson);
           } catch (e) {
-            if (kDebugMode) {
-              print('⚠️ Error parsing product: $e');
-              print('⚠️ Product data: $productJson');
-            }
             rethrow;
           }
         }).toList();
@@ -240,14 +202,6 @@ class ProductsService {
             'HTTP ${response.statusCode}: ${response.statusMessage}');
       }
     } on DioException catch (e) {
-      if (kDebugMode) {
-        print('💥 DioException details:');
-        print('   Type: ${e.type}');
-        print('   Message: ${e.message}');
-        print('   Response: ${e.response?.data}');
-        print('   Status Code: ${e.response?.statusCode}');
-      }
-
       // Create more specific error messages
       String errorMessage;
       switch (e.type) {
@@ -281,10 +235,6 @@ class ProductsService {
 
       throw Exception(errorMessage);
     } catch (e) {
-      if (kDebugMode) {
-        print('💥 Unexpected error fetching products: $e');
-        print('💥 Error type: ${e.runtimeType}');
-      }
       throw Exception('Failed to load products: $e');
     }
   }
@@ -378,9 +328,6 @@ class ProductsService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('💥 Error fetching filtered products: $e');
-      }
       rethrow;
     }
   }
@@ -401,9 +348,6 @@ class ProductsService {
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
-      if (kDebugMode) {
-        print('🔄 Categories request already in progress');
-      }
       return await _pendingRequests[cacheKey] as List<CategoryModel>;
     }
 
@@ -471,9 +415,6 @@ class ProductsService {
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
-      if (kDebugMode) {
-        print('🔄 Single product request already in progress');
-      }
       return await _pendingRequests[cacheKey] as List<Products>;
     }
 
@@ -501,11 +442,6 @@ class ProductsService {
       if (response.statusCode == 200) {
         final data = response.data;
 
-        if (kDebugMode) {
-          print(
-              '📊 Recommended products count: ${(data['recommended_products'] as List).length}');
-        }
-
         return (data['recommended_products'] as List)
             .map((productJson) => Products.fromJson(productJson))
             .toList();
@@ -517,9 +453,6 @@ class ProductsService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('💥 Error fetching single product: $e');
-      }
       rethrow;
     }
   }
@@ -543,11 +476,6 @@ class ProductsService {
       if (token == null) {
         throw Exception('User not authenticated');
       }
-
-      if (kDebugMode) {
-        print('📝 Creating product with ${imageFiles.length} images');
-      }
-
       final formData = FormData.fromMap({
         'title': title,
         'condition': 'new',
@@ -589,11 +517,6 @@ class ProductsService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Clear products cache since we added a new product
         _productsCache.clear();
-
-        if (kDebugMode) {
-          print('✅ Product created successfully');
-        }
-
         return Products.fromJson(response.data);
       } else {
         final errorMessage = response.data is Map
@@ -609,9 +532,151 @@ class ProductsService {
       timer.stop();
       _logPerformance('FAILED - Create Product', timer.elapsed.inMilliseconds);
 
-      if (kDebugMode) {
-        print('💥 Error creating product: $e');
+      rethrow;
+    }
+  }
+
+  Future<Products> updateProduct({
+    required int productId,
+    required String title,
+    required String description,
+    required int price,
+    required int categoryId,
+    String condition = 'new',
+    String currency = 'Sum',
+    bool inStock = true,
+    List<File>? newImageFiles,
+    List<int>? existingImageIds,
+  }) async {
+    final timer = Stopwatch()..start();
+
+    try {
+      final prefs = await _getPrefs();
+      final token = prefs.getString('token');
+      final userLocation = prefs.getString('userLocation');
+      final userId = prefs.getString('userId');
+
+      if (token == null) {
+        throw Exception('User not authenticated');
       }
+
+      final formData = FormData.fromMap({
+        'title': title,
+        'description': description,
+        'condition': condition,
+        'currency': currency,
+        'in_stock': inStock,
+        'price': price,
+        'category_id': categoryId,
+        'location_id': int.tryParse(userLocation ?? '0'),
+        'userName_id': int.tryParse(userId ?? '0'),
+        'userAddress_id': int.tryParse(userLocation ?? '0'),
+      });
+
+      // Add existing image IDs if any
+      if (existingImageIds != null && existingImageIds.isNotEmpty) {
+        for (int i = 0; i < existingImageIds.length; i++) {
+          formData.fields
+              .add(MapEntry('existing_images', existingImageIds[i].toString()));
+        }
+      }
+
+      // Add new images if any
+      if (newImageFiles != null && newImageFiles.isNotEmpty) {
+        for (int i = 0; i < newImageFiles.length; i++) {
+          formData.files.add(MapEntry(
+            'images',
+            await MultipartFile.fromFile(
+              newImageFiles[i].path,
+              filename: 'image_$i.jpg',
+            ),
+          ));
+        }
+      }
+
+      final response = await dio.put(
+        "${baseUrl}/products/api/user/products/$productId/",
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Token $token',
+            'Content-Type': 'multipart/form-data',
+          },
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      timer.stop();
+      _logPerformance('Update Product', timer.elapsed.inMilliseconds);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Clear products cache since we updated a product
+        _productsCache.clear();
+        return Products.fromJson(response.data);
+      } else {
+        final errorMessage = response.data is Map
+            ? response.data.toString()
+            : 'Failed to update product';
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      timer.stop();
+      _logPerformance('FAILED - Update Product', timer.elapsed.inMilliseconds);
+
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteProduct({
+    required int productId,
+  }) async {
+    final timer = Stopwatch()..start();
+
+    try {
+      final prefs = await _getPrefs();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('User not authenticated');
+      }
+
+      final response = await dio.delete(
+        "${baseUrl}/products/api/user/products/$productId/",
+        options: Options(
+          headers: {
+            'Authorization': 'Token $token',
+          },
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      timer.stop();
+      _logPerformance('Delete Product', timer.elapsed.inMilliseconds);
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 204 ||
+          response.statusCode == 201) {
+        // Clear products cache since we deleted a product
+        _productsCache.clear();
+        return true;
+      } else {
+        final errorMessage = response.data is Map
+            ? response.data.toString()
+            : 'Failed to delete product';
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      timer.stop();
+      _logPerformance('FAILED - Delete Product', timer.elapsed.inMilliseconds);
+
       rethrow;
     }
   }

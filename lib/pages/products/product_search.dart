@@ -3,6 +3,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductSearch extends ConsumerStatefulWidget {
   const ProductSearch({super.key});

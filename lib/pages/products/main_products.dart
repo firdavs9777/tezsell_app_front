@@ -11,8 +11,7 @@ class ProductMain extends ConsumerWidget {
 
   const ProductMain({super.key, required this.product});
 
-  // Cache the number formatter to avoid recreating it
-  static final _priceFormatter = NumberFormat('#,##0', 'en_US');
+  static final _priceFormatter = NumberFormat('#,##0', 'ko_KR');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +29,7 @@ class ProductMain extends ConsumerWidget {
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           color: Colors.white,
@@ -42,143 +41,129 @@ class ProductMain extends ConsumerWidget {
             ),
           ],
         ),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              // Product Image - Fast loading
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: product.images.isNotEmpty
-                      ? Image.network(
-                          '${baseUrl}${product.images[0].image}',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              'assets/logo/logo_no_background.png',
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        )
-                      : Image.asset(
-                          'assets/logo/logo_no_background.png',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
-                ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product Image - Left side like Carrot
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: product.images.isNotEmpty
+                    ? Image.network(
+                        '${baseUrl}${product.images[0].image}',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/logo/logo_no_background.png',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/logo/logo_no_background.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
               ),
-              const SizedBox(width: 12.0),
-
-              // Product Details - Flexible to prevent overflow
-              Expanded(
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: SizedBox(
+                height: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Title - Prevent overflow
-                    Text(
-                      product.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: 4.0),
-
-                    // Description - Prevent overflow
-                    Text(
-                      product.description,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: 6.0),
-
-                    // Location row with proper overflow handling
-                    Row(
+                    // Top section: Title and Location
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.location_on,
-                          size: 16,
-                          color: Colors.redAccent,
+                        // Title - Top priority like Carrot
+                        Text(
+                          product.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.0,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: 4.0),
+                        const SizedBox(height: 4.0),
+
+                        // Location - Second line like Carrot
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 14,
+                              color: Colors.redAccent,
+                            ),
+                            const SizedBox(width: 2.0),
+                            Expanded(
+                              child: Text(
+                                _getLocationText(),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12.0,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // Price - Bottom left like Carrot
                         Expanded(
                           child: Text(
-                            _getLocationText(),
+                            formattedPrice,
                             style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                              color: Colors.green,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 8.0),
-
-              // Price and Likes - Fixed width to prevent overflow
-              SizedBox(
-                width: 70,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Price - Prevent overflow
-                    Text(
-                      formattedPrice,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.0,
-                        color: Colors.green,
-                      ),
-                      textAlign: TextAlign.end,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    const SizedBox(height: 8.0),
-
-                    // Super fast likes - no API calls!
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.favorite_border, // Static heart for speed
-                          color: Colors.grey,
-                          size: 22.0,
-                        ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          '${product.likeCount}',
-                          style: const TextStyle(fontSize: 12.0),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.favorite_border,
+                              color: Colors.grey,
+                              size: 18.0,
+                            ),
+                            const SizedBox(width: 4.0),
+                            Text(
+                              '${product.likeCount}',
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -188,19 +173,17 @@ class ProductMain extends ConsumerWidget {
     try {
       final priceValue = int.tryParse(product.price) ?? 0;
       final formattedPrice = _priceFormatter.format(priceValue);
-      return '$formattedPrice ${product.currency}';
+      return '$formattedPrice${product.currency}';
     } catch (e) {
-      return '${product.price} ${product.currency}';
+      return '${product.price}${product.currency}';
     }
   }
 
   String _getLocationText() {
     final region = product.location.region ?? '';
     final district = product.location.district ?? '';
-    final fullLocation = '$region, $district';
-
-    // Smart truncation - keep your original logic but make it safer
-    final maxLength = 15;
+    final fullLocation = '$region $district';
+    final maxLength = 20;
     if (fullLocation.length <= maxLength) {
       return fullLocation;
     }

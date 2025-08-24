@@ -1,11 +1,7 @@
-import 'package:app/common_wdigets/common_button.dart';
-import 'package:app/pages/products/products_list.dart';
+import 'package:app/common_widgets/common_button.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
-import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
-import 'package:app/utils/thousand_separator.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
