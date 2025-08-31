@@ -35,8 +35,8 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     // Add your logo here
                     Image.asset(
                       'assets/logo/logo.png',
-                      width: 80,
-                      height: 80,
+                      width: 120,
+                      height: 120,
                     ),
                     const SizedBox(height: 24),
                   ],
@@ -44,16 +44,18 @@ class LanguageSelectionScreen extends ConsumerWidget {
               ),
 
               // Title
-              Text(
-                'Choose Your Language', // This will be static for now since user hasn't selected language yet
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+              Center(
+                child: Text(
+                  'Tilni tanlang', // This will be static for now since user hasn't selected language yet
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Select your preferred language for the app', // This will be static for now
+                'Ilova uchun afzal ko‘rgan tilingizni tanlang', // This will be static for now
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
@@ -202,10 +204,11 @@ class LanguageSelectionScreen extends ConsumerWidget {
                         Theme.of(context).colorScheme.surfaceVariant,
                   ),
                   child: Text(
-                    'Continue', // This will be static for now since user hasn't selected language yet
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                    'Davom etish', // This will be static for now since user hasn't selected language yet
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 ),
               ),

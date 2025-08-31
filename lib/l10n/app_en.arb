@@ -1324,6 +1324,95 @@
                "privacy": "Privacy",
               "light_theme" : "Light",
               "dark_theme": "Dark",
-              "system_theme" : "System Default"
+              "system_theme" : "System Default",
+              "my_products": "My Products",
+  "refresh": "Refresh",
+  "delete_product": "Delete Product",
+  "delete_confirmation": "Are you sure you want to delete this product?",
+
+  "delete": "Delete",
+  "error_loading_products": "Error loading products: {error}",
+  "@error_loading_products": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "product_deleted_success": "Product deleted successfully",
+  "error_deleting_product": "Error deleting product: {error}",
+  "@error_deleting_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "no_products_found": "No products found",
+  "add_first_product": "Start by adding your first product",
+  "no_title": "No title",
+  "no_description": "No description",
+  "in_stock": "In Stock",
+  "out_of_stock": "Out of Stock",
+  "new_condition": "NEW",
+  "edit_product": "Edit Product",
+  "delete_product_tooltip": "Delete Product",
+  "sum_currency": "Sum",
+  "edit_product_title": "Edit Product",
+  "product_name": "Product Name",
+  "product_description": "Product Description",
+  "price": "Price",
+  "condition": "Condition",
+  "condition_new": "New",
+  "condition_used": "Used",
+  "condition_refurbished": "Refurbished",
+  "currency": "Currency",
+  "in_stock": "In Stock",
+  "select_category": "Select Category",
+  "category": "Category",
+  "images": "Images",
+  "existing_images": "Existing Images",
+  "new_images": "New Images",
+  "image_instructions": "Images will appear here. Please press the upload icon above.",
+  "update_button": "Update",
+  "loading_category_error": "Error loading categories: {error}",
+  "@loading_category_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "error_picking_images": "Error picking images: {error}",
+  "@error_picking_images": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "please_fill_all_required": "Please fill all the fields",
+  "invalid_price_message": "Invalid price entered. Please enter a valid number.",
+  "category_required_message": "Please select a valid category.",
+  "one_image_required_message": "At least one product image is required",
+  "product_updated_success": "Product successfully updated",
+  "error_updating_product": "Error while updating product: {error}",
+  "@error_updating_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "my_services": "My Services",
+  "delete_service": "Delete Service",
+  "delete_service_confirmation": "Are you sure you want to delete this service?",
+  "no_services_found": "No services found",
+  "add_first_service": "Start by adding your first service",
+  "edit_service": "Edit Service",
+  "delete_service_tooltip": "Delete Service",
+  "service_deleted_successfully": "Service deleted successfully",
+  "error_deleting_service": "Error deleting service",
+  "error_loading_services": "Error loading services"
 
 }

@@ -629,8 +629,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   iconColor: const Color(0xFF2196F3),
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => MyServices(services: services)),
+                    MaterialPageRoute(builder: (context) => MyServices()),
                   ),
                 ),
 

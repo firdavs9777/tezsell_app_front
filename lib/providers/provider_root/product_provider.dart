@@ -573,26 +573,35 @@ class ProductsService {
         'userAddress_id': int.tryParse(userLocation ?? '0'),
       });
 
-      // Add existing image IDs if any
+      // FIXED: Add existing image IDs - this matches your Django serializer expectation
       if (existingImageIds != null && existingImageIds.isNotEmpty) {
-        for (int i = 0; i < existingImageIds.length; i++) {
-          formData.fields
-              .add(MapEntry('existing_images', existingImageIds[i].toString()));
+        for (int imageId in existingImageIds) {
+          formData.fields.add(MapEntry('existing_images', imageId.toString()));
         }
       }
 
-      // Add new images if any
+      // FIXED: Add new images with correct field name that matches Django serializer
       if (newImageFiles != null && newImageFiles.isNotEmpty) {
         for (int i = 0; i < newImageFiles.length; i++) {
           formData.files.add(MapEntry(
-            'images',
+            'new_images', // Changed from 'images' to 'new_images' to match serializer
             await MultipartFile.fromFile(
               newImageFiles[i].path,
-              filename: 'image_$i.jpg',
+              filename: 'image_${DateTime.now().millisecondsSinceEpoch}_$i.jpg',
             ),
           ));
         }
       }
+
+      // Debug logging to see what's being sent
+      print('=== UPDATE PRODUCT DEBUG ===');
+      print('Product ID: $productId');
+      print(
+          'Form fields: ${formData.fields.map((e) => '${e.key}: ${e.value}').join(', ')}');
+      print(
+          'File fields: ${formData.files.map((e) => '${e.key}: ${e.value.filename}').join(', ')}');
+      print('Existing image IDs: $existingImageIds');
+      print('New images count: ${newImageFiles?.length ?? 0}');
 
       final response = await dio.put(
         "${baseUrl}/products/api/user/products/$productId/",
@@ -609,14 +618,37 @@ class ProductsService {
       timer.stop();
       _logPerformance('Update Product', timer.elapsed.inMilliseconds);
 
+      print('Response status: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Clear products cache since we updated a product
         _productsCache.clear();
         return Products.fromJson(response.data);
       } else {
-        final errorMessage = response.data is Map
-            ? response.data.toString()
-            : 'Failed to update product';
+        // Enhanced error handling
+        String errorMessage =
+            'Failed to update product (${response.statusCode})';
+
+        if (response.data is Map) {
+          final errorData = response.data as Map<String, dynamic>;
+          List<String> errors = [];
+
+          errorData.forEach((key, value) {
+            if (value is List) {
+              errors.addAll(value.map((e) => '$key: $e'));
+            } else {
+              errors.add('$key: $value');
+            }
+          });
+
+          if (errors.isNotEmpty) {
+            errorMessage = errors.join(', ');
+          }
+        }
+
+        print('Error response: $errorMessage');
+
         throw DioException(
           requestOptions: response.requestOptions,
           response: response,
@@ -627,6 +659,7 @@ class ProductsService {
       timer.stop();
       _logPerformance('FAILED - Update Product', timer.elapsed.inMilliseconds);
 
+      print('Update product exception: $e');
       rethrow;
     }
   }

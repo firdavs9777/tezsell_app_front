@@ -5,6 +5,7 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyProducts extends ConsumerStatefulWidget {
   const MyProducts({super.key});
@@ -60,21 +61,24 @@ class _MyProductsState extends ConsumerState<MyProducts> {
   void _deleteProduct(int productId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
+        final localizations = AppLocalizations.of(dialogContext);
+
         return AlertDialog(
-          title: const Text('Delete Product'),
-          content: const Text('Are you sure you want to delete this product?'),
+          title: Text(localizations?.delete_product ?? 'Delete Product'),
+          content: Text(localizations?.delete_confirmation ??
+              'Are you sure you want to delete this product?'),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(localizations?.cancel ?? 'Cancel'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
             ),
             TextButton(
-              child: const Text('Delete'),
+              child: Text(localizations?.delete ?? 'Delete'),
               onPressed: () async {
-                Navigator.of(context).pop(); // Close dialog first
+                Navigator.of(dialogContext).pop(); // Close dialog first
 
                 showDialog(
                   context: context,
@@ -169,6 +173,8 @@ class _MyProductsState extends ConsumerState<MyProducts> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return WillPopScope(
       onWillPop: () async {
         // When user navigates back, return whether changes were made
@@ -177,39 +183,41 @@ class _MyProductsState extends ConsumerState<MyProducts> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My Products'),
+          title: Text(localizations?.my_products ?? 'My Products'),
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: _refreshProducts,
-              tooltip: 'Refresh',
+              tooltip: localizations?.refresh ?? 'Refresh',
             ),
           ],
         ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _products.isEmpty
-                ? const Center(
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.inventory_2_outlined,
                           size: 80,
                           color: Colors.grey,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
-                          'No products found',
-                          style: TextStyle(
+                          localizations?.no_products_found ??
+                              'No products found',
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.grey,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
-                          'Start by adding your first product',
-                          style: TextStyle(
+                          localizations?.add_first_product ??
+                              'Start by adding your first product',
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                           ),
@@ -283,7 +291,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          product.title ?? 'No title',
+                                          product.title ??
+                                              (localizations?.no_title ??
+                                                  'No title'),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16.0,
@@ -293,7 +303,8 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                         const SizedBox(height: 4.0),
                                         Text(
                                           product.description ??
-                                              'No description',
+                                              (localizations?.no_description ??
+                                                  'No description'),
                                           style: const TextStyle(
                                             color: Colors.grey,
                                             fontSize: 12.0,
@@ -344,8 +355,12 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                               ),
                                               child: Text(
                                                 product.inStock == true
-                                                    ? 'In Stock'
-                                                    : 'Out of Stock',
+                                                    ? (localizations
+                                                            ?.in_stock ??
+                                                        'In Stock')
+                                                    : (localizations
+                                                            ?.out_of_stock ??
+                                                        'Out of Stock'),
                                                 style: TextStyle(
                                                   fontSize: 10.0,
                                                   color: product.inStock == true
@@ -370,7 +385,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                               child: Text(
                                                 product.condition
                                                         ?.toUpperCase() ??
-                                                    'NEW',
+                                                    (localizations
+                                                            ?.new_condition ??
+                                                        'NEW'),
                                                 style: TextStyle(
                                                   fontSize: 10.0,
                                                   color: Colors.blue.shade700,
@@ -389,7 +406,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '$formattedPrice ${product.currency ?? 'Sum'}',
+                                        '$formattedPrice ${product.currency ?? (localizations?.sum_currency ?? "So'm")}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12.0,
@@ -405,7 +422,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                                 color: Colors.blue, size: 20),
                                             onPressed: () =>
                                                 _editProduct(product.id!),
-                                            tooltip: 'Edit Product',
+                                            tooltip:
+                                                localizations?.edit_product ??
+                                                    'Edit Product',
                                             padding: const EdgeInsets.all(4),
                                             constraints: const BoxConstraints(
                                               minWidth: 32,
@@ -417,7 +436,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                                 color: Colors.red, size: 20),
                                             onPressed: () =>
                                                 _deleteProduct(product.id!),
-                                            tooltip: 'Delete Product',
+                                            tooltip: localizations
+                                                    ?.delete_product_tooltip ??
+                                                'Delete Product',
                                             padding: const EdgeInsets.all(4),
                                             constraints: const BoxConstraints(
                                               minWidth: 32,

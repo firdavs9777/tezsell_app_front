@@ -1,5 +1,4 @@
 import 'package:app/common_widgets/common_button.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
@@ -52,8 +51,8 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
   bool inStock = true;
 
   List<File> _newImages = [];
-  List<int> _existingImageIds = [];
-  List<String> _existingImageUrls = [];
+  // Changed: Track existing images with their deletion status
+  List<ExistingImageData> _existingImages = [];
   final picker = ImagePicker();
 
   void _initializeFields() {
@@ -76,12 +75,15 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
 
     inStock = widget.product.inStock ?? true;
 
-    // Initialize existing images
+    // Initialize existing images with better tracking
     if (widget.product.images != null) {
-      _existingImageUrls =
-          widget.product.images!.map((img) => img.image ?? '').toList();
-      _existingImageIds =
-          widget.product.images!.map((img) => img.id ?? 0).toList();
+      _existingImages = widget.product.images!
+          .map((img) => ExistingImageData(
+                id: img.id ?? 0,
+                imageUrl: img.image ?? '',
+                isDeleted: false,
+              ))
+          .toList();
     }
   }
 
@@ -107,11 +109,9 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
         availableCategories = categories;
       });
     } catch (e) {
-      final localizations = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              '${localizations?.loadingCategoryError ?? "Error loading categories:"} $e'),
+          content: Text('Error loading categories: $e'),
         ),
       );
     }
@@ -122,6 +122,22 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       if (isMulti) {
         final pickedFiles = await picker.pickMultiImage();
         if (pickedFiles != null) {
+          // Check total image count limit
+          final currentImageCount =
+              _getActiveExistingImagesCount() + _newImages.length;
+          final maxNewImages = 10 - currentImageCount;
+
+          if (pickedFiles.length > maxNewImages) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'You can only add ${maxNewImages} more image(s). Maximum 10 images allowed.'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            return;
+          }
+
           setState(() {
             _newImages
                 .addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
@@ -130,27 +146,66 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       } else {
         final pickedFile = await picker.pickImage(source: ImageSource.gallery);
         if (pickedFile != null) {
+          final currentImageCount =
+              _getActiveExistingImagesCount() + _newImages.length;
+
+          if (currentImageCount >= 10) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Maximum 10 images allowed.'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            return;
+          }
+
           setState(() {
             _newImages.add(File(pickedFile.path));
           });
         }
       }
     } catch (e) {
-      final localizations = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              '${localizations?.errorMessage ?? "Error picking images:"} $e'),
+          content: Text('Error picking images: $e'),
         ),
       );
     }
   }
 
+  // Helper method to count active existing images
+  int _getActiveExistingImagesCount() {
+    return _existingImages.where((img) => !img.isDeleted).length;
+  }
+
+  // Helper method to get active existing image IDs
+  List<int> _getActiveExistingImageIds() {
+    return _existingImages
+        .where((img) => !img.isDeleted)
+        .map((img) => img.id)
+        .toList();
+  }
+
+  // Helper method to get active existing image URLs
+  List<String> _getActiveExistingImageUrls() {
+    return _existingImages
+        .where((img) => !img.isDeleted)
+        .map((img) => img.imageUrl)
+        .toList();
+  }
+
   void _removeExistingImage(int index) {
-    setState(() {
-      _existingImageUrls.removeAt(index);
-      _existingImageIds.removeAt(index);
-    });
+    final activeImages =
+        _existingImages.where((img) => !img.isDeleted).toList();
+    if (index < activeImages.length) {
+      // Find the actual index in the full list
+      final imageToRemove = activeImages[index];
+      final actualIndex = _existingImages.indexOf(imageToRemove);
+
+      setState(() {
+        _existingImages[actualIndex].isDeleted = true;
+      });
+    }
   }
 
   void _removeNewImage(int index) {
@@ -160,15 +215,12 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
   }
 
   Future<void> _updateProduct() async {
-    final localizations = AppLocalizations.of(context);
-
     if (_titleController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations?.pleaseFillAllRequired ??
-              'Please fill all the fields'),
+        const SnackBar(
+          content: Text('Please fill all the fields'),
         ),
       );
       return;
@@ -176,33 +228,33 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
 
     int? price = int.tryParse(_amountController.text.replaceAll(',', ''));
     if (price == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.priceRequiredMessage ??
-            'Invalid price entered. Please enter a valid number.'),
-        duration: const Duration(seconds: 3),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Invalid price entered. Please enter a valid number.'),
+        duration: Duration(seconds: 3),
       ));
       return;
     }
 
     if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.categoryRequiredMessage ??
-            'Please select a valid category.'),
-        duration: const Duration(seconds: 3),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Please select a valid category.'),
+        duration: Duration(seconds: 3),
       ));
       return;
     }
 
-    if (_existingImageUrls.isEmpty && _newImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.oneImageConfirmMessage ??
-            'At least one product image is required'),
-        duration: const Duration(seconds: 3),
+    // Check if at least one image exists (either existing non-deleted or new)
+    if (_getActiveExistingImagesCount() == 0 && _newImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('At least one product image is required'),
+        duration: Duration(seconds: 3),
       ));
       return;
     }
 
     try {
+      final activeExistingImageIds = _getActiveExistingImageIds();
+
       final updatedProduct =
           await ref.read(productsServiceProvider).updateProduct(
                 productId: widget.product.id!,
@@ -214,37 +266,50 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 currency: selectedCurrency,
                 inStock: inStock,
                 newImageFiles: _newImages.isNotEmpty ? _newImages : null,
-                existingImageIds:
-                    _existingImageIds.isNotEmpty ? _existingImageIds : null,
+                existingImageIds: activeExistingImageIds.isNotEmpty
+                    ? activeExistingImageIds
+                    : null,
               );
 
       if (updatedProduct != null) {
         // Pop back to parent screen with success result
         Navigator.pop(context, updatedProduct);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(localizations?.productUpdatedSuccess ??
-              'Product successfully updated'),
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Product successfully updated'),
           duration: Duration(seconds: 3),
         ));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            '${localizations?.errorUpdatingProduct ?? "Error while updating product:"} $e'),
-        duration: Duration(seconds: 3),
+        content: Text('Error while updating product: $e'),
+        duration: const Duration(seconds: 3),
       ));
+    }
+  }
+
+  String _getLocalizedCondition(
+      String condition, AppLocalizations? localizations) {
+    switch (condition.toLowerCase()) {
+      case 'new':
+        return localizations?.condition_new ?? 'New';
+      case 'used':
+        return localizations?.condition_used ?? 'Used';
+      default:
+        return condition.capitalize();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final activeExistingImageUrls = _getActiveExistingImageUrls();
+    final totalImageCount = activeExistingImageUrls.length + _newImages.length;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(localizations?.editProductTitle ?? 'Edit Product'),
+          title: Text(localizations?.edit_product_title ?? 'Edit Product'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -255,7 +320,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    localizations?.editProductTitle ?? 'Edit Product',
+                    localizations?.edit_product_title ?? 'Edit Product',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -265,24 +330,24 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 ),
                 const SizedBox(height: 20),
                 _buildSectionTitle(
-                    localizations?.newProductTitle ?? 'Product Name'),
+                    localizations?.product_name ?? 'Product Name'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _titleController,
-                  labelText: localizations?.newProductTitle ?? 'Product Name',
+                  labelText: localizations?.product_name ?? 'Product Name',
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductDescription ??
+                _buildSectionTitle(localizations?.product_description ??
                     'Product Description'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: localizations?.newProductDescription ??
+                  labelText: localizations?.product_description ??
                       'Product Description',
                   maxLines: 5,
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductPrice ?? 'Price'),
+                _buildSectionTitle(localizations?.price ?? 'Price'),
                 const SizedBox(height: 10),
                 TextField(
                   controller: _amountController,
@@ -292,20 +357,21 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                     FilteringTextInputFormatter.digitsOnly
                   ],
                   decoration: InputDecoration(
-                    labelText: localizations?.newProductPrice ?? 'Price',
-                    border: OutlineInputBorder(),
+                    labelText: localizations?.price ?? 'Price',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Condition'),
+                _buildSectionTitle(localizations?.condition ?? 'Condition'),
                 const SizedBox(height: 10),
                 DropdownButton<String>(
                   isExpanded: true,
                   value: selectedCondition,
-                  items: ['new', 'used', 'refurbished']
+                  items: ['new', 'used']
                       .map((condition) => DropdownMenuItem(
                             value: condition,
-                            child: Text(condition.capitalize()),
+                            child: Text(_getLocalizedCondition(
+                                condition, localizations)),
                           ))
                       .toList(),
                   onChanged: (String? value) {
@@ -317,7 +383,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                   },
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Currency'),
+                _buildSectionTitle(localizations?.currency ?? 'Currency'),
                 const SizedBox(height: 10),
                 DropdownButton<String>(
                   isExpanded: true,
@@ -341,7 +407,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    _buildSectionTitle('In Stock'),
+                    _buildSectionTitle(localizations?.in_stock ?? 'In Stock'),
                     const SizedBox(width: 10),
                     Switch(
                       value: inStock,
@@ -355,7 +421,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 ),
                 const SizedBox(height: 20),
                 _buildSectionTitle(
-                    localizations?.newProductCategory ?? 'Select Category'),
+                    localizations?.category ?? 'Select Category'),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -379,24 +445,43 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                     }
                   },
                   hint:
-                      Text(localizations?.selectCategory ?? 'Select Category'),
+                      Text(localizations?.select_category ?? 'Select Category'),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductImages ?? 'Images'),
+
+                // Images Section with counter
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildSectionTitle(localizations?.images ?? 'Images'),
+                    Text(
+                      '$totalImageCount/10',
+                      style: TextStyle(
+                        color: totalImageCount >= 10 ? Colors.red : Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 10),
+
+                // Upload button with conditional state
                 IconButton(
-                  color: Colors.red,
+                  color: totalImageCount >= 10 ? Colors.grey : Colors.red,
                   icon: const Icon(
                     Icons.upload_file,
                     size: 30,
                   ),
-                  onPressed: () => _pickImage(isMulti: true),
+                  onPressed: totalImageCount >= 10
+                      ? null
+                      : () => _pickImage(isMulti: true),
                 ),
                 const SizedBox(height: 10),
 
                 // Existing Images Section
-                if (_existingImageUrls.isNotEmpty) ...[
-                  _buildSectionTitle('Existing Images'),
+                if (activeExistingImageUrls.isNotEmpty) ...[
+                  _buildSectionTitle(
+                      localizations?.existing_images ?? 'Existing Images'),
                   const SizedBox(height: 10),
                   GridView.builder(
                     shrinkWrap: true,
@@ -407,21 +492,21 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                       crossAxisSpacing: 8.0,
                       mainAxisSpacing: 8.0,
                     ),
-                    itemCount: _existingImageUrls.length,
+                    itemCount: activeExistingImageUrls.length,
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(
-                              _existingImageUrls[index],
+                              activeExistingImageUrls[index],
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
                                   color: Colors.grey[300],
-                                  child: Icon(Icons.error),
+                                  child: const Icon(Icons.error),
                                 );
                               },
                             ),
@@ -442,7 +527,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                                 ),
                                 onPressed: () => _removeExistingImage(index),
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(
+                                constraints: const BoxConstraints(
                                   minWidth: 24,
                                   minHeight: 24,
                                 ),
@@ -458,7 +543,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
 
                 // New Images Section
                 if (_newImages.isNotEmpty) ...[
-                  _buildSectionTitle('New Images'),
+                  _buildSectionTitle(localizations?.new_images ?? 'New Images'),
                   const SizedBox(height: 10),
                   GridView.builder(
                     shrinkWrap: true,
@@ -498,7 +583,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                                 ),
                                 onPressed: () => _removeNewImage(index),
                                 padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(
+                                constraints: const BoxConstraints(
                                   minWidth: 24,
                                   minHeight: 24,
                                 ),
@@ -511,10 +596,10 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                   ),
                 ],
 
-                if (_existingImageUrls.isEmpty && _newImages.isEmpty)
+                if (totalImageCount == 0)
                   Center(
                     child: Text(
-                      localizations?.imageInstructions ??
+                      localizations?.image_instructions ??
                           'Images will appear here. Please press the upload icon above.',
                     ),
                   ),
@@ -528,7 +613,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
             color: Colors.orange,
             height: 60,
             child: CommonButton(
-              buttonText: localizations?.uploadBtnLabel ?? 'Update',
+              buttonText: localizations?.update_button ?? 'Update',
               onPressed: _updateProduct,
             ),
           ),
@@ -567,6 +652,19 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       ),
     );
   }
+}
+
+// Helper class to track existing images
+class ExistingImageData {
+  final int id;
+  final String imageUrl;
+  bool isDeleted;
+
+  ExistingImageData({
+    required this.id,
+    required this.imageUrl,
+    this.isDeleted = false,
+  });
 }
 
 extension StringExtension on String {

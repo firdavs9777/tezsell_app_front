@@ -175,14 +175,44 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     );
                   }
                 },
-                icon: const Icon(
-                  Icons.search,
-                  size: 34,
+                icon: IconButton(
+                  onPressed: () {
+                    if (_selectedPageIndex == 0) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const ProductSearch(),
+                        ),
+                      );
+                    } else if (_selectedPageIndex == 1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const ServiceSearch(),
+                        ),
+                      );
+                    } else if (_selectedPageIndex == 2) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const RealEstateSearch(),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.search,
+                    size: 24,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
         ],
-        title: Text(activePageTitle),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Text(activePageTitle),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: activePage,
