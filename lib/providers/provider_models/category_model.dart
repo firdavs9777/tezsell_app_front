@@ -24,4 +24,20 @@ class CategoryModel {
         nameEn: json['name_en'] ?? '',
         icon: json['icon'] ?? '');
   }
+
+  // Add equality comparison based on ID
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CategoryModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  // Optional: Add toString for debugging
+  @override
+  String toString() {
+    return 'CategoryModel(id: $id, key: $key, nameEn: $nameEn)';
+  }
 }

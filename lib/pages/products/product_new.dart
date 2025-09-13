@@ -46,6 +46,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   final picker = ImagePicker();
 
   // Function to get the appropriate category name based on current locale
+
   String getCategoryName(CategoryModel category) {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {

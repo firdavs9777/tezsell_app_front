@@ -1413,6 +1413,24 @@
   "delete_service_tooltip": "Delete Service",
   "service_deleted_successfully": "Service deleted successfully",
   "error_deleting_service": "Error deleting service",
-  "error_loading_services": "Error loading services"
+  "error_loading_services": "Error loading services",
+  "service_name": "Service Name",
+  "enter_service_name": "Enter service name",
+  "service_name_required": "Service name is required",
+  "service_name_min_length": "Service name must be at least 3 characters",
+  "service_description": "Service Description",
+  "enter_service_description": "Enter service description",
+  "service_description_required": "Service description is required",
+  "service_description_min_length": "Description must be at least 10 characters",
+  "category_required": "Please select a category",
+  "no_categories_available": "No categories available",
+  "location": "Location",
+  "select_location": "Select location",
+  "location_required": "Please select a location",
+  "no_locations_available": "No locations available",
+  "add_images": "Add Images",
+  "current_images": "Current Images",
+  "no_images_selected": "No images selected",
+  "save_changes": "Save Changes"
 
 }

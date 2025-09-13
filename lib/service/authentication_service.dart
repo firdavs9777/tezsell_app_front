@@ -383,6 +383,7 @@ class AuthenticationService {
     String userName,
     String regionName,
     String districtName,
+    String districtId,
     File? profileImage,
   ) async {
     // Prevent duplicate registration requests
@@ -396,8 +397,15 @@ class AuthenticationService {
 
     final totalTimer = Stopwatch()..start();
 
-    final registrationFuture = _performRegistration(phoneNumber, password,
-        userName, regionName, districtName, profileImage, totalTimer);
+    final registrationFuture = _performRegistration(
+        phoneNumber,
+        password,
+        userName,
+        regionName,
+        districtName,
+        districtId,
+        profileImage,
+        totalTimer);
 
     _pendingRequests[requestKey] = registrationFuture;
 
@@ -415,11 +423,18 @@ class AuthenticationService {
     String userName,
     String regionName,
     String districtName,
+    String districtId, // Make sure this is passed as String
     File? profileImage,
     Stopwatch totalTimer,
   ) async {
     try {
       final url = Uri.parse('$baseUrl$REGISTER_URL');
+      print("Here");
+
+      // Ensure districtId is not null or empty
+      if (districtId.isEmpty) {
+        throw Exception('District ID cannot be empty');
+      }
 
       final request = http.MultipartRequest('POST', url)
         ..fields.addAll({
@@ -427,9 +442,11 @@ class AuthenticationService {
           'password': password,
           'user_type': 'regular',
           'username': userName,
-          'location[country]': 'Uzbekistan',
-          'location[region]': regionName,
-          'location[district]': districtName,
+          'location_id': districtId,
+          // Try removing the nested location fields if they're causing issues
+          // 'location[country]': 'Uzbekistan',
+          // 'location[region]': regionName,
+          // 'location[district]': districtName,
         })
         ..headers.addAll({
           'Accept': 'application/json',
@@ -452,6 +469,7 @@ class AuthenticationService {
 
       if (kDebugMode) {
         print('📝 Sending optimized registration request...');
+        print('📍 District ID being sent: $districtId');
       }
 
       final networkTimer = Stopwatch()..start();
@@ -462,6 +480,16 @@ class AuthenticationService {
       _logTiming('Registration Network', networkTimer.elapsed.inMilliseconds);
 
       final response = await http.Response.fromStream(streamedResponse);
+
+      if (kDebugMode) {
+        print('📊 Response Status: ${response.statusCode}');
+        print('📊 Response Headers: ${response.headers}');
+        print('📊 Response Body Length: ${response.body.length}');
+        if (response.body.length < 1000) {
+          // Only print if not too long
+          print('📊 Response Body: ${response.body}');
+        }
+      }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final userData = jsonDecode(response.body);

@@ -55,6 +55,23 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     });
   }
 
+  // Method to handle location change navigation
+  Future<void> _navigateToLocationChange() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomeTown()),
+    );
+
+    // If the location was updated (result is true), refresh the profile provider
+    if (result == true) {
+      ref.invalidate(profileServiceProvider);
+      // Also refresh other providers that might depend on location
+      ref.invalidate(productsProvider);
+      ref.invalidate(servicesProvider);
+      // ref.invalidate(realEstateProvider); // Uncomment when you create this
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
@@ -93,43 +110,57 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context) {
           return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomeTown()),
-              );
-            },
+            onTap: _navigateToLocationChange,
             child: SizedBox(
               width: 140,
               child: Row(
                 children: [
-                  FutureBuilder<UserInfo>(
-                    future: ref.watch(profileServiceProvider).getUserInfo(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                            child: Text(localizations?.error ?? 'Error'));
-                      } else if (!snapshot.hasData) {
-                        return Center(
-                            child:
-                                Text(localizations?.loading ?? 'Loading...'));
-                      }
-                      final user = snapshot.data!;
-                      final district = user.location?.district ??
-                          (localizations?.searchLocation ?? 'Location');
-                      final firstPart = district.contains(' ')
-                          ? district.split(' ')[0]
-                          : district;
-                      final displayedText = firstPart.length > 7
-                          ? '${firstPart.substring(0, 4)}...'
-                          : firstPart;
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Text(
-                          displayedText,
-                          style: const TextStyle(fontSize: 14),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  // Use Consumer to watch for profile changes
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final userInfoAsync =
+                          ref.watch(profileServiceProvider.select(
+                        (provider) => provider.getUserInfo(),
+                      ));
+
+                      return FutureBuilder<UserInfo>(
+                        future: userInfoAsync,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Text(
+                                localizations?.error ?? 'Error',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          } else if (!snapshot.hasData) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Text(
+                                localizations?.loading ?? 'Loading...',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }
+                          final user = snapshot.data!;
+                          final district = user.location?.district ??
+                              (localizations?.searchLocation ?? 'Location');
+                          final firstPart = district.contains(' ')
+                              ? district.split(' ')[0]
+                              : district;
+                          final displayedText = firstPart.length > 6
+                              ? '${firstPart.substring(0, 3)}...'
+                              : firstPart;
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 4.0),
+                            child: Text(
+                              displayedText,
+                              style: const TextStyle(fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
@@ -175,36 +206,10 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     );
                   }
                 },
-                icon: IconButton(
-                  onPressed: () {
-                    if (_selectedPageIndex == 0) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => const ProductSearch(),
-                        ),
-                      );
-                    } else if (_selectedPageIndex == 1) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => const ServiceSearch(),
-                        ),
-                      );
-                    } else if (_selectedPageIndex == 2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => const RealEstateSearch(),
-                        ),
-                      );
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                    size: 24,
-                    color: Colors.white,
-                  ),
+                icon: const Icon(
+                  Icons.search,
+                  size: 24,
+                  color: Colors.white,
                 ),
               ),
             ),

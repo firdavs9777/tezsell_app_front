@@ -7,7 +7,6 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
@@ -34,7 +33,7 @@ class ProfileService {
   }
 
   Future<UserInfo> updateUserInfo({
-    required String username,
+    String? username,
     required int locationId,
     File? profileImage,
   }) async {

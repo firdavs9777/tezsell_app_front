@@ -153,9 +153,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully!'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Profile updated successfully!'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
           ),
         );
         Navigator.pop(context, true); // Return true to indicate update
@@ -172,7 +173,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
@@ -181,11 +183,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
-            title:
-                Text(localizations?.editProfileModalTitle ?? 'Edit Profile')),
+          title: Text(localizations?.editProfileModalTitle ?? 'Edit Profile'),
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -193,11 +198,13 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     if (currentUser == null) {
       return Scaffold(
         appBar: AppBar(
-            title:
-                Text(localizations?.editProfileModalTitle ?? 'Edit Profile')),
+          title: Text(localizations?.editProfileModalTitle ?? 'Edit Profile'),
+        ),
         body: Center(
-            child: Text(
-                localizations?.errorMessage ?? 'Failed to load profile data')),
+          child: Text(
+            localizations?.errorMessage ?? 'Failed to load profile data',
+          ),
+        ),
       );
     }
 
@@ -208,13 +215,23 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           TextButton(
             onPressed: isSaving ? null : _saveProfile,
             child: isSaving
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        colorScheme.onPrimary,
+                      ),
+                    ),
                   )
-                : Text(localizations?.saveLabel ?? 'Save',
-                    style: TextStyle(color: Colors.white)),
+                : Text(
+                    localizations?.saveLabel ?? 'Save',
+                    style: TextStyle(
+                      color: colorScheme.secondary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -231,9 +248,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   children: [
                     CircleAvatar(
                       radius: 60,
+                      backgroundColor: colorScheme.surfaceVariant,
                       backgroundImage: _getProfileImage(),
                       child: _getProfileImage() == null
-                          ? const Icon(Icons.person, size: 60)
+                          ? Icon(
+                              Icons.person,
+                              size: 60,
+                              color: colorScheme.onSurface.withOpacity(0.6),
+                            )
                           : null,
                     ),
                     Positioned(
@@ -241,13 +263,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       right: 0,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
                           shape: BoxShape.circle,
+                          border: Border.all(
+                            color: colorScheme.surface,
+                            width: 2,
+                          ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.camera_alt,
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                           size: 20,
                         ),
                       ),
@@ -258,7 +284,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
               const SizedBox(height: 8),
               Text(
                 localizations?.tap_change_profile ?? 'Tap to change photo',
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                style: TextStyle(
+                  color: colorScheme.onSurface.withOpacity(0.6),
+                  fontSize: 14,
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -267,8 +296,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: localizations?.username ?? 'Username',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.person),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -289,8 +318,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                 initialValue: currentUser!.phoneNumber,
                 decoration: InputDecoration(
                   labelText: localizations?.phoneNumber,
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.phone),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.phone),
+                  fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+                  filled: true,
                 ),
                 enabled: false,
               ),
@@ -301,8 +332,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                 value: selectedRegion,
                 decoration: InputDecoration(
                   labelText: localizations?.region ?? 'Region',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.location_on),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_on),
                 ),
                 hint: Text(localizations?.selectRegion ?? 'Select a region'),
                 items: isLoadingRegions
@@ -338,12 +369,17 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.location_city),
                   suffixIcon: isLoadingDistricts
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20,
                           height: 20,
                           child: Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            padding: const EdgeInsets.all(12.0),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                colorScheme.primary,
+                              ),
+                            ),
                           ),
                         )
                       : null,

@@ -7,9 +7,13 @@ import 'dart:async'; // Import the async library for Timer
 
 class MobileAuthentication extends StatefulWidget {
   final String regionName;
+  final String districtId;
   final String districtName;
   const MobileAuthentication(
-      {super.key, required this.regionName, required this.districtName});
+      {super.key,
+      required this.regionName,
+      required this.districtId,
+      required this.districtName});
 
   @override
   State<MobileAuthentication> createState() => _MobileAuthenticationState();
@@ -46,6 +50,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         MaterialPageRoute(
           builder: (context) => PasswordReset(
               regionName: widget.regionName,
+              districtId: widget.districtId,
               districtName: widget.districtName,
               phone_number: phoneNumber),
         ),

@@ -21,6 +21,7 @@ Future<Cities> getCities() async {
   final response = await http.get(
     Uri.parse('https://api.tezsell.com/api/v1/cities'),
   );
+  print(response);
   if (response.statusCode == 200) {
     return Cities.fromJson(json.decode(response.body));
   } else {

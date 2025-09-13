@@ -84,4 +84,11 @@ class ImageData {
       altText: json['alt_text'] ?? '', // default to empty string if null
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image': image,
+      'alt_text': altText,
+    };
+  }
 }

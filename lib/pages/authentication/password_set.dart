@@ -9,12 +9,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class PasswordReset extends StatefulWidget {
   final String regionName;
   final String districtName;
+  final String districtId;
   final String phone_number;
 
   const PasswordReset({
     super.key,
     required this.regionName,
     required this.districtName,
+    required this.districtId,
     required this.phone_number,
   });
 
@@ -251,6 +253,9 @@ class _PasswordResetState extends State<PasswordReset> {
                   return;
                 }
 
+                print(widget.regionName);
+                print(widget.districtId);
+
                 // Pass the selected images to the registration service
                 final check = await authService.register(
                   widget.phone_number,
@@ -258,6 +263,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   userName,
                   widget.regionName,
                   widget.districtName,
+                  widget.districtId,
                   _selectedImages.isNotEmpty
                       ? _selectedImages[0]
                       : null, // Passing the image

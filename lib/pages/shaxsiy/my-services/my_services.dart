@@ -1,8 +1,10 @@
+import 'package:app/pages/shaxsiy/my-services/service_edit.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// Import your ServiceEdit screen
 
 class MyServices extends ConsumerStatefulWidget {
   const MyServices({super.key});
@@ -14,7 +16,7 @@ class MyServices extends ConsumerStatefulWidget {
 class _MyServicesState extends ConsumerState<MyServices> {
   List<Services> _services = [];
   bool _isLoading = true;
-  bool _hasChanges = false; // Track if any changes were made
+  bool _hasChanges = false;
 
   @override
   void initState() {
@@ -24,12 +26,10 @@ class _MyServicesState extends ConsumerState<MyServices> {
 
   Future<void> _loadServices() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(() => _isLoading = true);
 
       final services = await ref.read(profileServiceProvider).getUserServices();
-
+      print(services);
       if (mounted) {
         setState(() {
           _services = services;
@@ -38,15 +38,8 @@ class _MyServicesState extends ConsumerState<MyServices> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading services: $e'),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        setState(() => _isLoading = false);
+        _showError('Error loading services: $e');
       }
     }
   }
@@ -56,61 +49,70 @@ class _MyServicesState extends ConsumerState<MyServices> {
   }
 
   void _deleteService(int serviceId) {
+    final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        final localizations = AppLocalizations.of(dialogContext);
-
         return AlertDialog(
           title: Text(localizations?.delete_service ?? 'Delete Service'),
           content: Text(localizations?.delete_service_confirmation ??
               'Are you sure you want to delete this service?'),
           actions: [
             TextButton(
-              child: Text(localizations?.cancel ?? 'Cancel'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
+              child: Text(
+                localizations?.cancel ?? 'Cancel',
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
             TextButton(
-              child: Text(localizations?.delete ?? 'Delete'),
+              child: Text(
+                localizations?.delete ?? 'Delete',
+                style: TextStyle(color: colorScheme.error),
+              ),
               onPressed: () async {
-                Navigator.of(dialogContext).pop(); // Close dialog first
+                Navigator.of(dialogContext).pop();
 
+                // Show loading dialog
                 showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder: (context) {
-                    // Auto close after 3 seconds
                     Future.delayed(const Duration(seconds: 3), () {
                       if (mounted) Navigator.of(context).pop();
                     });
 
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surface,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const CircularProgressIndicator(),
+                      ),
                     );
                   },
                 );
 
                 try {
-                  // Call the delete API - you'll need to implement this in your service
+                  // TODO: Implement delete API call
+                  // await ref.read(profileServiceProvider).deleteService(serviceId);
 
-                  // Close loading dialog
+                  // Remove from local list
+                  setState(() {
+                    _services.removeWhere((service) => service.id == serviceId);
+                    _hasChanges = true;
+                  });
+
                   if (mounted) Navigator.of(context).pop();
+
+                  _showSuccess('Service deleted successfully');
                 } catch (e) {
-                  // Close loading dialog
                   if (mounted) Navigator.of(context).pop();
-
-                  // Show error message
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error deleting service: $e'),
-                        duration: const Duration(seconds: 3),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
+                  _showError('Error deleting service: $e');
                 }
               },
             ),
@@ -121,50 +123,71 @@ class _MyServicesState extends ConsumerState<MyServices> {
   }
 
   void _editService(int serviceId) {
-    // Find the service by ID
     final service = _services.firstWhere((s) => s.id == serviceId);
 
-    // Navigate to the edit service screen - you'll need to create this
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ServiceEdit(service: service),
-    //   ),
-    // ).then((updatedService) {
-    //   // If the edit was successful and we got an updated service back
-    //   if (updatedService != null && updatedService is Services) {
-    //     setState(() {
-    //       // Find and update the service in the local list
-    //       final index = _services.indexWhere((s) => s.id == updatedService.id);
-    //       if (index != -1) {
-    //         _services[index] = updatedService;
-    //         _hasChanges = true; // Mark that changes were made
-    //       }
-    //     });
-    //
-    //     // Also invalidate the provider for future use
-    //     ref.invalidate(profileServiceProvider);
-    //   }
-    // });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ServiceEdit(service: service),
+      ),
+    ).then((updatedService) {
+      if (updatedService != null && updatedService is Services) {
+        setState(() {
+          final index = _services.indexWhere((s) => s.id == updatedService.id);
+          if (index != -1) {
+            _services[index] = updatedService;
+            _hasChanges = true;
+          }
+        });
+        ref.invalidate(profileServiceProvider);
+      }
+    });
 
-    // For now, show a message that edit is not implemented
+    // Temporary message
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Service edit functionality coming soon'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: const Text(
+            'Service edit functionality ready - uncomment navigation code'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        behavior: SnackBarBehavior.floating,
       ),
     );
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  void _showSuccess(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return WillPopScope(
       onWillPop: () async {
-        // When user navigates back, return whether changes were made
         Navigator.pop(context, _hasChanges);
-        return false; // Prevent default back navigation since we handled it
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -184,27 +207,28 @@ class _MyServicesState extends ConsumerState<MyServices> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.miscellaneous_services_outlined,
                           size: 80,
-                          color: Colors.grey,
+                          color: colorScheme.onSurface.withOpacity(0.5),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           localizations?.no_services_found ??
                               'No services found',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
-                            color: Colors.grey,
+                            color: colorScheme.onSurface.withOpacity(0.7),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           localizations?.add_first_service ??
                               'Start by adding your first service',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey,
+                            color: colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                       ],
@@ -220,142 +244,158 @@ class _MyServicesState extends ConsumerState<MyServices> {
                           final service = _services[index];
 
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                              vertical: 6.0,
+                            ),
+                            child: Card(
                               key: ValueKey(service.id),
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
+                              elevation: 2,
+                              shadowColor: colorScheme.shadow.withOpacity(0.1),
+                              color: colorScheme.surface,
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade200,
-                                    spreadRadius: 4,
-                                    blurRadius: 4,
-                                  ),
-                                ],
+                                side: BorderSide(
+                                  color: colorScheme.outline.withOpacity(0.1),
+                                ),
                               ),
-                              child: Row(
-                                children: [
-                                  // Service Image
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: service.images.isNotEmpty
-                                        ? Image.network(
-                                            service.images[0].image,
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Image.asset(
-                                                'assets/logo/logo_no_background.png',
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    // Service Image
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.surfaceVariant,
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                        child: service.images.isNotEmpty
+                                            ? Image.network(
+                                                service.images[0].image,
                                                 width: 80,
                                                 height: 80,
                                                 fit: BoxFit.cover,
-                                              );
-                                            },
-                                          )
-                                        : Image.asset(
-                                            'assets/logo/logo_no_background.png',
-                                            width: 80,
-                                            height: 80,
-                                            fit: BoxFit.cover,
-                                          ),
-                                  ),
-                                  const SizedBox(width: 12.0),
-                                  // Service Details
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          service.name,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.0,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4.0),
-                                        Text(
-                                          service.description,
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 12.0,
-                                          ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 6.0),
-                                        if (service.location != null) ...[
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.location_on,
-                                                size: 14.0,
-                                                color: Colors.grey,
-                                              ),
-                                              const SizedBox(width: 4.0),
-                                              Expanded(
-                                                child: Text(
-                                                  '${service.location!.region ?? ''}, ${(service.location!.district ?? '').length > 7 ? '${service.location!.district!.substring(0, 7)}...' : service.location!.district ?? ''}',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12.0,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ],
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return _buildPlaceholderImage();
+                                                },
+                                              )
+                                            : _buildPlaceholderImage(),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  // Actions
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
+                                    const SizedBox(width: 12.0),
+
+                                    // Service Details
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blue, size: 20),
-                                            onPressed: () =>
-                                                _editService(service.id!),
-                                            tooltip:
-                                                localizations?.edit_service ??
-                                                    'Edit Service',
-                                            padding: const EdgeInsets.all(4),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 32,
-                                              minHeight: 32,
+                                          Text(
+                                            service.name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16.0,
+                                              color: colorScheme.onSurface,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Colors.red, size: 20),
-                                            onPressed: () =>
-                                                _deleteService(service.id!),
-                                            tooltip: localizations
-                                                    ?.delete_service_tooltip ??
-                                                'Delete Service',
-                                            padding: const EdgeInsets.all(4),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 32,
-                                              minHeight: 32,
+                                          const SizedBox(height: 4.0),
+                                          Text(
+                                            service.description,
+                                            style: TextStyle(
+                                              color: colorScheme.onSurface
+                                                  .withOpacity(0.7),
+                                              fontSize: 12.0,
                                             ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
+                                          const SizedBox(height: 6.0),
+                                          if (service.location != null) ...[
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on,
+                                                  size: 14.0,
+                                                  color: colorScheme.onSurface
+                                                      .withOpacity(0.6),
+                                                ),
+                                                const SizedBox(width: 4.0),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${service.location!.region ?? ''}, ${(service.location!.district ?? '').length > 7 ? '${service.location!.district!.substring(0, 7)}...' : service.location!.district ?? ''}',
+                                                    style: TextStyle(
+                                                      color: colorScheme
+                                                          .onSurface
+                                                          .withOpacity(0.6),
+                                                      fontSize: 12.0,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                    const SizedBox(width: 8.0),
+
+                                    // Actions
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.edit,
+                                                color: colorScheme.primary,
+                                                size: 20,
+                                              ),
+                                              onPressed: () =>
+                                                  _editService(service.id!),
+                                              tooltip:
+                                                  localizations?.edit_service ??
+                                                      'Edit Service',
+                                              padding: const EdgeInsets.all(4),
+                                              constraints: const BoxConstraints(
+                                                minWidth: 32,
+                                                minHeight: 32,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: colorScheme.error,
+                                                size: 20,
+                                              ),
+                                              onPressed: () =>
+                                                  _deleteService(service.id!),
+                                              tooltip: localizations
+                                                      ?.delete_service_tooltip ??
+                                                  'Delete Service',
+                                              padding: const EdgeInsets.all(4),
+                                              constraints: const BoxConstraints(
+                                                minWidth: 32,
+                                                minHeight: 32,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -363,6 +403,24 @@ class _MyServicesState extends ConsumerState<MyServices> {
                       ),
                     ),
                   ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderImage() {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        Icons.image_outlined,
+        color: colorScheme.onSurface.withOpacity(0.5),
+        size: 32,
       ),
     );
   }
