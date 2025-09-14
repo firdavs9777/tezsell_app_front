@@ -18,3 +18,4 @@ const String PRODUCT_LIKE = '/global/like/product/';
 const String SERVICE_LIKE = '/global/like/service/';
 const String PRODUCT_DISLIKE = '/global/unlike/product/';
 const String SERVICE_DISLIKE = '/global/unlike/service/';
+const String REAL_ESTATE_PROPERTIES = '/real_estate/api/properties/';

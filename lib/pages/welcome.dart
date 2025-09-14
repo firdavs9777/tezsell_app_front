@@ -25,9 +25,6 @@ class Welcome extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeProvider); // Watch theme provider
 
-    print('Current locale in Welcome: ${locale?.languageCode}');
-    print('Current theme mode: $themeMode');
-
     return MaterialApp(
       // Locale Configuration
       locale: locale ?? const Locale('en'),

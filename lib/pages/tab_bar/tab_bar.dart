@@ -76,194 +76,255 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    // Updated page titles and widgets for 5 tabs
-    String activePageTitle;
-    Widget activePage;
+    return Consumer(
+      builder: (context, ref, child) {
+        // Watch user info to get current location
+        final userInfoAsync = ref.watch(profileServiceProvider.select(
+          (provider) => provider.getUserInfo(),
+        ));
 
-    switch (_selectedPageIndex) {
-      case 0:
-        activePageTitle = localizations?.productsTitle ?? 'Products';
-        activePage = const ProductsList();
-        break;
-      case 1:
-        activePageTitle = localizations?.servicesTitle ?? 'Services';
-        activePage = const ServiceMain();
-        break;
-      case 2:
-        activePageTitle = localizations?.realEstate ?? 'Real Estate';
-        activePage = const RealEstateMain(); // You'll need to create this
-        break;
-      case 3:
-        activePageTitle = localizations?.chat ?? 'Habarlar';
-        activePage = Messages();
-        break;
-      case 4:
-        activePageTitle = localizations?.profile ?? 'Shaxsiy Hisob';
-        activePage = const ShaxsiyPage();
-        break;
-      default:
-        activePageTitle = localizations?.productsTitle ?? 'Products';
-        activePage = const ProductsList();
-    }
+        return FutureBuilder<UserInfo>(
+          future: userInfoAsync,
+          builder: (context, snapshot) {
+            // Extract location data
+            String regionName = '';
+            String districtName = '';
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: Builder(builder: (BuildContext context) {
-          return GestureDetector(
-            onTap: _navigateToLocationChange,
-            child: SizedBox(
-              width: 140,
-              child: Row(
-                children: [
-                  // Use Consumer to watch for profile changes
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final userInfoAsync =
-                          ref.watch(profileServiceProvider.select(
-                        (provider) => provider.getUserInfo(),
-                      ));
+            if (snapshot.hasData && snapshot.data!.location != null) {
+              regionName = snapshot.data!.location!.region ?? '';
+              districtName = snapshot.data!.location!.district ?? '';
+            }
 
-                      return FutureBuilder<UserInfo>(
-                        future: userInfoAsync,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                localizations?.error ?? 'Error',
-                                style: const TextStyle(fontSize: 14),
+            // Updated page titles and widgets for 5 tabs
+            String activePageTitle;
+            Widget activePage;
+
+            switch (_selectedPageIndex) {
+              case 0:
+                activePageTitle = localizations?.productsTitle ?? 'Products';
+                activePage = ProductsList(
+                  regionName: regionName!,
+                  districtName: districtName!,
+                );
+                break;
+              case 1:
+                activePageTitle = localizations?.servicesTitle ?? 'Services';
+                activePage = ServiceMain(
+                  regionName: regionName!,
+                  districtName: districtName!,
+                );
+                break;
+              case 2:
+                activePageTitle = localizations?.realEstate ?? 'Real Estate';
+                activePage = RealEstateMain(
+                    regionName: regionName!, districtName: districtName!);
+                break;
+              case 3:
+                activePageTitle = localizations?.chat ?? 'Habarlar';
+                activePage = Messages();
+                break;
+              case 4:
+                activePageTitle = localizations?.profile ?? 'Shaxsiy Hisob';
+                activePage = const ShaxsiyPage();
+                break;
+              default:
+                activePageTitle = localizations?.productsTitle ?? 'Products';
+                activePage = ProductsList(
+                  regionName: regionName!,
+                  districtName: districtName!,
+                );
+            }
+
+            return Scaffold(
+              backgroundColor: Theme.of(context).colorScheme.background,
+              appBar: AppBar(
+                leading: Builder(builder: (BuildContext context) {
+                  return GestureDetector(
+                    onTap: _navigateToLocationChange,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width *
+                            0.4, // Max 40% of screen width
+                        minWidth: 80, // Minimum width to ensure readability
+                      ),
+                      child: Row(
+                        mainAxisSize:
+                            MainAxisSize.min, // Take only needed space
+                        children: [
+                          // Use Consumer to watch for profile changes
+                          Flexible(
+                            // Allow text to shrink if needed
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                final userInfoAsync =
+                                    ref.watch(profileServiceProvider.select(
+                                  (provider) => provider.getUserInfo(),
+                                ));
+
+                                return FutureBuilder<UserInfo>(
+                                  future: userInfoAsync,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: Text(
+                                          localizations?.error ?? 'Error',
+                                          style: const TextStyle(fontSize: 14),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      );
+                                    } else if (!snapshot.hasData) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: Text(
+                                          localizations?.loading ??
+                                              'Loading...',
+                                          style: const TextStyle(fontSize: 14),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      );
+                                    }
+                                    final user = snapshot.data!;
+                                    final district = user.location?.district ??
+                                        (localizations?.searchLocation ??
+                                            'Location');
+
+                                    // Better text truncation logic
+                                    String displayedText;
+                                    if (district.length <= 8) {
+                                      displayedText = district;
+                                    } else if (district.contains(' ')) {
+                                      final firstPart = district.split(' ')[0];
+                                      displayedText = firstPart.length > 8
+                                          ? '${firstPart.substring(0, 6)}...'
+                                          : firstPart;
+                                    } else {
+                                      displayedText =
+                                          '${district.substring(0, 6)}...';
+                                    }
+
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Text(
+                                        displayedText,
+                                        style: const TextStyle(fontSize: 14),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 4), // Small spacing
+                          Icon(
+                            Icons.keyboard_arrow_down_sharp,
+                            size: 20, // Slightly smaller icon
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+                actions: [
+                  // Show search icon for Products, Services, and Real Estate
+                  if (_selectedPageIndex == 0 ||
+                      _selectedPageIndex == 1 ||
+                      _selectedPageIndex == 2)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        onPressed: () {
+                          // Navigate to appropriate search page
+                          if (_selectedPageIndex == 0) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => const ProductSearch(),
                               ),
                             );
-                          } else if (!snapshot.hasData) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(
-                                localizations?.loading ?? 'Loading...',
-                                style: const TextStyle(fontSize: 14),
+                          } else if (_selectedPageIndex == 1) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => const ServiceSearch(),
+                              ),
+                            );
+                          } else if (_selectedPageIndex == 2) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => const RealEstateSearch(),
                               ),
                             );
                           }
-                          final user = snapshot.data!;
-                          final district = user.location?.district ??
-                              (localizations?.searchLocation ?? 'Location');
-                          final firstPart = district.contains(' ')
-                              ? district.split(' ')[0]
-                              : district;
-                          final displayedText = firstPart.length > 6
-                              ? '${firstPart.substring(0, 3)}...'
-                              : firstPart;
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            child: Text(
-                              displayedText,
-                              style: const TextStyle(fontSize: 14),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
                         },
-                      );
-                    },
-                  ),
-                  const Expanded(
-                    child: Icon(Icons.keyboard_arrow_down_sharp),
-                  ),
+                        icon: const Icon(
+                          Icons.search,
+                          size: 24,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                    ),
                 ],
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(activePageTitle),
+                ),
+                automaticallyImplyLeading: false,
               ),
-            ),
-          );
-        }),
-        actions: [
-          // Show search icon for Products, Services, and Real Estate
-          if (_selectedPageIndex == 0 ||
-              _selectedPageIndex == 1 ||
-              _selectedPageIndex == 2)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {
-                  // Navigate to appropriate search page
-                  if (_selectedPageIndex == 0) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => const ProductSearch(),
-                      ),
-                    );
-                  } else if (_selectedPageIndex == 1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => const ServiceSearch(),
-                      ),
-                    );
-                  } else if (_selectedPageIndex == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) =>
-                            const RealEstateSearch(), // You'll need to create this
-                      ),
-                    );
-                  }
-                },
-                icon: const Icon(
-                  Icons.search,
-                  size: 24,
-                  color: Colors.white,
+              body: activePage,
+              bottomNavigationBar: Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                child: BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  elevation: 0,
+                  onTap: _selectPage,
+                  currentIndex: _selectedPageIndex,
+                  selectedItemColor: Colors.blue,
+                  unselectedItemColor: Colors.grey,
+                  selectedFontSize: 12,
+                  unselectedFontSize: 10,
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: localizations?.main ?? 'Asosiy',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.post_add),
+                      label: localizations?.servicesTitle ?? 'Services',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.apartment),
+                      label: localizations?.realEstate ?? 'Ko\'chmas',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.chat),
+                      label: localizations?.chat ?? 'Habarlar',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person),
+                      label: localizations?.profile ?? 'Shaxsiy',
+                    ),
+                  ],
                 ),
               ),
-            ),
-        ],
-        title: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: Text(activePageTitle),
-        ),
-        automaticallyImplyLeading: false,
-      ),
-      body: activePage,
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Colors.grey,
-              width: 1.0,
-            ),
-          ),
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          onTap: _selectPage,
-          currentIndex: _selectedPageIndex,
-          selectedItemColor:
-              Colors.blue, // This makes active icon and label blue
-          unselectedItemColor: Colors.grey,
-          selectedFontSize: 12,
-          unselectedFontSize: 10,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: localizations?.main ?? 'Asosiy',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.post_add),
-              label: localizations?.servicesTitle ?? 'Services',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.apartment),
-              label: localizations?.realEstate ?? 'Ko\'chmas',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: localizations?.chat ?? 'Habarlar',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: localizations?.profile ?? 'Shaxsiy',
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -40,10 +40,17 @@ class ProfileService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
-    final formData = FormData.fromMap({
-      'username': username,
+    // Build form data conditionally
+    final Map<String, dynamic> formDataMap = {
       'location_id': locationId,
-    });
+    };
+
+    // Only add username if it's provided and not empty
+    if (username != null && username.isNotEmpty) {
+      formDataMap['username'] = username;
+    }
+
+    final formData = FormData.fromMap(formDataMap);
 
     // Add single profile image if provided
     if (profileImage != null) {

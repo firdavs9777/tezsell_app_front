@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart'; // Added missing import
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
@@ -9,6 +10,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceProvider {
+  // Initialize Dio instance with base URL
+  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+
+  // Properties for caching and performance tracking
+  final Map<String, Future> _pendingRequests = {};
+
+  void _logPerformance(String operation, int milliseconds) {
+    if (kDebugMode) {
+      print('⏱️ $operation took ${milliseconds}ms');
+    }
+  }
+
   Future<List<Services>> getServices() async {
     final response = await http.get(Uri.parse('$baseUrl$SERVICES_URL/'));
     if (response.statusCode == 200) {
@@ -184,6 +197,56 @@ class ServiceProvider {
     }
   }
 
+// Private method to fetch services
+  Future<List<Services>> _fetchFilteredServices({
+    required int currentPage,
+    required int pageSize,
+    required String categoryName,
+    required String regionName,
+    required String districtName,
+    required String serviceName,
+  }) async {
+    try {
+      final queryParams = <String, String>{
+        'page': currentPage.toString(),
+        'page_size': pageSize.toString(),
+      };
+
+      // Only add non-empty parameters to reduce URL size
+      if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
+      if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
+      if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
+      if (serviceName.isNotEmpty) queryParams['service_name'] = serviceName;
+
+      final response = await dio.get(
+        '$SERVICES_URL/', // Fixed: removed leading slash to work with baseUrl
+        queryParameters: queryParams,
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        if (kDebugMode) {
+          print(
+              '📊 Filtered services count: ${(data['results'] as List).length}');
+        }
+
+        return (data['results'] as List)
+            .map((serviceJson) => Services.fromJson(serviceJson))
+            .toList();
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load filtered services: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+// Public method with caching and performance logging
   Future<List<Services>> getFilteredServices({
     int currentPage = 1,
     int pageSize = 12,
@@ -192,26 +255,39 @@ class ServiceProvider {
     String districtName = "",
     String serviceName = "",
   }) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl$SERVICES_URL').replace(
-        queryParameters: {
-          'page': currentPage.toString(),
-          'page_size': pageSize.toString(),
-          'category_name': categoryName,
-          'region_name': regionName,
-          'district_name': districtName,
-          'service_name': serviceName,
-        },
-      ),
+    final cacheKey =
+        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_$serviceName';
+
+    // Check for pending request
+    if (_pendingRequests.containsKey(cacheKey)) {
+      if (kDebugMode) {
+        print('🔄 Filtered services request already in progress');
+      }
+      return await _pendingRequests[cacheKey] as List<Services>;
+    }
+
+    final timer = Stopwatch()..start();
+
+    final future = _fetchFilteredServices(
+      currentPage: currentPage,
+      pageSize: pageSize,
+      categoryName: categoryName,
+      regionName: regionName,
+      districtName: districtName,
+      serviceName: serviceName,
     );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return (data['results'] as List)
-          .map((postJson) => Services.fromJson(postJson))
-          .toList();
-    } else {
-      throw Exception('Failed to load filtered services');
+    _pendingRequests[cacheKey] = future;
+
+    try {
+      final services = await future;
+
+      timer.stop();
+      _logPerformance('Get Filtered Services', timer.elapsed.inMilliseconds);
+
+      return services;
+    } finally {
+      _pendingRequests.remove(cacheKey);
     }
   }
 }

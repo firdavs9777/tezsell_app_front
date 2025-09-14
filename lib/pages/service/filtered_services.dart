@@ -1,13 +1,7 @@
-import 'package:app/pages/products/main_products.dart';
-import 'package:app/pages/products/product_category.dart';
-import 'package:app/pages/products/product_search.dart';
-import 'package:app/pages/products/products_list.dart';
 import 'package:app/pages/service/service_search.dart';
 import 'package:app/pages/service/services_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
-import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
-import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

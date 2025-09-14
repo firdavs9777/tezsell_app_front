@@ -183,35 +183,41 @@ class LanguageSelectionScreen extends ConsumerWidget {
 
               // Continue Button
               SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: selectedLocale != null
-                      ? () {
-                          // Navigate to your main app screen
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const Home(),
-                            ),
-                          );
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: selectedLocale != null
+                        ? () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const Home(),
+                              ),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor:
+                          Theme.of(context).colorScheme.surfaceVariant,
+                      foregroundColor: Theme.of(context)
+                          .colorScheme
+                          .onPrimary, // text/icon color when enabled
+                      disabledForegroundColor: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.38), // text/icon color when disabled
                     ),
-                    disabledBackgroundColor:
-                        Theme.of(context).colorScheme.surfaceVariant,
-                  ),
-                  child: Text(
-                    'Davom etish', // This will be static for now since user hasn't selected language yet
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                ),
-              ),
+                    child: Text(
+                      'Davom etish',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                    ),
+                  )),
               const SizedBox(height: 16),
             ],
           ),
