@@ -662,6 +662,21 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                             services: favoriteItems.likedServices)),
                   ),
                 ),
+                _buildMenuCard(
+                  icon: Icons.real_estate_agent_rounded,
+                  title: localizations?.saved_properties_title ??
+                      'Saved Properties',
+                  subtitle: '${products.length} items',
+                  iconColor: const Color(0xFF4CAF50),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyProducts()),
+                  ),
+                ),
+
+                // Support Section
+                _buildSectionTitle(
+                    localizations?.customer_support ?? 'Support'),
 
                 // Settings Section
                 _buildSectionTitle(localizations?.settings ?? 'Settings'),

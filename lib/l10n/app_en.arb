@@ -125,1211 +125,1162 @@
     "description": "Save button text"
   },
   "appTitle": "Tezsell",
-    "@appTitle": {
-      "description": "Application title"
-    },
-    "selectRegion": "Please select your region",
-    "@selectRegion": {
-      "description": "Instruction to select region"
-    },
-    "searchHint": "Search district or city",
-    "@searchHint": {
-      "description": "Search input hint text"
-    },
-    "apiError": "A problem occurred while calling the API",
-    "@apiError": {
-      "description": "API error message"
-    },
-    "ok": "OK",
-    "@ok": {
-      "description": "OK button text"
-    },
-    "emptyList": "Empty List",
-    "@emptyList": {
-      "description": "Message shown when list is empty"
-    },
-    "dataLoadingError": "There is an error while loading data",
-    "@dataLoadingError": {
-      "description": "Error message when data fails to load"
-    },
-    "confirm": "Confirm",
-     "yes": "Yes",
-     "no": "No",
-     "confirmRegionSelection": "Do you want to select {regionName} region?",
-      "selectDistrictOrCity": "Please select your district or city",
-       "@selectDistrictOrCity": {
-         "description": "Instruction to select district or city"
-       },
-       "confirmDistrictSelection": "Do you want to select {regionName} region - {districtName}?",
-       "@confirmDistrictSelection": {
-         "description": "Confirmation message for district selection",
-         "placeholders": {
-           "regionName": {
-             "type": "String"
-           },
-           "districtName": {
-             "type": "String"
-           }
-         }
-       },
-       "noResultsFound": "No results found.",
-       "@noResultsFound": {
-         "description": "Message when search returns no results"
-       },
-       "errorWithCode": "Error: {errorCode}",
-       "@errorWithCode": {
-         "description": "Error message with error code",
-         "placeholders": {
-           "errorCode": {
-             "type": "String"
-           }
-         }
-       },
-       "failedToLoadData": "Failed to load data. Error: {error}",
-       "@failedToLoadData": {
-         "description": "Data loading failure message",
-         "placeholders": {
-           "error": {
-             "type": "String"
-           }
-         }
-       },
-       "phoneVerification": "Phone Number Verification",
-         "@phoneVerification": {
-           "description": "Title for phone verification screen"
-         },
-         "enterPhonePrompt": "Please enter your phone number",
-         "@enterPhonePrompt": {
-           "description": "Prompt to enter phone number"
-         },
-         "enterPhoneNumberHint": "Enter phone number",
-         "@enterPhoneNumberHint": {
-           "description": "Hint text for phone number input"
-         },
-         "selectedCountry": "Selected: {countryName} ({countryCode})",
-         "@selectedCountry": {
-           "description": "Shows selected country and code",
-           "placeholders": {
-             "countryName": {
-               "type": "String"
-             },
-             "countryCode": {
-               "type": "String"
-             }
-           }
-         },
-         "fullNumber": "Full number: {phoneNumber}",
-         "@fullNumber": {
-           "description": "Shows complete phone number",
-           "placeholders": {
-             "phoneNumber": {
-               "type": "String"
-             }
-           }
-         },
-         "sendCode": "Send Code",
-         "@sendCode": {
-           "description": "Button text to send verification code"
-         },
-         "enterVerificationCode": "Enter verification code",
-         "@enterVerificationCode": {
-           "description": "Label for verification code input"
-         },
-         "verificationCodeHint": "123456",
-         "@verificationCodeHint": {
-           "description": "Hint for verification code format"
-         },
-         "resendCode": "Resend Code",
-         "@resendCode": {
-           "description": "Button text to resend verification code"
-         },
-         "expires": "Expires: {time}",
-         "@expires": {
-           "description": "Shows expiration time",
-           "placeholders": {
-             "time": {
-               "type": "String"
-             }
-           }
-         },
-         "verifyAndContinue": "Verify and Continue",
-         "@verifyAndContinue": {
-           "description": "Button text to verify and continue"
-         },
-         "invalidVerificationCode": "Invalid verification code",
-         "@invalidVerificationCode": {
-           "description": "Error message for invalid verification code"
-         },
-         "pleaseEnterPhoneNumber": "Please enter your phone number",
-         "@pleaseEnterPhoneNumber": {
-           "description": "Error message when phone number is empty"
-         },
-         "verificationCodeSent": "Verification code sent successfully",
-         "@verificationCodeSent": {
-           "description": "Success message when code is sent"
-         },
-         "failedToSendCode": "Failed to send verification code",
-         "@failedToSendCode": {
-           "description": "Error message when code sending fails"
-         },
-         "verificationCodeResent": "Verification code resent successfully",
-         "@verificationCodeResent": {
-           "description": "Success message when code is resent"
-         },
-         "failedToResendCode": "Failed to resend verification code",
-         "@failedToResendCode": {
-           "description": "Error message when code resending fails"
-         },
-         "passwordVerification": "Password Verification",
-           "@passwordVerification": {
-             "description": "Title for password verification screen"
-           },
-           "completeRegistrationPrompt": "Enter username and password to complete registration",
-           "@completeRegistrationPrompt": {
-             "description": "Instruction text for completing registration"
-           },
-           "username": "Username",
-           "@username": {
-             "description": "Label for username input field"
-           },
-          "username_required": "Username is required",
-     "username_min_length": "Username must be at least 2 characters",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "selectRegion": "Please select your region",
+  "@selectRegion": {
+    "description": "Instruction to select region"
+  },
+  "searchHint": "Search district or city",
+  "@searchHint": {
+    "description": "Search input hint text"
+  },
+  "apiError": "A problem occurred while calling the API",
+  "@apiError": {
+    "description": "API error message"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button text"
+  },
+  "emptyList": "Empty List",
+  "@emptyList": {
+    "description": "Message shown when list is empty"
+  },
+  "dataLoadingError": "There is an error while loading data",
+  "@dataLoadingError": {
+    "description": "Error message when data fails to load"
+  },
+  "confirm": "Confirm",
+  "yes": "Yes",
+  "no": "No",
+  "confirmRegionSelection": "Do you want to select {regionName} region?",
+  "selectDistrictOrCity": "Please select your district or city",
+  "@selectDistrictOrCity": {
+    "description": "Instruction to select district or city"
+  },
+  "confirmDistrictSelection": "Do you want to select {regionName} region - {districtName}?",
+  "@confirmDistrictSelection": {
+    "description": "Confirmation message for district selection",
+    "placeholders": {
+      "regionName": {
+        "type": "String"
+      },
+      "districtName": {
+        "type": "String"
+      }
+    }
+  },
+  "noResultsFound": "No results found.",
+  "@noResultsFound": {
+    "description": "Message when search returns no results"
+  },
+  "errorWithCode": "Error: {errorCode}",
+  "@errorWithCode": {
+    "description": "Error message with error code",
+    "placeholders": {
+      "errorCode": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToLoadData": "Failed to load data. Error: {error}",
+  "@failedToLoadData": {
+    "description": "Data loading failure message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneVerification": "Phone Number Verification",
+  "@phoneVerification": {
+    "description": "Title for phone verification screen"
+  },
+  "enterPhonePrompt": "Please enter your phone number",
+  "@enterPhonePrompt": {
+    "description": "Prompt to enter phone number"
+  },
+  "enterPhoneNumberHint": "Enter phone number",
+  "@enterPhoneNumberHint": {
+    "description": "Hint text for phone number input"
+  },
+  "selectedCountry": "Selected: {countryName} ({countryCode})",
+  "@selectedCountry": {
+    "description": "Shows selected country and code",
+    "placeholders": {
+      "countryName": {
+        "type": "String"
+      },
+      "countryCode": {
+        "type": "String"
+      }
+    }
+  },
+  "fullNumber": "Full number: {phoneNumber}",
+  "@fullNumber": {
+    "description": "Shows complete phone number",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "sendCode": "Send Code",
+  "@sendCode": {
+    "description": "Button text to send verification code"
+  },
+  "enterVerificationCode": "Enter verification code",
+  "@enterVerificationCode": {
+    "description": "Label for verification code input"
+  },
+  "verificationCodeHint": "123456",
+  "@verificationCodeHint": {
+    "description": "Hint for verification code format"
+  },
+  "resendCode": "Resend Code",
+  "@resendCode": {
+    "description": "Button text to resend verification code"
+  },
+  "expires": "Expires: {time}",
+  "@expires": {
+    "description": "Shows expiration time",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAndContinue": "Verify and Continue",
+  "@verifyAndContinue": {
+    "description": "Button text to verify and continue"
+  },
+  "invalidVerificationCode": "Invalid verification code",
+  "@invalidVerificationCode": {
+    "description": "Error message for invalid verification code"
+  },
+  "verificationCodeSent": "Verification code sent successfully",
+  "@verificationCodeSent": {
+    "description": "Success message when code is sent"
+  },
+  "failedToSendCode": "Failed to send verification code",
+  "@failedToSendCode": {
+    "description": "Error message when code sending fails"
+  },
+  "verificationCodeResent": "Verification code resent successfully",
+  "@verificationCodeResent": {
+    "description": "Success message when code is resent"
+  },
+  "failedToResendCode": "Failed to resend verification code",
+  "@failedToResendCode": {
+    "description": "Error message when code resending fails"
+  },
+  "passwordVerification": "Password Verification",
+  "@passwordVerification": {
+    "description": "Title for password verification screen"
+  },
+  "completeRegistrationPrompt": "Enter username and password to complete registration",
+  "@completeRegistrationPrompt": {
+    "description": "Instruction text for completing registration"
+  },
+  "username": "Username",
+  "@username": {
+    "description": "Label for username input field"
+  },
+  "username_required": "Username is required",
+  "username_min_length": "Username must be at least 2 characters",
   "usernameHint": "Username123",
-           "@usernameHint": {
-             "description": "Hint text for username input"
-           },
-           "enterPassword": "Enter Password",
-           "@enterPassword": {
-             "description": "Label for password input field"
-           },
-           "confirmPassword": "Confirm Password",
-           "@confirmPassword": {
-             "description": "Label for password confirmation field"
-           },
-           "profileImage": "Profile Image",
-           "@profileImage": {
-             "description": "Label for profile image selection"
-           },
-           "imageInstructions": "Images will appear here, please press profile image",
-           "@imageInstructions": {
-             "description": "Instructions for image selection"
-           },
-           "finish": "Finish",
-           "@finish": {
-             "description": "Button text to complete registration"
-           },
-           "passwordsDoNotMatch": "Passwords do not match",
-           "@passwordsDoNotMatch": {
-             "description": "Error message when passwords don't match"
-           },
-           "registrationError": "Registration error",
-           "@registrationError": {
-             "description": "Error message when registration fails"
-           },
-            "about": "About Us",
-             "@about": {
-               "description": "About us menu item"
-             },
-             "chat": "Chat",
-             "@chat": {
-               "description": "Chat functionality"
-             },
-             "realEstate": "Real Estate",
-             "@realEstate": {
-               "description": "Real estate section"
-             },
-             "language": "ENG",
-             "@language": {
-               "description": "Language selector display"
-             },
-             "languageEn": "English",
-             "@languageEn": {
-               "description": "English language option"
-             },
-             "languageRu": "Russian",
-             "@languageRu": {
-               "description": "Russian language option"
-             },
-             "languageUz": "Uzbek",
-             "@languageUz": {
-               "description": "Uzbek language option"
-             },
-             "serviceLiked": "Service liked",
-             "@serviceLiked": {
-               "description": "Service liked message"
-             },
-             "support": "Support",
-             "@support": {
-               "description": "Support menu item"
-             },
-             "register": "Register",
-             "@register": {
-               "description": "Register button text"
-             },
-             "login": "Sign In",
-             "@login": {
-               "description": "Login button text"
-             },
-             "service": "Business Services",
-             "@service": {
-               "description": "Business services section"
-             },
-             "aboutContent": "TezSell is a fast and easy marketplace for buying and selling new and used products. Our mission is to create the most convenient and efficient platform for every user, ensuring smooth transactions and a user-friendly experience. Whether you're looking to sell or buy, TezSell makes it easy to connect and complete transactions in just a few steps.We prioritize the security and privacy of our users. All transactions are carefully monitored to ensure safety and compliance, providing peace of mind to both buyers and sellers. Our simple and intuitive interface allows users to quickly list products and find what they need. We also facilitate real-time communication through Telegram, making the buying and selling process even smoother.",
-             "@aboutContent": {
-               "description": "About us content description"
-             },
-             "errorMessage": "Error occurred, please check the server",
-             "@errorMessage": {
-               "description": "Generic error message"
-             },
-             "searchLocation": "Location",
-             "@searchLocation": {
-               "description": "Location search label"
-             },
-             "searchCategory": "Categories",
-             "@searchCategory": {
-               "description": "Category search label"
-             },
-             "searchProductPlaceholder": "Search for products",
-             "@searchProductPlaceholder": {
-               "description": "Product search placeholder"
-             },
-             "searchServicePlaceholder": "Search for services",
-             "@searchServicePlaceholder": {
-               "description": "Service search placeholder"
-             },
-             "searchText": "Search",
-             "@searchText": {
-               "description": "Search button text"
-             },
-             "selectedCategory": "Selected Category: ",
-             "@selectedCategory": {
-               "description": "Selected category prefix"
-             },
-             "selectedLocation": "Selected Location: ",
-             "@selectedLocation": {
-               "description": "Selected location prefix"
-             },
-             "productError": "No products available",
-             "@productError": {
-               "description": "No products error message"
-             },
-             "serviceError": "No services available",
-             "@serviceError": {
-               "description": "No services error message"
-             },
-             "locationHeader": "Select a location",
-             "@locationHeader": {
-               "description": "Location selection header"
-             },
-             "locationPlaceholder": "Search region here",
-             "@locationPlaceholder": {
-               "description": "Location search placeholder"
-             },
-             "categoryHeader": "Select a Category",
-             "@categoryHeader": {
-               "description": "Category selection header"
-             },
-             "categoryPlaceholder": "Search Categories",
-             "@categoryPlaceholder": {
-               "description": "Category search placeholder"
-             },
-             "categoryError": "No categories available",
-             "@categoryError": {
-               "description": "No categories error message"
-             },
-             "paginationFirst": "First",
-             "@paginationFirst": {
-               "description": "First page button"
-             },
-             "paginationPrevious": "Previous",
-             "@paginationPrevious": {
-               "description": "Previous page button"
-             },
-             "pageInfo": "Page of",
-             "@pageInfo": {
-               "description": "Page information text"
-             },
-             "pageNext": "Next",
-             "@pageNext": {
-               "description": "Next page button"
-             },
-             "pageLast": "Last",
-             "@pageLast": {
-               "description": "Last page button"
-             },
-             "loadingMessageProduct": "Loading products ...",
-             "@loadingMessageProduct": {
-               "description": "Loading products message"
-             },
-             "loadingMessageError": "Error while loading",
-             "@loadingMessageError": {
-               "description": "Loading error message"
-             },
-             "likeProductError": "Error occurred while liking product",
-             "@likeProductError": {
-               "description": "Product like error message"
-             },
-             "dislikeProductError": "Error occurred while disliking product",
-             "@dislikeProductError": {
-               "description": "Product dislike error message"
-             },
-             "loadingMessageLocation": "Loading location ...",
-             "@loadingMessageLocation": {
-               "description": "Loading location message"
-             },
-             "loadingLocationError": "Error while loading location",
-             "@loadingLocationError": {
-               "description": "Location loading error"
-             },
-             "loadingMessageCategory": "Loading categories ...",
-             "@loadingMessageCategory": {
-               "description": "Loading categories message"
-             },
-             "loadingCategoryError": "Error loading categories:",
-             "@loadingCategoryError": {
-               "description": "Category loading error"
-             },
-             "profileUpdateSuccessMessage": "Profile updated successfully",
-             "@profileUpdateSuccessMessage": {
-               "description": "Profile update success message"
-             },
-             "profileUpdateFailMessage": "Failed to update profile",
-             "@profileUpdateFailMessage": {
-               "description": "Profile update failure message"
-             },
-             "seeMoreBtn": "See More",
-             "@seeMoreBtn": {
-               "description": "See more button text"
-             },
-             "profilePageTitle": "Profile Page",
-             "@profilePageTitle": {
-               "description": "Profile page title"
-             },
-             "editProfileModalTitle": "Edit Profile",
-             "@editProfileModalTitle": {
-               "description": "Edit profile modal title"
-             },
-             "usernameLabel": "Username",
-             "@usernameLabel": {
-               "description": "Username field label"
-             },
-             "locationLabel": "Current Location",
-             "@locationLabel": {
-               "description": "Location field label"
-             },
-             "profileImageLabel": "Profile Image",
-             "@profileImageLabel": {
-               "description": "Profile image field label"
-             },
-             "chooseFileLabel": "Choose a file",
-             "@chooseFileLabel": {
-               "description": "File chooser label"
-             },
-             "uploadBtnLabel": "Update",
-             "@uploadBtnLabel": {
-               "description": "Upload button label"
-             },
-             "uploadingBtnLabel": "Updating ...",
-             "@uploadingBtnLabel": {
-               "description": "Uploading button label"
-             },
-             "cancelBtnLabel": "Cancel",
-             "@cancelBtnLabel": {
-               "description": "Cancel button label"
-             },
-             "productsTitle": "Products",
-             "@productsTitle": {
-               "description": "Products section title"
-             },
-             "servicesTitle": "Services",
-             "@servicesTitle": {
-               "description": "Services section title"
-             },
-             "myProductsTitle": "My Products",
-             "@myProductsTitle": {
-               "description": "My products section title"
-             },
-             "myServicesTitle": "My Services",
-             "@myServicesTitle": {
-               "description": "My services section title"
-             },
-             "favoriteProductsTitle": "Favorite Products",
-             "@favoriteProductsTitle": {
-               "description": "Favorite products section title"
-             },
-             "favoriteServicesTitle": "Favorite Services",
-             "@favoriteServicesTitle": {
-               "description": "Favorite services section title"
-             },
-             "noFavorites": "No Favorites",
-             "@noFavorites": {
-               "description": "No favorites message"
-             },
-             "addNewProductBtn": "Add New Product",
-             "@addNewProductBtn": {
-               "description": "Add new product button"
-             },
-             "addNew": "New",
-             "@addNew": {
-               "description": "Add new item button"
-             },
-             "addNewServiceBtn": "Add New Service",
-             "@addNewServiceBtn": {
-               "description": "Add new service button"
-             },
-             "downloadMobileApp": "Download the mobile app",
-             "@downloadMobileApp": {
-               "description": "Download mobile app message"
-             },
-             "registerPhoneNumberSuccess": "Phone number verified! You can proceed to the next step.",
-             "@registerPhoneNumberSuccess": {
-               "description": "Phone verification success message"
-             },
-             "regionSelectedMessage": "Region selected:",
-             "@regionSelectedMessage": {
-               "description": "Region selected message"
-             },
-             "districtSelectMessage": "District selected:",
-             "@districtSelectMessage": {
-               "description": "District selected message"
-             },
-             "phoneNumberEmptyMessage": "Please verify your phone number before proceeding",
-             "@phoneNumberEmptyMessage": {
-               "description": "Phone number empty error"
-             },
-             "regionEmptyMessage": "Please select the region first",
-             "@regionEmptyMessage": {
-               "description": "Region empty error"
-             },
-             "districtEmptyMessage": " Please select the district",
-             "@districtEmptyMessage": {
-               "description": "District empty error"
-             },
-             "usernamePasswordEmptyMessage": "Please input username and password",
-             "@usernamePasswordEmptyMessage": {
-               "description": "Username password empty error"
-             },
-             "registerTitle": "Register",
-             "@registerTitle": {
-               "description": "Register screen title"
-             },
-             "previousButton": "Previous",
-             "@previousButton": {
-               "description": "Previous button text"
-             },
-             "nextButton": "Next",
-             "@nextButton": {
-               "description": "Next button text"
-             },
-             "completeButton": "Complete",
-             "@completeButton": {
-               "description": "Complete button text"
-             },
-             "stepIndicator": "Step {currentStep} out of 4",
-             "@stepIndicator": {
-               "description": "Step indicator text",
-               "placeholders": {
-                 "currentStep": {
-                   "type": "int"
-                 }
-               }
-             },
-             "districtSelectTitle": "District List",
-             "@districtSelectTitle": {
-               "description": "District selection title"
-             },
-             "districtSelectParagraph": "Select a district:",
-             "@districtSelectParagraph": {
-               "description": "District selection instruction"
-             },
-             "phoneNumber": "Phone Number",
-             "@phoneNumber": {
-               "description": "Phone number label"
-             },
-             "sendOtp": "Send OTP",
-             "@sendOtp": {
-               "description": "Send OTP button"
-             },
-             "enterVerificationCode": "Enter verification code",
-             "@enterVerificationCode": {
-               "description": "Verification code input label"
-             },
-             "sendAgain": "Send again",
-             "@sendAgain": {
-               "description": "Send again button"
-             },
-             "verify": "Verify",
-             "@verify": {
-               "description": "Verify button"
-             },
-             "failedToSendOtp": "Failed to send OTP. Server returned false.",
-             "@failedToSendOtp": {
-               "description": "OTP send failure message"
-             },
-             "errorSendingOtp": "An error occurred while sending OTP.",
-             "@errorSendingOtp": {
-               "description": "OTP send error message"
-             },
-             "invalidPhoneNumber": "Please enter a valid phone number.",
-             "@invalidPhoneNumber": {
-               "description": "Invalid phone number error"
-             },
-             "verificationSuccess": "Successfully verified",
-             "@verificationSuccess": {
-               "description": "Verification success message"
-             },
-             "verificationError": "An error occurred. Please try again later.",
-             "@verificationError": {
-               "description": "Verification error message"
-             },
-             "regionsList": "Regions List",
-             "@regionsList": {
-               "description": "Regions list title"
-             },
-             "selectRegion": "Select a Region",
-             "@selectRegion": {
-               "description": "Select region instruction"
-             },
-             "username": "Username",
-             "@username": {
-               "description": "Username field"
-             },
-             "enterUsername": "Enter your username",
-             "@enterUsername": {
-               "description": "Username input placeholder"
-             },
-             "welcomeMessage": "Welcome to Tezsell, log in with your phone number",
-             "@welcomeMessage": {
-               "description": "Welcome login message"
-             },
-             "enterPhoneNumber": "Enter your phone number: 941234567",
-             "@enterPhoneNumber": {
-               "description": "Phone number input instruction"
-             },
-             "password": "Password",
-             "@password": {
-               "description": "Password field label"
-             },
-             "enterPassword": "Enter your password",
-             "@enterPassword": {
-               "description": "Password input placeholder"
-             },
-             "forgotPassword": "Forgot password?",
-             "@forgotPassword": {
-               "description": "Forgot password link"
-             },
-             "noAccount": "No account yet? Register here",
-             "@noAccount": {
-               "description": "Register link text"
-             },
-             "successLogin": "Successfully logged",
-             "@successLogin": {
-               "description": "Login success message"
-             },
-             "myProfile": "My Profile",
-             "@myProfile": {
-               "description": "My profile menu item"
-             },
-             "logout": "logout",
-             "@logout": {
-               "description": "Logout button"
-             },
-             "newProductTitle": "Title",
-             "@newProductTitle": {
-               "description": "Product title field"
-             },
-             "newProductDescription": "Description",
-             "@newProductDescription": {
-               "description": "Product description field"
-             },
-             "newProductPrice": "Price",
-             "@newProductPrice": {
-               "description": "Product price field"
-             },
-             "newProductCondition": "Condition",
-             "@newProductCondition": {
-               "description": "Product condition field"
-             },
-             "newProductCategory": "Category",
-             "@newProductCategory": {
-               "description": "Product category field"
-             },
-             "newProductImages": "Images",
-             "@newProductImages": {
-               "description": "Product images field"
-             },
-             "addNewService": "Add New Service",
-             "@addNewService": {
-               "description": "Add new service title"
-             },
-             "loading": "Loading...",
-             "@loading": {
-               "description": "Loading text"
-             },
-             "creating": "Creating...",
-             "@creating": {
-               "description": "Creating text"
-             },
-             "serviceName": "Service Name ",
-             "@serviceName": {
-               "description": "Service name field"
-             },
-             "serviceNamePlaceholder": "Enter service title",
-             "@serviceNamePlaceholder": {
-               "description": "Service name placeholder"
-             },
-             "serviceDescription": "Service Description ",
-             "@serviceDescription": {
-               "description": "Service description field"
-             },
-             "serviceDescriptionPlaceholder": "Enter service description",
-             "@serviceDescriptionPlaceholder": {
-               "description": "Service description placeholder"
-             },
-             "serviceCategory": "Service Category ",
-             "@serviceCategory": {
-               "description": "Service category field"
-             },
-             "selectCategory": "Select category",
-             "@selectCategory": {
-               "description": "Category selection instruction"
-             },
-             "loadingCategories": "Loading...",
-             "@loadingCategories": {
-               "description": "Loading categories text"
-             },
-             "errorLoadingCategories": "Error loading categories",
-             "@errorLoadingCategories": {
-               "description": "Category loading error"
-             },
-             "serviceImages": "Service Images",
-             "@serviceImages": {
-               "description": "Service images field"
-             },
-             "imageUploadHelper": "Click the + icon to add images (maximum 10)",
-             "@imageUploadHelper": {
-               "description": "Image upload help text"
-             },
-             "maxImagesError": "You can upload a maximum of 10 images",
-             "@maxImagesError": {
-               "description": "Maximum images error"
-             },
-             "categoryNotFound": "Category not found",
-             "@categoryNotFound": {
-               "description": "Category not found error"
-             },
-             "productCreatedSuccess": "Product created successfully",
-             "@productCreatedSuccess": {
-               "description": "Product creation success"
-             },
-             "productLikeSuccess": "Product liked successfully",
-             "@productLikeSuccess": {
-               "description": "Product like success"
-             },
-             "productDislikeSuccess": "Product disliked successfully",
-             "@productDislikeSuccess": {
-               "description": "Product dislike success"
-             },
-             "errorCreatingService": "Error while creating service",
-             "@errorCreatingService": {
-               "description": "Service creation error"
-             },
-             "errorCreatingProduct": "Error while creating product",
-             "@errorCreatingProduct": {
-               "description": "Product creation error"
-             },
-             "unknownError": "An unknown error occurred while creating the service",
-             "@unknownError": {
-               "description": "Unknown error message"
-             },
-             "submit": "Submit",
-             "@submit": {
-               "description": "Submit button"
-             },
-             "selectCategoryAction": "Select Category",
-             "@selectCategoryAction": {
-               "description": "Select category action"
-             },
-             "selectCondition": "Select Condition",
-             "@selectCondition": {
-               "description": "Select condition action"
-             },
-             "sum": "Sum",
-             "@sum": {
-               "description": "Sum/Total label"
-             },
-             "noComments": " No comments yet. Be the first to comment!",
-             "@noComments": {
-               "description": "No comments message"
-             },
-             "commentLikeSuccess": "Comment liked successfully",
-             "@commentLikeSuccess": {
-               "description": "Comment like success"
-             },
-             "commentLikeError": "Error while liking comment",
-             "@commentLikeError": {
-               "description": "Comment like error"
-             },
-             "unknownErrorMessage": "An unknown error occurred",
-             "@unknownErrorMessage": {
-               "description": "Unknown error message generic"
-             },
-             "commentDislikeSuccess": "Comment disliked successfully",
-             "@commentDislikeSuccess": {
-               "description": "Comment dislike success"
-             },
-             "commentDislikeError": "Error while disliking comment",
-             "@commentDislikeError": {
-               "description": "Comment dislike error"
-             },
-             "replyInfo": "Please enter a reply first",
-             "@replyInfo": {
-               "description": "Reply validation message"
-             },
-             "replySuccessMessage": "Reply added successfully",
-             "@replySuccessMessage": {
-               "description": "Reply success message"
-             },
-             "replyErrorMessage": "Error occurred during the creation of the reply",
-             "@replyErrorMessage": {
-               "description": "Reply error message"
-             },
-             "commentUpdateSuccess": "Comment updated successfully",
-             "@commentUpdateSuccess": {
-               "description": "Comment update success"
-             },
-             "commentUpdateError": "Error updating comment item",
-             "@commentUpdateError": {
-               "description": "Comment update error"
-             },
-             "deleteConfirmationMessage": "Are you sure you want to delete this comment?",
-             "@deleteConfirmationMessage": {
-               "description": "Delete confirmation message"
-             },
-             "commentDeleteSuccess": "Comment deleted successfully",
-             "@commentDeleteSuccess": {
-               "description": "Comment delete success"
-             },
-             "commentDeleteError": "Error deleting comment",
-             "@commentDeleteError": {
-               "description": "Comment delete error"
-             },
-             "editLabel": "Edit",
-             "@editLabel": {
-               "description": "Edit button label"
-             },
-             "deleteLabel": "Delete",
-             "@deleteLabel": {
-               "description": "Delete button label"
-             },
-             "saveLabel": "Save",
-             "@saveLabel": {
-               "description": "Save button label"
-             },
-             "replyLabel": "Reply",
-             "@replyLabel": {
-               "description": "Reply button label"
-             },
-             "replyTitle": "replies",
-             "@replyTitle": {
-               "description": "Replies section title"
-             },
-             "replyPlaceholder": "Write a reply...",
-             "@replyPlaceholder": {
-               "description": "Reply input placeholder"
-             },
-             "chatLoginMessage": "You must be logged in to start a chat",
-             "@chatLoginMessage": {
-               "description": "Chat login required message"
-             },
-             "chatYourselfMessage": "You can't chat with yourself.",
-             "@chatYourselfMessage": {
-               "description": "Can't chat with yourself message"
-             },
-             "chatRoomMessage": "Chat room created!",
-             "@chatRoomMessage": {
-               "description": "Chat room created message"
-             },
-             "chatRoomError": "Failed to create chat!",
-             "@chatRoomError": {
-               "description": "Chat room creation error"
-             },
-             "chatCreationError": "Chat creation failed!",
-             "@chatCreationError": {
-               "description": "Chat creation error"
-             },
-             "productsTotal": "Products total",
-             "@productsTotal": {
-               "description": "Products total count"
-             },
-             "perPage": "items",
-             "@perPage": {
-               "description": "Items per page"
-             },
-             "clearAllFilters": "Clear all filters",
-             "@clearAllFilters": {
-               "description": "Clear filters button"
-             },
-             "clickToUpload": "Click to upload",
-             "@clickToUpload": {
-               "description": "Upload instruction"
-             },
-             "productInStock": "In Stock",
-             "@productInStock": {
-               "description": "Product in stock status"
-             },
-             "productOutStock": "Out of stock",
-             "@productOutStock": {
-               "description": "Product out of stock status"
-             },
-             "productBack": "Back to products",
-             "@productBack": {
-               "description": "Back to products button"
-             },
-             "messageSeller": "Chat",
-             "@messageSeller": {
-               "description": "Message seller button"
-             },
-             "recommendedProducts": "Recommended Products",
-             "@recommendedProducts": {
-               "description": "Recommended products section"
-             },
-             "deleteConfirmationProduct": "Are you sure you want to delete this product?",
-             "@deleteConfirmationProduct": {
-               "description": "Product delete confirmation"
-             },
-             "productDeleteSuccess": "Product deleted successfully",
-             "@productDeleteSuccess": {
-               "description": "Product delete success"
-             },
-             "productDeleteError": "Error deleting product",
-             "@productDeleteError": {
-               "description": "Product delete error"
-             },
-             "newCondition": "New",
-             "@newCondition": {
-               "description": "New condition"
-             },
-             "used": "Used",
-             "@used": {
-               "description": "Used condition"
-             },
-             "imageValidType": "Some files were not added. Please use JPG, PNG, GIF or WebP files under 5MB.",
-             "@imageValidType": {
-               "description": "Image validation error"
-             },
-             "imageConfirmMessage": "Are you sure you want to remove this image?",
-             "@imageConfirmMessage": {
-               "description": "Image removal confirmation"
-             },
-             "titleRequiredMessage": "Title is required",
-             "@titleRequiredMessage": {
-               "description": "Title required validation"
-             },
-             "descRequiredMessage": "Description is required",
-             "@descRequiredMessage": {
-               "description": "Description required validation"
-             },
-             "priceRequiredMessage": "Price is required",
-             "@priceRequiredMessage": {
-               "description": "Price required validation"
-             },
-             "conditionRequiredMessage": "Condition is required",
-             "@conditionRequiredMessage": {
-               "description": "Condition required validation"
-             },
-             "pleaseFillAllRequired": "Please fill the required fields",
-             "@pleaseFillAllRequired": {
-               "description": "Fill required fields message"
-             },
-             "oneImageConfirmMessage": "At least one product image is required",
-             "@oneImageConfirmMessage": {
-               "description": "One image required validation"
-             },
-             "categoryRequiredMessage": "Category is required",
-             "@categoryRequiredMessage": {
-               "description": "Category required validation"
-             },
-             "locationInfoError": "User location information is missing",
-             "@locationInfoError": {
-               "description": "Location info missing error"
-             },
-             "editProductTitle": "Edit Product",
-             "@editProductTitle": {
-               "description": "Edit product title"
-             },
-             "imageUploadRequirements": "At least one image is required. You can upload up to 10 images (JPG, PNG, GIF, WebP under 5MB each).",
-             "@imageUploadRequirements": {
-               "description": "Image upload requirements"
-             },
-             "productUpdatedSuccess": "Product updated successfully",
-             "@productUpdatedSuccess": {
-               "description": "Product update success"
-             },
-             "productUpdateFailed": "Product update failed",
-             "@productUpdateFailed": {
-               "description": "Product update failed"
-             },
-             "errorUpdatingProduct": "Error occurred while updating the product",
-             "@errorUpdatingProduct": {
-               "description": "Product update error"
-             },
-             "serviceBack": "Back to services",
-             "@serviceBack": {
-               "description": "Back to services button"
-             },
-             "likeLabel": "Like",
-             "@likeLabel": {
-               "description": "Like button label"
-             },
-             "commentsLabel": "Comments",
-             "@commentsLabel": {
-               "description": "Comments section label"
-             },
-             "writeComment": "Write a comment ...",
-             "@writeComment": {
-               "description": "Write comment placeholder"
-             },
-             "postingLabel": "Posting...",
-             "@postingLabel": {
-               "description": "Posting comment text"
-             },
-             "commentCreated": "Comment created",
-             "@commentCreated": {
-               "description": "Comment created success"
-             },
-             "postCommentLabel": "Post Comment",
-             "@postCommentLabel": {
-               "description": "Post comment button"
-             },
-             "loginPrompt": "Please log in to view and post comments.",
-             "@loginPrompt": {
-               "description": "Login required for comments"
-             },
-             "recommendedServices": "Recommended Services",
-             "@recommendedServices": {
-               "description": "Recommended services section"
-             },
-             "commentsVisibilityNotice": "Comments are only visible to logged-in users.",
-             "@commentsVisibilityNotice": {
-               "description": "Comments visibility notice"
-             },
-             "comingSoon": "Coming soon",
-             "@comingSoon": {
-               "description": "Coming soon text"
-             },
-             "serviceUpdateSuccess": "Service updated successfully",
-             "@serviceUpdateSuccess": {
-               "description": "Service update success"
-             },
-             "serviceUpdateError": "Error updating service item",
-             "@serviceUpdateError": {
-               "description": "Service update error"
-             },
-             "editServiceModalTitle": "Edit Service",
-             "@editServiceModalTitle": {
-               "description": "Edit service modal title"
-             },
-             "enterPhoneNumberWithoutCode": "Enter phone number without code",
-             "@enterPhoneNumberWithoutCode": {
-               "description": "Phone number input instruction without country code"
-             },
-             "heroTitle": "TezSell",
-             "@heroTitle": {
-               "description": "Hero section title"
-             },
-             "heroSubtitle": "Your Fast & Easy Marketplace for Uzbekistan",
-             "@heroSubtitle": {
-               "description": "Hero section subtitle"
-             },
-             "startSelling": "Start Selling",
-             "@startSelling": {
-               "description": "Start selling button"
-             },
-             "browseProducts": "Browse Products",
-             "@browseProducts": {
-               "description": "Browse products button"
-             },
-             "featuresTitle": "Why Choose TezSell?",
-             "@featuresTitle": {
-               "description": "Features section title"
-             },
-             "listingTitle": "Simple Product Listing",
-             "@listingTitle": {
-               "description": "Listing feature title"
-             },
-             "listingDescription": "List your items with just a few clicks. Add photos, set your price, and connect with buyers instantly.",
-             "@listingDescription": {
-               "description": "Listing feature description"
-             },
-             "locationTitle": "Location-Based Browsing",
-             "@locationTitle": {
-               "description": "Location feature title"
-             },
-             "locationDescription": "Find deals near you. Our location-based system helps you discover items in your neighborhood.",
-             "@locationDescription": {
-               "description": "Location feature description"
-             },
-             "categoryTitle": "Category Filtering",
-             "@categoryTitle": {
-               "description": "Category feature title"
-             },
-             "categoryDescription": "Easily navigate through different categories to find exactly what you're looking for.",
-             "@categoryDescription": {
-               "description": "Category feature description"
-             },
-             "inspirationTitle": "Inspired by Korea's Carrot Market",
-             "@inspirationTitle": {
-               "description": "Inspiration section title"
-             },
-             "inspirationDescription1": "We've built TezSell with inspiration from Korea's successful Carrot Market (당근마켓), but tailored it specifically to meet the unique needs of Uzbekistan's local communities.",
-             "@inspirationDescription1": {
-               "description": "Inspiration description 1"
-             },
-             "inspirationDescription2": "Our mission is to create a trustworthy platform where neighbors can buy, sell, and connect with each other easily.",
-             "@inspirationDescription2": {
-               "description": "Inspiration description 2"
-             },
-             "comingSoonTitle": "Coming Soon to TezSell",
-             "@comingSoonTitle": {
-               "description": "Coming soon section title"
-             },
-             "inAppChat": "In-App Chat",
-             "@inAppChat": {
-               "description": "In-app chat feature"
-             },
-             "secureTransactions": "Secure Transactions",
-             "@secureTransactions": {
-               "description": "Secure transactions feature"
-             },
-             "realEstateListings": "Real Estate Listings",
-             "@realEstateListings": {
-               "description": "Real estate listings feature"
-             },
-             "stayUpdated": "Stay Updated",
-             "@stayUpdated": {
-               "description": "Stay updated text"
-             },
-             "comingSoonBadge": "Coming Soon",
-             "@comingSoonBadge": {
-               "description": "Coming soon badge"
-             },
-             "ctaTitle": "Join the TezSell Community Today!",
-             "@ctaTitle": {
-               "description": "CTA section title"
-             },
-             "ctaDescription": "Be part of building a better marketplace experience for Uzbekistan. Share your feedback and help us grow!",
-             "@ctaDescription": {
-               "description": "CTA section description"
-             },
-             "createAccount": "Create Account",
-             "@createAccount": {
-               "description": "Create account button"
-             },
-             "learnMore": "Learn More",
-             "@learnMore": {
-               "description": "Learn more button"
-             },
-             "replyUpdateSuccess": "Reply updated successfully",
-             "@replyUpdateSuccess": {
-               "description": "Reply update success"
-             },
-             "replyUpdateError": "Failed to update reply",
-             "@replyUpdateError": {
-               "description": "Reply update error"
-             },
-             "replyDeleteSuccess": "Reply deleted successfully",
-             "@replyDeleteSuccess": {
-               "description": "Reply delete success"
-             },
-             "replyDeleteError": "Failed to delete reply",
-             "@replyDeleteError": {
-               "description": "Reply delete error"
-             },
-             "replyDeleteConfirmation": "Are you sure you want to delete this reply?",
-             "@replyDeleteConfirmation": {
-               "description": "Reply delete confirmation"
-             },
-             "authenticationRequired": "Authentication required",
-             "@authenticationRequired": {
-               "description": "Authentication required message"
-             },
-             "enterValidReply": "Please enter a valid reply text",
-             "@enterValidReply": {
-               "description": "Valid reply text required"
-             },
-             "saving": "Saving...",
-             "@saving": {
-               "description": "Saving text"
-             },
-             "deleting": "Deleting...",
-             "@deleting": {
-               "description": "Deleting text"
-             },
-             "properties": "Properties",
-             "@properties": {
-               "description": "Properties section"
-             },
-             "agents": "Agents",
-             "@agents": {
-               "description": "Agents section"
-             },
-             "becomeAgent": "Become an Agent",
-             "@becomeAgent": {
-               "description": "Become agent button"
-             },
-             "main": "Main",
-             "@main": {
-               "description": "Main/Primary label"
-             },
-             "upload": "Upload",
-             "@upload": {
-               "description": "Upload button text for main product"
-             },
-             "filtered_products": "Filtered Products",
-             "@filtered_products": {
-               "description": "Title for filtered products"
-             },
-             "productDetail": "Product Detail",
-             "unknownUser": "Unknown User",
-             "locationNotAvailable": "Location not available",
-             "noTitle": "No Title",
-             "noCategory": "No Category",
-             "noDescription": "No Description",
-             "som": "Som",
-             "about_me": "About Me",
-             "@about_me": {
-             "description": "About me menu item"
-             },
-            "my_name": "My Name",
-            "@my_name": {
-            "description": "About my name menu title"
-            },
-            "customer_support": "Customer Support",
-             "customer_center": "Customer Center",
-            "customer_inquiries": "Inquiries",
-            "customer_terms": "Terms and Conditions",
-            "region": "Region",
-            "district": "District",
-             "tap_change_profile": "Tap to change photo",
-             "language_settings": "Language Settings",
-             "selectLanguage" : "Select a language",
-             "select_theme":  "Select Theme",
-              "theme": "Theme",
-              "location_settings": "Location Settings",
-              "security" : "Security",
-              "data_storage": "Data & Storage",
-              "accessibility" : "Accessibilty",
-               "privacy": "Privacy",
-              "light_theme" : "Light",
-              "dark_theme": "Dark",
-              "system_theme" : "System Default",
-              "my_products": "My Products",
+  "@usernameHint": {
+    "description": "Hint text for username input"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Label for password confirmation field"
+  },
+  "profileImage": "Profile Image",
+  "@profileImage": {
+    "description": "Label for profile image selection"
+  },
+  "imageInstructions": "Images will appear here, please press profile image",
+  "@imageInstructions": {
+    "description": "Instructions for image selection"
+  },
+  "finish": "Finish",
+  "@finish": {
+    "description": "Button text to complete registration"
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "@passwordsDoNotMatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "registrationError": "Registration error",
+  "@registrationError": {
+    "description": "Error message when registration fails"
+  },
+  "about": "About Us",
+  "@about": {
+    "description": "About us menu item"
+  },
+  "chat": "Chat",
+  "@chat": {
+    "description": "Chat functionality"
+  },
+  "realEstate": "Real Estate",
+  "@realEstate": {
+    "description": "Real estate section"
+  },
+  "language": "ENG",
+  "@language": {
+    "description": "Language selector display"
+  },
+  "languageEn": "English",
+  "@languageEn": {
+    "description": "English language option"
+  },
+  "languageRu": "Russian",
+  "@languageRu": {
+    "description": "Russian language option"
+  },
+  "languageUz": "Uzbek",
+  "@languageUz": {
+    "description": "Uzbek language option"
+  },
+  "serviceLiked": "Service liked",
+  "@serviceLiked": {
+    "description": "Service liked message"
+  },
+  "support": "Support",
+  "@support": {
+    "description": "Support menu item"
+  },
+  "service": "Business Services",
+  "@service": {
+    "description": "Business services section"
+  },
+  "aboutContent": "TezSell is a fast and easy marketplace for buying and selling new and used products. Our mission is to create the most convenient and efficient platform for every user, ensuring smooth transactions and a user-friendly experience. Whether you're looking to sell or buy, TezSell makes it easy to connect and complete transactions in just a few steps.We prioritize the security and privacy of our users. All transactions are carefully monitored to ensure safety and compliance, providing peace of mind to both buyers and sellers. Our simple and intuitive interface allows users to quickly list products and find what they need. We also facilitate real-time communication through Telegram, making the buying and selling process even smoother.",
+  "@aboutContent": {
+    "description": "About us content description"
+  },
+  "errorMessage": "Error occurred, please check the server",
+  "@errorMessage": {
+    "description": "Generic error message"
+  },
+  "searchLocation": "Location",
+  "@searchLocation": {
+    "description": "Location search label"
+  },
+  "searchCategory": "Categories",
+  "@searchCategory": {
+    "description": "Category search label"
+  },
+  "searchProductPlaceholder": "Search for products",
+  "@searchProductPlaceholder": {
+    "description": "Product search placeholder"
+  },
+  "searchServicePlaceholder": "Search for services",
+  "@searchServicePlaceholder": {
+    "description": "Service search placeholder"
+  },
+  "searchText": "Search",
+  "@searchText": {
+    "description": "Search button text"
+  },
+  "selectedCategory": "Selected Category: ",
+  "@selectedCategory": {
+    "description": "Selected category prefix"
+  },
+  "selectedLocation": "Selected Location: ",
+  "@selectedLocation": {
+    "description": "Selected location prefix"
+  },
+  "productError": "No products available",
+  "@productError": {
+    "description": "No products error message"
+  },
+  "serviceError": "No services available",
+  "@serviceError": {
+    "description": "No services error message"
+  },
+  "locationHeader": "Select a location",
+  "@locationHeader": {
+    "description": "Location selection header"
+  },
+  "locationPlaceholder": "Search region here",
+  "@locationPlaceholder": {
+    "description": "Location search placeholder"
+  },
+  "categoryHeader": "Select a Category",
+  "@categoryHeader": {
+    "description": "Category selection header"
+  },
+  "categoryPlaceholder": "Search Categories",
+  "@categoryPlaceholder": {
+    "description": "Category search placeholder"
+  },
+  "categoryError": "No categories available",
+  "@categoryError": {
+    "description": "No categories error message"
+  },
+  "paginationFirst": "First",
+  "@paginationFirst": {
+    "description": "First page button"
+  },
+  "paginationPrevious": "Previous",
+  "@paginationPrevious": {
+    "description": "Previous page button"
+  },
+  "pageInfo": "Page of",
+  "@pageInfo": {
+    "description": "Page information text"
+  },
+  "pageNext": "Next",
+  "@pageNext": {
+    "description": "Next page button"
+  },
+  "pageLast": "Last",
+  "@pageLast": {
+    "description": "Last page button"
+  },
+  "loadingMessageProduct": "Loading products ...",
+  "@loadingMessageProduct": {
+    "description": "Loading products message"
+  },
+  "loadingMessageError": "Error while loading",
+  "@loadingMessageError": {
+    "description": "Loading error message"
+  },
+  "likeProductError": "Error occurred while liking product",
+  "@likeProductError": {
+    "description": "Product like error message"
+  },
+  "dislikeProductError": "Error occurred while disliking product",
+  "@dislikeProductError": {
+    "description": "Product dislike error message"
+  },
+  "loadingMessageLocation": "Loading location ...",
+  "@loadingMessageLocation": {
+    "description": "Loading location message"
+  },
+  "loadingLocationError": "Error while loading location",
+  "@loadingLocationError": {
+    "description": "Location loading error"
+  },
+  "loadingMessageCategory": "Loading categories ...",
+  "@loadingMessageCategory": {
+    "description": "Loading categories message"
+  },
+  "loadingCategoryError": "Error loading categories:",
+  "@loadingCategoryError": {
+    "description": "Category loading error"
+  },
+  "profileUpdateSuccessMessage": "Profile updated successfully",
+  "@profileUpdateSuccessMessage": {
+    "description": "Profile update success message"
+  },
+  "profileUpdateFailMessage": "Failed to update profile",
+  "@profileUpdateFailMessage": {
+    "description": "Profile update failure message"
+  },
+  "seeMoreBtn": "See More",
+  "@seeMoreBtn": {
+    "description": "See more button text"
+  },
+  "profilePageTitle": "Profile Page",
+  "@profilePageTitle": {
+    "description": "Profile page title"
+  },
+  "editProfileModalTitle": "Edit Profile",
+  "@editProfileModalTitle": {
+    "description": "Edit profile modal title"
+  },
+  "usernameLabel": "Username",
+  "@usernameLabel": {
+    "description": "Username field label"
+  },
+  "locationLabel": "Current Location",
+  "@locationLabel": {
+    "description": "Location field label"
+  },
+  "profileImageLabel": "Profile Image",
+  "@profileImageLabel": {
+    "description": "Profile image field label"
+  },
+  "chooseFileLabel": "Choose a file",
+  "@chooseFileLabel": {
+    "description": "File chooser label"
+  },
+  "uploadBtnLabel": "Update",
+  "@uploadBtnLabel": {
+    "description": "Upload button label"
+  },
+  "uploadingBtnLabel": "Updating ...",
+  "@uploadingBtnLabel": {
+    "description": "Uploading button label"
+  },
+  "cancelBtnLabel": "Cancel",
+  "@cancelBtnLabel": {
+    "description": "Cancel button label"
+  },
+  "productsTitle": "Products",
+  "@productsTitle": {
+    "description": "Products section title"
+  },
+  "servicesTitle": "Services",
+  "@servicesTitle": {
+    "description": "Services section title"
+  },
+  "myProductsTitle": "My Products",
+  "@myProductsTitle": {
+    "description": "My products section title"
+  },
+  "myServicesTitle": "My Services",
+  "@myServicesTitle": {
+    "description": "My services section title"
+  },
+  "favoriteProductsTitle": "Favorite Products",
+  "@favoriteProductsTitle": {
+    "description": "Favorite products section title"
+  },
+  "favoriteServicesTitle": "Favorite Services",
+  "@favoriteServicesTitle": {
+    "description": "Favorite services section title"
+  },
+  "noFavorites": "No Favorites",
+  "@noFavorites": {
+    "description": "No favorites message"
+  },
+  "addNewProductBtn": "Add New Product",
+  "@addNewProductBtn": {
+    "description": "Add new product button"
+  },
+  "addNew": "New",
+  "@addNew": {
+    "description": "Add new item button"
+  },
+  "addNewServiceBtn": "Add New Service",
+  "@addNewServiceBtn": {
+    "description": "Add new service button"
+  },
+  "downloadMobileApp": "Download the mobile app",
+  "@downloadMobileApp": {
+    "description": "Download mobile app message"
+  },
+  "registerPhoneNumberSuccess": "Phone number verified! You can proceed to the next step.",
+  "@registerPhoneNumberSuccess": {
+    "description": "Phone verification success message"
+  },
+  "regionSelectedMessage": "Region selected:",
+  "@regionSelectedMessage": {
+    "description": "Region selected message"
+  },
+  "districtSelectMessage": "District selected:",
+  "@districtSelectMessage": {
+    "description": "District selected message"
+  },
+  "phoneNumberEmptyMessage": "Please verify your phone number before proceeding",
+  "@phoneNumberEmptyMessage": {
+    "description": "Phone number empty error"
+  },
+  "regionEmptyMessage": "Please select the region first",
+  "@regionEmptyMessage": {
+    "description": "Region empty error"
+  },
+  "districtEmptyMessage": " Please select the district",
+  "@districtEmptyMessage": {
+    "description": "District empty error"
+  },
+  "usernamePasswordEmptyMessage": "Please input username and password",
+  "@usernamePasswordEmptyMessage": {
+    "description": "Username password empty error"
+  },
+  "registerTitle": "Register",
+  "@registerTitle": {
+    "description": "Register screen title"
+  },
+  "previousButton": "Previous",
+  "@previousButton": {
+    "description": "Previous button text"
+  },
+  "nextButton": "Next",
+  "@nextButton": {
+    "description": "Next button text"
+  },
+  "completeButton": "Complete",
+  "@completeButton": {
+    "description": "Complete button text"
+  },
+  "stepIndicator": "Step {currentStep} out of 4",
+  "@stepIndicator": {
+    "description": "Step indicator text",
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      }
+    }
+  },
+  "districtSelectTitle": "District List",
+  "@districtSelectTitle": {
+    "description": "District selection title"
+  },
+  "districtSelectParagraph": "Select a district:",
+  "@districtSelectParagraph": {
+    "description": "District selection instruction"
+  },
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Phone number label"
+  },
+  "sendOtp": "Send OTP",
+  "@sendOtp": {
+    "description": "Send OTP button"
+  },
+  "sendAgain": "Send again",
+  "@sendAgain": {
+    "description": "Send again button"
+  },
+  "verify": "Verify",
+  "@verify": {
+    "description": "Verify button"
+  },
+  "failedToSendOtp": "Failed to send OTP. Server returned false.",
+  "@failedToSendOtp": {
+    "description": "OTP send failure message"
+  },
+  "errorSendingOtp": "An error occurred while sending OTP.",
+  "@errorSendingOtp": {
+    "description": "OTP send error message"
+  },
+  "invalidPhoneNumber": "Please enter a valid phone number.",
+  "@invalidPhoneNumber": {
+    "description": "Invalid phone number error"
+  },
+  "verificationSuccess": "Successfully verified",
+  "@verificationSuccess": {
+    "description": "Verification success message"
+  },
+  "verificationError": "An error occurred. Please try again later.",
+  "@verificationError": {
+    "description": "Verification error message"
+  },
+  "regionsList": "Regions List",
+  "@regionsList": {
+    "description": "Regions list title"
+  },
+  "enterUsername": "Enter your username",
+  "@enterUsername": {
+    "description": "Username input placeholder"
+  },
+  "welcomeMessage": "Welcome to Tezsell, log in with your phone number",
+  "@welcomeMessage": {
+    "description": "Welcome login message"
+  },
+  "noAccount": "No account yet? Register here",
+  "@noAccount": {
+    "description": "Register link text"
+  },
+  "successLogin": "Successfully logged",
+  "@successLogin": {
+    "description": "Login success message"
+  },
+  "myProfile": "My Profile",
+  "@myProfile": {
+    "description": "My profile menu item"
+  },
+  "logout": "logout",
+  "@logout": {
+    "description": "Logout button"
+  },
+  "newProductTitle": "Title",
+  "@newProductTitle": {
+    "description": "Product title field"
+  },
+  "newProductDescription": "Description",
+  "@newProductDescription": {
+    "description": "Product description field"
+  },
+  "newProductPrice": "Price",
+  "@newProductPrice": {
+    "description": "Product price field"
+  },
+  "newProductCondition": "Condition",
+  "@newProductCondition": {
+    "description": "Product condition field"
+  },
+  "newProductCategory": "Category",
+  "@newProductCategory": {
+    "description": "Product category field"
+  },
+  "newProductImages": "Images",
+  "@newProductImages": {
+    "description": "Product images field"
+  },
+  "addNewService": "Add New Service",
+  "@addNewService": {
+    "description": "Add new service title"
+  },
+  "creating": "Creating...",
+  "@creating": {
+    "description": "Creating text"
+  },
+  "serviceName": "Service Name ",
+  "@serviceName": {
+    "description": "Service name field"
+  },
+  "serviceNamePlaceholder": "Enter service title",
+  "@serviceNamePlaceholder": {
+    "description": "Service name placeholder"
+  },
+  "serviceDescription": "Service Description ",
+  "@serviceDescription": {
+    "description": "Service description field"
+  },
+  "serviceDescriptionPlaceholder": "Enter service description",
+  "@serviceDescriptionPlaceholder": {
+    "description": "Service description placeholder"
+  },
+  "serviceCategory": "Service Category ",
+  "@serviceCategory": {
+    "description": "Service category field"
+  },
+  "selectCategory": "Select category",
+  "@selectCategory": {
+    "description": "Category selection instruction"
+  },
+  "loadingCategories": "Loading...",
+  "@loadingCategories": {
+    "description": "Loading categories text"
+  },
+  "errorLoadingCategories": "Error loading categories",
+  "@errorLoadingCategories": {
+    "description": "Category loading error"
+  },
+  "serviceImages": "Service Images",
+  "@serviceImages": {
+    "description": "Service images field"
+  },
+  "imageUploadHelper": "Click the + icon to add images (maximum 10)",
+  "@imageUploadHelper": {
+    "description": "Image upload help text"
+  },
+  "maxImagesError": "You can upload a maximum of 10 images",
+  "@maxImagesError": {
+    "description": "Maximum images error"
+  },
+  "categoryNotFound": "Category not found",
+  "@categoryNotFound": {
+    "description": "Category not found error"
+  },
+  "productCreatedSuccess": "Product created successfully",
+  "@productCreatedSuccess": {
+    "description": "Product creation success"
+  },
+  "productLikeSuccess": "Product liked successfully",
+  "@productLikeSuccess": {
+    "description": "Product like success"
+  },
+  "productDislikeSuccess": "Product disliked successfully",
+  "@productDislikeSuccess": {
+    "description": "Product dislike success"
+  },
+  "errorCreatingService": "Error while creating service",
+  "@errorCreatingService": {
+    "description": "Service creation error"
+  },
+  "errorCreatingProduct": "Error while creating product",
+  "@errorCreatingProduct": {
+    "description": "Product creation error"
+  },
+  "unknownError": "An unknown error occurred while creating the service",
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Submit button"
+  },
+  "selectCategoryAction": "Select Category",
+  "@selectCategoryAction": {
+    "description": "Select category action"
+  },
+  "selectCondition": "Select Condition",
+  "@selectCondition": {
+    "description": "Select condition action"
+  },
+  "sum": "Sum",
+  "@sum": {
+    "description": "Sum/Total label"
+  },
+  "noComments": " No comments yet. Be the first to comment!",
+  "@noComments": {
+    "description": "No comments message"
+  },
+  "commentLikeSuccess": "Comment liked successfully",
+  "@commentLikeSuccess": {
+    "description": "Comment like success"
+  },
+  "commentLikeError": "Error while liking comment",
+  "@commentLikeError": {
+    "description": "Comment like error"
+  },
+  "unknownErrorMessage": "An unknown error occurred",
+  "@unknownErrorMessage": {
+    "description": "Unknown error message generic"
+  },
+  "commentDislikeSuccess": "Comment disliked successfully",
+  "@commentDislikeSuccess": {
+    "description": "Comment dislike success"
+  },
+  "commentDislikeError": "Error while disliking comment",
+  "@commentDislikeError": {
+    "description": "Comment dislike error"
+  },
+  "replyInfo": "Please enter a reply first",
+  "@replyInfo": {
+    "description": "Reply validation message"
+  },
+  "replySuccessMessage": "Reply added successfully",
+  "@replySuccessMessage": {
+    "description": "Reply success message"
+  },
+  "replyErrorMessage": "Error occurred during the creation of the reply",
+  "@replyErrorMessage": {
+    "description": "Reply error message"
+  },
+  "commentUpdateSuccess": "Comment updated successfully",
+  "@commentUpdateSuccess": {
+    "description": "Comment update success"
+  },
+  "commentUpdateError": "Error updating comment item",
+  "@commentUpdateError": {
+    "description": "Comment update error"
+  },
+  "deleteConfirmationMessage": "Are you sure you want to delete this comment?",
+  "@deleteConfirmationMessage": {
+    "description": "Delete confirmation message"
+  },
+  "commentDeleteSuccess": "Comment deleted successfully",
+  "@commentDeleteSuccess": {
+    "description": "Comment delete success"
+  },
+  "commentDeleteError": "Error deleting comment",
+  "@commentDeleteError": {
+    "description": "Comment delete error"
+  },
+  "editLabel": "Edit",
+  "@editLabel": {
+    "description": "Edit button label"
+  },
+  "deleteLabel": "Delete",
+  "@deleteLabel": {
+    "description": "Delete button label"
+  },
+  "saveLabel": "Save",
+  "@saveLabel": {
+    "description": "Save button label"
+  },
+  "replyLabel": "Reply",
+  "@replyLabel": {
+    "description": "Reply button label"
+  },
+  "replyTitle": "replies",
+  "@replyTitle": {
+    "description": "Replies section title"
+  },
+  "replyPlaceholder": "Write a reply...",
+  "@replyPlaceholder": {
+    "description": "Reply input placeholder"
+  },
+  "chatLoginMessage": "You must be logged in to start a chat",
+  "@chatLoginMessage": {
+    "description": "Chat login required message"
+  },
+  "chatYourselfMessage": "You can't chat with yourself.",
+  "@chatYourselfMessage": {
+    "description": "Can't chat with yourself message"
+  },
+  "chatRoomMessage": "Chat room created!",
+  "@chatRoomMessage": {
+    "description": "Chat room created message"
+  },
+  "chatRoomError": "Failed to create chat!",
+  "@chatRoomError": {
+    "description": "Chat room creation error"
+  },
+  "chatCreationError": "Chat creation failed!",
+  "@chatCreationError": {
+    "description": "Chat creation error"
+  },
+  "productsTotal": "Products total",
+  "@productsTotal": {
+    "description": "Products total count"
+  },
+  "perPage": "items",
+  "@perPage": {
+    "description": "Items per page"
+  },
+  "clearAllFilters": "Clear all filters",
+  "@clearAllFilters": {
+    "description": "Clear filters button"
+  },
+  "clickToUpload": "Click to upload",
+  "@clickToUpload": {
+    "description": "Upload instruction"
+  },
+  "productInStock": "In Stock",
+  "@productInStock": {
+    "description": "Product in stock status"
+  },
+  "productOutStock": "Out of stock",
+  "@productOutStock": {
+    "description": "Product out of stock status"
+  },
+  "productBack": "Back to products",
+  "@productBack": {
+    "description": "Back to products button"
+  },
+  "messageSeller": "Chat",
+  "@messageSeller": {
+    "description": "Message seller button"
+  },
+  "recommendedProducts": "Recommended Products",
+  "@recommendedProducts": {
+    "description": "Recommended products section"
+  },
+  "deleteConfirmationProduct": "Are you sure you want to delete this product?",
+  "@deleteConfirmationProduct": {
+    "description": "Product delete confirmation"
+  },
+  "productDeleteSuccess": "Product deleted successfully",
+  "@productDeleteSuccess": {
+    "description": "Product delete success"
+  },
+  "productDeleteError": "Error deleting product",
+  "@productDeleteError": {
+    "description": "Product delete error"
+  },
+  "newCondition": "New",
+  "@newCondition": {
+    "description": "New condition"
+  },
+  "used": "Used",
+  "@used": {
+    "description": "Used condition"
+  },
+  "imageValidType": "Some files were not added. Please use JPG, PNG, GIF or WebP files under 5MB.",
+  "@imageValidType": {
+    "description": "Image validation error"
+  },
+  "imageConfirmMessage": "Are you sure you want to remove this image?",
+  "@imageConfirmMessage": {
+    "description": "Image removal confirmation"
+  },
+  "titleRequiredMessage": "Title is required",
+  "@titleRequiredMessage": {
+    "description": "Title required validation"
+  },
+  "descRequiredMessage": "Description is required",
+  "@descRequiredMessage": {
+    "description": "Description required validation"
+  },
+  "priceRequiredMessage": "Price is required",
+  "@priceRequiredMessage": {
+    "description": "Price required validation"
+  },
+  "conditionRequiredMessage": "Condition is required",
+  "@conditionRequiredMessage": {
+    "description": "Condition required validation"
+  },
+  "pleaseFillAllRequired": "Please fill the required fields",
+  "@pleaseFillAllRequired": {
+    "description": "Fill required fields message"
+  },
+  "oneImageConfirmMessage": "At least one product image is required",
+  "@oneImageConfirmMessage": {
+    "description": "One image required validation"
+  },
+  "categoryRequiredMessage": "Category is required",
+  "@categoryRequiredMessage": {
+    "description": "Category required validation"
+  },
+  "locationInfoError": "User location information is missing",
+  "@locationInfoError": {
+    "description": "Location info missing error"
+  },
+  "editProductTitle": "Edit Product",
+  "@editProductTitle": {
+    "description": "Edit product title"
+  },
+  "imageUploadRequirements": "At least one image is required. You can upload up to 10 images (JPG, PNG, GIF, WebP under 5MB each).",
+  "@imageUploadRequirements": {
+    "description": "Image upload requirements"
+  },
+  "productUpdatedSuccess": "Product updated successfully",
+  "@productUpdatedSuccess": {
+    "description": "Product update success"
+  },
+  "productUpdateFailed": "Product update failed",
+  "@productUpdateFailed": {
+    "description": "Product update failed"
+  },
+  "errorUpdatingProduct": "Error occurred while updating the product",
+  "@errorUpdatingProduct": {
+    "description": "Product update error"
+  },
+  "serviceBack": "Back to services",
+  "@serviceBack": {
+    "description": "Back to services button"
+  },
+  "likeLabel": "Like",
+  "@likeLabel": {
+    "description": "Like button label"
+  },
+  "commentsLabel": "Comments",
+  "@commentsLabel": {
+    "description": "Comments section label"
+  },
+  "writeComment": "Write a comment ...",
+  "@writeComment": {
+    "description": "Write comment placeholder"
+  },
+  "postingLabel": "Posting...",
+  "@postingLabel": {
+    "description": "Posting comment text"
+  },
+  "commentCreated": "Comment created",
+  "@commentCreated": {
+    "description": "Comment created success"
+  },
+  "postCommentLabel": "Post Comment",
+  "@postCommentLabel": {
+    "description": "Post comment button"
+  },
+  "loginPrompt": "Please log in to view and post comments.",
+  "@loginPrompt": {
+    "description": "Login required for comments"
+  },
+  "recommendedServices": "Recommended Services",
+  "@recommendedServices": {
+    "description": "Recommended services section"
+  },
+  "commentsVisibilityNotice": "Comments are only visible to logged-in users.",
+  "@commentsVisibilityNotice": {
+    "description": "Comments visibility notice"
+  },
+  "comingSoon": "Coming soon",
+  "@comingSoon": {
+    "description": "Coming soon text"
+  },
+  "serviceUpdateSuccess": "Service updated successfully",
+  "@serviceUpdateSuccess": {
+    "description": "Service update success"
+  },
+  "serviceUpdateError": "Error updating service item",
+  "@serviceUpdateError": {
+    "description": "Service update error"
+  },
+  "editServiceModalTitle": "Edit Service",
+  "@editServiceModalTitle": {
+    "description": "Edit service modal title"
+  },
+  "enterPhoneNumberWithoutCode": "Enter phone number without code",
+  "@enterPhoneNumberWithoutCode": {
+    "description": "Phone number input instruction without country code"
+  },
+  "heroTitle": "TezSell",
+  "@heroTitle": {
+    "description": "Hero section title"
+  },
+  "heroSubtitle": "Your Fast & Easy Marketplace for Uzbekistan",
+  "@heroSubtitle": {
+    "description": "Hero section subtitle"
+  },
+  "startSelling": "Start Selling",
+  "@startSelling": {
+    "description": "Start selling button"
+  },
+  "browseProducts": "Browse Products",
+  "@browseProducts": {
+    "description": "Browse products button"
+  },
+  "featuresTitle": "Why Choose TezSell?",
+  "@featuresTitle": {
+    "description": "Features section title"
+  },
+  "listingTitle": "Simple Product Listing",
+  "@listingTitle": {
+    "description": "Listing feature title"
+  },
+  "listingDescription": "List your items with just a few clicks. Add photos, set your price, and connect with buyers instantly.",
+  "@listingDescription": {
+    "description": "Listing feature description"
+  },
+  "locationTitle": "Location-Based Browsing",
+  "@locationTitle": {
+    "description": "Location feature title"
+  },
+  "locationDescription": "Find deals near you. Our location-based system helps you discover items in your neighborhood.",
+  "@locationDescription": {
+    "description": "Location feature description"
+  },
+  "categoryTitle": "Category Filtering",
+  "@categoryTitle": {
+    "description": "Category feature title"
+  },
+  "categoryDescription": "Easily navigate through different categories to find exactly what you're looking for.",
+  "@categoryDescription": {
+    "description": "Category feature description"
+  },
+  "inspirationTitle": "Inspired by Korea's Carrot Market",
+  "@inspirationTitle": {
+    "description": "Inspiration section title"
+  },
+  "inspirationDescription1": "We've built TezSell with inspiration from Korea's successful Carrot Market (당근마켓), but tailored it specifically to meet the unique needs of Uzbekistan's local communities.",
+  "@inspirationDescription1": {
+    "description": "Inspiration description 1"
+  },
+  "inspirationDescription2": "Our mission is to create a trustworthy platform where neighbors can buy, sell, and connect with each other easily.",
+  "@inspirationDescription2": {
+    "description": "Inspiration description 2"
+  },
+  "comingSoonTitle": "Coming Soon to TezSell",
+  "@comingSoonTitle": {
+    "description": "Coming soon section title"
+  },
+  "inAppChat": "In-App Chat",
+  "@inAppChat": {
+    "description": "In-app chat feature"
+  },
+  "secureTransactions": "Secure Transactions",
+  "@secureTransactions": {
+    "description": "Secure transactions feature"
+  },
+  "realEstateListings": "Real Estate Listings",
+  "@realEstateListings": {
+    "description": "Real estate listings feature"
+  },
+  "stayUpdated": "Stay Updated",
+  "@stayUpdated": {
+    "description": "Stay updated text"
+  },
+  "comingSoonBadge": "Coming Soon",
+  "@comingSoonBadge": {
+    "description": "Coming soon badge"
+  },
+  "ctaTitle": "Join the TezSell Community Today!",
+  "@ctaTitle": {
+    "description": "CTA section title"
+  },
+  "ctaDescription": "Be part of building a better marketplace experience for Uzbekistan. Share your feedback and help us grow!",
+  "@ctaDescription": {
+    "description": "CTA section description"
+  },
+  "createAccount": "Create Account",
+  "@createAccount": {
+    "description": "Create account button"
+  },
+  "learnMore": "Learn More",
+  "@learnMore": {
+    "description": "Learn more button"
+  },
+  "replyUpdateSuccess": "Reply updated successfully",
+  "@replyUpdateSuccess": {
+    "description": "Reply update success"
+  },
+  "replyUpdateError": "Failed to update reply",
+  "@replyUpdateError": {
+    "description": "Reply update error"
+  },
+  "replyDeleteSuccess": "Reply deleted successfully",
+  "@replyDeleteSuccess": {
+    "description": "Reply delete success"
+  },
+  "replyDeleteError": "Failed to delete reply",
+  "@replyDeleteError": {
+    "description": "Reply delete error"
+  },
+  "replyDeleteConfirmation": "Are you sure you want to delete this reply?",
+  "@replyDeleteConfirmation": {
+    "description": "Reply delete confirmation"
+  },
+  "authenticationRequired": "Authentication required",
+  "@authenticationRequired": {
+    "description": "Authentication required message"
+  },
+  "enterValidReply": "Please enter a valid reply text",
+  "@enterValidReply": {
+    "description": "Valid reply text required"
+  },
+  "saving": "Saving...",
+  "@saving": {
+    "description": "Saving text"
+  },
+  "deleting": "Deleting...",
+  "@deleting": {
+    "description": "Deleting text"
+  },
+  "properties": "Properties",
+  "@properties": {
+    "description": "Properties section"
+  },
+  "agents": "Agents",
+  "@agents": {
+    "description": "Agents section"
+  },
+  "becomeAgent": "Become an Agent",
+  "@becomeAgent": {
+    "description": "Become agent button"
+  },
+  "main": "Main",
+  "@main": {
+    "description": "Main/Primary label"
+  },
+  "upload": "Upload",
+  "@upload": {
+    "description": "Upload button text for main product"
+  },
+  "filtered_products": "Filtered Products",
+  "@filtered_products": {
+    "description": "Title for filtered products"
+  },
+  "productDetail": "Product Detail",
+  "unknownUser": "Unknown User",
+  "locationNotAvailable": "Location not available",
+  "noTitle": "No Title",
+  "noCategory": "No Category",
+  "noDescription": "No Description",
+  "som": "Som",
+  "about_me": "About Me",
+  "@about_me": {
+    "description": "About me menu item"
+  },
+  "my_name": "My Name",
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "customer_support": "Customer Support",
+  "customer_center": "Customer Center",
+  "customer_inquiries": "Inquiries",
+  "customer_terms": "Terms and Conditions",
+  "region": "Region",
+  "district": "District",
+  "tap_change_profile": "Tap to change photo",
+  "language_settings": "Language Settings",
+  "selectLanguage": "Select a language",
+  "select_theme": "Select Theme",
+  "theme": "Theme",
+  "location_settings": "Location Settings",
+  "security": "Security",
+  "data_storage": "Data & Storage",
+  "accessibility": "Accessibilty",
+  "privacy": "Privacy",
+  "light_theme": "Light",
+  "dark_theme": "Dark",
+  "system_theme": "System Default",
+  "my_products": "My Products",
   "refresh": "Refresh",
   "delete_product": "Delete Product",
   "delete_confirmation": "Are you sure you want to delete this product?",
-
   "delete": "Delete",
   "error_loading_products": "Error loading products: {error}",
   "@error_loading_products": {
@@ -1367,8 +1318,6 @@
   "condition_used": "Used",
   "condition_refurbished": "Refurbished",
   "currency": "Currency",
-  "in_stock": "In Stock",
-  "select_category": "Select Category",
   "category": "Category",
   "images": "Images",
   "existing_images": "Existing Images",
@@ -1418,7 +1367,6 @@
   "enter_service_name": "Enter service name",
   "service_name_required": "Service name is required",
   "service_name_min_length": "Service name must be at least 3 characters",
-  "service_description": "Service Description",
   "enter_service_description": "Enter service description",
   "service_description_required": "Service description is required",
   "service_description_min_length": "Description must be at least 10 characters",
@@ -1431,6 +1379,412 @@
   "add_images": "Add Images",
   "current_images": "Current Images",
   "no_images_selected": "No images selected",
-  "save_changes": "Save Changes"
-
+  "save_changes": "Save Changes",
+  "map_main": "Map & Properties",
+  "agent_status": "Agent Status",
+  "admin_panel": "Admin Panel",
+  "propertiesFound": "Properties Found",
+  "propertiesSaved": "properties saved",
+  "saved": "saved",
+  "loadingProperties": "Loading properties...",
+  "failedToLoad": "Failed to load properties. Please try again.",
+  "noPropertiesFound": "No properties found",
+  "tryAdjusting": "Try adjusting your search criteria",
+  "search_placeholder": "Search by title or location...",
+  "search_filters": "Filters",
+  "search_button": "Search",
+  "search_clear_filters": "Clear Filters",
+  "filter_options_sale_and_rent": "Sale and Rent",
+  "filter_options_for_sale": "For Sale",
+  "filter_options_for_rent": "For Rent",
+  "filter_options_all_types": "All Types",
+  "filter_options_apartment": "Apartment",
+  "filter_options_house": "House",
+  "filter_options_townhouse": "Townhouse",
+  "filter_options_villa": "Villa",
+  "filter_options_commercial": "Commercial",
+  "filter_options_office": "Office",
+  "property_card_featured": "Featured",
+  "property_card_bed": "bedroom",
+  "property_card_bath": "bathroom",
+  "property_card_parking": "parking",
+  "property_card_view_details": "View Details",
+  "property_card_contact": "Contact",
+  "property_card_balcony": "Balcony",
+  "property_card_garage": "Garage",
+  "property_card_garden": "Garden",
+  "property_card_pool": "Pool",
+  "property_card_elevator": "Elevator",
+  "property_card_furnished": "Furnished",
+  "property_card_sales": "sales",
+  "pricing_month": "/month",
+  "results_properties_found": "Properties Found",
+  "results_properties_saved": "properties saved",
+  "results_saved": "saved",
+  "results_loading_properties": "Loading properties...",
+  "results_failed_to_load": "Failed to load properties. Please try again.",
+  "results_no_properties_found": "No properties found",
+  "results_try_adjusting": "Try adjusting your search criteria",
+  "no_properties_found": "No properties found",
+  "no_category_properties": "No properties in this category",
+  "properties_loading": "Loading properties...",
+  "all_properties_loaded": "All properties loaded",
+  "pagination_previous": "Previous",
+  "pagination_next": "Next",
+  "pagination_page": "Page",
+  "pagination_page_of": "Page 1 of",
+  "contact_modal_title": "Contact Information",
+  "contact_modal_agent_contact": "Agent Contact",
+  "contact_modal_property_owner": "Property Owner",
+  "contact_modal_agent_phone_number": "Agent Phone Number",
+  "contact_modal_owner_phone_number": "Owner Phone Number",
+  "contact_modal_license": "License",
+  "contact_modal_rating": "Rating",
+  "contact_modal_call_now": "Call Now",
+  "contact_modal_copy_number": "Copy Number",
+  "contact_modal_close": "Close",
+  "contact_modal_contact_hours": "Contact Hours: 9:00 AM - 8:00 PM",
+  "contact_modal_agent": "Agent",
+  "errors_toggle_save_failed": "Failed to toggle property save:",
+  "errors_copy_failed": "Failed to copy phone number:",
+  "errors_phone_copied": "Phone number copied to clipboard",
+  "errors_error_occurred_regions": "An error occurred with regions",
+  "errors_error_occurred_districts": "An error occurred with districts",
+  "errors_please_fill_all_required_fields": "Please fill all required fields",
+  "errors_authentication_required": "Authentication required",
+  "errors_user_info_missing": "User information missing",
+  "errors_validation_error": "Please check your input data",
+  "errors_permission_denied": "Permission denied",
+  "errors_server_error": "Server error occurred",
+  "errors_network_error": "Network connection error",
+  "errors_timeout_error": "Request timeout exceeded",
+  "errors_custom_error": "An error occurred",
+  "errors_error_creating_property": "Error creating property",
+  "errors_unknown_error_message": "An unknown error occurred",
+  "errors_coordinates_not_found": "Could not find coordinates for this address. Please enter them manually.",
+  "errors_coordinates_error": "Error getting coordinates. Please enter them manually.",
+  "property_info_views": "views",
+  "property_info_listed": "Listed",
+  "property_info_price_per_sqm": "/sqm",
+  "property_info_saved": "Saved",
+  "property_info_save": "Save",
+  "property_info_share": "Share",
+  "loading_loading": "Loading...",
+  "loading_loading_details": "Loading property details...",
+  "loading_property_not_found": "Property not found",
+  "loading_property_not_found_message": "The property you're looking for doesn't exist or has been removed.",
+  "loading_back_to_properties": "Back to Properties",
+  "loading_title": "Loading agents...",
+  "loading_message": "Please wait while we load the list of agents.",
+  "loading_agent_not_found": "Agent not found",
+  "property_details_title": "Property Details",
+  "property_details_bedrooms": "Bedrooms",
+  "property_details_bathrooms": "Bathrooms",
+  "property_details_floor_area": "Floor Area",
+  "property_details_parking": "Parking",
+  "property_details_basic_information": "Basic Information",
+  "property_details_property_type": "Property Type:",
+  "property_details_listing_type": "Listing Type:",
+  "property_details_for_sale": "For Sale",
+  "property_details_for_rent": "For Rent",
+  "property_details_year_built": "Year Built:",
+  "property_details_floor": "Floor:",
+  "property_details_of": "of",
+  "property_details_features_amenities": "Features & Amenities",
+  "sections_description": "Description",
+  "sections_nearby_amenities": "Nearby Amenities",
+  "sections_similar_properties": "Similar Properties",
+  "amenities_metro": "Metro",
+  "amenities_school": "School",
+  "amenities_hospital": "Hospital",
+  "amenities_shopping": "Shopping",
+  "amenities_away": "away",
+  "contact_title": "Contact Information",
+  "contact_professional_listing": "Professional Listing",
+  "contact_listed_by_agent": "Listed by verified agent",
+  "contact_by_owner": "By Owner",
+  "contact_direct_contact": "Direct contact with property owner",
+  "contact_property_owner": "Property Owner",
+  "contact_call_agent": "Call Agent",
+  "contact_email_agent": "Email Agent",
+  "contact_call_owner": "Call Owner",
+  "contact_email_owner": "Email Owner",
+  "contact_send_inquiry": "Send Inquiry",
+  "property_status_title": "Property Status",
+  "property_status_availability": "Availability:",
+  "property_status_available": "Available",
+  "property_status_not_available": "Not Available",
+  "property_status_featured": "Featured:",
+  "property_status_featured_property": "Featured Property",
+  "property_status_property_id": "Property ID:",
+  "inquiry_title": "Send Inquiry",
+  "inquiry_inquiry_type": "Inquiry Type",
+  "inquiry_request_info": "Request Information",
+  "inquiry_schedule_viewing": "Schedule Viewing",
+  "inquiry_make_offer": "Make Offer",
+  "inquiry_request_callback": "Request Callback",
+  "inquiry_message": "Message",
+  "inquiry_message_placeholder": "Tell us about your interest in this property...",
+  "inquiry_offered_price": "Offered Price",
+  "inquiry_enter_offer": "Enter your offer",
+  "inquiry_preferred_contact_time": "Preferred Contact Time (optional)",
+  "inquiry_contact_time_placeholder": "e.g., Weekdays 9:00 AM - 5:00 PM",
+  "inquiry_cancel": "Cancel",
+  "inquiry_sending": "Sending...",
+  "inquiry_send_inquiry": "Send Inquiry",
+  "inquiry_inquiry_sent_success": "Inquiry sent successfully!",
+  "inquiry_inquiry_sent_error": "Failed to send inquiry. Please try again.",
+  "alerts_link_copied": "Property link copied to clipboard!",
+  "alerts_phone_copied": "Phone number copied to clipboard!",
+  "alerts_save_property_failed": "Failed to save property:",
+  "alerts_email_subject": "Inquiry about:",
+  "alerts_email_body": "Hello,\\n\\nI'm interested in your property \"{title}\" located at {address}.\\n\\nPlease contact me for more information.\\n\\nBest regards",
+  "related_properties_view_details": "View Details",
+  "header_property": "Find Your Dream Property",
+  "header_sub_property": "Discover premium real estate opportunities in Tashkent's most desirable neighborhoods",
+  "header_title": "Real Estate Agents",
+  "header_subtitle": "Find experienced agents to help with your real estate needs",
+  "header_agents_found": "agents found",
+  "filters_all_specializations": "All Specializations",
+  "filters_residential": "Residential",
+  "filters_commercial": "Commercial",
+  "filters_luxury": "Luxury",
+  "filters_investment": "Investment",
+  "filters_any_rating": "Any Rating",
+  "filters_four_stars": "4+ Stars",
+  "filters_four_half_stars": "4.5+ Stars",
+  "filters_five_stars": "5 Stars",
+  "filters_highest_rated": "Highest Rated",
+  "filters_lowest_rated": "Lowest Rated",
+  "filters_most_sales": "Most Sales",
+  "filters_most_experience": "Most Experience",
+  "agent_card_verified_agent": "Verified Agent",
+  "agent_card_years_experience": "years experience",
+  "agent_card_years": "years",
+  "agent_card_license": "License",
+  "agent_card_specialization": "Specialization",
+  "agent_card_view_profile": "View Profile",
+  "agent_card_contact": "Contact",
+  "agent_card_verified": "Verified",
+  "no_results_title": "No Agents Found",
+  "no_results_message": "Try adjusting your search criteria or filters.",
+  "error_title": "Error Loading Agents",
+  "error_message": "Failed to load agent list. Please try again.",
+  "error_retry": "Retry",
+  "error_default_message": "Failed to load agent details",
+  "error_try_again": "Try Again",
+  "notifications_phone_copied": "Phone number copied to clipboard",
+  "notifications_copy_failed": "Failed to copy phone number:",
+  "fallback_agent_name": "Agent",
+  "fallback_default_phone": "+998 90 123 45 67",
+  "navigation_submit_property": "Submit Property",
+  "navigation_submitting": "Submitting...",
+  "navigation_back_to_agents": "Back to Agents",
+  "agent_profile_verified_agent": "Verified Agent",
+  "agent_profile_contact_agent": "Contact Agent",
+  "agent_profile_send_message": "Send Message",
+  "agent_profile_years_experience": "Years Experience",
+  "agent_profile_properties_sold": "Properties Sold",
+  "agent_profile_active_listings": "Active Listings",
+  "agent_profile_total_properties": "Total Properties",
+  "tabs_overview": "overview",
+  "tabs_properties": "properties",
+  "tabs_reviews": "reviews",
+  "about_agent_title": "About Agent",
+  "about_agent_agency": "Agency",
+  "about_agent_license_number": "License Number",
+  "about_agent_specialization": "Specialization",
+  "about_agent_member_since": "Member Since",
+  "about_agent_verified_since": "Verified Since",
+  "performance_metrics_title": "Performance Metrics",
+  "performance_metrics_average_rating": "Average Rating",
+  "performance_metrics_properties_sold": "Properties Sold",
+  "performance_metrics_active_listings": "Active Listings",
+  "performance_metrics_years_experience": "Years Experience",
+  "contact_info_title": "Contact Information",
+  "contact_info_contact_via_platform": "Contact via Platform",
+  "verification_status_title": "Verification Status",
+  "verification_status_verified_agent": "Verified Agent",
+  "verification_status_pending_verification": "Pending Verification",
+  "verification_status_licensed_professional": "Licensed Professional",
+  "verification_status_registered_agency": "Registered Agency",
+  "quick_actions_title": "Quick Actions",
+  "quick_actions_call_now": "Call Now",
+  "quick_actions_send_message": "Send Message",
+  "quick_actions_view_properties": "View Properties",
+  "properties_title": "Agent Properties",
+  "properties_loading_properties": "Loading properties...",
+  "properties_no_properties_title": "No Properties Found",
+  "properties_no_properties_message": "This agent's properties will appear here.",
+  "properties_recent_properties_note": "Showing recent properties. Check full listings for all agent properties.",
+  "properties_listed": "Listed",
+  "properties_bed": "bed",
+  "properties_bath": "bath",
+  "properties_for_sale": "For Sale",
+  "properties_for_rent": "For Rent",
+  "reviews_title": "Client Reviews",
+  "reviews_no_reviews_title": "No Reviews Yet",
+  "reviews_no_reviews_message": "Client reviews and recommendations will appear here.",
+  "fallbacks_agent_name": "Agent",
+  "fallbacks_default_profile_image": "/default-avatar.png",
+  "saved_properties_title": "Saved Properties",
+  "saved_properties_subtitle": "Your favorite properties in one place",
+  "saved_properties_no_saved_properties": "No saved properties yet",
+  "saved_properties_start_saving": "Start exploring and save properties you like",
+  "saved_properties_browse_properties": "Browse Properties",
+  "saved_properties_saved_on": "Saved on",
+  "auth_login_required": "Please log in to view saved properties",
+  "auth_login": "Login",
+  "success_property_unsaved": "Property removed from saved list",
+  "success_property_saved": "Property saved successfully",
+  "success_phone_copied": "Phone number copied!",
+  "success_property_created_success": "Property created successfully!",
+  "success_agent_approved": "Agent approved successfully",
+  "success_agent_rejected": "Agent rejected successfully",
+  "steps_step": "Step",
+  "steps_basic_information": "Basic Information",
+  "steps_location_details": "Location Details",
+  "steps_property_details": "Property Details",
+  "steps_property_images": "Property Images",
+  "basic_info_tell_us_about_property": "Tell us about your property",
+  "basic_info_property_type": "Property Type",
+  "basic_info_listing_type": "Listing Type",
+  "basic_info_property_title": "Property Title",
+  "basic_info_title_placeholder": "Enter a descriptive title for your property",
+  "basic_info_description": "Description",
+  "basic_info_description_placeholder": "Describe your property in detail...",
+  "property_types_apartment": "Apartment",
+  "property_types_house": "House",
+  "property_types_townhouse": "Townhouse",
+  "property_types_villa": "Villa",
+  "property_types_commercial": "Commercial",
+  "property_types_office": "Office",
+  "property_types_land": "Land",
+  "property_types_warehouse": "Warehouse",
+  "listing_types_for_sale": "For Sale",
+  "listing_types_for_rent": "For Rent",
+  "location_where_is_property": "Where is your property located?",
+  "location_full_address": "Full Address",
+  "location_address_placeholder": "Enter full address",
+  "location_region": "Region",
+  "location_select_region": "Select region",
+  "location_district": "District",
+  "location_select_district": "Select district",
+  "location_city": "City",
+  "location_city_placeholder": "City",
+  "location_loading_regions": "Loading regions...",
+  "location_loading_districts": "Loading districts...",
+  "location_map_coordinates": "Map Coordinates",
+  "location_get_coordinates": "Get Coordinates",
+  "location_latitude": "Latitude",
+  "location_longitude": "Longitude",
+  "location_coordinates_set": "Coordinates set",
+  "location_location_tips": "Location Tips",
+  "location_location_tip_1": "• Fill in the address first, then click 'Get Coordinates' to automatically get the map location",
+  "location_location_tip_2": "• You can also manually enter coordinates if you know the exact location",
+  "location_location_tip_3": "• Accurate coordinates help buyers find your property on the map",
+  "property_details_provide_detailed_info": "Provide detailed information about your property",
+  "property_details_total_floors": "Total Floors",
+  "property_details_area_m2": "Area (m²)",
+  "property_details_parking_spaces": "Parking Spaces",
+  "property_details_price": "Price",
+  "property_details_features": "Features",
+  "images_add_photos_showcase": "Add photos to showcase your property",
+  "images_click_to_upload": "Click to upload images",
+  "images_max_images_info": "Maximum 10 images, JPG, PNG or WEBP",
+  "images_main": "Main",
+  "images_maximum_images_allowed": "Maximum 10 images allowed",
+  "admin_dashboard_title": "Admin Dashboard",
+  "admin_dashboard_subtitle": "Real-time overview of your real estate platform",
+  "admin_last_update": "Last update",
+  "admin_total_properties": "Total Properties",
+  "admin_total_agents": "Total Agents",
+  "admin_total_users": "Total Users",
+  "admin_total_views": "Total Views",
+  "admin_error_loading_dashboard": "Error loading dashboard",
+  "admin_failed_to_load_data": "Failed to load dashboard data",
+  "admin_avg_sale_price": "Avg Sale Price",
+  "admin_avg_sale_price_subtitle": "All active listings",
+  "admin_total_portfolio_value": "Total Portfolio Value",
+  "admin_total_portfolio_value_subtitle": "Combined property value",
+  "admin_avg_price_per_sqm": "Avg Price per sqm",
+  "admin_avg_price_per_sqm_subtitle": "Market rate indicator",
+  "admin_property_types_distribution": "Property Types Distribution",
+  "admin_properties_by_city": "Properties by City",
+  "admin_properties_by_district": "Properties by District",
+  "admin_inquiry_types_distribution": "Inquiry Types Distribution",
+  "admin_agent_verification_rate": "Agent Verification Rate",
+  "admin_agent_verification_rate_subtitle": "Quality control",
+  "admin_inquiry_response_rate": "Inquiry Response Rate",
+  "admin_inquiry_response_rate_subtitle": "Customer service",
+  "admin_avg_views_per_property": "Avg Views per Property",
+  "admin_avg_views_per_property_subtitle": "Property popularity",
+  "admin_featured_properties": "Featured Properties",
+  "admin_featured_properties_subtitle": "Premium listings",
+  "admin_most_viewed_properties": "Most Viewed Properties",
+  "admin_top_performing_agents": "Top Performing Agents",
+  "admin_system_health": "System Health",
+  "admin_properties_without_images": "Properties without images",
+  "admin_missing_location_data": "Missing location data",
+  "admin_pending_agent_verification": "Pending agent verification",
+  "admin_active": "active",
+  "admin_verified": "verified",
+  "admin_active_7d": "active (7d)",
+  "admin_this_month": "this month",
+  "agents_loading_pending_applications": "Loading pending applications...",
+  "agents_error_loading_applications": "Error loading applications",
+  "agents_pending_agents": "Pending Agents",
+  "agents_total_pending_applications": "Total pending applications: ",
+  "agents_pending_verification": "Pending Verification",
+  "agents_applied_date": "Applied: ",
+  "agents_contact_info": "Contact Information",
+  "agents_license_number": "License Number",
+  "agents_years_experience": "Years Experience",
+  "agents_years_suffix": " years",
+  "agents_total_sales": "Total Sales",
+  "agents_specialization": "Specialization",
+  "agents_approve": "Approve",
+  "agents_reject": "Reject",
+  "agents_no_pending_applications": "No pending applications",
+  "agents_all_applications_processed": "All agent applications have been processed",
+  "general_previous": "Previous",
+  "general_page": "Page ",
+  "general_next": "Next",
+  "general_views": "views",
+  "general_sales": "sales",
+  "general_language_uz": "O'zbekcha",
+  "general_language_ru": "Русский",
+  "general_language_en": "English",
+  "general_super_admin": "Super Admin",
+  "general_staff": "Staff",
+  "general_verified_agent": "Verified Agent",
+  "general_pending_agent": "Pending Agent",
+  "general_regular_user": "Regular User",
+  "general_admin": "Admin",
+  "general_dashboard": "Dashboard",
+  "general_manage_users": "Manage Users",
+  "general_verified_agents": "Verified Agents",
+  "general_agent_panel": "Agent Panel",
+  "general_create_property": "Create Property",
+  "general_my_properties": "My Properties",
+  "general_inquiries": "Inquiries",
+  "general_agent_profile": "Agent Profile",
+  "general_live": "Live",
+  "general_logged_out_successfully": "Logged out successfully",
+  "general_logout_completed_with_errors": "Logout completed (with errors)",
+  "general_application_under_review": "Application under review",
+  "general_check_status": "Check status →",
+  "general_last_updated": "Last updated:",
+  "general_permissions_may_be_outdated": "Permissions may be outdated",
+  "general_permissions_up_to_date": "Permissions up to date",
+  "general_never": "Never",
+  "general_properties_found": "Properties Found",
+  "general_properties_saved": "properties saved",
+  "general_saved": "saved",
+  "general_loading_properties": "Loading properties...",
+  "general_failed_to_load": "Failed to load properties. Please try again.",
+  "general_no_properties_found": "No properties found",
+  "general_try_adjusting": "Try adjusting your search criteria",
+  "select_category": "Select category",
+  "service_description": "Service Description"
 }

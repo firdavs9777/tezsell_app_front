@@ -1,4 +1,6 @@
+import 'package:app/pages/real_estate/real_estate_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
@@ -8,15 +10,20 @@ class RealEstateMain extends ConsumerStatefulWidget {
   final String regionName;
   final String districtName;
 
-  const RealEstateMain(
-      {super.key, required this.regionName, required this.districtName});
+  const RealEstateMain({
+    super.key,
+    required this.regionName,
+    required this.districtName,
+  });
 
   @override
   ConsumerState<RealEstateMain> createState() => _RealEstateMainState();
 }
 
-class _RealEstateMainState extends ConsumerState<RealEstateMain> {
+class _RealEstateMainState extends ConsumerState<RealEstateMain>
+    with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
+  late TabController _tabController;
   List<RealEstate> _allProperties = [];
   int _currentPage = 1;
   bool _isLoadingMore = false;
@@ -26,29 +33,77 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain> {
   String _selectedPropertyType = '';
   String _selectedListingType = '';
 
-  // Property type options
-  final List<Map<String, String>> _propertyTypes = [
-    {'key': '', 'label': 'Barchasi'},
-    {'key': 'apartment', 'label': 'Kvartira'},
-    {'key': 'house', 'label': 'Uy'},
-    {'key': 'office', 'label': 'Ofis'},
-    {'key': 'land', 'label': 'Yer'},
-    {'key': 'commercial', 'label': 'Boshqa'},
+  // Updated property types with multilingual support
+  final List<Map<String, dynamic>> _propertyTypes = [
+    {
+      'key': '',
+      'labels': {'uz': 'Barchasi', 'ru': 'Все', 'en': 'All'},
+      'icon': Icons.home
+    },
+    {
+      'key': 'apartment',
+      'labels': {'uz': 'Kvartira', 'ru': 'Квартира', 'en': 'Apartment'},
+      'icon': Icons.apartment
+    },
+    {
+      'key': 'house',
+      'labels': {'uz': 'Uy', 'ru': 'Дом', 'en': 'House'},
+      'icon': Icons.house
+    },
+    {
+      'key': 'office',
+      'labels': {'uz': 'Ofis', 'ru': 'Офис', 'en': 'Office'},
+      'icon': Icons.business
+    },
+    {
+      'key': 'land',
+      'labels': {'uz': 'Yer', 'ru': 'Земля', 'en': 'Land'},
+      'icon': Icons.landscape
+    },
+    {
+      'key': 'commercial',
+      'labels': {'uz': 'Boshqa', 'ru': 'Другое', 'en': 'Other'},
+      'icon': Icons.store
+    },
   ];
+
+  // Helper function to get label by language
+  String _getPropertyTypeLabel(Map<String, dynamic> propertyType) {
+    final localizations = AppLocalizations.of(context);
+    final languageCode = localizations?.localeName ?? 'uz';
+
+    // Map locale codes to our property type language codes
+    String langKey = 'uz'; // default
+    if (languageCode.startsWith('ru')) {
+      langKey = 'ru';
+    } else if (languageCode.startsWith('en')) {
+      langKey = 'en';
+    }
+
+    return propertyType['labels'][langKey] ?? propertyType['labels']['uz'];
+  }
 
   @override
   void initState() {
-    print(widget.regionName);
-    print(widget.districtName);
     super.initState();
+    _tabController = TabController(length: _propertyTypes.length, vsync: this);
+    _tabController.addListener(_onTabChanged);
     _scrollController.addListener(_onScroll);
     _loadInitialProperties();
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onTabChanged() {
+    if (!_tabController.indexIsChanging) {
+      HapticFeedback.selectionClick();
+      _onPropertyTypeChanged(_propertyTypes[_tabController.index]['key']);
+    }
   }
 
   void _onScroll() {
@@ -158,61 +213,106 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       body: Column(
         children: [
-          // Filter Categories
+          // Modern Tab Bar
           Container(
-            height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _propertyTypes.length,
-                    itemBuilder: (context, index) {
-                      final type = _propertyTypes[index];
-                      final isSelected = _selectedPropertyType == type['key'];
-
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: FilterChip(
-                          label: Text(
-                            type['label']!,
-                            style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                              fontSize: 12,
-                            ),
-                          ),
-                          selected: isSelected,
-                          onSelected: (selected) =>
-                              _onPropertyTypeChanged(type['key']!),
-                          selectedColor: Colors.blue,
-                          backgroundColor: Colors.grey.shade200,
-                          checkmarkColor: Colors.white,
-                        ),
-                      );
-                    },
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
                 ),
-                // Show current location filter
+              ],
+            ),
+            child: Column(
+              children: [
+                // Location indicator
                 if (widget.regionName.isNotEmpty ||
                     widget.districtName.isNotEmpty)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                      style: const TextStyle(fontSize: 12, color: Colors.blue),
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    color: theme.primaryColor.withOpacity(0.1),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: theme.primaryColor,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          '${_allProperties.length} ta mulk',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
+                // Tab Bar with localized labels
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    indicator: BoxDecoration(
+                      color: theme.primaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.grey[600],
+                    labelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    tabs: _propertyTypes.map((type) {
+                      return Tab(
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                type['icon'],
+                                size: 16,
+                              ),
+                              SizedBox(width: 6),
+                              Text(_getPropertyTypeLabel(type)),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                SizedBox(height: 8),
               ],
             ),
           ),
@@ -221,72 +321,95 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
-              child: _buildPropertiesList(),
+              child: _buildPropertiesList(localizations: localizations),
             ),
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            // Navigate to add property page
-            print('Add real estate pressed');
-          },
-          backgroundColor: const Color(0xFFFFA500),
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-            size: 24,
-          ),
-          label: Text(
-            AppLocalizations.of(context)?.upload ?? 'Yuklash',
-            style: const TextStyle(fontSize: 18, color: Colors.black),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
-  Widget _buildPropertiesList() {
+  Widget _buildPropertiesList({AppLocalizations? localizations}) {
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Mulklar yuklanmoqda...',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     if (_allProperties.isEmpty) {
       return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         child: Container(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.apartment,
-                  size: 64,
-                  color: Colors.grey,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No properties available.',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+                Container(
+                  padding: EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    shape: BoxShape.circle,
                   ),
-                  textAlign: TextAlign.center,
+                  child: Icon(
+                    Icons.apartment,
+                    size: 48,
+                    color: Colors.grey[400],
+                  ),
+                ),
+                SizedBox(height: 24),
+                Text(
+                  localizations?.no_properties_found ??
+                      'Hech qanday mulk topilmadi',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  localizations?.no_category_properties ??
+                      'Bu kategoriyada mulklar mavjud emas',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[500],
+                  ),
                 ),
                 if (widget.regionName.isNotEmpty ||
                     widget.districtName.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'No properties found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
+                  SizedBox(height: 16),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.blue[200]!),
                     ),
-                    textAlign: TextAlign.center,
+                    child: Text(
+                      '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName} hududida',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.blue[700],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ],
               ],
@@ -298,33 +421,35 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain> {
 
     return ListView.builder(
       controller: _scrollController,
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16.0),
+      physics: AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.0),
       itemCount: _allProperties.length + (_hasMoreData ? 1 : 0),
       itemBuilder: (context, index) {
         if (index < _allProperties.length) {
           final property = _allProperties[index];
-          return _buildRealEstateCard(property);
+          return _buildModernPropertyCard(property);
         }
 
         if (_hasMoreData) {
           return Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Center(
               child: _isLoadingMore
-                  ? const CircularProgressIndicator()
-                  : const SizedBox.shrink(),
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    )
+                  : SizedBox.shrink(),
             ),
           );
         }
 
         return Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Center(
             child: Text(
-              'No more properties to load',
+              localizations?.all_properties_loaded ?? 'Barcha mulklar yuklandi',
               style: TextStyle(
-                color: Colors.grey,
+                color: Colors.grey[600],
                 fontSize: 14,
               ),
             ),
@@ -334,163 +459,213 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain> {
     );
   }
 
-  Widget _buildRealEstateCard(RealEstate property) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+  Widget _buildModernPropertyCard(RealEstate property) {
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
-        onTap: () {
-          // Navigate to property detail page
-          print('Property ${property.id} tapped');
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              // Property Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  child: property.mainImage.isNotEmpty
-                      ? Image.network(
-                          property.mainImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey.shade300,
-                              child: const Icon(
-                                Icons.apartment,
-                                size: 40,
-                                color: Colors.grey,
-                              ),
-                            );
-                          },
-                        )
-                      : Container(
-                          color: Colors.grey.shade300,
-                          child: const Icon(
-                            Icons.apartment,
-                            size: 40,
-                            color: Colors.grey,
-                          ),
-                        ),
-                ),
-              ),
-
-              const SizedBox(width: 12),
-
-              // Property Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      property.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${property.bedrooms} bed, ${property.bathrooms} bath • ${property.squareMeters}m²',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: 14,
-                          color: Colors.red.shade400,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            '${property.city}, ${property.district}',
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 11,
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PropertyDetail(
+                    propertyId: property.id,
+                  )),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Section
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  child: Container(
+                    height: 200,
+                    width: double.infinity,
+                    child: property.mainImage.isNotEmpty
+                        ? Image.network(
+                            property.mainImage,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                child: Icon(
+                                  Icons.apartment,
+                                  size: 48,
+                                  color: Colors.grey[500],
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Colors.grey[300],
+                            child: Icon(
+                              Icons.apartment,
+                              size: 48,
+                              color: Colors.grey[500],
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // Price and Type
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${property.price} ${property.currency}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.green,
-                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
+                ),
+
+                // Listing Type Badge
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
+                      color: theme.primaryColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       property.listingTypeDisplay,
                       style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.blue.shade700,
-                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                ),
+
+                // Views Counter
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.visibility,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '${property.viewsCount}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Content Section
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    property.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.grey[900],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8),
+
+                  // Location
                   Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.visibility,
+                      Icon(
+                        Icons.location_on,
                         size: 16,
-                        color: Colors.grey,
+                        color: Colors.red[400],
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${property.viewsCount}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
+                      SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${property.city}, ${property.district}',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 12),
+
+                  // Property Details
+                  Row(
+                    children: [
+                      _buildDetailItem(Icons.bed, '${property.bedrooms}'),
+                      SizedBox(width: 16),
+                      _buildDetailItem(Icons.bathroom, '${property.bathrooms}'),
+                      SizedBox(width: 16),
+                      _buildDetailItem(
+                          Icons.square_foot, '${property.squareMeters}m²'),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+
+                  // Price
+                  Text(
+                    '${property.price} ${property.currency}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.green[600],
+                    ),
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailItem(IconData icon, String value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: Colors.grey[600],
+        ),
+        SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }

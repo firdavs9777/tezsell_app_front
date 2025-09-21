@@ -215,3 +215,221 @@ class Agent {
     };
   }
 }
+
+class Permission {
+  final int? id;
+  final String? username;
+  final String? phoneNumber;
+  final String? userType;
+  final bool isAgent;
+  final bool isVerifiedAgent;
+  final bool isStaff;
+  final bool isSuperuser;
+  final bool canCreateProperties;
+  final bool canManageInquiries;
+  final bool canAccessAdmin;
+  final bool canVerifyAgents;
+  final bool canManageUsers;
+  final String userRole;
+  final DateTime? lastUpdated;
+
+  const Permission({
+    this.id,
+    this.username,
+    this.phoneNumber,
+    this.userType,
+    required this.isAgent,
+    required this.isVerifiedAgent,
+    required this.isStaff,
+    required this.isSuperuser,
+    required this.canCreateProperties,
+    required this.canManageInquiries,
+    required this.canAccessAdmin,
+    required this.canVerifyAgents,
+    required this.canManageUsers,
+    required this.userRole,
+    this.lastUpdated,
+  });
+
+  factory Permission.fromJson(Map<String, dynamic> json) {
+    return Permission(
+      id: json['id'],
+      username: json['username'],
+      phoneNumber: json['phone_number'],
+      userType: json['user_type'],
+      isAgent: json['is_agent'] ?? false,
+      isVerifiedAgent: json['is_verified_agent'] ?? false,
+      isStaff: json['is_staff'] ?? false,
+      isSuperuser: json['is_superuser'] ?? false,
+      canCreateProperties: json['can_create_properties'] ?? false,
+      canManageInquiries: json['can_manage_inquiries'] ?? false,
+      canAccessAdmin: json['can_access_admin'] ?? false,
+      canVerifyAgents: json['can_verify_agents'] ?? false,
+      canManageUsers: json['can_manage_users'] ?? false,
+      userRole: json['user_role'] ?? 'user',
+      lastUpdated: json['last_updated'] != null
+          ? DateTime.tryParse(json['last_updated'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'phone_number': phoneNumber,
+      'user_type': userType,
+      'is_agent': isAgent,
+      'is_verified_agent': isVerifiedAgent,
+      'is_staff': isStaff,
+      'is_superuser': isSuperuser,
+      'can_create_properties': canCreateProperties,
+      'can_manage_inquiries': canManageInquiries,
+      'can_access_admin': canAccessAdmin,
+      'can_verify_agents': canVerifyAgents,
+      'can_manage_users': canManageUsers,
+      'user_role': userRole,
+      'last_updated': lastUpdated?.toIso8601String(),
+    };
+  }
+
+  // Convenience getters for easier permission checking
+  bool get hasAgentAccess => isAgent || isVerifiedAgent || canCreateProperties;
+  bool get hasAdminAccess => isStaff || isSuperuser || canAccessAdmin;
+  bool get canManageAgents => canVerifyAgents || isSuperuser;
+  bool get hasFullAdminRights => isSuperuser;
+
+  // Role-based getters
+  bool get isRegularUser => !isAgent && !isStaff && !isSuperuser;
+  bool get isSuperAdmin => userRole == 'super_admin' || isSuperuser;
+  bool get isVerifiedAgentUser => isVerifiedAgent && isAgent;
+
+  // Copy with method for state updates
+  Permission copyWith({
+    int? id,
+    String? username,
+    String? phoneNumber,
+    String? userType,
+    bool? isAgent,
+    bool? isVerifiedAgent,
+    bool? isStaff,
+    bool? isSuperuser,
+    bool? canCreateProperties,
+    bool? canManageInquiries,
+    bool? canAccessAdmin,
+    bool? canVerifyAgents,
+    bool? canManageUsers,
+    String? userRole,
+    DateTime? lastUpdated,
+  }) {
+    return Permission(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      userType: userType ?? this.userType,
+      isAgent: isAgent ?? this.isAgent,
+      isVerifiedAgent: isVerifiedAgent ?? this.isVerifiedAgent,
+      isStaff: isStaff ?? this.isStaff,
+      isSuperuser: isSuperuser ?? this.isSuperuser,
+      canCreateProperties: canCreateProperties ?? this.canCreateProperties,
+      canManageInquiries: canManageInquiries ?? this.canManageInquiries,
+      canAccessAdmin: canAccessAdmin ?? this.canAccessAdmin,
+      canVerifyAgents: canVerifyAgents ?? this.canVerifyAgents,
+      canManageUsers: canManageUsers ?? this.canManageUsers,
+      userRole: userRole ?? this.userRole,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Permission(id: $id, username: $username, userRole: $userRole, '
+        'isAgent: $isAgent, isStaff: $isStaff, isSuperuser: $isSuperuser)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Permission &&
+        other.id == id &&
+        other.username == username &&
+        other.phoneNumber == phoneNumber &&
+        other.userType == userType &&
+        other.isAgent == isAgent &&
+        other.isVerifiedAgent == isVerifiedAgent &&
+        other.isStaff == isStaff &&
+        other.isSuperuser == isSuperuser &&
+        other.canCreateProperties == canCreateProperties &&
+        other.canManageInquiries == canManageInquiries &&
+        other.canAccessAdmin == canAccessAdmin &&
+        other.canVerifyAgents == canVerifyAgents &&
+        other.canManageUsers == canManageUsers &&
+        other.userRole == userRole;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      id,
+      username,
+      phoneNumber,
+      userType,
+      isAgent,
+      isVerifiedAgent,
+      isStaff,
+      isSuperuser,
+      canCreateProperties,
+      canManageInquiries,
+      canAccessAdmin,
+      canVerifyAgents,
+      canManageUsers,
+      userRole,
+    );
+  }
+}
+
+// // Extension for navigation logic
+// extension PermissionNavigation on Permission {
+//   List<String> get availableRoutes {
+//     List<String> routes = [
+//       '/',
+//       '/products',
+//       '/service',
+//       '/properties',
+//       '/agents',
+//     ];
+//
+//     if (hasAgentAccess) {
+//       routes.addAll([
+//         '/agent/dashboard',
+//         '/agent/properties',
+//         '/agent/inquiries',
+//         '/agent/profile',
+//       ]);
+//
+//       if (canCreateProperties) {
+//         routes.add('/agent/create-property');
+//       }
+//     }
+//
+//     if (hasAdminAccess) {
+//       routes.addAll([
+//         '/admin/dashboard',
+//         '/admin/users',
+//       ]);
+//
+//       if (canVerifyAgents) {
+//         routes.addAll([
+//           '/admin/pending-agents',
+//           '/admin/verified-agents',
+//         ]);
+//       }
+//     }
+//
+//     return routes;
+//   }
+//
+//   bool canAccessRoute(String route) {
+//     return availableRoutes.contains(route);
+//   }
+// }
