@@ -495,51 +495,55 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       height: 80,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Left side: Heart and price
-            Row(
-              children: [
-                // Optimized heart button
-                _buildLikeButton(),
-                const SizedBox(width: 8),
-                Text(
-                  '${widget.product.price} ${localizations?.sum ?? "So'm"}',
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Phone number
+              Expanded(
+                child: Text(
+                  widget.product.userName.phoneNumber,
                   style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
                   ),
-                ),
-              ],
-            ),
-
-            // Right side: Chat button
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: SizedBox(
-                height: 50,
-                width: 90,
-                child: ElevatedButton(
-                  onPressed: () {
-                    print('Chat button pressed');
-                    // Add your chat functionality here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: Text(
-                    localizations?.chat ?? 'Chat',
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-          ],
+
+              // Call button
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Example: open phone dialer
+                  // launchUrl(Uri.parse("tel:${widget.product.userName.phoneNumber}"));
+                },
+                icon: const Icon(Icons.phone, color: Colors.white),
+                label: Text('Call'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

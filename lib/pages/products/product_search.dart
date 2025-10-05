@@ -1,5 +1,6 @@
 import 'package:app/pages/products/main_products.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -32,19 +33,39 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.brown,
-        title: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: "Search for products...",
-            hintStyle: TextStyle(color: Colors.white60),
-            border: InputBorder.none,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.primaryColor,
+                theme.primaryColor.withOpacity(0.8),
+              ],
+            ),
           ),
-          textInputAction: TextInputAction.search,
-          style: TextStyle(color: Colors.white),
-          onSubmitted: (_) => _searchProducts(_),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+                hintText:
+                    AppLocalizations.of(context)?.searchProductPlaceholder ??
+                        "Search for products..."),
+            textInputAction: TextInputAction.search,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+            onSubmitted: (_) => _searchProducts(_),
+          ),
         ),
         actions: [
           IconButton(
@@ -54,7 +75,10 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
         ],
       ),
       body: _searchResults == null
-          ? const Center(child: Text("Enter a search term to find products"))
+          ? Center(
+              child: Text(
+                  AppLocalizations.of(context)?.product_search_placeholder ??
+                      "Enter a search term to find products"))
           : FutureBuilder<List<Products>>(
               future: _searchResults,
               builder: (context, snapshot) {
@@ -63,7 +87,9 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No products found"));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)?.productError ??
+                          "No products found"));
                 }
                 final filteredProducts = snapshot.data!;
                 return ListView.builder(

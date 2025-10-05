@@ -745,24 +745,36 @@ class ServiceDetailsSection extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: 21,
-                backgroundImage: service.userName.profileImage.image.isNotEmpty
-                    ? NetworkImage(
-                        '${baseUrl}${service.userName.profileImage.image}')
-                    : null,
+                radius: 24,
+                backgroundColor: Colors.green[100],
+                child: Icon(Icons.home, color: Colors.green[600]),
               ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(service.userName.username,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text(
-                    '${service.userName.location.region}, ${service.userName.location.district}',
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                ],
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Property Owner',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '${service.userName.location.region}, ${service.userName.location.district}',
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    Text(
+                      service!.userName.phoneNumber,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.phone, color: Colors.green),
               ),
             ],
           ),

@@ -382,7 +382,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   comment.user.username ?? 'Anonymous',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -430,7 +430,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                           children: [
                                             Icon(Icons.delete,
                                                 color: Colors.red, size: 20),
-                                            SizedBox(width: 8),
+                                            SizedBox(width: 4),
                                             Text('Delete'),
                                           ],
                                         ),

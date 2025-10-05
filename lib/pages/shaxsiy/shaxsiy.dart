@@ -1,9 +1,14 @@
 import 'package:app/constants/constants.dart';
+import 'package:app/pages/change_city/change_city.dart';
+import 'package:app/pages/shaxsiy/customer_center/customer_center.dart';
 import 'package:app/pages/shaxsiy/favorite_items/favorite_products.dart';
 import 'package:app/pages/shaxsiy/favorite_items/favorite_services.dart';
+import 'package:app/pages/shaxsiy/inquires/main_inquiries.dart';
 import 'package:app/pages/shaxsiy/my-products/my_products.dart';
 import 'package:app/pages/shaxsiy/my-services/my_services.dart';
 import 'package:app/pages/shaxsiy/main_profile/profile_edit.dart';
+import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
+import 'package:app/pages/shaxsiy/security/main_security.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
@@ -675,9 +680,19 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 ),
 
                 // Support Section
-                _buildSectionTitle(
-                    localizations?.customer_support ?? 'Support'),
-
+                _buildSectionTitle(localizations?.agents ?? 'Agents'),
+                _buildMenuCard(
+                  icon: Icons.star_rounded,
+                  title: localizations?.properties ?? 'Properties',
+                  subtitle: '${favoriteItems.likedServices.length} services',
+                  iconColor: const Color(0xFFFF9800),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FavoriteServices(
+                            services: favoriteItems.likedServices)),
+                  ),
+                ),
                 // Settings Section
                 _buildSectionTitle(localizations?.settings ?? 'Settings'),
 
@@ -704,34 +719,35 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 ),
 
                 // Other Settings (keeping your existing ones)
-                _buildMenuCard(
-                  icon: Icons.notifications_rounded,
-                  title: localizations?.notifications ?? 'Notifications',
-                  subtitle: 'Push, email, and SMS preferences',
-                  iconColor: const Color(0xFFFF9800),
-                  onTap: () {
-                    _showSuccess('Opening notification settings...');
-                  },
-                ),
+                // _buildMenuCard(
+                //   icon: Icons.notifications_rounded,
+                //   title: localizations?.notifications ?? 'Notifications',
+                //   subtitle: 'Push, email, and SMS preferences',
+                //   iconColor: const Color(0xFFFF9800),
+                //   onTap: () {
+                //     _showSuccess('Opening notification settings...');
+                //   },
+                // ),
 
-                _buildMenuCard(
-                  icon: Icons.privacy_tip_rounded,
-                  title: localizations?.privacy ?? 'Privacy',
-                  subtitle: 'Profile visibility and data control',
-                  iconColor: const Color(0xFF9C27B0),
-                  onTap: () {
-                    _showSuccess('Opening privacy settings...');
-                  },
-                ),
+                // _buildMenuCard(
+                //   icon: Icons.privacy_tip_rounded,
+                //   title: localizations?.privacy ?? 'Privacy',
+                //   subtitle: 'Profile visibility and data control',
+                //   iconColor: const Color(0xFF9C27B0),
+                //   onTap: () {
+                //     _showSuccess('Opening privacy settings...');
+                //   },
+                // ),
 
                 _buildMenuCard(
                   icon: Icons.my_location_rounded,
                   title: localizations?.location_settings ?? 'Location',
                   subtitle: 'Default area and location services',
                   iconColor: const Color(0xFF4CAF50),
-                  onTap: () {
-                    _showSuccess('Opening location settings...');
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomeTown()),
+                  ),
                 ),
 
                 _buildMenuCard(
@@ -739,30 +755,32 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   title: localizations?.security ?? 'Security',
                   subtitle: 'Password, 2FA, and login history',
                   iconColor: const Color(0xFFE91E63),
-                  onTap: () {
-                    _showSuccess('Opening security settings...');
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SecuritySettingsPage()),
+                  ),
                 ),
 
-                _buildMenuCard(
-                  icon: Icons.storage_rounded,
-                  title: localizations?.data_storage ?? 'Data & Storage',
-                  subtitle: 'Cache, downloads, and storage usage',
-                  iconColor: const Color(0xFF795548),
-                  onTap: () {
-                    _showSuccess('Opening data & storage settings...');
-                  },
-                ),
+                // _buildMenuCard(
+                //   icon: Icons.storage_rounded,
+                //   title: localizations?.data_storage ?? 'Data & Storage',
+                //   subtitle: 'Cache, downloads, and storage usage',
+                //   iconColor: const Color(0xFF795548),
+                //   onTap: () {
+                //     _showSuccess('Opening data & storage settings...');
+                //   },
+                // ),
 
-                _buildMenuCard(
-                  icon: Icons.accessibility_rounded,
-                  title: localizations?.accessibility ?? 'Accessibility',
-                  subtitle: 'Font size, contrast, and voice settings',
-                  iconColor: const Color(0xFF00BCD4),
-                  onTap: () {
-                    _showSuccess('Opening accessibility settings...');
-                  },
-                ),
+                // _buildMenuCard(
+                //   icon: Icons.accessibility_rounded,
+                //   title: localizations?.accessibility ?? 'Accessibility',
+                //   subtitle: 'Font size, contrast, and voice settings',
+                //   iconColor: const Color(0xFF00BCD4),
+                //   onTap: () {
+                //     _showSuccess('Opening accessibility settings...');
+                //   },
+                // ),
 
                 // Support Section
                 _buildSectionTitle(
@@ -773,9 +791,11 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   title: localizations?.customer_center ?? 'Customer Center',
                   subtitle: 'Get help and support',
                   iconColor: const Color(0xFF9C27B0),
-                  onTap: () {
-                    _showSuccess('Opening customer center...');
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomerCenterPage()),
+                  ),
                 ),
 
                 _buildMenuCard(
@@ -783,9 +803,10 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   title: localizations?.customer_inquiries ?? 'Inquiries',
                   subtitle: 'Ask questions or report issues',
                   iconColor: const Color(0xFF607D8B),
-                  onTap: () {
-                    _showSuccess('Opening inquiries...');
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InquiriesPage()),
+                  ),
                 ),
 
                 _buildMenuCard(
@@ -794,9 +815,11 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       localizations?.customer_terms ?? 'Terms and Conditions',
                   subtitle: 'Privacy policy and terms',
                   iconColor: const Color(0xFF795548),
-                  onTap: () {
-                    _showSuccess('Opening terms and conditions...');
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TermsAndConditionsPage()),
+                  ),
                 ),
 
                 const SizedBox(height: 32),

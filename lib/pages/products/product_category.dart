@@ -100,10 +100,30 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        title: Text(localizations?.categoryHeader ?? 'Filter Products'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.primaryColor,
+                theme.primaryColor.withOpacity(0.8),
+              ],
+            ),
+          ),
+        ),
+        title: Text(localizations?.categoryHeader ?? 'Filter Products',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            )),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

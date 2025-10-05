@@ -1,5 +1,4 @@
 import 'package:app/pages/change_city/change_city.dart';
-import 'package:app/pages/messages/messages.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
@@ -313,16 +312,25 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
                       } else {
                         displayedText = '${district.substring(0, 3)}..';
                       }
-
-                      return Text(
-                        displayedText,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                      return GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyHomeTown(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          displayedText,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
                       );
                     },
                   );
@@ -369,9 +377,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
                   localizations?.servicesTitle ?? 'Services', theme),
               _buildNavItem(2, Icons.apartment_outlined, Icons.apartment,
                   localizations?.realEstate ?? 'Ko\'chmas', theme),
-              _buildNavItem(3, Icons.chat_bubble_outline, Icons.chat_bubble,
-                  localizations?.chat ?? 'Habarlar', theme),
-              _buildNavItem(4, Icons.person_outline, Icons.person,
+              _buildNavItem(3, Icons.person_outline, Icons.person,
                   localizations?.profile ?? 'Shaxsiy', theme),
             ],
           ),
@@ -503,11 +509,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               regionName: regionName, districtName: districtName),
         );
       case 3:
-        return PageInfo(
-          title: localizations?.chat ?? 'Habarlar',
-          widget: Messages(),
-        );
-      case 4:
         return PageInfo(
           title: localizations?.profile ?? 'Shaxsiy Hisob',
           widget: const ShaxsiyPage(),

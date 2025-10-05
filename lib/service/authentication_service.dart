@@ -60,6 +60,138 @@ class AuthenticationService {
     return _prefs!;
   }
 
+  Future<Map<String, dynamic>> requestAccountDeletion(String password) async {
+    try {
+      final prefs = await _getPrefs();
+      final token = prefs.getString('token');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/accounts/request-account-deletion/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+        body: jsonEncode({'password': password}),
+      );
+
+      final data = jsonDecode(response.body);
+      return data;
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
+  Future<Map<String, dynamic>> confirmAccountDeletion(String otp) async {
+    try {
+      final prefs = await _getPrefs();
+      final token = prefs.getString('token');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/accounts/confirm-account-deletion/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+        body: jsonEncode({'otp': otp}),
+      );
+
+      final data = jsonDecode(response.body);
+      return data;
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
+  Future<Map<String, dynamic>> cancelAccountDeletion() async {
+    try {
+      final prefs = await _getPrefs();
+      final token = prefs.getString('token');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/accounts/cancel-account-deletion/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
+      );
+
+      final data = jsonDecode(response.body);
+      return data;
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
+  Future<Map<String, dynamic>> sendOtpChangePassword({
+    required String phoneNumber,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/accounts/forgot-password/send-otp/'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'phone_number': phoneNumber,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'OTP sent successfully'
+        };
+      } else {
+        return {
+          'success': false,
+          'error': data['error'] ?? 'Failed to send OTP'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
+  Future<Map<String, dynamic>> changePassword({
+    required String phoneNumber,
+    required String otp,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/accounts/forgot-password/reset/'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'phone_number': phoneNumber,
+          'otp': otp,
+          'new_password': newPassword,
+          'confirm_password': confirmPassword,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Password changed successfully'
+        };
+      } else {
+        return {
+          'success': false,
+          'error': data['error'] ?? 'Failed to change password'
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
   Future<Token?> login(
       BuildContext context, String phoneNumber, String password) async {
     // Prevent duplicate login requests

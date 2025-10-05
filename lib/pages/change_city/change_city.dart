@@ -217,7 +217,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Change the Location'),
+        title: Text(localizations?.locationTitle ?? 'Change the Location'),
         backgroundColor: Colors.orange,
       ),
       body: FutureBuilder<UserInfo>(
@@ -241,7 +241,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
               children: [
                 Center(
                   child: Text(
-                    'Location Change',
+                    localizations?.locationTitle ?? 'Location Change',
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
@@ -262,7 +262,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Current Location:',
+                          localizations?.locationLabel ?? 'Current Location:',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
@@ -323,7 +323,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                     : DropdownButtonFormField<District>(
                         isExpanded: true,
                         value: selectedDistrict,
-                        hint: Text('Select District'),
+                        hint: Text(localizations?.districtSelectParagraph ??
+                            'Select District'),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -347,7 +348,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                 const SizedBox(height: 20),
 
                 // Selected Region & District
-                Text('Selected Location:',
+                Text(localizations?.selectedLocation ?? 'Selected Location:',
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.w600)),
                 Text(
@@ -371,7 +372,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                           horizontal: 40, vertical: 12),
                       textStyle: const TextStyle(fontSize: 18),
                     ),
-                    child: Text(localizations?.submit ?? 'Submit'),
+                    child: Text(localizations?.saveLabel ?? 'Submit'),
                   ),
                 ),
               ],

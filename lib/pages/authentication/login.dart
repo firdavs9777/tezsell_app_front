@@ -1,3 +1,4 @@
+import 'package:app/pages/authentication/forget_password.dart';
 import 'package:app/pages/authentication/register.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
@@ -509,14 +510,13 @@ class _LoginState extends ConsumerState<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          // Implement forgot password logic
-                          _showError(AppLocalizations.of(context)
-                                  ?.forgotPasswordComingSoon ??
-                              'Forgot password feature coming soon');
-                        },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordPage()),
+                    );
+                  },
                   child: Text(
                     AppLocalizations.of(context)?.forgotPassword ??
                         'Forgot password?',
