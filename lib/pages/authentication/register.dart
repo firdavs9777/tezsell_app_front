@@ -13,48 +13,89 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  @override
   void initState() {
     super.initState();
     fetchData();
   }
 
   List<String> towns = [];
-  List<String> filteredCities = []; // List to store filtered towns
+  List<String> filteredCities = [];
   TextEditingController searchController = TextEditingController();
 
   final String URL = 'https://api.webtezsell.com/accounts/regions/';
   List<String> cities = [];
-  // List<List<String>> towns = [];
   List<String> cityId = [];
   List<String> filteredCityId = [];
 
+  // Add loading state
+  bool isLoading = true;
+  String? errorMessage;
+
   Future<void> fetchData() async {
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
     try {
-      final response = await http.get(Uri.parse(URL));
+      print(URL);
+      final response = await http.get(
+        Uri.parse(URL),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ).timeout(
+        Duration(seconds: 15), // Add timeout to prevent hanging
+        onTimeout: () {
+          throw Exception(
+              'Connection timeout. Please check your internet connection.');
+        },
+      );
+
       print(response.body);
+
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
         setState(() {
-          cities = (json.decode(response.body)['regions'] as List)
+          cities = (jsonData['regions'] as List?)
                   ?.map<String>(
                       (cityData) => cityData?['region']?.toString() ?? '')
+                  .where((city) => city.isNotEmpty)
                   .toList() ??
               [];
-          // List jsonData = json.decode(response.body)['data'] as List;
-          // print(jsonData);
-          cityId = (json.decode(response.body)['regions'] as List)
+
+          cityId = (jsonData['regions'] as List?)
                   ?.map<String>(
                       (cityData) => cityData?['region']?.toString() ?? '')
+                  .where((city) => city.isNotEmpty)
                   .toList() ??
               [];
+
           filteredCities = List.from(cities);
           filteredCityId = List.from(cityId);
-          // towns = [];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Server error: ${response.statusCode}';
         });
       }
     } catch (error) {
-      print(error);
-      // Handle exceptions
-      _showErrorDialog('Failed to load data. Error: $error');
+      print('Error fetching data: $error');
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+        errorMessage = error.toString();
+      });
     }
   }
 
@@ -64,10 +105,15 @@ class _RegisterState extends State<Register> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(AppLocalizations.of(context)?.error ?? 'Error'),
-          content: Text(AppLocalizations.of(context)?.apiError ??
-              AppLocalizations.of(context)?.apiError ??
-              'Api chaqirganda muamo yuzaga keldi'),
+          content: Text(message),
           actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                fetchData(); // Retry loading data
+              },
+              child: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -82,14 +128,13 @@ class _RegisterState extends State<Register> {
 
   void _filterCities(String searchText) {
     setState(() {
-      // Filter cities alphabetically and remove duplicates
       filteredCities = cities
           .where(
               (city) => city.toLowerCase().contains(searchText.toLowerCase()))
-          .toSet() // Convert to Set to remove duplicates
-          .toList() // Convert back to List
-        ..sort(); // Sort alphabetically
-      // Update filteredCityId based on filteredCities
+          .toSet()
+          .toList()
+        ..sort();
+
       filteredCityId = [];
       for (String city in filteredCities) {
         int index = cities.indexOf(city);
@@ -98,6 +143,12 @@ class _RegisterState extends State<Register> {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -114,9 +165,7 @@ class _RegisterState extends State<Register> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 30,
-            ),
+            SizedBox(height: 30),
             SizedBox(height: 10),
             Text(
               AppLocalizations.of(context)?.selectRegion ??
@@ -131,6 +180,7 @@ class _RegisterState extends State<Register> {
               child: TextField(
                 controller: searchController,
                 onChanged: _filterCities,
+                enabled: !isLoading, // Disable search while loading
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)?.search ?? 'Izlash',
                   hintText: AppLocalizations.of(context)?.searchHint ??
@@ -142,7 +192,72 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-            CityList(cityList: filteredCities, cityId: filteredCityId),
+            // Show loading indicator, error message, or city list
+            Expanded(
+              child: isLoading
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: Colors.orange,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)?.loading ??
+                                'Yuklanmoqda...',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 64,
+                                color: Colors.red,
+                              ),
+                              SizedBox(height: 16),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 32),
+                                child: Text(
+                                  AppLocalizations.of(context)
+                                          ?.dataLoadingError ??
+                                      'Ma\'lumotlarni yuklashda xatolik',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: fetchData,
+                                icon: Icon(Icons.refresh),
+                                label: Text(
+                                    AppLocalizations.of(context)?.retry ??
+                                        'Qayta urinish'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orange,
+                                  foregroundColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : CityList(
+                          cityList: filteredCities, cityId: filteredCityId),
+            ),
           ],
         ));
   }

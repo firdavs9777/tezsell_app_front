@@ -66,7 +66,6 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     }
   }
 
-  // Sending the verification code to the phone number
   Future<void> _sendCode() async {
     if (_phoneNumberController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -83,25 +82,52 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     });
 
     final phoneNumber = fullPhoneNumber;
-    if (await sendVerificationCode(phoneNumber)) {
-      setState(() {
-        columnVisible = true;
-        isSendingCode = false;
-        _timeLeft = 300; // Reset timer
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)?.verificationCodeSent ??
-              'Verification code sent successfully'),
-        ),
-      );
+    bool codeSent = false;
 
-      // Start the 5-minute timer after the code is sent
-      _startTimer();
-    } else {
+    try {
+      // Check if it's an Uzbek number
+      if (phoneNumber.contains('+998')) {
+        // Use ESKIZ for Uzbek numbers
+        codeSent = await sendVerificationCodeEskiz(phoneNumber);
+      } else {
+        // Use Twilio for other numbers
+        codeSent = await sendVerificationCode(phoneNumber);
+      }
+
+      if (codeSent) {
+        setState(() {
+          columnVisible = true;
+          isSendingCode = false;
+          _timeLeft = 300; // Reset timer
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.verificationCodeSent ??
+                'Verification code sent successfully'),
+          ),
+        );
+
+        // Start the 5-minute timer after the code is sent
+        _startTimer();
+      } else {
+        setState(() {
+          isSendingCode = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.failedToSendCode ??
+                'Failed to send verification code'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('ERROR - Failed to send code: $e');
       setState(() {
         isSendingCode = false;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)?.failedToSendCode ??

@@ -500,7 +500,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        '${replies.length} javoblar',
+                                        '${comment.repliesCount} javoblar',
                                         style: TextStyle(
                                           color: Colors.grey[600],
                                           fontSize: 14,

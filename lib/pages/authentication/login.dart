@@ -234,320 +234,426 @@ class _LoginState extends ConsumerState<Login> {
       // End Flutter DevTools timeline event
       developer.Timeline.finishSync();
 
-      // Calculate time since login started
-      if (_loginStartTime != null) {
-        final totalElapsed = DateTime.now().difference(_loginStartTime!);
-        if (kDebugMode) {
-          print('🏁 Total elapsed time: ${totalElapsed.inMilliseconds}ms');
-        }
-      }
-
-      // Always reset loading state
+      // UI update timing
       if (mounted) {
-        final resetTimer = Stopwatch()..start();
+        final finalUpdateTimer = Stopwatch()..start();
         setState(() {
           _isLoading = false;
         });
-        resetTimer.stop();
-        _logPerformance('UI Reset', resetTimer.elapsed.inMilliseconds);
+        finalUpdateTimer.stop();
+        _logPerformance(
+            'Final UI Update', finalUpdateTimer.elapsed.inMilliseconds);
       }
     }
   }
 
   void _showError(String message) {
-    final errorTimer = Stopwatch()..start();
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        backgroundColor: const Color(0xFFFF6B6B),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(16),
       ),
     );
-
-    errorTimer.stop();
-    _logPerformance('Error Display', errorTimer.elapsed.inMilliseconds);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Track build performance (only in debug mode)
     final buildTimer = Stopwatch()..start();
 
     final widget = Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: Text(
-          AppLocalizations.of(context)?.loginToAccount ?? 'Login to Account',
-          style: const TextStyle(color: Colors.black),
-        ),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.onSecondary,
-      body: AbsorbPointer(
-        absorbing: _isLoading, // Disable all interactions during loading
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  AppLocalizations.of(context)?.loginToAccount ??
-                      'Login to Account',
-                  style: const TextStyle(fontSize: 20, color: Colors.black87),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16.0),
+      backgroundColor: const Color(0xFFFFFBF5), // Karrot warm cream background
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40.0),
 
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                ),
-                borderRadius: BorderRadius.circular(10),
-                color: _isLoading ? Colors.grey.shade100 : null,
-              ),
-              child: Row(
-                children: [
-                  // Country Code Picker with constrained width
-                  SizedBox(
-                    width: 150, // Fixed width to give less space
-                    child: CountryCodePicker(
-                      onChanged: _isLoading
-                          ? null
-                          : (country) {
-                              setState(() {
-                                _countryCode = country.dialCode!;
-                                _countryName = country.name!;
-                              });
-                            },
-                      initialSelection: 'UZ', // Uzbekistan as default
-                      favorite: [
-                        '+998',
-                        'UZ',
-                        '+82',
-                        'KR',
-                        '+1',
-                        'US',
-                        '+91',
-                        'IN'
-                      ],
-                      showCountryOnly: false,
-                      showFlag: true,
-                      showDropDownButton: true,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4), // Reduced padding
-                      textStyle: TextStyle(
-                        fontSize: 14, // Slightly smaller font
-                        color: _isLoading ? Colors.grey.shade400 : Colors.black,
+                // Logo with Karrot-style circular background
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
                       ),
-                      enabled: !_isLoading,
-                      flagWidth: 20, // Smaller flag
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/logo/logo.png',
+                      fit: BoxFit.cover,
+                      width: 120,
+                      height: 120,
                     ),
                   ),
+                ),
 
-                  // Divider line
-                  Container(
-                    height: 50,
-                    width: 1,
-                    color: _isLoading
-                        ? Colors.grey.shade300
-                        : Colors.grey.shade400,
+                const SizedBox(height: 32.0),
+
+                // Welcome text - Karrot style
+                Text(
+                  AppLocalizations.of(context)?.welcomeBack ?? 'Welcome back!',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF212124),
+                    letterSpacing: -0.5,
                   ),
-                  Expanded(
-                    child: TextField(
-                      controller: _phoneNumberController,
-                      keyboardType: TextInputType.number,
-                      enabled: !_isLoading, // Disable during loading
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText:
-                            AppLocalizations.of(context)?.enterPhoneNumber ??
-                                'Enter phone number',
-                        hintStyle: TextStyle(
+                ),
+
+                const SizedBox(height: 8.0),
+
+                Text(
+                  AppLocalizations.of(context)?.loginToYourAccount ??
+                      'Login to continue',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+
+                const SizedBox(height: 40.0),
+
+                // Phone number input - Karrot style
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 12,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      // Country code picker
+                      Container(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: CountryCodePicker(
+                          onChanged: (code) {
+                            setState(() {
+                              _countryCode = code.dialCode ?? '+998';
+                              _countryName = code.name ?? 'Uzbekistan';
+                            });
+                          },
+                          initialSelection: 'UZ',
+                          favorite: const [
+                            '+998',
+                            'UZ',
+                            '+1',
+                            'US',
+                            '+91',
+                            'IN',
+                            '+82',
+                            'KR',
+                          ],
+                          showCountryOnly: false,
+                          showFlag: true,
+                          showDropDownButton: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: _isLoading
+                                ? Colors.grey.shade400
+                                : const Color(0xFF212124),
+                          ),
+                          enabled: !_isLoading,
+                          flagWidth: 24,
+                        ),
+                      ),
+
+                      // Divider
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: const Color(0xFFE9ECEF),
+                      ),
+
+                      // Phone input
+                      Expanded(
+                        child: TextField(
+                          controller: _phoneNumberController,
+                          keyboardType: TextInputType.number,
+                          enabled: !_isLoading,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF212124),
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: AppLocalizations.of(context)
+                                    ?.enterPhoneNumber ??
+                                'Phone number',
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 12,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: !_isPasswordVisible,
+                    enabled: !_isLoading,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF212124),
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText:
+                          AppLocalizations.of(context)?.password ?? 'Password',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility_rounded
+                              : Icons.visibility_off_rounded,
                           color: _isLoading
                               ? Colors.grey.shade400
                               : Colors.grey.shade600,
+                          size: 22,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15),
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Show selected country and full number preview
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${AppLocalizations.of(context)?.selectedCountryLabel ?? "Selected:"} $_countryName ($_countryCode)',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
                 ),
-                if (_phoneNumberController.text.isNotEmpty)
-                  Text(
-                    '${AppLocalizations.of(context)?.fullPhoneLabel ?? "Full:"} $fullPhoneNumber',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blue[600],
-                      fontWeight: FontWeight.w500,
+
+                const SizedBox(height: 12.0),
+
+                // Forgot password - aligned right
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgotPasswordPage()),
+                            );
+                          },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)?.forgotPassword ??
+                          'Forgot password?',
+                      style: TextStyle(
+                        color: _isLoading
+                            ? Colors.grey.shade400
+                            : const Color(0xFF6C757D),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-              ],
-            ),
+                ),
 
-            const SizedBox(height: 20.0),
+                const SizedBox(height: 24.0),
 
-            // Password input
-            TextField(
-              controller: _passwordController,
-              obscureText: !_isPasswordVisible,
-              enabled: !_isLoading, // Disable during loading
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: _isLoading ? Colors.grey.shade300 : Colors.grey,
+                // Login button - Karrot orange style
+                Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: _isLoading
+                        ? []
+                        : [
+                            BoxShadow(
+                              color: const Color(0xFFFF6F0F).withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                labelText: AppLocalizations.of(context)?.password ?? 'Password',
-                labelStyle: TextStyle(
-                  color: _isLoading
-                      ? Colors.grey.shade400
-                      : Theme.of(context).colorScheme.primary,
-                ),
-                filled: _isLoading,
-                fillColor: _isLoading ? Colors.grey.shade100 : null,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: _isLoading ? Colors.grey.shade400 : null,
-                  ),
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24.0),
-
-            // Login button with live timing display
-            SizedBox(
-              width: 200.0,
-              height: 48.0, // Fixed height to prevent jumping
-              child: ElevatedButton(
-                onPressed:
-                    _isLoading ? null : _handleLogin, // Disable when loading
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _isLoading ? Colors.grey.shade400 : Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                ),
-                child: _isLoading
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isLoading
+                          ? Colors.grey.shade300
+                          : const Color(0xFFFF6F0F), // Karrot orange
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: _isLoading
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                AppLocalizations.of(context)?.loading ??
+                                    'Loading...',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.3,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            AppLocalizations.of(context)?.login ?? 'Login',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          // Show loading text
-                          Text(
-                            AppLocalizations.of(context)?.loading ??
-                                'Loading...',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      )
-                    : Text(
-                        AppLocalizations.of(context)?.login ?? 'Login',
-                        style: const TextStyle(
-                          fontSize: 16,
+                  ),
+                ),
+
+                const SizedBox(height: 32.0),
+
+                // Divider with text
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        AppLocalizations.of(context)?.or ?? 'OR',
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-              ),
-            ),
-
-            const SizedBox(height: 8.0),
-
-            // Action buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ForgotPasswordPage()),
-                    );
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)?.forgotPassword ??
-                        'Forgot password?',
-                    style: TextStyle(
-                      color: _isLoading
-                          ? Colors.grey.shade400
-                          : Theme.of(context).colorScheme.primary,
                     ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const Register(),
-                            ),
-                          );
-                        },
-                  child: Text(
-                    AppLocalizations.of(context)?.registerNow ?? 'Register Now',
-                    style: TextStyle(
-                      color: _isLoading ? Colors.grey.shade400 : Colors.black54,
-                      fontSize: 18,
+                    Expanded(
+                      child: Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 1,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+
+                const SizedBox(height: 32.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)?.dontHaveAccount ??
+                          "Don't have an account?",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const Register(),
+                                ),
+                              );
+                            },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)?.registerNow ?? 'Sign up',
+                        style: TextStyle(
+                          color: _isLoading
+                              ? Colors.grey.shade400
+                              : const Color(0xFFFF6F0F),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 32.0),
               ],
             ),
-          ]),
+          ),
         ),
       ),
     );

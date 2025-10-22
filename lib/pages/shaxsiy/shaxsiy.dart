@@ -8,6 +8,7 @@ import 'package:app/pages/shaxsiy/my-products/my_products.dart';
 import 'package:app/pages/shaxsiy/my-services/my_services.dart';
 import 'package:app/pages/shaxsiy/main_profile/profile_edit.dart';
 import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
+import 'package:app/pages/shaxsiy/properties/saved_properties.dart';
 import 'package:app/pages/shaxsiy/security/main_security.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -15,6 +16,7 @@ import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
+import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/theme_provider.dart'; // Import the proper theme provider
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -667,32 +669,113 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                             services: favoriteItems.likedServices)),
                   ),
                 ),
-                _buildMenuCard(
-                  icon: Icons.real_estate_agent_rounded,
-                  title: localizations?.saved_properties_title ??
-                      'Saved Properties',
-                  subtitle: '${products.length} items',
-                  iconColor: const Color(0xFF4CAF50),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyProducts()),
-                  ),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final tokenAsync = ref.watch(tokenProvider);
+
+                    return tokenAsync.when(
+                      data: (token) {
+                        if (token == null) {
+                          return _buildMenuCard(
+                            icon: Icons.real_estate_agent_rounded,
+                            title: localizations?.saved_properties_title ??
+                                'Saved Properties',
+                            subtitle: 'Login to view saved properties',
+                            iconColor: const Color(0xFF4CAF50),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SavedProperties()),
+                            ),
+                          );
+                        }
+
+                        // User is logged in, get the count
+                        final savedPropertiesAsync =
+                            ref.watch(savedPropertiesNotifierProvider(token));
+
+                        return savedPropertiesAsync.when(
+                          data: (response) => _buildMenuCard(
+                            icon: Icons.real_estate_agent_rounded,
+                            title: localizations?.saved_properties_title ??
+                                'Saved Properties',
+                            subtitle: '${response.count} items',
+                            iconColor: const Color(0xFF4CAF50),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SavedProperties()),
+                            ),
+                          ),
+                          loading: () => _buildMenuCard(
+                            icon: Icons.real_estate_agent_rounded,
+                            title: localizations?.saved_properties_title ??
+                                'Saved Properties',
+                            subtitle: 'Loading...',
+                            iconColor: const Color(0xFF4CAF50),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SavedProperties()),
+                            ),
+                          ),
+                          error: (_, __) => _buildMenuCard(
+                            icon: Icons.real_estate_agent_rounded,
+                            title: localizations?.saved_properties_title ??
+                                'Saved Properties',
+                            subtitle: '0 items',
+                            iconColor: const Color(0xFF4CAF50),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SavedProperties()),
+                            ),
+                          ),
+                        );
+                      },
+                      loading: () => _buildMenuCard(
+                        icon: Icons.real_estate_agent_rounded,
+                        title: localizations?.saved_properties_title ??
+                            'Saved Properties',
+                        subtitle: 'Loading...',
+                        iconColor: const Color(0xFF4CAF50),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SavedProperties()),
+                        ),
+                      ),
+                      error: (_, __) => _buildMenuCard(
+                        icon: Icons.real_estate_agent_rounded,
+                        title: localizations?.saved_properties_title ??
+                            'Saved Properties',
+                        subtitle: '0 items',
+                        iconColor: const Color(0xFF4CAF50),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SavedProperties()),
+                        ),
+                      ),
+                    );
+                  },
                 ),
 
                 // Support Section
-                _buildSectionTitle(localizations?.agents ?? 'Agents'),
-                _buildMenuCard(
-                  icon: Icons.star_rounded,
-                  title: localizations?.properties ?? 'Properties',
-                  subtitle: '${favoriteItems.likedServices.length} services',
-                  iconColor: const Color(0xFFFF9800),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FavoriteServices(
-                            services: favoriteItems.likedServices)),
-                  ),
-                ),
+                _buildSectionTitle(localizations?.general_admin ?? 'Admin'),
+                Center(child: Text('Under Development')),
+                // _buildMenuCard(
+                //   icon: Icons.star_rounded,
+                //   title: localizations?.properties ?? 'Properties',
+                //   subtitle: '${favoriteItems.likedServices.length} services',
+                //   iconColor: const Color(0xFFFF9800),
+                //   onTap: () => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => FavoriteServices(
+                //             services: favoriteItems.likedServices)),
+                //   ),
+                // ),
                 // Settings Section
                 _buildSectionTitle(localizations?.settings ?? 'Settings'),
 

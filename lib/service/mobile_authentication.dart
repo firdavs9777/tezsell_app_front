@@ -17,6 +17,22 @@ Future<bool> sendVerificationCode(String phoneNumber) async {
   }
 }
 
+Future<bool> sendVerificationCodeEskiz(String phoneNumber) async {
+  final url = Uri.parse('https://api.webtezsell.com/accounts/send-sms-eskiz/');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'phone_number': phoneNumber}),
+  );
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return true;
+  } else {
+    return false;
+  }
+}
+
 Future<bool> verifyVerificationCode(String phoneNumber, String otp) async {
   final url = Uri.parse('https://api.webtezsell.com/accounts/verify-code/');
   final response = await http.post(

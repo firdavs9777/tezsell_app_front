@@ -223,6 +223,7 @@ class ServiceProvider {
         queryParameters: queryParams,
       );
 
+      print(response);
       if (response.statusCode == 200) {
         final data = response.data;
 

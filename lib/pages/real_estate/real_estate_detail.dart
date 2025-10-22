@@ -6,11 +6,8 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// Add PropertyMapWidget import - you'll need to create this file
-// import 'package:app/widgets/property_map_widget.dart';
-
-// Add this class for property images
 class PropertyImage {
   final int id;
   final String image;
@@ -31,7 +28,6 @@ class PropertyImage {
   }
 }
 
-// Placeholder PropertyMapWidget - replace with actual import
 class PropertyMapWidget extends StatefulWidget {
   final RealEstate property;
   final double height;
@@ -74,7 +70,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
       return LatLng(lat, lng);
     }
 
-    return LatLng(41.2995, 69.2401); // Fallback
+    return LatLng(41.2995, 69.2401);
   }
 
   void _zoomIn() {
@@ -107,7 +103,6 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
         borderRadius: BorderRadius.circular(12),
         child: Stack(
           children: [
-            // Map
             FlutterMap(
               mapController: _mapController,
               options: MapOptions(
@@ -124,9 +119,6 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                 },
               ),
               children: [
-                // Alternative tile providers - choose one that works best for you
-
-                // Option 1: CartoDB Positron (clean, light theme)
                 TileLayer(
                   urlTemplate:
                       'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
@@ -134,29 +126,6 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                   userAgentPackageName: 'com.yourcompany.yourapp',
                   maxZoom: 18,
                 ),
-
-                // Option 2: If CartoDB doesn't work, uncomment this for OpenStreetMap with proper setup:
-                /*
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.yourcompany.yourapp', // Use your actual package name
-                  maxZoom: 18,
-                  additionalOptions: {
-                    'attribution': '© OpenStreetMap contributors',
-                  },
-                ),
-                */
-
-                // Option 3: Alternative - Stamen Terrain (if others don't work)
-                /*
-                TileLayer(
-                  urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.yourcompany.yourapp',
-                  maxZoom: 16,
-                ),
-                */
-
-                // Property Marker
                 MarkerLayer(
                   markers: [
                     Marker(
@@ -169,46 +138,37 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                 ),
               ],
             ),
-
-            // Map Controls
             if (widget.showControls) ...[
-              // Zoom Controls
               Positioned(
                 right: 16,
                 top: 16,
                 child: Column(
                   children: [
                     _buildMapButton(
-                      icon: Icons.add,
-                      onPressed: _zoomIn,
-                      tooltip: 'Zoom In',
-                    ),
+                        icon: Icons.add,
+                        onPressed: _zoomIn,
+                        tooltip: 'Zoom In'),
                     SizedBox(height: 8),
                     _buildMapButton(
-                      icon: Icons.remove,
-                      onPressed: _zoomOut,
-                      tooltip: 'Zoom Out',
-                    ),
+                        icon: Icons.remove,
+                        onPressed: _zoomOut,
+                        tooltip: 'Zoom Out'),
                     SizedBox(height: 8),
                     _buildMapButton(
-                      icon: Icons.my_location,
-                      onPressed: _centerOnProperty,
-                      tooltip: 'Center on Property',
-                    ),
+                        icon: Icons.my_location,
+                        onPressed: _centerOnProperty,
+                        tooltip: 'Center on Property'),
                   ],
                 ),
               ),
-
-              // Fullscreen Toggle
               if (widget.onFullscreenToggle != null)
                 Positioned(
                   right: 16,
                   bottom: 16,
                   child: _buildMapButton(
-                    icon: Icons.fullscreen,
-                    onPressed: widget.onFullscreenToggle,
-                    tooltip: 'Fullscreen',
-                  ),
+                      icon: Icons.fullscreen,
+                      onPressed: widget.onFullscreenToggle,
+                      tooltip: 'Fullscreen'),
                 ),
             ],
           ],
@@ -231,11 +191,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
           ),
         ],
       ),
-      child: Icon(
-        Icons.location_on,
-        color: Colors.white,
-        size: 30,
-      ),
+      child: Icon(Icons.location_on, color: Colors.white, size: 30),
     );
   }
 
@@ -264,11 +220,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
           child: Container(
             width: 40,
             height: 40,
-            child: Icon(
-              icon,
-              color: Colors.grey[700],
-              size: 20,
-            ),
+            child: Icon(icon, color: Colors.grey[700], size: 20),
           ),
         ),
       ),
@@ -326,6 +278,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   bool isLoading = true;
   String? errorMessage;
   bool isSaved = false;
+  bool isCheckingSaved = true;
+  String? userToken;
   String? description;
   int? floor;
   int? totalFloors;
@@ -344,7 +298,65 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   @override
   void initState() {
     super.initState();
-    _loadPropertyDetails();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _loadUserToken();
+    await _loadPropertyDetails();
+    if (userToken != null && property != null) {
+      await _checkIfPropertySaved();
+    }
+  }
+
+  Future<void> _loadUserToken() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (mounted) {
+        setState(() {
+          userToken = prefs.getString('token');
+        });
+      }
+    } catch (e) {
+      print('Error loading token: $e');
+    }
+  }
+
+  Future<void> _checkIfPropertySaved() async {
+    if (userToken == null || property == null) {
+      if (mounted) {
+        setState(() {
+          isCheckingSaved = false;
+        });
+      }
+      return;
+    }
+
+    try {
+      setState(() {
+        isCheckingSaved = true;
+      });
+
+      final saved = await ref.read(realEstateServiceProvider).isPropertySaved(
+            propertyId: property!.id.toString(),
+            token: userToken!,
+          );
+
+      if (mounted) {
+        setState(() {
+          isSaved = saved;
+          isCheckingSaved = false;
+        });
+      }
+    } catch (e) {
+      print('Error checking saved status: $e');
+      if (mounted) {
+        setState(() {
+          isCheckingSaved = false;
+          isSaved = false;
+        });
+      }
+    }
   }
 
   Future<void> _loadPropertyDetails() async {
@@ -354,100 +366,151 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         errorMessage = null;
       });
 
-      // Get the full API response that includes all the additional fields
       final response = await ref
           .read(realEstateServiceProvider)
           .fetchSingleFilteredProperty(propertyId: widget.propertyId);
 
-      setState(() {
-        property = response;
-        isSaved =
-            response.isFeatured; // Use actual is_saved from API when available
-
-        // Extract additional fields from the full API response
-        // These should ideally be added to your RealEstate model
-        description = "Test"; // Use actual response.description
-        floor = 1; // Use actual response.floor
-        totalFloors = 3; // Use actual response.totalFloors
-        yearBuilt = 1997; // Use actual response.yearBuilt
-        parkingSpaces = 12323; // Use actual response.parkingSpaces
-        hasBalcony = true; // Use actual response.hasBalcony
-        hasGarage = true; // Use actual response.hasGarage
-        hasGarden = false; // Use actual response.hasGarden
-        hasPool = false; // Use actual response.hasPool
-        hasElevator = false; // Use actual response.hasElevator
-        isFurnished = false; // Use actual response.isFurnished
-        isActive = true; // Use actual response.isActive
-        isSold = false; // Use actual response.isSold
-
-        // Parse images from API response
-        images = [
-          PropertyImage(
+      if (mounted) {
+        setState(() {
+          property = response;
+          description = "Test";
+          floor = 1;
+          totalFloors = 3;
+          yearBuilt = 1997;
+          parkingSpaces = 12323;
+          hasBalcony = true;
+          hasGarage = true;
+          hasGarden = false;
+          hasPool = false;
+          hasElevator = false;
+          isFurnished = false;
+          isActive = true;
+          isSold = false;
+          images = [
+            PropertyImage(
               id: 1,
               image:
                   "https://api.webtezsell.com/media/properties/images/Properties.png",
-              caption: "main_home")
-        ];
-
-        isLoading = false;
-      });
+              caption: "main_home",
+            )
+          ];
+          isLoading = false;
+        });
+      }
     } catch (error) {
-      setState(() {
-        errorMessage = error.toString();
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          errorMessage = error.toString();
+          isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _toggleSave() async {
     if (property == null) return;
 
+    if (userToken == null) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.authLoginRequired),
+          backgroundColor: Colors.orange,
+          action: SnackBarAction(
+            label: l10n.authLogin,
+            textColor: Colors.white,
+            onPressed: () {
+              Navigator.of(context).pushNamed('/login');
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
+    // Optimistic update
+    final previouslySaved = isSaved;
+    setState(() {
+      isSaved = !isSaved;
+    });
+
     try {
-      // Optimistic update
-      setState(() {
-        isSaved = !isSaved;
-      });
+      // Use appropriate method based on current state
+      if (previouslySaved) {
+        // Was saved, now unsaving - use DELETE
+        print('🗑️ Unsaving property: ${property!.id}');
 
-      // Call your save/unsave API here
-      // await ref.read(realEstateServiceProvider).toggleSaveProperty(property!.id);
+        await ref.read(realEstateServiceProvider).unsaveProperty(
+              propertyId: property!.id.toString(),
+              token: userToken!,
+            );
 
-      HapticFeedback.selectionClick();
+        print('✅ Property unsaved successfully');
+      } else {
+        // Was not saved, now saving - use POST (toggle)
+        print('💾 Saving property: ${property!.id}');
 
-      final localizations = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isSaved
-              ? localizations?.success_property_saved ??
-                  'Property saved successfully!'
-              : localizations?.success_property_unsaved ??
-                  'Property removed from saved list'),
-          backgroundColor: isSaved ? Colors.green : Colors.orange,
-        ),
-      );
+        final result =
+            await ref.read(realEstateServiceProvider).toggleSaveProperty(
+                  propertyId: property!.id.toString(),
+                  token: userToken!,
+                );
+
+        print('✅ Toggle result: $result');
+
+        // Verify the result matches expectation
+        final actualSaved = result['is_saved'] ?? false;
+        if (actualSaved != isSaved) {
+          setState(() {
+            isSaved = actualSaved;
+          });
+        }
+      }
+
+      if (mounted) {
+        HapticFeedback.selectionClick();
+
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isSaved
+                  ? l10n.success_property_saved
+                  : l10n.successPropertyUnsaved,
+            ),
+            backgroundColor: isSaved ? Colors.green : Colors.orange,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } catch (error) {
-      // Revert optimistic update on error
-      setState(() {
-        isSaved = !isSaved;
-      });
+      print('❌ Error toggling save: $error');
 
-      final localizations = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations?.alerts_save_property_failed ??
-              'Failed to save property: $error'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // Revert optimistic update on error
+      if (mounted) {
+        setState(() {
+          isSaved = previouslySaved;
+        });
+
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('${l10n.alertsUnsavePropertyFailed}: ${error.toString()}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
   void _copyPhoneNumber(String phoneNumber) {
     Clipboard.setData(ClipboardData(text: phoneNumber));
-    final localizations = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(localizations?.alerts_phone_copied ??
-            'Phone number copied to clipboard!'),
+        content: Text(l10n.alerts_phone_copied),
         backgroundColor: Colors.green,
       ),
     );
@@ -468,12 +531,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // App Bar with Image
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
@@ -482,31 +544,22 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Property images - use images array from API
                   if (images.isNotEmpty)
                     Image.network(
                       images.first.image,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey[300],
-                        child: Icon(
-                          Icons.apartment,
-                          size: 80,
-                          color: Colors.grey[500],
-                        ),
+                        child: Icon(Icons.apartment,
+                            size: 80, color: Colors.grey[500]),
                       ),
                     )
                   else
                     Container(
                       color: Colors.grey[300],
-                      child: Icon(
-                        Icons.apartment,
-                        size: 80,
-                        color: Colors.grey[500],
-                      ),
+                      child: Icon(Icons.apartment,
+                          size: 80, color: Colors.grey[500]),
                     ),
-
-                  // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -514,13 +567,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withOpacity(0.3)
                         ],
                       ),
                     ),
                   ),
-
-                  // Property badges
                   if (property != null) ...[
                     Positioned(
                       top: 60,
@@ -535,10 +586,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         child: Text(
                           property!.listingTypeDisplay,
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -554,12 +604,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            localizations?.property_card_featured ?? 'Featured',
+                            l10n.propertyCardFeatured,
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -568,26 +617,36 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ),
             ),
             actions: [
-              IconButton(
-                icon: Icon(
-                  isSaved ? Icons.favorite : Icons.favorite_border,
-                  color: isSaved ? Colors.red : Colors.white,
-                ),
-                onPressed: _toggleSave,
-              ),
+              isCheckingSaved
+                  ? Padding(
+                      padding: EdgeInsets.all(8),
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        isSaved ? Icons.favorite : Icons.favorite_border,
+                        color: isSaved ? Colors.red : Colors.white,
+                      ),
+                      onPressed: _toggleSave,
+                    ),
               IconButton(
                 icon: Icon(Icons.share, color: Colors.white),
                 onPressed: () {
-                  // Implement share functionality
                   HapticFeedback.selectionClick();
                 },
               ),
             ],
           ),
-
-          // Content
           SliverToBoxAdapter(
-            child: _buildContent(context, localizations),
+            child: _buildContent(context, l10n),
           ),
         ],
       ),
@@ -628,10 +687,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 localizations?.loading_property_not_found ??
                     'Property not found',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
-                ),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[700]),
               ),
               SizedBox(height: 8),
               Text(
@@ -661,39 +719,22 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Property Title and Price
           _buildTitleSection(localizations),
           SizedBox(height: 24),
-
-          // Property Stats
           _buildStatsSection(localizations),
           SizedBox(height: 24),
-
-          // Location Map
           _buildLocationSection(localizations),
           SizedBox(height: 24),
-
-          // Description
           _buildDescriptionSection(localizations),
           SizedBox(height: 24),
-
-          // Features
           _buildFeaturesSection(localizations),
           SizedBox(height: 24),
-
-          // Nearby Amenities (using API data)
           _buildNearbyAmenitiesSection(localizations),
           SizedBox(height: 24),
-
-          // Property Details
           _buildDetailsSection(localizations),
           SizedBox(height: 24),
-
-          // Contact Information
           _buildContactSection(localizations),
           SizedBox(height: 24),
-
-          // Property Status
           _buildStatusSection(localizations),
         ],
       ),
@@ -707,10 +748,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         Text(
           property!.title,
           style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[900],
-          ),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[900]),
         ),
         SizedBox(height: 8),
         Row(
@@ -718,10 +758,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             Text(
               '${property!.price} ${property!.currency}',
               style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.green[600],
-              ),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green[600]),
             ),
             Spacer(),
             Container(
@@ -737,10 +776,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   SizedBox(width: 4),
                   Text(
                     '${property!.viewsCount} ${localizations?.property_info_views ?? "views"}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -751,10 +787,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           SizedBox(height: 4),
           Text(
             '${property!.pricePerSqm} ${property!.currency}${localizations?.property_info_price_per_sqm ?? "/m²"}',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ],
@@ -762,7 +795,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildNearbyAmenitiesSection(AppLocalizations? localizations) {
-    // From your API data: metro_distance: 200, school_distance: 100, hospital_distance: 3, shopping_distance: 6
     final amenities = <String, int>{
       localizations?.amenities_metro ?? 'Metro': 200,
       localizations?.amenities_school ?? 'School': 100,
@@ -770,124 +802,97 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       localizations?.amenities_shopping ?? 'Shopping': 6,
     };
 
-    // Filter out amenities that are 0 or null
     final availableAmenities =
         amenities.entries.where((e) => e.value > 0).toList();
 
     if (availableAmenities.isEmpty) return SizedBox.shrink();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-      ),
-      SizedBox(height: 12),
-      Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[50],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
-        ),
-        child: Column(
-          children: availableAmenities.map((amenity) {
-            IconData amenityIcon;
-            Color amenityColor;
+        SizedBox(height: 12),
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey[200]!),
+          ),
+          child: Column(
+            children: availableAmenities.map((amenity) {
+              IconData amenityIcon;
+              Color amenityColor;
 
-            switch (amenity.key.toLowerCase()) {
-              case 'metro':
+              if (amenity.key.toLowerCase().contains('metro')) {
                 amenityIcon = Icons.train;
                 amenityColor = Colors.blue;
-                break;
-              case 'school':
+              } else if (amenity.key.toLowerCase().contains('school')) {
                 amenityIcon = Icons.school;
                 amenityColor = Colors.green;
-                break;
-              case 'hospital':
+              } else if (amenity.key.toLowerCase().contains('hospital')) {
                 amenityIcon = Icons.local_hospital;
                 amenityColor = Colors.red;
-                break;
-              case 'shopping':
+              } else if (amenity.key.toLowerCase().contains('shopping')) {
                 amenityIcon = Icons.shopping_cart;
                 amenityColor = Colors.orange;
-                break;
-              default:
+              } else {
                 amenityIcon = Icons.location_on;
                 amenityColor = Colors.grey;
-            }
+              }
 
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: amenityColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: amenityColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(amenityIcon, color: amenityColor, size: 20),
                     ),
-                    child: Icon(
-                      amenityIcon,
-                      color: amenityColor,
-                      size: 20,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      amenity.key,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        amenity.key,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 14),
                       ),
                     ),
-                  ),
-                  Text(
-                    '${amenity.value}m ${localizations?.amenities_away ?? "away"}',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 12,
+                    Text(
+                      '${amenity.value}m ${localizations?.amenities_away ?? "away"}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _buildStatsSection(AppLocalizations? localizations) {
     return Row(
       children: [
-        _buildStatItem(
-          Icons.bed,
-          '${property!.bedrooms}',
-          localizations?.property_card_bed ?? 'bed',
-        ),
+        _buildStatItem(Icons.bed, '${property!.bedrooms}',
+            localizations?.property_card_bed ?? 'bed'),
+        SizedBox(width: 24),
+        _buildStatItem(Icons.bathroom, '${property!.bathrooms}',
+            localizations?.property_card_bath ?? 'bath'),
         SizedBox(width: 24),
         _buildStatItem(
-          Icons.bathroom,
-          '${property!.bathrooms}',
-          localizations?.property_card_bath ?? 'bath',
-        ),
-        SizedBox(width: 24),
-        _buildStatItem(
-          Icons.square_foot,
-          '${property!.squareMeters}m²',
-          'area',
-        ),
+            Icons.square_foot, '${property!.squareMeters}m²', 'area'),
         if (parkingSpaces > 0) ...[
           SizedBox(width: 24),
-          _buildStatItem(
-            Icons.local_parking,
-            '$parkingSpaces',
-            localizations?.property_card_parking ?? 'parking',
-          ),
+          _buildStatItem(Icons.local_parking, '$parkingSpaces',
+              localizations?.property_card_parking ?? 'parking'),
         ],
       ],
     );
@@ -898,21 +903,12 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       children: [
         Icon(icon, size: 24, color: Colors.grey[600]),
         SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[900],
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(value,
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[900])),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       ],
     );
   }
@@ -921,7 +917,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Address Info
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -939,10 +934,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   Expanded(
                     child: Text(
                       '${property!.address}, ${property!.city}, ${property!.district}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -957,10 +950,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ],
           ),
         ),
-
         SizedBox(height: 16),
-
-        // Map Section
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -969,10 +959,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             border: Border.all(color: Colors.grey[200]!),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, 2),
-              ),
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: Offset(0, 2)),
             ],
           ),
           child: Column(
@@ -981,20 +970,14 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Location',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  Text('Location',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                   TextButton.icon(
                     onPressed: _showFullscreenMap,
                     icon: Icon(Icons.fullscreen, size: 16),
-                    label: Text(
-                      'View Fullscreen',
-                      style: TextStyle(fontSize: 12),
-                    ),
+                    label:
+                        Text('View Fullscreen', style: TextStyle(fontSize: 12)),
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).primaryColor,
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1003,18 +986,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 ],
               ),
               SizedBox(height: 12),
-
-              // Map Widget
               PropertyMapWidget(
                 property: property!,
                 height: 250,
                 showControls: true,
                 onFullscreenToggle: _showFullscreenMap,
               ),
-
               SizedBox(height: 12),
-
-              // Map Footer Info
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -1023,30 +1001,18 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.location_on,
-                      color: Colors.red[400],
-                      size: 16,
-                    ),
+                    Icon(Icons.location_on, color: Colors.red[400], size: 16),
                     SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            property!.address,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            '${property!.district}, ${property!.city}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
+                          Text(property!.address,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 14)),
+                          Text('${property!.district}, ${property!.city}',
+                              style: TextStyle(
+                                  color: Colors.grey[600], fontSize: 12)),
                         ],
                       ),
                     ),
@@ -1070,20 +1036,12 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       children: [
         Text(
           localizations?.sections_description ?? 'Description',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 12),
-        Text(
-          description!,
-          style: TextStyle(
-            fontSize: 16,
-            height: 1.5,
-            color: Colors.grey[700],
-          ),
-        ),
+        Text(description!,
+            style:
+                TextStyle(fontSize: 16, height: 1.5, color: Colors.grey[700])),
       ],
     );
   }
@@ -1108,10 +1066,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         Text(
           localizations?.property_details_features_amenities ??
               'Features & Amenities',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 12),
         Wrap(
@@ -1128,10 +1083,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               child: Text(
                 feature.key,
                 style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.blue[700],
-                  fontWeight: FontWeight.w500,
-                ),
+                    fontSize: 14,
+                    color: Colors.blue[700],
+                    fontWeight: FontWeight.w500),
               ),
             );
           }).toList(),
@@ -1147,10 +1101,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         Text(
           localizations?.property_details_basic_information ??
               'Basic Information',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 12),
         _buildDetailRow(
@@ -1178,21 +1129,12 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           SizedBox(
             width: 120,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
-              ),
-            ),
+            child: Text(label,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, color: Colors.grey[600])),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Colors.grey[900],
-              ),
-            ),
+            child: Text(value, style: TextStyle(color: Colors.grey[900])),
           ),
         ],
       ),
@@ -1212,14 +1154,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             localizations?.contact_title ?? 'Contact Information',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
           if (property!.agent != null) ...[
-            // Agent contact
             Row(
               children: [
                 CircleAvatar(
@@ -1235,14 +1173,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                       Text(
                         localizations?.contact_modal_agent ?? 'Agent',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      Text(
-                        property!.agent!.username,
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
+                      Text(property!.agent!.username,
+                          style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                 ),
@@ -1254,7 +1188,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ],
             ),
           ] else ...[
-            // Owner contact
             Row(
               children: [
                 CircleAvatar(
@@ -1271,14 +1204,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         localizations?.contact_property_owner ??
                             'Property Owner',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      Text(
-                        property!.owner.username,
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
+                      Text(property!.owner.username,
+                          style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                 ),
@@ -1308,10 +1237,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             localizations?.property_status_title ?? 'Property Status',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12),
           _buildDetailRow(

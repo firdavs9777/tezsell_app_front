@@ -8,11 +8,101 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
-class RealEstateService {
-  // Initialize Dio instance with base URL
-  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+// ============= SAVED PROPERTY MODELS =============
 
-  // Properties for caching and performance tracking
+class SavedProperty {
+  final int id;
+  final RealEstate property;
+  final DateTime savedAt;
+
+  const SavedProperty({
+    required this.id,
+    required this.property,
+    required this.savedAt,
+  });
+
+  factory SavedProperty.fromJson(Map<String, dynamic> json) {
+    return SavedProperty(
+      id: json['id'] ?? 0,
+      property: RealEstate.fromJson(json['property'] ?? {}),
+      savedAt: json['saved_at'] != null
+          ? DateTime.parse(json['saved_at'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'property': property.toJson(),
+      'saved_at': savedAt.toIso8601String(),
+    };
+  }
+}
+
+class SavedPropertiesResponse {
+  final int count;
+  final String? next;
+  final String? previous;
+  final List<SavedProperty> results;
+
+  const SavedPropertiesResponse({
+    required this.count,
+    this.next,
+    this.previous,
+    required this.results,
+  });
+
+  factory SavedPropertiesResponse.fromJson(Map<String, dynamic> json) {
+    print('🔍 Parsing SavedPropertiesResponse');
+    print('   Raw JSON: $json');
+
+    final resultsData = json['results'] as List? ?? [];
+    print('   Results data length: ${resultsData.length}');
+
+    final results = resultsData.map((item) {
+      print('   Parsing item: $item');
+      try {
+        if (item['property'] != null) {
+          print('   Has property field, parsing as SavedProperty');
+          return SavedProperty.fromJson(item);
+        } else {
+          print('   No property field, parsing as direct RealEstate');
+          return SavedProperty(
+            id: DateTime.now().millisecondsSinceEpoch,
+            property: RealEstate.fromJson(item),
+            savedAt: DateTime.now(),
+          );
+        }
+      } catch (e) {
+        print('   ❌ Error parsing item: $e');
+        rethrow;
+      }
+    }).toList();
+
+    print('   Parsed ${results.length} results');
+
+    return SavedPropertiesResponse(
+      count: json['count'] ?? 0,
+      next: json['next'],
+      previous: json['previous'],
+      results: results,
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'count': count,
+      'next': next,
+      'previous': previous,
+      'results': results.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+// ============= SERVICE CLASS =============
+
+class RealEstateService {
+  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
   final Map<String, Future> _pendingRequests = {};
 
   void _logPerformance(String operation, int milliseconds) {
@@ -21,7 +111,8 @@ class RealEstateService {
     }
   }
 
-  // Get all properties (basic method)
+  // ============= EXISTING METHODS =============
+
   Future<List<RealEstate>> getAllProperties() async {
     final response = await http.get(
       Uri.parse('$baseUrl$REAL_ESTATE_PROPERTIES'),
@@ -41,7 +132,6 @@ class RealEstateService {
     }
   }
 
-  // Private method to fetch filtered properties
   Future<List<RealEstate>> _fetchFilteredProperties({
     required int currentPage,
     required int pageSize,
@@ -58,7 +148,6 @@ class RealEstateService {
         'page_size': pageSize.toString(),
       };
 
-      // Only add non-empty parameters to reduce URL size
       if (propertyType.isNotEmpty) queryParams['property_type'] = propertyType;
       if (listingType.isNotEmpty) queryParams['listing_type'] = listingType;
       if (regionName.isNotEmpty) queryParams['city'] = regionName;
@@ -109,7 +198,6 @@ class RealEstateService {
           print('Property data: $data');
         }
 
-        // Check if the response has the expected structure
         if (data['success'] == true && data['property'] != null) {
           return RealEstate.fromJson(data['property']);
         } else {
@@ -134,7 +222,6 @@ class RealEstateService {
     }
   }
 
-  // Public method with caching and performance logging
   Future<List<RealEstate>> getFilteredProperties({
     int currentPage = 1,
     int pageSize = 12,
@@ -148,7 +235,6 @@ class RealEstateService {
     final cacheKey =
         'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${minPrice}_$maxPrice';
 
-    // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {
         print('🔄 Filtered properties request already in progress');
@@ -183,7 +269,6 @@ class RealEstateService {
     }
   }
 
-  // Get single property details
   Future<RealEstate> getSingleProperty({required String propertyId}) async {
     final response = await http.get(
       Uri.parse('$baseUrl$REAL_ESTATE_PROPERTIES/$propertyId/'),
@@ -201,7 +286,6 @@ class RealEstateService {
     }
   }
 
-  // Create new property listing
   Future<RealEstate> createProperty({
     required String title,
     required String propertyType,
@@ -247,12 +331,262 @@ class RealEstateService {
       throw Exception('Failed to create property');
     }
   }
+
+  // ============= SAVED PROPERTIES METHODS =============
+  Future<SavedPropertiesResponse> getSavedProperties({
+    required String token,
+    int page = 1,
+    int pageSize = 12,
+  }) async {
+    final timer = Stopwatch()..start();
+
+    try {
+      print('📡 Fetching saved properties...');
+      print('   Token: ${token.substring(0, 10)}...'); // Show first 10 chars
+      print('   Page: $page, PageSize: $pageSize');
+
+      final response = await dio.get(
+        REAL_ESTATE_SAVED_PROPERTIES,
+        queryParameters: {
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      print('📊 Response Status: ${response.statusCode}');
+      print('📊 Response Data: ${response.data}');
+
+      timer.stop();
+      _logPerformance('Get Saved Properties', timer.elapsed.inMilliseconds);
+
+      if (response.statusCode == 200) {
+        final parsedResponse = SavedPropertiesResponse.fromJson(response.data);
+        print('✅ Parsed ${parsedResponse.results.length} saved properties');
+        return parsedResponse;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load saved properties: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      print('❌ Error fetching saved properties: $e');
+      if (e is DioException) {
+        print('   Status Code: ${e.response?.statusCode}');
+        print('   Response Data: ${e.response?.data}');
+      }
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> toggleSaveProperty({
+    required String propertyId,
+    required String token,
+  }) async {
+    final timer = Stopwatch()..start();
+
+    try {
+      final response = await dio.post(
+        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      timer.stop();
+      _logPerformance('Toggle Save Property', timer.elapsed.inMilliseconds);
+
+      print(response);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (kDebugMode) {
+          print('✅ Property save status toggled successfully');
+        }
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to toggle save property: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error toggling save property: $e');
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> unsaveProperty({
+    required String propertyId,
+    required String token,
+  }) async {
+    final timer = Stopwatch()..start();
+
+    try {
+      final response = await dio.delete(
+        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      timer.stop();
+      _logPerformance('Unsave Property', timer.elapsed.inMilliseconds);
+
+      print(response.data);
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        if (kDebugMode) {
+          print('✅ Property unsaved successfully');
+        }
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to unsave property: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error unsaving property: $e');
+      }
+      rethrow;
+    }
+  }
+
+  Future<bool> isPropertySaved({
+    required String propertyId,
+    required String token,
+  }) async {
+    try {
+      final response = await dio.get(
+        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['is_saved'] ?? false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error checking if property is saved: $e');
+      }
+      return false;
+    }
+  }
 }
 
-// Providers
+// ============= STATE NOTIFIER FOR SAVED PROPERTIES =============
+
+class SavedPropertiesNotifier
+    extends StateNotifier<AsyncValue<SavedPropertiesResponse>> {
+  final RealEstateService _service;
+  final String _token;
+  int _currentPage = 1;
+  final int _pageSize = 12;
+
+  SavedPropertiesNotifier(this._service, this._token)
+      : super(const AsyncValue.loading()) {
+    print('🎬 SavedPropertiesNotifier created');
+    print('   Token: ${_token.substring(0, 10)}...');
+    print('   Service: ${_service.hashCode}');
+    loadSavedProperties();
+  }
+
+  Future<void> loadSavedProperties() async {
+    state = const AsyncValue.loading();
+    try {
+      final response = await _service.getSavedProperties(
+        token: _token,
+        page: _currentPage,
+        pageSize: _pageSize,
+      );
+      state = AsyncValue.data(response);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> refreshSavedProperties() async {
+    _currentPage = 1;
+    await loadSavedProperties();
+  }
+
+  Future<void> loadNextPage() async {
+    final currentState = state.value;
+    if (currentState != null && currentState.next != null) {
+      _currentPage++;
+      await loadSavedProperties();
+    }
+  }
+
+  Future<void> unsaveProperty(String propertyId) async {
+    try {
+      await _service.unsaveProperty(propertyId: propertyId, token: _token);
+      await refreshSavedProperties();
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error unsaving property: $error');
+      }
+      rethrow;
+    }
+  }
+}
+
+// ============= PROVIDERS =============
+
+// Existing providers
 final realEstateProvider = FutureProvider<List<RealEstate>>((ref) async {
   final realEstateService = RealEstateService();
   return realEstateService.getAllProperties();
 });
 
 final realEstateServiceProvider = Provider((ref) => RealEstateService());
+
+// Token provider
+final tokenProvider = FutureProvider<String?>((ref) async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('token');
+});
+
+// Saved properties provider (simple)
+final savedPropertiesProvider =
+    FutureProvider.family<SavedPropertiesResponse, String>(
+  (ref, token) async {
+    final realEstateService = ref.read(realEstateServiceProvider);
+    return realEstateService.getSavedProperties(token: token);
+  },
+);
+
+// Saved properties notifier provider (with state management)
+final savedPropertiesNotifierProvider = StateNotifierProvider.family<
+    SavedPropertiesNotifier, AsyncValue<SavedPropertiesResponse>, String>(
+  (ref, token) {
+    final service = ref.read(realEstateServiceProvider);
+    return SavedPropertiesNotifier(service, token);
+  },
+);

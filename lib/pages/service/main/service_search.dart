@@ -1,4 +1,4 @@
-import 'package:app/pages/service/services_list.dart';
+import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';

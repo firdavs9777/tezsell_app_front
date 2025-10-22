@@ -49,17 +49,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Your existing logo
-            Image.asset(
-              'assets/logo/logo.png',
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback if logo doesn't load
-                return Icon(
-                  Icons.apps,
-                  size: 100,
-                  color: Theme.of(context).colorScheme.primary,
-                );
-              },
+            ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(50), // Adjust radius as needed
+              child: Image.asset(
+                'assets/logo/logo.png',
+                width: 160,
+                height: 160,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.apps,
+                    size: 150,
+                    color: Theme.of(context).colorScheme.primary,
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 20),
 

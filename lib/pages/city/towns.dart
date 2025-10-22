@@ -52,6 +52,7 @@ class _TownsListState extends State<TownsList> {
     try {
       final response = await http.get(Uri.parse('$URL/${widget.city_id}/'));
       print(response.body);
+      print(URL);
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         List<dynamic> districtData = responseData['districts'];

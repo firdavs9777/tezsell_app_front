@@ -1,8 +1,8 @@
 import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/products/product_search.dart';
-import 'package:app/pages/service/main_service.dart';
+import 'package:app/pages/service/main/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
-import 'package:app/pages/service/service_search.dart';
+import 'package:app/pages/service/main/service_search.dart';
 import 'package:app/pages/real_estate/real_estate_main.dart';
 import 'package:app/pages/real_estate/real_estate_search.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';

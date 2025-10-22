@@ -1,6 +1,10 @@
 {
   "@@locale": "uz",
   "welcome": "Xush kelibsiz",
+  "welcomeBack": "Xush kelibsiz!",
+  "loginToYourAccount": "Davom etish uchun kiring",
+  "or": "YOKI",
+  "dontHaveAccount": "Hisobingiz yo'qmi?",
   "@welcome": {
     "description": "Welcome message"
   },
@@ -16,11 +20,11 @@
   "@continueButton": {
     "description": "Text for continue button"
   },
-  "sellAndBuyProducts": "Mahsulotlaringizni faqat bizning orqamizda sotib oling va soling",
+  "sellAndBuyProducts": "Mahsulotlaringizni faqat bizda soting  va sotib oling",
   "@sellAndBuyProducts": {
     "description": "Main heading text on home screen"
   },
-  "usedProductsMarket": "Ishlatilgan mahsulotlar yoki ikkinchi qo'l bozori",
+  "usedProductsMarket": "Ishlatilgan mahsulotlar yohud ikkinchi qo'l bozori",
   "@usedProductsMarket": {
     "description": "Subtitle text on home screen"
   },
@@ -28,7 +32,7 @@
   "@register": {
     "description": "Register button text"
   },
-  "alreadyHaveAccount": "Allaqachon hisobingiz bormi",
+  "alreadyHaveAccount": "Hisobingiz bormi?",
   "@alreadyHaveAccount": {
     "description": "Login button text"
   },
@@ -1947,5 +1951,50 @@
   "please_enter_6_digit_code": "Iltimos, 6 raqamli kodni kiriting",
   "account_deleted": "Hisobingiz o'chirildi",
   "deletion_cancelled": "O'chirish bekor qilindi",
-  "failed_to_load_user_info": "Foydalanuvchi ma'lumotlarini yuklab bo'lmadi"
+  "failed_to_load_user_info": "Foydalanuvchi ma'lumotlarini yuklab bo'lmadi",
+  "auth_login_to_view_saved": "Saqlangan ko'chmas mulklarni ko'rish uchun tizimga kiring",
+  "authLoginRequired": "Tizimga kirish talab qilinadi",
+  "authLoginToViewSaved": "Saqlangan ko'chmas mulklarni ko'rish uchun tizimga kiring",
+  "authLogin": "Kirish",
+  "savedPropertiesTitle": "Saqlangan Ko'chmas Mulklar",
+  "loadingSavedProperties": "Saqlangan ko'chmas mulklar yuklanmoqda...",
+  "errorsFailedToLoadSaved": "Saqlangan ko'chmas mulklarni yuklashda xatolik",
+  "actionsRetry": "Qayta urinish",
+  "savedPropertiesNoSaved": "Saqlangan Ko'chmas Mulklar Yo'q",
+  "savedPropertiesStartSaving": "Ko'chmas mulklarni ko'rib chiqing va yoqtirganlaringizni saqlang",
+  "savedPropertiesBrowse": "Ko'chmas Mulklarni Ko'rish",
+  "resultsSavedProperties": "saqlangan ko'chmas mulklar",
+  "actionsRefresh": "Yangilash",
+  "resultsNoMoreProperties": "Boshqa ko'chmas mulklar yo'q",
+  "propertyCardFeatured": "Tavsiya etilgan",
+  "successPropertyUnsaved": "Ko'chmas mulk saqlanganlar ro'yxatidan o'chirildi",
+  "alertsUnsavePropertyFailed": "Ko'chmas mulkni o'chirishda xatolik",
+  "propertyCardBed": "yotoq xona",
+  "propertyCardBath": "hammom",
+  "savedPropertiesSavedOn": "Saqlangan sana",
+  "propertyCardViewDetails": "Batafsil Ko'rish",
+  "serviceDetailTitle": "Xizmat tafsilotlari",
+  "errorLoadingFavorites": "Sevimlilar yuklanishida xatolik",
+  "noFavoritesFound": "Sevimli elementlar topilmadi.",
+  "commentUpdatedSuccess": "Izoh muvaffaqiyatli yangilandi!",
+  "errorUpdatingComment": "Izohni yangilashda xatolik",
+  "replyAddedSuccess": "Javob muvaffaqiyatli qo'shildi!",
+  "errorAddingReply": "Javob qo'shishda xatolik",
+  "commentDeletedSuccess": "Izoh muvaffaqiyatli o'chirildi!",
+  "errorDeletingComment": "Izohni o'chirishda xatolik",
+  "serviceLikedSuccess": "Xizmat sevimlilarga qo'shildi!",
+  "errorLikingService": "Sevimliga qo'shishda xatolik",
+  "serviceDislikedSuccess": "Xizmat sevimlilardan o'chirildi!",
+  "errorDislikingService": "Sevimlilardan o'chirishda xatolik",
+  "replyingTo": "Javob berish",
+  "writeYourReply": "Javobingizni yozing...",
+  "postReply": "Javobni yuborish",
+  "anonymous": "Anonim",
+  "editComment": "Izohni tahrirlash",
+  "editYourComment": "Izohingizni tahrirlang...",
+  "saveChanges": "O'zgarishlarni saqlash",
+  "propertyOwner": "Egasi",
+  "errorLoadingServices": "Xizmatlar yuklanishida xatolik",
+  "noRecommendedServicesFound": "Tavsiya etilgan xizmatlar topilmadi."
+
 }

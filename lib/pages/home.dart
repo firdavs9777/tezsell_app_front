@@ -94,19 +94,22 @@ class Home extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20.0),
 
-                  // Logo
-                  Image.asset(
-                    'assets/logo/logo.png',
-                    width: 0.5 * MediaQuery.of(context).size.width,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Fallback if logo doesn't load
-                      return Icon(
-                        Icons.store,
-                        size: 100,
-                        color: Theme.of(context).colorScheme.primary,
-                      );
-                    },
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(100), // Adjust radius as needed
+                    child: Image.asset(
+                      'assets/logo/logo.png',
+                      width: 130,
+                      height: 130,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.apps,
+                          size: 100,
+                          color: Theme.of(context).colorScheme.primary,
+                        );
+                      },
+                    ),
                   ),
 
                   // Buttons section
@@ -115,64 +118,80 @@ class Home extends ConsumerWidget {
                         horizontal: 16.0, vertical: 30.0),
                     child: Column(
                       children: [
-                        // Register button - localized
+                        // Register Button
                         Container(
                           height: 45.0,
                           width: 0.9 * MediaQuery.of(context).size.width,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.push(
+                            onPressed: () => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const Register())),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.orange),
+                                  const Color(
+                                      0xFFFF9800)), // Better orange shade
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white),
                               shape: MaterialStateProperty.all<OutlinedBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
+                              elevation: MaterialStateProperty.all<double>(
+                                  2), // Subtle shadow
                             ),
                             child: Text(
                               AppLocalizations.of(context)?.register ??
                                   'Register',
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white,
+                                decoration: TextDecoration.none,
+                                letterSpacing: 0.5, // Better text spacing
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20.0),
 
-                        // Login button - localized
+                        const SizedBox(
+                          height: 30,
+                        ),
                         Container(
                           height: 45.0,
                           width: 0.9 * MediaQuery.of(context).size.width,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.push(
+                            onPressed: () => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const Login())),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color(0xFF92868a)),
+                                  const Color(
+                                      0xFFBEACA6)), // Lighter, more refined beige/taupe
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  const Color(
+                                      0xFF4A4A4A)), // Dark gray for better readability
                               shape: MaterialStateProperty.all<OutlinedBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
+                              elevation: MaterialStateProperty.all<double>(
+                                  1), // Subtle shadow
                             ),
                             child: Text(
                               AppLocalizations.of(context)
                                       ?.alreadyHaveAccount ??
                                   'Already have an account',
                               style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
+                                color: const Color(0xFF4A4A4A), // Dark gray
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                decoration: TextDecoration.none,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                           ),
                         ),

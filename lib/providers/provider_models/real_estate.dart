@@ -433,3 +433,78 @@ class Permission {
 //     return availableRoutes.contains(route);
 //   }
 // }
+
+class SavedProperty {
+  final int id;
+  final RealEstate property;
+  final DateTime savedAt;
+
+  const SavedProperty({
+    required this.id,
+    required this.property,
+    required this.savedAt,
+  });
+
+  factory SavedProperty.fromJson(Map<String, dynamic> json) {
+    return SavedProperty(
+      id: json['id'] ?? 0,
+      property: RealEstate.fromJson(json['property'] ?? {}),
+      savedAt: json['saved_at'] != null
+          ? DateTime.parse(json['saved_at'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'property': property.toJson(),
+      'saved_at': savedAt.toIso8601String(),
+    };
+  }
+}
+
+class SavedPropertiesResponse {
+  final int count;
+  final String? next;
+  final String? previous;
+  final List<SavedProperty> results;
+
+  const SavedPropertiesResponse({
+    required this.count,
+    this.next,
+    this.previous,
+    required this.results,
+  });
+
+  factory SavedPropertiesResponse.fromJson(Map<String, dynamic> json) {
+    final resultsData = json['results'] as List? ?? [];
+    final results = resultsData.map((item) {
+      if (item['property'] != null) {
+        return SavedProperty.fromJson(item);
+      } else {
+        return SavedProperty(
+          id: DateTime.now().millisecondsSinceEpoch,
+          property: RealEstate.fromJson(item),
+          savedAt: DateTime.now(),
+        );
+      }
+    }).toList();
+
+    return SavedPropertiesResponse(
+      count: json['count'] ?? 0,
+      next: json['next'],
+      previous: json['previous'],
+      results: results,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'count': count,
+      'next': next,
+      'previous': previous,
+      'results': results.map((e) => e.toJson()).toList(),
+    };
+  }
+}

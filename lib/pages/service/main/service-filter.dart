@@ -1,5 +1,5 @@
 import 'package:app/pages/products/filtered_products.dart';
-import 'package:app/pages/service/filtered_services.dart';
+import 'package:app/pages/service/main/filtered_services.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';

@@ -19,7 +19,7 @@ class Cities {
 
 Future<Cities> getCities() async {
   final response = await http.get(
-    Uri.parse('https://api.tezsell.com/api/v1/cities'),
+    Uri.parse('https://api.tezsell.com/api/v1/cities/'),
   );
   print(response);
   if (response.statusCode == 200) {

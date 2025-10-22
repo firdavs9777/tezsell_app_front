@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
-
 import 'package:http/http.dart' as http;
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 
 class CommentsService {
   Future<List<Comments>> getComments({required serviceId}) async {
@@ -132,6 +131,50 @@ class CommentsService {
       }
     } else {
       throw Exception('Failed to load replies');
+    }
+  }
+
+  Future<Map<String, dynamic>> replyToComment({
+    required String commentId,
+    required String text,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      print('📤 Posting reply to comment: $commentId');
+      print('   Reply text: $text');
+
+      final response = await http.post(
+        Uri.parse(
+            '$baseUrl/services/api/comments/$commentId/replies/'), // Full URL with baseUrl
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        },
+        body: json.encode({
+          'text': text,
+        }),
+      );
+
+      print('📊 Reply response status: ${response.statusCode}');
+      print('📊 Reply response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        return responseData as Map<String, dynamic>;
+      } else {
+        throw Exception(
+            'Failed to post reply: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('❌ Error posting reply: $e');
+      rethrow;
     }
   }
 

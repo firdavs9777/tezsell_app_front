@@ -1,5 +1,5 @@
-import 'package:app/pages/service/service_search.dart';
-import 'package:app/pages/service/services_list.dart';
+import 'package:app/pages/service/main/service_search.dart';
+import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';

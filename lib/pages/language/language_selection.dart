@@ -1,4 +1,5 @@
-// Create this file: lib/screens/language_selection_screen.dart
+// lib/screens/language_selection_screen.dart
+import 'package:app/common_widgets/tezsell_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
@@ -32,11 +33,21 @@ class LanguageSelectionScreen extends ConsumerWidget {
               Center(
                 child: Column(
                   children: [
-                    // Add your logo here
-                    Image.asset(
-                      'assets/logo/logo.png',
-                      width: 120,
-                      height: 120,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.asset(
+                        'assets/logo/logo.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.apps,
+                            size: 100,
+                            color: Theme.of(context).colorScheme.primary,
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(height: 24),
                   ],
@@ -45,22 +56,23 @@ class LanguageSelectionScreen extends ConsumerWidget {
 
               // Title
               Center(
-                child: Text(
-                  'Tilni tanlang', // This will be static for now since user hasn't selected language yet
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                child: TezSellText(
+                  'Tilni tanlang',
+                  tezSellStyles:
+                      Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Ilova uchun afzal ko‘rgan tilingizni tanlang', // This will be static for now
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              TezSellText(
+                'Ilova uchun afzal ko\'rgan tilingizni tanlang',
+                tezSellStyles: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.7),
+                          .withOpacity(0.6),
                     ),
               ),
               const SizedBox(height: 32),
@@ -105,7 +117,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                             ),
                             child: Row(
                               children: [
-                                // Flag
+                                // Flag (keeping regular Text for emoji)
                                 Text(
                                   language['flag']!,
                                   style: const TextStyle(fontSize: 24),
@@ -118,9 +130,9 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      TezSellText(
                                         language['nativeName']!,
-                                        style: TextStyle(
+                                        tezSellStyles: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color: isSelected
@@ -132,9 +144,9 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                                   .onSurface,
                                         ),
                                       ),
-                                      Text(
+                                      TezSellText(
                                         language['name']!,
-                                        style: TextStyle(
+                                        tezSellStyles: TextStyle(
                                           fontSize: 14,
                                           color: isSelected
                                               ? Theme.of(context)
@@ -183,41 +195,41 @@ class LanguageSelectionScreen extends ConsumerWidget {
 
               // Continue Button
               SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: selectedLocale != null
-                        ? () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => const Home(),
-                              ),
-                            );
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      disabledBackgroundColor:
-                          Theme.of(context).colorScheme.surfaceVariant,
-                      foregroundColor: Theme.of(context)
-                          .colorScheme
-                          .onPrimary, // text/icon color when enabled
-                      disabledForegroundColor: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.38), // text/icon color when disabled
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: selectedLocale != null
+                      ? () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const Home(),
+                            ),
+                          );
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
-                      'Davom etish',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    disabledBackgroundColor:
+                        Theme.of(context).colorScheme.surfaceVariant,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    disabledForegroundColor: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.38),
+                  ),
+                  child: TezSellText(
+                    'Davom etish',
+                    tezSellStyles: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
                     ),
-                  )),
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
             ],
           ),

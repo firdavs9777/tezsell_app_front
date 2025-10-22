@@ -1,5 +1,5 @@
 import 'package:app/constants/constants.dart';
-import 'package:app/pages/service/service_detail.dart';
+import 'package:app/pages/service/details/service_detail.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
