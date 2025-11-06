@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
@@ -50,8 +51,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
   bool isLoadingRegions = true;
   bool isLoadingDistricts = false;
 
-  final String regionsUrl = 'https://api.webtezsell.com/accounts/regions/';
-  final String districtsUrl = 'https://api.webtezsell.com/accounts/districts';
+  final String regionsUrl = '$baseUrl/accounts/regions/';
+  final String districtsUrl = '$baseUrl/accounts/districts';
 
   @override
   void initState() {

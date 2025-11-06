@@ -56,8 +56,8 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _scrollToBottom() {
-    Future.microtask(() {
-      if (_scrollController.hasClients && mounted) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 300),
@@ -86,9 +86,16 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final isLoadingMessages = chatState.isLoadingMessages;
     final currentUserId = chatState.currentUserId;
     final error = chatState.error;
-
     ref.listen(chatProvider, (previous, next) {
+      // When new messages arrive, scroll to bottom
       if (mounted && previous?.messages.length != next.messages.length) {
+        _scrollToBottom();
+      }
+
+      // When messages are first loaded (initial enter)
+      if (mounted &&
+          previous?.isLoadingMessages == true &&
+          next.isLoadingMessages == false) {
         _scrollToBottom();
       }
     });
@@ -165,7 +172,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 ),
               ),
 
-            // Messages List
             Expanded(
               child: isLoadingMessages
                   ? const Center(child: CircularProgressIndicator())
@@ -176,7 +182,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           padding: const EdgeInsets.all(16),
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
-                            final message = messages[index];
+                            // Sort messages in ascending order (oldest → newest)
+                            final sortedMessages = List.from(messages)
+                              ..sort(
+                                  (a, b) => a.timestamp.compareTo(b.timestamp));
+
+                            final message = sortedMessages[index];
                             final isOwnMessage =
                                 message.sender.id == currentUserId;
 
@@ -184,7 +195,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             if (index == 0) {
                               showDateSeparator = true;
                             } else {
-                              final prevMessage = messages[index - 1];
+                              final prevMessage = sortedMessages[index - 1];
                               showDateSeparator = !_isSameDay(
                                 message.timestamp,
                                 prevMessage.timestamp,
@@ -192,6 +203,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             }
 
                             return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 if (showDateSeparator)
                                   DateSeparator(date: message.timestamp),

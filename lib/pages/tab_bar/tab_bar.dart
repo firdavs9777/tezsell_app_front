@@ -1,4 +1,5 @@
 import 'package:app/pages/change_city/change_city.dart';
+import 'package:app/pages/chat/chat_list.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/service/main/main_service.dart';
 import 'package:app/pages/products/products_list.dart';
@@ -134,8 +135,8 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
 
             return Scaffold(
               backgroundColor: theme.colorScheme.surface,
-              appBar:
-                  _buildModernAppBar(context, theme, localizations, snapshot),
+              appBar: _buildModernAppBar(context, theme, localizations,
+                  snapshot, regionName, districtName),
               body: AnimatedSwitcher(
                 duration: Duration(milliseconds: 300),
                 transitionBuilder: (Widget child, Animation<double> animation) {
@@ -157,7 +158,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               ),
               bottomNavigationBar:
                   _buildModernBottomNavBar(context, theme, localizations),
-              floatingActionButton: _buildSearchFAB(context, theme),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.endFloat,
             );
@@ -168,11 +168,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   }
 
   PreferredSizeWidget _buildModernAppBar(
-    BuildContext context,
-    ThemeData theme,
-    AppLocalizations? localizations,
-    AsyncSnapshot<UserInfo> snapshot,
-  ) {
+      BuildContext context,
+      ThemeData theme,
+      AppLocalizations? localizations,
+      AsyncSnapshot<UserInfo> snapshot,
+      String regionName,
+      String districtName) {
     return AppBar(
       elevation: 0,
       backgroundColor: Colors.transparent,
@@ -198,6 +199,18 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
         ),
       ),
       actions: [
+        if (_shouldShowSearchFAB())
+          IconButton(
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              _navigateToSearch(regionName, districtName);
+            },
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+              size: 26,
+            ),
+          ),
         if (_shouldShowNotification())
           Container(
             margin: EdgeInsets.only(right: 16),
@@ -375,9 +388,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
                   localizations?.main ?? 'Asosiy', theme),
               _buildNavItem(1, Icons.post_add_outlined, Icons.post_add,
                   localizations?.servicesTitle ?? 'Services', theme),
-              _buildNavItem(2, Icons.apartment_outlined, Icons.apartment,
+              _buildNavItem(2, Icons.chat_outlined, Icons.chat_bubble,
+                  localizations?.chat ?? 'Chat', theme),
+              _buildNavItem(3, Icons.apartment_outlined, Icons.apartment,
                   localizations?.realEstate ?? 'Ko\'chmas', theme),
-              _buildNavItem(3, Icons.person_outline, Icons.person,
+              _buildNavItem(4, Icons.person_outline, Icons.person,
                   localizations?.profile ?? 'Shaxsiy', theme),
             ],
           ),
@@ -433,41 +448,24 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     );
   }
 
-  Widget _buildSearchFAB(BuildContext context, ThemeData theme) {
-    if (!_shouldShowSearchFAB()) return SizedBox.shrink();
-
-    return ScaleTransition(
-      scale: _fabAnimation,
-      child: Container(
-        margin: EdgeInsets.only(right: 16, bottom: 16),
-        child: FloatingActionButton(
-          heroTag: "searchFAB_${_selectedPageIndex}", // Unique hero tag
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            _navigateToSearch();
-          },
-          backgroundColor: theme.primaryColor,
-          elevation: 8,
-          child: Icon(
-            Icons.search,
-            color: Colors.white,
-            size: 26,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _navigateToSearch() {
+  void _navigateToSearch(String regionName, String districtName) {
     if (_selectedPageIndex == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (ctx) => const ProductSearch()),
+        MaterialPageRoute(
+            builder: (ctx) => ProductSearch(
+                  regionName: regionName,
+                  districtName: districtName,
+                )),
       );
     } else if (_selectedPageIndex == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (ctx) => const ServiceSearch()),
+        MaterialPageRoute(
+            builder: (ctx) => ServiceSearch(
+                  regionName: regionName,
+                  districtName: districtName,
+                )),
       );
     } else if (_selectedPageIndex == 2) {
       Navigator.push(
@@ -504,11 +502,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
         );
       case 2:
         return PageInfo(
+            title: localizations?.message ?? 'Chat', widget: MessagesList());
+      case 3:
+        return PageInfo(
           title: localizations?.realEstate ?? 'Real Estate',
           widget: RealEstateMain(
               regionName: regionName, districtName: districtName),
         );
-      case 3:
+
+      case 4:
         return PageInfo(
           title: localizations?.profile ?? 'Shaxsiy Hisob',
           widget: const ShaxsiyPage(),

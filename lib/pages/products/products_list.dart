@@ -1,8 +1,10 @@
+import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -127,6 +129,19 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     await _loadInitialProducts();
   }
 
+  Future<void> _navigateToLocationChange() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomeTown(),
+        settings: RouteSettings(name: '/location-change'),
+      ),
+    );
+
+    ref.invalidate(productsServiceProvider);
+    ref.invalidate(profileServiceProvider);
+  }
+
   @override
   void didUpdateWidget(ProductsList oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -154,7 +169,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (ctx) => const ProductFilter(),
+                        builder: (ctx) => ProductFilter(
+                            regionName: widget.regionName,
+                            districtName: widget.districtName),
                       ),
                     );
                   },
@@ -171,17 +188,21 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 // Show current location filter
                 if (widget.regionName.isNotEmpty ||
                     widget.districtName.isNotEmpty)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                      style: const TextStyle(fontSize: 12, color: Colors.blue),
+                  GestureDetector(
+                    onTap: _navigateToLocationChange,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.blue),
+                      ),
                     ),
                   ),
               ],

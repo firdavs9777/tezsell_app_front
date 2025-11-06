@@ -10,23 +10,135 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilteredProducts extends ConsumerStatefulWidget {
   final String categoryName;
-  const FilteredProducts({super.key, required this.categoryName});
+  final String regionName;
+  final String districtName;
+  const FilteredProducts({
+    super.key,
+    required this.categoryName,
+    required this.regionName,
+    required this.districtName,
+  });
 
   @override
   ConsumerState<FilteredProducts> createState() => _FilteredProductsState();
 }
 
 class _FilteredProductsState extends ConsumerState<FilteredProducts> {
-  Future<List<Products>> getFilteredProducts() async {
-    // Assuming you have a method to fetch filtered products based on category
-    return ref
-        .read(productsServiceProvider)
-        .getFilteredProducts(categoryName: widget.categoryName);
+  final ScrollController _scrollController = ScrollController();
+  List<Products> _allProducts = [];
+  int _currentPage = 1;
+  bool _isLoadingMore = false;
+  bool _hasMoreData = true;
+  bool _isInitialLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _loadInitialProducts();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      // Load more when user is 200 pixels from bottom
+      if (!_isLoadingMore && _hasMoreData) {
+        _loadMoreProducts();
+      }
+    }
+  }
+
+  Future<void> _loadInitialProducts() async {
+    setState(() {
+      _isInitialLoading = true;
+      _currentPage = 1;
+      _allProducts.clear();
+      _hasMoreData = true;
+    });
+
+    try {
+      final products =
+          await ref.read(productsServiceProvider).getFilteredProducts(
+                currentPage: 1,
+                pageSize: 12,
+                categoryName: widget.categoryName,
+                regionName: widget.regionName,
+                districtName: widget.districtName,
+              );
+
+      setState(() {
+        _allProducts = products;
+        _currentPage = 1;
+        _hasMoreData =
+            products.length >= 12; // If less than pageSize, no more data
+        _isInitialLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isInitialLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading products: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _loadMoreProducts() async {
+    if (_isLoadingMore || !_hasMoreData) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final newProducts =
+          await ref.read(productsServiceProvider).getFilteredProducts(
+                currentPage: nextPage,
+                pageSize: 12,
+                categoryName: widget.categoryName,
+                regionName: widget.regionName,
+                districtName: widget.districtName,
+              );
+
+      setState(() {
+        if (newProducts.isNotEmpty) {
+          _allProducts.addAll(newProducts);
+          _currentPage = nextPage;
+          _hasMoreData = newProducts.length >= 12;
+        } else {
+          _hasMoreData = false;
+        }
+        _isLoadingMore = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading more products: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> refresh() async {
-    // To trigger the refresh logic when pulled down
-    setState(() {});
+    await _loadInitialProducts();
   }
 
   @override
@@ -34,17 +146,17 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.close), // X icon
+          icon: Icon(Icons.close),
           onPressed: () {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (ctx) => const TabsScreen()),
-            ); // Close the screen or navigate back
+            );
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search), // Search icon
+            icon: Icon(Icons.search),
             onPressed: () {
               Navigator.push(
                 context,
@@ -55,64 +167,145 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.category), // Category icon
+            icon: Icon(Icons.category),
             onPressed: () {
-              // Implement category selection functionality
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => const ProductFilter(),
+                  builder: (ctx) => ProductFilter(
+                    regionName: widget.regionName,
+                    districtName: widget.districtName,
+                  ),
                 ),
               );
             },
           ),
         ],
-        title: Text(AppLocalizations.of(context)?.filtered_products ??
-            "Filtered Products"), // Title for the AppBar
+        title: Text(
+          AppLocalizations.of(context)?.filtered_products ??
+              "Filtered Products",
+        ),
       ),
       body: Column(
         children: [
+          // Optional: Show current filters
+          if (widget.categoryName.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.blue.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Icon(Icons.filter_alt, size: 16, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Text(
+                    'Category: ${widget.categoryName}',
+                    style: TextStyle(fontSize: 12, color: Colors.blue),
+                  ),
+                  if (widget.districtName.isNotEmpty) ...[
+                    SizedBox(width: 8),
+                    Text('|', style: TextStyle(color: Colors.blue)),
+                    SizedBox(width: 8),
+                    Text(
+                      '📍 ${widget.districtName}',
+                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
-              child: FutureBuilder<List<Products>>(
-                future: getFilteredProducts(), // Trigger the future here
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  if (snapshot.hasData) {
-                    final productsList = snapshot.data!;
-                    if (productsList.isEmpty) {
-                      return Center(
-                          child: Text(
-                              AppLocalizations.of(context)?.productError ??
-                                  'No products available.'));
-                    }
-
-                    return ListView.builder(
-                      itemCount: productsList.length,
-                      itemBuilder: (context, index) {
-                        final product = productsList[index];
-                        return ProductMain(product: product);
-                      },
-                    );
-                  }
-
-                  return Center(
-                      child: Text(AppLocalizations.of(context)?.productError ??
-                          'No products available.'));
-                },
-              ),
+              child: _buildProductsList(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildProductsList() {
+    if (_isInitialLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_allProducts.isEmpty) {
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 64,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context)?.productError ??
+                      'No products available.',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Try changing your filters',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: _allProducts.length + (_hasMoreData ? 1 : 0),
+      itemBuilder: (context, index) {
+        // Show products
+        if (index < _allProducts.length) {
+          final product = _allProducts[index];
+          return ProductMain(product: product);
+        }
+
+        // Show loading indicator at the bottom
+        if (_hasMoreData) {
+          return Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: _isLoadingMore
+                  ? const CircularProgressIndicator()
+                  : const SizedBox.shrink(),
+            ),
+          );
+        }
+
+        // Show "end of list" indicator
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Text(
+              'No more products to load',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

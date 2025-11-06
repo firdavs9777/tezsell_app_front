@@ -1,4 +1,4 @@
-// lib/models/chat_models.dart
+// lib/providers/provider_models/message_model.dart
 
 class User {
   final int id;
@@ -25,6 +25,17 @@ class User {
     );
   }
 
+  // Add this method
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+    };
+  }
+
   String get displayName {
     if (firstName != null || lastName != null) {
       return '${firstName ?? ''} ${lastName ?? ''}'.trim();
@@ -36,7 +47,7 @@ class User {
 class ChatRoom {
   final int id;
   final String name;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final List<User> participants;
   final String? lastMessagePreview;
   final DateTime? lastMessageTimestamp;
@@ -45,7 +56,7 @@ class ChatRoom {
   ChatRoom({
     required this.id,
     required this.name,
-    required this.createdAt,
+    this.createdAt,
     required this.participants,
     this.lastMessagePreview,
     this.lastMessageTimestamp,
@@ -56,7 +67,9 @@ class ChatRoom {
     return ChatRoom(
       id: json['id'],
       name: json['name'],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
       participants: (json['participants'] as List?)
               ?.map((p) => User.fromJson(p))
               .toList() ??
@@ -68,36 +81,63 @@ class ChatRoom {
       unreadCount: json['unread_count'] ?? 0,
     );
   }
+
+  // Add this method
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'created_at': createdAt?.toIso8601String(),
+      'participants': participants.map((p) => p.toJson()).toList(),
+      'last_message_preview': lastMessagePreview,
+      'last_message_timestamp': lastMessageTimestamp?.toIso8601String(),
+      'unread_count': unreadCount,
+    };
+  }
 }
 
 class ChatMessage {
-  final int id;
+  final int? id;
   final String content;
   final User sender;
   final DateTime timestamp;
   final bool isRead;
-  final List<User> readBy;
+  final List<int> readBy; // Changed to List<int> to match WebSocket format
 
   ChatMessage({
-    required this.id,
+    this.id,
     required this.content,
     required this.sender,
     required this.timestamp,
-    required this.isRead,
-    required this.readBy,
+    this.isRead = false,
+    this.readBy = const [],
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(
       id: json['id'],
-      content: json['content'],
+      content: json['content'] ?? json['message'] ?? '', // Handle both keys
       sender: User.fromJson(json['sender']),
-      timestamp: DateTime.parse(json['timestamp']),
+      timestamp: json['timestamp'] != null
+          ? DateTime.parse(json['timestamp'])
+          : DateTime.now(),
       isRead: json['is_read'] ?? false,
-      readBy:
-          (json['read_by'] as List?)?.map((u) => User.fromJson(u)).toList() ??
-              [],
+      readBy: json['read_by'] != null
+          ? List<int>.from(json['read_by']) // Parse as list of IDs
+          : [],
     );
+  }
+
+  // Add this method
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'content': content,
+      'sender': sender.toJson(),
+      'timestamp': timestamp.toIso8601String(),
+      'is_read': isRead,
+      'read_by': readBy,
+    };
   }
 
   bool isOwnMessage(int currentUserId) {

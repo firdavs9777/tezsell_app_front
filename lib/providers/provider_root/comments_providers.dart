@@ -48,7 +48,7 @@ class CommentsService {
       },
     );
     print(response.statusCode);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final data = json.decode(response.body);
       return Comments.fromJson(
           data); // Assuming 'data' is a map representing the new moment

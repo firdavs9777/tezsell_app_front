@@ -1,3 +1,4 @@
+import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/service/comments/comments.dart';
 import 'package:app/pages/service/comments/create_comment.dart';
 import 'package:app/pages/service/details/edit_comment.dart';
@@ -8,6 +9,7 @@ import 'package:app/pages/service/details/service_detail_content.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
+import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
@@ -286,6 +288,103 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     }
   }
 
+  Future<void> _startChat() async {
+    final targetUserId = widget.service.userName.id;
+    final userName = widget.service.userName.username ?? 'Service Provider';
+
+    // Check authentication first
+    final chatState = ref.read(chatProvider);
+    if (!chatState.isAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please log in to start a chat'),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6F0F)),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Opening chat...',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    try {
+      // Get or create chat room
+      final chatRoom = await ref
+          .read(chatProvider.notifier)
+          .getOrCreateDirectChat(targetUserId);
+
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      if (chatRoom != null) {
+        if (mounted) {
+          // Navigate to chat room with animation
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatRoomScreen(chatRoom: chatRoom),
+            ),
+          );
+        }
+      } else {
+        throw Exception('Failed to create or retrieve chat room');
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      // Show detailed error
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Chat Error'),
+            content: Text(
+              'Unable to start chat with $userName.\n\nError: ${e.toString()}',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _startChat(); // Retry
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
   void _dislikeService() async {
     try {
       final service = await ref
@@ -327,7 +426,10 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                 children: <Widget>[
                   ServiceImageSlider(
                       service: _serviceData!, pageController: _pageController),
-                  ServiceDetailsSection(service: _serviceData!),
+                  ServiceDetailsSection(
+                    service: _serviceData!,
+                    onChatPressed: _startChat,
+                  ),
                   FutureBuilder<FavoriteItems>(
                     future: ref
                         .watch(profileServiceProvider)

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/constants/constants.dart';
 import 'package:app/pages/city/city_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class _RegisterState extends State<Register> {
   List<String> filteredCities = [];
   TextEditingController searchController = TextEditingController();
 
-  final String URL = 'https://api.webtezsell.com/accounts/regions/';
+  final String URL = '$baseUrl/accounts/regions/';
   List<String> cities = [];
   List<String> cityId = [];
   List<String> filteredCityId = [];

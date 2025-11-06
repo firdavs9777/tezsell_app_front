@@ -1,6 +1,6 @@
 class Endpoints {
   static String baseURL = "https://api.webtezsell.com/api/v1/";
-  static String wsUrl = 'ws://api.webtezsell.com';
+  static String wsUrl = 'ws://127.0.0.1:8000/';
   static String loginURL = "auth/login";
   static String registerURL = "auth/register";
   static String productsURL = "products";

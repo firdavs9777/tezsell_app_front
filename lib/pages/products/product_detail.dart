@@ -1,5 +1,7 @@
 import 'package:app/constants/constants.dart';
+import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/products/main_products.dart';
+import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetail extends ConsumerStatefulWidget {
   const ProductDetail({super.key, required this.product});
@@ -18,7 +21,7 @@ class ProductDetail extends ConsumerStatefulWidget {
 
 class _ProductDetailState extends ConsumerState<ProductDetail> {
   late PageController _pageController;
-  bool _isLiking = false; // Track like/dislike loading state
+  bool _isLiking = false;
 
   @override
   void initState() {
@@ -32,7 +35,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     super.dispose();
   }
 
-  // Function to get the appropriate category name based on current locale
   String getCategoryName() {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
@@ -46,8 +48,169 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
+  // Add chat functionality
+  Future<void> _startChat() async {
+    final targetUserId = widget.product.userName.id;
+    final userName = widget.product.userName.username ?? 'Product Seller';
+    final localizations = AppLocalizations.of(context);
+
+    // Check authentication
+    final chatState = ref.read(chatProvider);
+    if (!chatState.isAuthenticated) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please log in to start a chat'),
+            backgroundColor: Colors.orange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+      return;
+    }
+
+    // Prevent chatting with yourself
+    if (chatState.currentUserId == targetUserId) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You cannot chat with yourself'),
+            backgroundColor: Colors.orange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+      return;
+    }
+
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Opening chat...',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    try {
+      // Get or create chat room
+      final chatRoom = await ref
+          .read(chatProvider.notifier)
+          .getOrCreateDirectChat(targetUserId);
+
+      // Close loading dialog
+      if (mounted) Navigator.of(context).pop();
+
+      if (chatRoom != null) {
+        if (mounted) {
+          // Navigate to chat room
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatRoomScreen(chatRoom: chatRoom),
+            ),
+          );
+        }
+      } else {
+        throw Exception('Failed to create chat room');
+      }
+    } catch (e) {
+      // Close loading dialog if still open
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      // Show error with retry option
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Chat Error'),
+            content: Text('sss'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(localizations?.cancel ?? 'Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _startChat(); // Retry
+                },
+                child: Text(localizations?.retry ?? 'Retry'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _makePhoneCall() async {
+    final phoneNumber = widget.product.userName.phoneNumber;
+    final localizations = AppLocalizations.of(context);
+
+    final Uri phoneUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+
+    try {
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
+      } else {
+        throw Exception('Could not launch phone dialer');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open phone dialer'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _likeProduct() async {
-    if (_isLiking) return; // Prevent multiple simultaneous requests
+    if (_isLiking) return;
 
     setState(() {
       _isLiking = true;
@@ -56,7 +219,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     try {
       final localizations = AppLocalizations.of(context);
       final product = await ref
-          .read(profileServiceProvider) // Use read instead of watch
+          .read(profileServiceProvider)
           .likeSingleProduct(productId: widget.product.id.toString());
 
       if (product != null && mounted) {
@@ -68,7 +231,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             backgroundColor: Colors.green,
           ),
         );
-        // Invalidate to refresh the favorite items
         ref.invalidate(profileServiceProvider);
       }
     } catch (e) {
@@ -141,7 +303,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    // Creating a list of images
     List<ImageProvider> images = widget.product.images.isNotEmpty
         ? widget.product.images
             .map((image) =>
@@ -159,10 +320,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            // Optimized Image Slider
             _buildImageSlider(images),
-
-            // Dots Indicator
             if (images.length > 1)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -177,20 +335,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   ),
                 ),
               ),
-
-            // User Profile and Location
             _buildUserProfile(),
-
-            // Product Title
             _buildProductTitle(),
-
-            // Product Category
             _buildProductCategory(),
-
-            // Product Description
             _buildProductDescription(),
-
-            // Fixed Recommended Products Section
             _buildRecommendedProducts(),
           ],
         ),
@@ -209,7 +357,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         ),
         child: Stack(
           children: [
-            // PageView with images
             PageView.builder(
               controller: _pageController,
               itemCount: images.length,
@@ -233,8 +380,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 );
               },
             ),
-
-            // Navigation arrows (only show if more than 1 image)
             if (images.length > 1) ...[
               Positioned(
                 left: 10,
@@ -421,8 +566,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             ),
           ),
           const SizedBox(height: 10),
-
-          // FIXED: Simplified FutureBuilder without Future.wait
           FutureBuilder<List<Products>>(
             future: ref
                 .read(productsServiceProvider)
@@ -449,7 +592,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                             '${localizations?.error ?? "Error"}: ${snapshot.error}'),
                         const SizedBox(height: 8),
                         ElevatedButton(
-                          onPressed: () => setState(() {}), // Retry
+                          onPressed: () => setState(() {}),
                           child: Text(localizations?.retry ?? 'Retry'),
                         ),
                       ],
@@ -489,48 +632,74 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     final localizations = AppLocalizations.of(context);
 
     return Container(
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.black, width: 1.0)),
-      ),
-      height: 80,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-            ],
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Phone number
+              // Phone number display
               Expanded(
-                child: Text(
-                  widget.product.userName.phoneNumber,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Contact Seller',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.product.userName.phoneNumber,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
 
+              const SizedBox(width: 12),
+
+              // Chat button
+              ElevatedButton.icon(
+                onPressed: _startChat,
+                icon: const Icon(Icons.chat_bubble_outline, size: 20),
+                label: Text(localizations?.chat ?? 'Chat'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 8),
+
               // Call button
               ElevatedButton.icon(
-                onPressed: () {
-                  // Example: open phone dialer
-                  // launchUrl(Uri.parse("tel:${widget.product.userName.phoneNumber}"));
-                },
-                icon: const Icon(Icons.phone, color: Colors.white),
+                onPressed: _makePhoneCall,
+                icon: const Icon(Icons.phone, size: 20),
                 label: Text('Call'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -538,8 +707,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ],
@@ -550,13 +721,11 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildLikeButton() {
-    // Use a simple state-based approach instead of FutureBuilder
     return StatefulBuilder(
       builder: (context, setState) {
-        bool? isLiked; // Track like status locally
+        bool? isLiked;
         bool isLoadingStatus = false;
 
-        // Only load the like status once when first built
         if (isLiked == null && !isLoadingStatus) {
           isLoadingStatus = true;
           ref
@@ -573,14 +742,13 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           }).catchError((error) {
             if (mounted) {
               setState(() {
-                isLiked = false; // Default to not liked on error
+                isLiked = false;
                 isLoadingStatus = false;
               });
             }
           });
         }
 
-        // Show loading only for the initial status check or when liking/disliking
         if ((isLiked == null && isLoadingStatus) || _isLiking) {
           return const SizedBox(
             width: 48,
@@ -595,7 +763,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           );
         }
 
-        // Show the heart with current status
         final currentLikeStatus = isLiked ?? false;
 
         return TweenAnimationBuilder<double>(
@@ -612,12 +779,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   size: 28.0,
                 ),
                 onPressed: () async {
-                  // Update UI immediately (optimistic update)
                   setState(() {
                     isLiked = !currentLikeStatus;
                   });
 
-                  // Then perform the actual like/dislike operation
                   if (currentLikeStatus) {
                     await _dislikeProduct();
                   } else {

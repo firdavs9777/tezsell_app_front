@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ServiceDetailsSection extends StatelessWidget {
-  const ServiceDetailsSection({super.key, required this.service});
+  const ServiceDetailsSection({
+    super.key,
+    required this.service,
+    this.onChatPressed,
+  });
 
   final Services service;
+  final VoidCallback? onChatPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +201,60 @@ class ServiceDetailsSection extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                const SizedBox(width: 8),
+
+                // Chat Button
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFF6F0F).withOpacity(0.3),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF6F0F).withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onChatPressed ??
+                          () {
+                            // Default action if no callback is provided
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Opening chat...'),
+                                backgroundColor: const Color(0xFFFF6F0F),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                margin: const EdgeInsets.all(16),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                      customBorder: const CircleBorder(),
+                      child: const Center(
+                        child: Icon(
+                          Icons.chat_bubble_outline_rounded,
+                          color: Color(0xFFFF6F0F),
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 8),
 
                 // Call Button
                 Container(

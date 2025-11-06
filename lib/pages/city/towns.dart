@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:app/constants/constants.dart';
 import 'package:app/pages/authentication/mobile_authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,7 @@ class TownsList extends StatefulWidget {
 }
 
 class _TownsListState extends State<TownsList> {
-  final String URL = 'https://api.webtezsell.com/accounts/districts';
+  final String URL = '$baseUrl/accounts/districts';
   List<District> districts = []; // Changed from List<String> to List<District>
   List<District> filteredDistricts =
       []; // Changed from List<String> to List<District>

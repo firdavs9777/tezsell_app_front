@@ -1,7 +1,9 @@
+import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/service/main/service-filter.dart';
 import 'package:app/pages/service/new/service_new.dart';
 import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -137,6 +139,21 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     }
   }
 
+  Future<void> _navigateToLocationChange() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomeTown(),
+        settings: RouteSettings(name: '/location-change'),
+      ),
+    );
+
+    if (result == true) {
+      ref.invalidate(servicesProvider);
+      ref.invalidate(profileServiceProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +172,9 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (ctx) => const ServiceFilter(),
+                        builder: (ctx) => ServiceFilter(
+                            regionName: widget.regionName,
+                            districtName: widget.districtName),
                       ),
                     );
                   },
@@ -172,17 +191,21 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 // Show current location filter
                 if (widget.regionName.isNotEmpty ||
                     widget.districtName.isNotEmpty)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                      style: const TextStyle(fontSize: 12, color: Colors.blue),
+                  GestureDetector(
+                    onTap: _navigateToLocationChange,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.blue),
+                      ),
                     ),
                   ),
               ],
