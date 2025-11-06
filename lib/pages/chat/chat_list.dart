@@ -207,7 +207,7 @@ class ChatListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasUnread = chatRoom.unreadCount > 0;
-    print(chatRoom.lastMessageTimestamp);
+    print(chatRoom.lastMessagePreview);
     return ListTile(
       onTap: onTap,
       leading: CircleAvatar(

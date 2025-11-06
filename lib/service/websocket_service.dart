@@ -11,7 +11,7 @@ class ChatListWebSocketService {
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
 
   // TODO: Replace with your backend WebSocket URL
-  static const String wsUrl = 'wss://api.webtezsell.com/ws/chatlist';
+  static const String wsUrl = 'ws://127.0.0.1:8000/ws/chatlist';
 
   Future<void> connectToChatList() async {
     try {
@@ -80,7 +80,7 @@ class ChatRoomWebSocketService {
   bool get isConnecting => _isConnecting;
   Future<void> get ready => _connectionCompleter.future;
 
-  static const String wsBaseUrl = 'wss://api.webtezsell.com';
+  static const String wsBaseUrl = 'ws://127.0.0.1:8000';
 
   Future<void> connectToChatRoom(int roomId) async {
     if (_isConnecting) {
@@ -101,7 +101,7 @@ class ChatRoomWebSocketService {
         throw Exception('No authentication token found');
       }
 
-      final wsUrl = 'wss://api.webtezsell.com/ws/chat/$roomId/?token=$token';
+      final wsUrl = 'ws://127.0.0.1:8000/ws/chat/$roomId/?token=$token';
       final uri = Uri.parse(wsUrl);
 
       print('🔥 Connecting to chat room $roomId WebSocket: $wsUrl');

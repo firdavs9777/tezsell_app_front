@@ -7,7 +7,7 @@ import 'package:web_socket_channel/status.dart' as status;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WebSocketService {
-  static const String wsUrl = 'wss://api.webtezsell.com';
+  static const String wsUrl = 'ws://127.0.0.1:8000';
 
   WebSocketChannel? _channel;
   StreamController<Map<String, dynamic>>? _messageController;

@@ -390,7 +390,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             PropertyImage(
               id: 1,
               image:
-                  "https://api.webtezsell.com/media/properties/images/Properties.png",
+                  "http://127.0.0.1:8000/media/properties/images/Properties.png",
               caption: "main_home",
             )
           ];
