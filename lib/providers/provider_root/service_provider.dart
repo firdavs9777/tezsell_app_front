@@ -18,7 +18,6 @@ class ServiceProvider {
 
   void _logPerformance(String operation, int milliseconds) {
     if (kDebugMode) {
-      print('⏱️ $operation took ${milliseconds}ms');
     }
   }
 
@@ -223,13 +222,10 @@ class ServiceProvider {
         queryParameters: queryParams,
       );
 
-      print(response);
       if (response.statusCode == 200) {
         final data = response.data;
 
         if (kDebugMode) {
-          print(
-              '📊 Filtered services count: ${(data['results'] as List).length}');
         }
 
         return (data['results'] as List)
@@ -262,7 +258,6 @@ class ServiceProvider {
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {
-        print('🔄 Filtered services request already in progress');
       }
       return await _pendingRequests[cacheKey] as List<Services>;
     }

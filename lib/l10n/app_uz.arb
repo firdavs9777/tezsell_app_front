@@ -1995,6 +1995,17 @@
   "saveChanges": "O'zgarishlarni saqlash",
   "propertyOwner": "Egasi",
   "errorLoadingServices": "Xizmatlar yuklanishida xatolik",
-  "noRecommendedServicesFound": "Tavsiya etilgan xizmatlar topilmadi."
-
+  "noRecommendedServicesFound": "Tavsiya etilgan xizmatlar topilmadi.",
+  "passwordRequired": "Parol kiritish majburiy",
+  "passwordTooShort": "Parol kamida 8 belgidan iborat bo'lishi kerak",
+  "passwordRequirements": "Parol harf va raqamdan iborat bo'lishi kerak",
+  "usernameRequired": "Foydalanuvchi ismi majburiy",
+  "usernameTooShort": "Foydalanuvchi ismi kamida 3 belgidan iborat bo'lishi kerak",
+  "confirmPasswordRequired": "Parolni tasdiqlash majburiy",
+  "passwordHelp": "Kamida 8 belgi, harf va raqam",
+  "usernameExists": "Bu foydalanuvchi ismi allaqachon mavjud",
+  "phoneExists": "Bu telefon raqami allaqachon ro'yxatdan o'tgan",
+  "networkError": "Internetga ulanishda xatolik. Iltimos, ulanishni tekshiring",
+  "contactSeller": "Sotuvchi bilan bog'lanish",
+  "callToReveal": "Ko'rish uchun \"Qo'ng'iroq\" bosing"
 }

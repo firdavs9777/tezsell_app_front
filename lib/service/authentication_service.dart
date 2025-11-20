@@ -1,7 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
@@ -198,7 +198,7 @@ class AuthenticationService {
     final requestKey = '$phoneNumber:login';
     if (_pendingRequests.containsKey(requestKey)) {
       if (kDebugMode) {
-        print('🔄 Login already in progress for $phoneNumber');
+
       }
       return _pendingRequests[requestKey];
     }
@@ -247,9 +247,7 @@ class AuthenticationService {
       _logTiming('Body Preparation', bodyTimer.elapsed.inMilliseconds);
 
       if (kDebugMode) {
-        print('🌐 Starting mobile network request to: $url');
-        print('📱 Platform: ${Platform.operatingSystem}');
-        print('📊 Body size: ${body.length} bytes');
+
       }
 
       // Network request with mobile optimizations
@@ -289,19 +287,16 @@ class AuthenticationService {
 
       // Log detailed network metrics
       if (kDebugMode) {
-        print('📡 Network completed in ${networkTime}ms');
-        print('📊 Response status: ${response.statusCode}');
-        print('📊 Response length: ${response.body.length} bytes');
 
         // Log compression efficiency
         final contentLength = response.headers['content-length'];
         if (contentLength != null) {
-          print('📊 Content-Length: $contentLength bytes');
+
         }
 
         final contentEncoding = response.headers['content-encoding'];
         if (contentEncoding != null) {
-          print('📊 Content-Encoding: $contentEncoding');
+
         }
       }
 
@@ -329,7 +324,7 @@ class AuthenticationService {
         _logTiming('TOTAL LOGIN', totalTimer.elapsed.inMilliseconds);
 
         if (kDebugMode) {
-          print('✅ Login successful in ${totalTimer.elapsed.inMilliseconds}ms');
+
           _printNetworkAnalysis(networkTime, totalTimer.elapsed.inMilliseconds);
         }
 
@@ -343,8 +338,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED - Timeout', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print(
-            '⏰ Login timeout after ${totalTimer.elapsed.inMilliseconds}ms: $e');
+
       }
       _showError(context,
           'Request timed out. Please check your internet connection and try again.');
@@ -353,8 +347,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED - Network Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print(
-            '🌐 Network error after ${totalTimer.elapsed.inMilliseconds}ms: $e');
+
       }
       _showError(context,
           'No internet connection. Please check your network and try again.');
@@ -363,7 +356,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED - Parse Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print('📝 JSON parsing error: $e');
+
       }
       _showError(context, 'Invalid response from server. Please try again.');
       return null;
@@ -371,7 +364,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED - HTTP Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print('🌐 HTTP error: $e');
+
       }
       _showError(context, 'Server error. Please try again later.');
       return null;
@@ -379,8 +372,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED - Unknown Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print(
-            '💥 Unknown login error after ${totalTimer.elapsed.inMilliseconds}ms: $error');
+
       }
       _showError(context, 'An unexpected error occurred. Please try again.');
       return null;
@@ -389,13 +381,6 @@ class AuthenticationService {
 
   void _printNetworkAnalysis(int networkTime, int totalTime) {
     if (!kDebugMode) return;
-
-    print('\n📊 NETWORK PERFORMANCE ANALYSIS:');
-    print('─' * 40);
-    print(
-        '🌐 Network Time: ${networkTime}ms (${((networkTime / totalTime) * 100).toStringAsFixed(1)}%)');
-    print(
-        '⚡ Processing Time: ${totalTime - networkTime}ms (${(((totalTime - networkTime) / totalTime) * 100).toStringAsFixed(1)}%)');
 
     // Performance rating
     String networkRating;
@@ -408,8 +393,6 @@ class AuthenticationService {
     else
       networkRating = '🔴 Slow';
 
-    print('🏆 Network Performance: $networkRating');
-    print('─' * 40);
   }
 
   void _logTiming(String operation, int milliseconds) {
@@ -425,7 +408,6 @@ class AuthenticationService {
     else
       emoji = '🔴';
 
-    print('$emoji ⏱️ $operation: ${milliseconds}ms');
   }
 
   void _handleHttpError(
@@ -458,7 +440,7 @@ class AuthenticationService {
     }
 
     if (kDebugMode) {
-      print('❌ HTTP Error $statusCode: $responseBody');
+
     }
 
     _showError(context, message);
@@ -480,7 +462,7 @@ class AuthenticationService {
       _logTiming('SharedPreferences Save', saveTimer.elapsed.inMilliseconds);
     } catch (e) {
       if (kDebugMode) {
-        print('⚠️ Error saving user data: $e');
+
       }
       // Don't throw here as the login was successful
     }
@@ -522,7 +504,7 @@ class AuthenticationService {
     final requestKey = '$phoneNumber:register';
     if (_pendingRequests.containsKey(requestKey)) {
       if (kDebugMode) {
-        print('🔄 Registration already in progress for $phoneNumber');
+
       }
       return _pendingRequests[requestKey];
     }
@@ -561,7 +543,6 @@ class AuthenticationService {
   ) async {
     try {
       final url = Uri.parse('$baseUrl$REGISTER_URL');
-      print("Here");
 
       // Ensure districtId is not null or empty
       if (districtId.isEmpty) {
@@ -600,8 +581,7 @@ class AuthenticationService {
       }
 
       if (kDebugMode) {
-        print('📝 Sending optimized registration request...');
-        print('📍 District ID being sent: $districtId');
+
       }
 
       final networkTimer = Stopwatch()..start();
@@ -614,12 +594,10 @@ class AuthenticationService {
       final response = await http.Response.fromStream(streamedResponse);
 
       if (kDebugMode) {
-        print('📊 Response Status: ${response.statusCode}');
-        print('📊 Response Headers: ${response.headers}');
-        print('📊 Response Body Length: ${response.body.length}');
+
         if (response.body.length < 1000) {
           // Only print if not too long
-          print('📊 Response Body: ${response.body}');
+
         }
       }
 
@@ -642,8 +620,7 @@ class AuthenticationService {
         return Token(token: token);
       } else {
         if (kDebugMode) {
-          print(
-              '❌ Registration failed: ${response.statusCode} - ${response.body}');
+
         }
         return null;
       }
@@ -651,7 +628,7 @@ class AuthenticationService {
       totalTimer.stop();
       _logTiming('FAILED REGISTRATION', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {
-        print('💥 Registration error: $error');
+
       }
       return null;
     }
@@ -664,7 +641,7 @@ class AuthenticationService {
       return prefs.getString('token');
     } catch (e) {
       if (kDebugMode) {
-        print('⚠️ Error retrieving stored token: $e');
+
       }
       return null;
     }
@@ -690,11 +667,11 @@ class AuthenticationService {
       _pendingRequests.clear();
 
       if (kDebugMode) {
-        print('✅ User logged out successfully');
+
       }
     } catch (e) {
       if (kDebugMode) {
-        print('⚠️ Error during logout: $e');
+
       }
     }
   }

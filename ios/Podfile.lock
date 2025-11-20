@@ -1,5 +1,11 @@
 PODS:
+  - audioplayers_darwin (0.0.1):
+    - Flutter
+  - emoji_picker_flutter (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
   - image_picker_ios (0.0.1):
@@ -9,6 +15,9 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.1.1):
     - Flutter
+  - record_darwin (1.0.0):
+    - Flutter
+    - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -16,17 +25,27 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
+  - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
   - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - record_darwin (from `.symlinks/plugins/record_darwin/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
+  emoji_picker_flutter:
+    :path: ".symlinks/plugins/emoji_picker_flutter/ios"
   Flutter:
     :path: Flutter
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   image_picker_ios:
@@ -35,19 +54,25 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  record_darwin:
+    :path: ".symlinks/plugins/record_darwin/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
+  emoji_picker_flutter: fe2e6151c5b548e975d546e6eeb567daf0962a58
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  geolocator_apple: 1560c3c875af2a412242c7a923e15d0d401966ff
-  image_picker_ios: 85f2b3c9fb98c09d63725c4d12ebd585b56ec35d
-  path_provider_foundation: 608fcb11be570ce83519b076ab6a1fffe2474f05
-  permission_handler_apple: 3787117e48f80715ff04a3830ca039283d6a4f29
-  shared_preferences_foundation: 0b09b969fb36da5551c0bc4a2dbd9d0ff9387478
-  url_launcher_ios: a1c1f2bf89969cb13cce46d0333c7257d346e169
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
+  geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
+  image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
+  record_darwin: 1f6619f2abac4d1ca91d3eeab038c980d76f1517
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
 

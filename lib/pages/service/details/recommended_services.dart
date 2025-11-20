@@ -1,32 +1,76 @@
 import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecommendedServicesSection extends StatelessWidget {
-  const RecommendedServicesSection(
-      {super.key, required this.recommendedServices});
+  const RecommendedServicesSection({
+    super.key,
+    required this.recommendedServices,
+  });
 
   final Future<List<Services>> recommendedServices;
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Recommended Services',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            localizations?.recommendedServices ?? 'Recommended Services',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 10),
           FutureBuilder<List<Services>>(
             future: recommendedServices,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               }
+
               if (snapshot.hasError) {
-                return const Center(child: Text('Error loading products'));
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.error, color: Colors.red, size: 48),
+                        const SizedBox(height: 8),
+                        Text(
+                          localizations?.errorLoadingServices ??
+                              'Error loading services',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${snapshot.error}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               }
+
               if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 return ListView.builder(
                   shrinkWrap: true,
@@ -40,8 +84,31 @@ class RecommendedServicesSection extends StatelessWidget {
                   },
                 );
               }
-              return const Center(
-                  child: Text('No recommended products found.'));
+
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        localizations?.noRecommendedServicesFound ??
+                            'No recommended services found.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
           ),
         ],

@@ -169,7 +169,6 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
         }
       }
     } catch (e) {
-      print('Error loading user location: $e');
     }
   }
 

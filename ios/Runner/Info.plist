@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+   <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access for voice messages</string>
    <key>CADisableMinimumFrameDurationOnPhone</key>
    <true/>
    <key>CFBundleDevelopmentRegion</key>
@@ -69,5 +71,31 @@
       <string>https</string>
       <string>http</string>
    </array>
+      <key>NSAppTransportSecurity</key>
+       <dict>
+           <key>NSAllowsArbitraryLoads</key>
+           <true/>
+           <!-- Optional: If you want to be more specific -->
+           <key>NSExceptionDomains</key>
+           <dict>
+               <key>api.webtezsell.com</key>
+               <dict>
+                   <key>NSIncludesSubdomains</key>
+                   <true/>
+                   <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                   <true/>
+                   <key>NSTemporaryExceptionMinimumTLSVersion</key>
+                   <string>TLSv1.2</string>
+               </dict>
+           </dict>
+           </dict>
+           <key>UIBackgroundModes</key>
+           <array>
+               <string>fetch</string>
+               <string>remote-notification</string>
+           </array>
+
+           <key>FirebaseAppDelegateProxyEnabled</key>
+           <false/>
 </dict>
 </plist>

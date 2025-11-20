@@ -20,7 +20,6 @@ class ThousandsFormatter extends TextInputFormatter {
     // Remove commas and parse the raw number
     String rawValue = newValue.text.replaceAll(',', '');
 
-    print(rawValue);
     // Limit input to 9 digits
     if (rawValue.length > 9) {
       return oldValue; // Reject changes if input exceeds 9 digits
@@ -43,7 +42,6 @@ class ThousandsFormatter extends TextInputFormatter {
     // Ensure cursor position is within bounds
     cursorPosition = cursorPosition.clamp(0, formattedValue.length);
 
-    print(formattedValue);
     return TextEditingValue(
       text: formattedValue,
       selection: TextSelection.collapsed(offset: cursorPosition),

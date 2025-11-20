@@ -77,16 +77,12 @@ class _LoginState extends ConsumerState<Login> {
       emoji = '🔴'; // Very slow
 
     if (kDebugMode) {
-      print('$emoji ⏱️ $operation: ${milliseconds}ms');
     }
   }
 
   /// Print comprehensive performance summary
   void _printPerformanceSummary() {
     if (!kDebugMode) return;
-
-    print('\n📊 LOGIN PERFORMANCE SUMMARY');
-    print('═' * 60);
 
     int totalTime = 0;
     _performanceMetrics.forEach((operation, time) {
@@ -98,20 +94,11 @@ class _LoginState extends ConsumerState<Login> {
               : time < 500
                   ? '🟠'
                   : '🔴';
-      print('$emoji $operation: ${time}ms');
     });
-
-    print('─' * 60);
-    print('🎯 Total measured time: ${totalTime}ms');
 
     // Performance analysis
     final networkTime = _performanceMetrics['Network Request'] ?? 0;
     final uiTime = totalTime - networkTime;
-
-    print(
-        '📊 Network time: ${networkTime}ms (${((networkTime / totalTime) * 100).toStringAsFixed(1)}%)');
-    print(
-        '📊 UI/Processing time: ${uiTime}ms (${((uiTime / totalTime) * 100).toStringAsFixed(1)}%)');
 
     // Performance rating
     String rating;
@@ -124,8 +111,6 @@ class _LoginState extends ConsumerState<Login> {
     else
       rating = '🔴 Needs Optimization';
 
-    print('🏆 Overall Performance: $rating');
-    print('═' * 60);
   }
 
   Future<void> _handleLogin() async {
@@ -176,9 +161,6 @@ class _LoginState extends ConsumerState<Login> {
       _logPerformance('Data Preparation', dataTimer.elapsed.inMilliseconds);
 
       if (kDebugMode) {
-        print('🚀 Starting login attempt...');
-        print('📱 Phone: $phoneNumber');
-        print('⏰ Started at: ${_loginStartTime!.toIso8601String()}');
       }
 
       // Network request timing (this is usually the bottleneck)
@@ -188,8 +170,6 @@ class _LoginState extends ConsumerState<Login> {
       _logPerformance('Network Request', networkTimer.elapsed.inMilliseconds);
 
       if (kDebugMode) {
-        print('📡 Network request completed');
-        print('📊 Result: ${result != null ? 'Success' : 'Failed'}');
       }
 
       if (!mounted) return; // Check if widget is still mounted
@@ -209,17 +189,14 @@ class _LoginState extends ConsumerState<Login> {
         _logPerformance('Navigation', navigationTimer.elapsed.inMilliseconds);
 
         if (kDebugMode) {
-          print('✅ Login successful - navigating to TabsScreen');
         }
       } else {
         // Login failed - error already shown by AuthenticationService
         if (kDebugMode) {
-          print('❌ Login failed - no token returned');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('💥 Login error: $e');
       }
       if (mounted) {
         _showError(AppLocalizations.of(context)?.unexpectedError ??

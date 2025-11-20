@@ -32,7 +32,6 @@ class ChatWebSocketService {
       _messageController = StreamController<Map<String, dynamic>>.broadcast();
 
       final uri = Uri.parse('${Endpoints.wsUrl}$endpoint?token=$token');
-      print('Connecting to WebSocket: $uri');
 
       _channel = WebSocketChannel.connect(uri);
 
@@ -40,21 +39,17 @@ class ChatWebSocketService {
         (data) {
           try {
             final decoded = json.decode(data) as Map<String, dynamic>;
-            print('WebSocket received: $decoded');
             _messageController!.add(decoded);
           } catch (e) {
-            print('Error decoding WebSocket message: $e');
           }
         },
         onError: (error) {
-          print('WebSocket error: $error');
           _messageController!.addError(error);
           if (_shouldReconnect) {
             _scheduleReconnect();
           }
         },
         onDone: () {
-          print('WebSocket connection closed');
           if (_shouldReconnect && _lastEndpoint != null) {
             _scheduleReconnect();
           }
@@ -64,7 +59,6 @@ class ChatWebSocketService {
       _isConnecting = false;
     } catch (e) {
       _isConnecting = false;
-      print('WebSocket connection error: $e');
       if (_shouldReconnect) {
         _scheduleReconnect();
       }
@@ -76,13 +70,10 @@ class ChatWebSocketService {
     if (_channel != null) {
       try {
         final jsonMessage = json.encode(message);
-        print('Sending WebSocket message: $jsonMessage');
         _channel!.sink.add(jsonMessage);
       } catch (e) {
-        print('Error sending WebSocket message: $e');
       }
     } else {
-      print('Cannot send message: WebSocket not connected');
     }
   }
 
@@ -90,7 +81,6 @@ class ChatWebSocketService {
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(Endpoints.reconnectDelay, () {
       if (_shouldReconnect && _lastEndpoint != null) {
-        print('Attempting to reconnect WebSocket...');
         connect(_lastEndpoint!);
       }
     });

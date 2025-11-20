@@ -1,10 +1,13 @@
 // lib/services/chat_api_service.dart
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/constants/constants.dart'; // Your existing constants
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ChatApiService {
   // Use your existing baseUrl from constants
@@ -20,10 +23,12 @@ class ChatApiService {
     return prefs.getString('userId'); // Using your existing userId key
   }
 
-  Future<Map<String, String>> _getHeaders() async {
+  Future<Map<String, String>> _getHeaders({bool includeCharset = false}) async {
     final token = await _getToken();
     return {
-      'Content-Type': 'application/json',
+      'Content-Type': includeCharset
+          ? 'application/json; charset=utf-8'
+          : 'application/json',
       'Accept': 'application/json',
       'Accept-Encoding': 'gzip, deflate, br',
       'Connection': 'keep-alive',
@@ -37,16 +42,10 @@ class ChatApiService {
     try {
       final headers = await _getHeaders();
 
-      print('🔥 API: Fetching chat rooms from $baseUrl$chatBasePath/');
-      print('🔥 API: Headers: $headers');
-
       final response = await http.get(
         Uri.parse('$baseUrl$chatBasePath/'),
         headers: headers,
       );
-
-      print('🔥 API: Chat rooms response ${response.statusCode}');
-      print('🔥 API: Chat rooms body ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -57,18 +56,14 @@ class ChatApiService {
         if (results is List) {
           return results.map((room) => ChatRoom.fromJson(room)).toList();
         } else {
-          print('🚨 API: Unexpected response format');
           return [];
         }
       } else if (response.statusCode == 401) {
-        print('🚨 API: Authentication failed - token might be expired');
         throw Exception('Authentication failed');
       } else {
-        print('🚨 API: Failed to load chat rooms: ${response.statusCode}');
         throw Exception('Failed to load chat rooms: ${response.statusCode}');
       }
     } catch (e) {
-      print('🚨 API: Get chat rooms error: $e');
       rethrow;
     }
   }
@@ -85,10 +80,6 @@ class ChatApiService {
           participantIds.add(userIdInt);
         }
       }
-
-      print(
-          '🔥 API: Creating chat room: $name with participants: $participantIds');
-
       final response = await http.post(
         Uri.parse('$baseUrl$chatBasePath/'),
         headers: headers,
@@ -98,21 +89,16 @@ class ChatApiService {
         }),
       );
 
-      print('🔥 API: Create chat response ${response.statusCode}');
-      print('🔥 API: Create chat body ${response.body}');
-
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
         return ChatRoom.fromJson(data);
       } else {
         final errorData = json.decode(response.body);
-        print('🚨 API: Create chat error: $errorData');
         throw Exception(errorData['error'] ??
             errorData['detail'] ??
             'Failed to create chat room');
       }
     } catch (e) {
-      print('🚨 API: Create chat room error: $e');
       rethrow;
     }
   }
@@ -126,77 +112,235 @@ class ChatApiService {
         headers: headers,
       );
 
-      print('🔥 API: Delete chat response ${response.statusCode}');
-
       if (response.statusCode != 204 && response.statusCode != 200) {
         throw Exception('Failed to delete chat room: ${response.statusCode}');
       }
     } catch (e) {
-      print('🚨 API: Delete chat room error: $e');
       rethrow;
     }
   }
 
   // Messages
-  Future<List<ChatMessage>> getChatMessages(int chatId) async {
+  Future<List<ChatMessage>> getChatMessages(int chatId,
+      {int page = 1, int pageSize = 50}) async {
     try {
       final headers = await _getHeaders();
 
-      print('🔥 API: Fetching messages for chat $chatId');
+      final uri =
+          Uri.parse('$baseUrl$chatBasePath/$chatId/').replace(queryParameters: {
+        'page': page.toString(),
+        'page_size': pageSize.toString(),
+      });
 
       final response = await http.get(
-        Uri.parse('$baseUrl$chatBasePath/$chatId/messages/'),
+        uri,
         headers: headers,
       );
 
-      print('🔥 API: Messages response ${response.statusCode}');
-      print('🔥 API: Messages body length: ${response.body.length}');
-
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        // 🔥 FIX: Use bodyBytes and decode with UTF-8 to preserve emojis/Korean
+        final data = json.decode(utf8.decode(response.bodyBytes));
 
-        if (data is List) {
+        if (data is Map && data.containsKey('messages')) {
+          final messages = data['messages'] as List;
+          return messages.map((msg) => ChatMessage.fromJson(msg)).toList();
+        } else if (data is List) {
           return data.map((msg) => ChatMessage.fromJson(msg)).toList();
         } else {
-          print('🚨 API: Messages response is not a list: $data');
           return [];
         }
       } else {
-        print(
-            '🚨 API: Failed to load messages: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to load messages: ${response.statusCode}');
       }
     } catch (e) {
-      print('🚨 API: Get messages error: $e');
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Get paginated messages (returns messages and pagination info)
+  Future<Map<String, dynamic>> getChatMessagesPaginated(int chatId,
+      {int page = 1, int pageSize = 50}) async {
+    try {
+      final headers = await _getHeaders();
+
+      final uri =
+          Uri.parse('$baseUrl$chatBasePath/$chatId/').replace(queryParameters: {
+        'page': page.toString(),
+        'page_size': pageSize.toString(),
+      });
+
+      final response = await http.get(
+        uri,
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+
+        List<ChatMessage> messages = [];
+        bool hasNext = false;
+        int? nextPage;
+        int? totalCount;
+
+        // Handle different response formats
+        if (data is Map) {
+          if (data.containsKey('messages')) {
+            // Format: {"messages": [...]}
+            final messagesList = data['messages'] as List?;
+            messages = messagesList
+                    ?.map((json) => ChatMessage.fromJson(json))
+                    .toList() ??
+                [];
+            // If messages list is shorter than pageSize, no more pages
+            hasNext = messages.length >= pageSize;
+          } else if (data.containsKey('results')) {
+            // Paginated format: {"results": [...], "next": "...", "count": 123}
+            final results = data['results'] as List;
+            messages =
+                results.map((json) => ChatMessage.fromJson(json)).toList();
+            hasNext = data['next'] != null;
+            if (hasNext && data['next'] is String) {
+              final nextUrl = data['next'] as String;
+              final nextUri = Uri.parse(nextUrl);
+              nextPage = int.tryParse(nextUri.queryParameters['page'] ?? '');
+            }
+            totalCount = data['count'] as int?;
+          }
+        } else if (data is List) {
+          // Direct list
+          messages = data.map((json) => ChatMessage.fromJson(json)).toList();
+          hasNext = messages.length >= pageSize;
+        }
+
+        return {
+          'messages': messages,
+          'hasNext': hasNext,
+          'nextPage': nextPage,
+          'totalCount': totalCount,
+        };
+      } else {
+        throw Exception('Failed to load messages: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<ChatMessage> sendImageMessage(File imageFile, int roomId) async {
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('Not authenticated');
+    }
+
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/api/chat/$roomId/messages/'),
+      );
+
+      // Add headers
+      request.headers['Authorization'] = 'Token $token';
+
+      // Add message type
+      request.fields['message_type'] = 'image';
+
+      // Add image file
+      final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
+      final mimeTypeData = mimeType.split('/');
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'file',
+          imageFile.path,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+        ),
+      );
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 201) {
+        final decoded = json.decode(utf8.decode(response.bodyBytes));
+        return ChatMessage.fromJson(decoded);
+      } else {
+        throw Exception('Failed to upload image: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Upload voice message
+  Future<ChatMessage> sendVoiceMessage(
+      File audioFile, int roomId, int duration) async {
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('Not authenticated');
+    }
+
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/api/chat/$roomId/messages/'),
+      );
+
+      // Add headers
+      request.headers['Authorization'] = 'Token $token';
+
+      // Add message type and duration
+      request.fields['message_type'] = 'voice';
+      request.fields['duration'] = duration.toString();
+
+      // Add audio file
+      final mimeType = lookupMimeType(audioFile.path) ?? 'audio/m4a';
+      final mimeTypeData = mimeType.split('/');
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'file',
+          audioFile.path,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+        ),
+      );
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 201) {
+        final decoded = json.decode(utf8.decode(response.bodyBytes));
+        return ChatMessage.fromJson(decoded);
+      } else {
+        throw Exception('Failed to upload voice: ${response.statusCode}');
+      }
+    } catch (e) {
       rethrow;
     }
   }
 
   Future<ChatMessage> sendMessage(int chatId, String content) async {
     try {
-      final headers = await _getHeaders();
+      // 🔥 FIX: Get headers with UTF-8 charset for proper emoji/Korean support
+      final headers = await _getHeaders(includeCharset: true);
 
-      print('🔥 API: Sending message to chat $chatId: $content');
+      // 🔥 json.encode automatically handles UTF-8 encoding properly
+      final jsonBody = json.encode({'content': content});
 
       final response = await http.post(
         Uri.parse('$baseUrl$chatBasePath/$chatId/messages/'),
         headers: headers,
-        body: json.encode({'content': content}),
+        body: jsonBody,
+        encoding: utf8, // Explicitly set UTF-8 encoding
       );
 
-      print('🔥 API: Send message response ${response.statusCode}');
-      print('🔥 API: Send message body ${response.body}');
-
       if (response.statusCode == 201) {
-        final data = json.decode(response.body);
+        // 🔥 Use bodyBytes and decode with UTF-8 to handle emojis/Korean properly
+        final data = json.decode(utf8.decode(response.bodyBytes));
         return ChatMessage.fromJson(data);
       } else {
-        final errorData = json.decode(response.body);
-        print('🚨 API: Send message error: $errorData');
+        final errorData = json.decode(utf8.decode(response.bodyBytes));
         throw Exception('Failed to send message: ${response.statusCode}');
       }
     } catch (e) {
-      print('🚨 API: Send message error: $e');
       rethrow;
     }
   }
@@ -206,26 +350,18 @@ class ChatApiService {
     try {
       final headers = await _getHeaders();
 
-      print('🔥 API: Fetching chat detail for $chatId');
-
       final response = await http.get(
         Uri.parse('$baseUrl$chatBasePath/$chatId/'),
         headers: headers,
       );
 
-      print('🔥 API: Chat detail response ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('🔥 API: Chat detail success');
         return data;
       } else {
-        print(
-            '🚨 API: Failed to load chat detail: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to load chat detail: ${response.statusCode}');
       }
     } catch (e) {
-      print('🚨 API: Get chat detail error: $e');
       rethrow;
     }
   }
@@ -244,34 +380,27 @@ class ChatApiService {
 
       for (final endpoint in possibleEndpoints) {
         try {
-          print('🔥 API: Trying users endpoint: $endpoint');
 
           final response = await http.get(
             Uri.parse(endpoint),
             headers: headers,
           );
 
-          print('🔥 API: Users response ${response.statusCode} from $endpoint');
-
           if (response.statusCode == 200) {
             final data = json.decode(response.body);
             final results = data['results'] ?? data;
 
             if (results is List) {
-              print('🔥 API: Found ${results.length} users from $endpoint');
               return results.map((user) => User.fromJson(user)).toList();
             }
           }
         } catch (e) {
-          print('🚨 API: Failed to get users from $endpoint: $e');
           continue; // Try next endpoint
         }
       }
 
-      print('🚨 API: No working user endpoint found');
       return [];
     } catch (e) {
-      print('🚨 API: Get users error: $e');
       return [];
     }
   }
@@ -290,5 +419,339 @@ class ChatApiService {
       'userId': prefs.getString('userId'),
       'userLocation': prefs.getString('userLocation'),
     };
+  }
+
+  // 🔥 NEW: Search users (KakaoTalk-style)
+  Future<List<Map<String, dynamic>>> searchUsers({String? query, int? userId}) async {
+    try {
+      final headers = await _getHeaders();
+      
+      final uri = Uri.parse('$baseUrl$chatBasePath/search-users/').replace(
+        queryParameters: {
+          if (query != null && query.isNotEmpty) 'q': query,
+          if (userId != null) 'user_id': userId.toString(),
+        },
+      );
+      
+      final response = await http.get(uri, headers: headers);
+      
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        
+        // 🔥 Handle different response formats
+        if (data is List) {
+          // Direct list response
+          return data.cast<Map<String, dynamic>>();
+        } else if (data is Map) {
+          // Check for 'users' key (backend format)
+          if (data.containsKey('users') && data['users'] is List) {
+            return (data['users'] as List).cast<Map<String, dynamic>>();
+          }
+          // Check for 'results' key (alternative format)
+          else if (data.containsKey('results') && data['results'] is List) {
+            return (data['results'] as List).cast<Map<String, dynamic>>();
+          }
+        }
+        return [];
+      } else {
+        throw Exception('Failed to search users: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+  
+  // 🔥 NEW: Start chat with user by ID (KakaoTalk-style)
+  Future<Map<String, dynamic>> startChatWithUser(int userId) async {
+    try {
+      final headers = await _getHeaders();
+      
+      final response = await http.get(
+        Uri.parse('$baseUrl$chatBasePath/start/$userId/'),
+        headers: headers,
+      );
+      
+      
+      // 🔥 Accept both 200 (OK) and 201 (Created) as success
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return data as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to start chat: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Get or create direct chat
+  Future<ChatRoom> getOrCreateDirectChat(int targetUserId) async {
+    try {
+      final headers = await _getHeaders();
+
+      final response = await http.post(
+        Uri.parse('$baseUrl$chatBasePath/direct/'),
+        headers: headers,
+        body: json.encode({'target_user_id': targetUserId}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return ChatRoom.fromJson(data);
+      } else {
+        throw Exception(
+            'Failed to get/create direct chat: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Edit message
+  Future<ChatMessage> editMessage(
+      int chatId, int messageId, String newContent) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.put(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/messages/$messageId/'),
+        headers: headers,
+        body: json.encode({'content': newContent}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return ChatMessage.fromJson(data);
+      } else {
+        throw Exception('Failed to edit message: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Delete message (soft delete)
+  Future<void> deleteMessage(int chatId, int messageId) async {
+    try {
+      final headers = await _getHeaders();
+
+      final response = await http.delete(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/messages/$messageId/'),
+        headers: headers,
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to delete message: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Add/remove reaction
+  Future<Map<String, List<int>>> toggleReaction(
+      int chatId, int messageId, String emoji) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse(
+            '$baseUrl$chatBasePath/$chatId/messages/$messageId/reaction/'),
+        headers: headers,
+        body: json.encode({'emoji': emoji}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        // Parse reactions: {"👍": [1, 2], "❤️": [3]}
+        Map<String, List<int>> reactions = {};
+        if (data['reactions'] != null && data['reactions'] is Map) {
+          final reactionsData = data['reactions'] as Map<String, dynamic>;
+          reactionsData.forEach((emoji, userIds) {
+            if (userIds is List) {
+              reactions[emoji] = userIds.map((id) => id as int).toList();
+            }
+          });
+        }
+        return reactions;
+      } else {
+        throw Exception('Failed to toggle reaction: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Block user
+  Future<void> blockUser(int userId) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse('$baseUrl$chatBasePath/block/'),
+        headers: headers,
+        body: json.encode({'user_id': userId}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception('Failed to block user: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Unblock user
+  Future<void> unblockUser(int userId) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.delete(
+        Uri.parse('$baseUrl$chatBasePath/block/'),
+        headers: headers,
+        body: json.encode({'user_id': userId}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Failed to unblock user: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Get blocked users list
+  Future<List<User>> getBlockedUsers() async {
+    try {
+      final headers = await _getHeaders();
+
+      final response = await http.get(
+        Uri.parse('$baseUrl$chatBasePath/blocked/'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        if (data is List) {
+          return data.map((item) {
+            final blockedUser = item['blocked_user'] as Map<String, dynamic>;
+            return User.fromJson(blockedUser);
+          }).toList();
+        }
+        return [];
+      } else {
+        throw Exception('Failed to get blocked users: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Send message with reply
+  Future<ChatMessage> sendMessageWithReply(
+      int chatId, String content, int? replyToMessageId) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final body = {
+        'content': content,
+        'message_type': 'text',
+      };
+
+      // if (replyToMessageId != null) {
+      //   body['reply_to'] = replyToMessageId;
+      // }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/messages/'),
+        headers: headers,
+        body: json.encode(body),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return ChatMessage.fromJson(data);
+      } else {
+        throw Exception('Failed to send message: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Initiate call
+  Future<Map<String, dynamic>> initiateCall(int chatId, String callType) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/call/'),
+        headers: headers,
+        body: json.encode({'call_type': callType}), // 'voice' or 'video'
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 201) {
+        return json.decode(utf8.decode(response.bodyBytes));
+      } else {
+        throw Exception('Failed to initiate call: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Answer/reject/end call
+  Future<Map<String, dynamic>> updateCall(
+      int chatId, int callId, String action) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.put(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/call/$callId/'),
+        headers: headers,
+        body: json.encode({'action': action}), // 'answer', 'reject', or 'end'
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(utf8.decode(response.bodyBytes));
+      } else {
+        throw Exception('Failed to update call: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Get call history
+  Future<List<Map<String, dynamic>>> getCallHistory(int chatId) async {
+    try {
+      final headers = await _getHeaders();
+
+      final response = await http.get(
+        Uri.parse('$baseUrl$chatBasePath/$chatId/calls/'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        if (data is List) {
+          return data.cast<Map<String, dynamic>>();
+        }
+        return [];
+      } else {
+        throw Exception('Failed to get call history: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

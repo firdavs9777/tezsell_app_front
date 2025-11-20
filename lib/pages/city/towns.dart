@@ -52,8 +52,6 @@ class _TownsListState extends State<TownsList> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse('$URL/${widget.city_id}/'));
-      print(response.body);
-      print(URL);
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         List<dynamic> districtData = responseData['districts'];
@@ -137,10 +135,6 @@ class _TownsListState extends State<TownsList> {
     );
 
     if (confirm ?? false) {
-      print('City: ${widget.city_name}');
-      print('City ID: ${widget.city_id}');
-      print('District: ${district.name}');
-      print('District ID: ${district.id}'); // Now you have the district ID!
 
       Navigator.push(
         context,

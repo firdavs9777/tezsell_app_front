@@ -254,7 +254,6 @@ class ProductsService {
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {
-        print('🔄 Filtered products request already in progress');
       }
       return await _pendingRequests[cacheKey] as List<Products>;
     }
@@ -313,8 +312,6 @@ class ProductsService {
         final data = response.data;
 
         if (kDebugMode) {
-          print(
-              '📊 Filtered products count: ${(data['results'] as List).length}');
         }
 
         return (data['results'] as List)
@@ -341,7 +338,6 @@ class ProductsService {
         _categoriesCacheTime != null &&
         DateTime.now().difference(_categoriesCacheTime!).inMinutes < 30) {
       if (kDebugMode) {
-        print('🎯 Using cached categories');
       }
       return _categoriesCache[cacheKey]!;
     }
@@ -388,7 +384,6 @@ class ProductsService {
         final data = response.data;
 
         if (kDebugMode) {
-          print('📊 Categories count: ${(data as List).length}');
         }
 
         return (data as List)
@@ -403,7 +398,6 @@ class ProductsService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('💥 Error fetching categories: $e');
       }
       rethrow;
     }
@@ -594,14 +588,6 @@ class ProductsService {
       }
 
       // Debug logging to see what's being sent
-      print('=== UPDATE PRODUCT DEBUG ===');
-      print('Product ID: $productId');
-      print(
-          'Form fields: ${formData.fields.map((e) => '${e.key}: ${e.value}').join(', ')}');
-      print(
-          'File fields: ${formData.files.map((e) => '${e.key}: ${e.value.filename}').join(', ')}');
-      print('Existing image IDs: $existingImageIds');
-      print('New images count: ${newImageFiles?.length ?? 0}');
 
       final response = await dio.put(
         "${baseUrl}/products/api/user/products/$productId/",
@@ -617,9 +603,6 @@ class ProductsService {
 
       timer.stop();
       _logPerformance('Update Product', timer.elapsed.inMilliseconds);
-
-      print('Response status: ${response.statusCode}');
-      print('Response data: ${response.data}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Clear products cache since we updated a product
@@ -647,8 +630,6 @@ class ProductsService {
           }
         }
 
-        print('Error response: $errorMessage');
-
         throw DioException(
           requestOptions: response.requestOptions,
           response: response,
@@ -659,7 +640,6 @@ class ProductsService {
       timer.stop();
       _logPerformance('FAILED - Update Product', timer.elapsed.inMilliseconds);
 
-      print('Update product exception: $e');
       rethrow;
     }
   }
@@ -728,7 +708,6 @@ class ProductsService {
     else
       emoji = '🔴';
 
-    print('$emoji ⏱️ ProductsService - $operation: ${milliseconds}ms');
   }
 
   // Clear all caches

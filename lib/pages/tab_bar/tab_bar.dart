@@ -7,6 +7,7 @@ import 'package:app/pages/service/main/service_search.dart';
 import 'package:app/pages/real_estate/real_estate_main.dart';
 import 'package:app/pages/real_estate/real_estate_search.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
+import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
@@ -410,6 +411,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   ) {
     final isSelected = _selectedPageIndex == index;
 
+    // 🔥 Get unread count for Messages tab (index 2)
+    final unreadCount = index == 2 ? ref.watch(totalUnreadCountProvider) : 0;
+
     return GestureDetector(
       onTap: () => _selectPage(index),
       child: AnimatedContainer(
@@ -424,14 +428,49 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
-              child: Icon(
-                isSelected ? filledIcon : outlinedIcon,
-                key: ValueKey(isSelected),
-                color: isSelected ? theme.primaryColor : Colors.grey[600],
-                size: 24,
-              ),
+            // 🔥 Add Stack for badge
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                  child: Icon(
+                    isSelected ? filledIcon : outlinedIcon,
+                    key: ValueKey(isSelected),
+                    color: isSelected ? theme.primaryColor : Colors.grey[600],
+                    size: 24,
+                  ),
+                ),
+                // 🔥 Badge for unread messages
+                if (unreadCount > 0)
+                  Positioned(
+                    right: -6,
+                    top: -6,
+                    child: Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      child: Center(
+                        child: Text(
+                          unreadCount > 99 ? '99+' : '$unreadCount',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
             SizedBox(height: 4),
             Text(

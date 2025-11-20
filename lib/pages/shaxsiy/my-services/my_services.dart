@@ -29,7 +29,6 @@ class _MyServicesState extends ConsumerState<MyServices> {
       setState(() => _isLoading = true);
 
       final services = await ref.read(profileServiceProvider).getUserServices();
-      print(services);
       if (mounted) {
         setState(() {
           _services = services;

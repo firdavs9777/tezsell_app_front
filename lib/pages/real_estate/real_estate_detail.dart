@@ -318,7 +318,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         });
       }
     } catch (e) {
-      print('Error loading token: $e');
     }
   }
 
@@ -349,7 +348,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         });
       }
     } catch (e) {
-      print('Error checking saved status: $e');
       if (mounted) {
         setState(() {
           isCheckingSaved = false;
@@ -390,7 +388,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             PropertyImage(
               id: 1,
               image:
-                  "http://127.0.0.1:8000/media/properties/images/Properties.png",
+                  "https://api.webtezsell.com/media/properties/images/Properties.png",
               caption: "main_home",
             )
           ];
@@ -438,25 +436,20 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       // Use appropriate method based on current state
       if (previouslySaved) {
         // Was saved, now unsaving - use DELETE
-        print('🗑️ Unsaving property: ${property!.id}');
 
         await ref.read(realEstateServiceProvider).unsaveProperty(
               propertyId: property!.id.toString(),
               token: userToken!,
             );
 
-        print('✅ Property unsaved successfully');
       } else {
         // Was not saved, now saving - use POST (toggle)
-        print('💾 Saving property: ${property!.id}');
 
         final result =
             await ref.read(realEstateServiceProvider).toggleSaveProperty(
                   propertyId: property!.id.toString(),
                   token: userToken!,
                 );
-
-        print('✅ Toggle result: $result');
 
         // Verify the result matches expectation
         final actualSaved = result['is_saved'] ?? false;
@@ -484,7 +477,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         );
       }
     } catch (error) {
-      print('❌ Error toggling save: $error');
 
       // Revert optimistic update on error
       if (mounted) {

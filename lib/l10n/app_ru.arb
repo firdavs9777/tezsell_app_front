@@ -1998,6 +1998,17 @@
   "saveChanges": "Сохранить изменения",
   "propertyOwner": "Владелец",
   "errorLoadingServices": "Ошибка загрузки услуг",
-  "noRecommendedServicesFound": "Рекомендуемые услуги не найдены."
-
+  "noRecommendedServicesFound": "Рекомендуемые услуги не найдены.",
+  "passwordRequired": "Пароль обязателен",
+  "passwordTooShort": "Пароль должен содержать минимум 8 символов",
+  "passwordRequirements": "Пароль должен содержать буквы и цифры",
+  "usernameRequired": "Имя пользователя обязательно",
+  "usernameTooShort": "Имя пользователя должно содержать минимум 3 символа",
+  "confirmPasswordRequired": "Подтверждение пароля обязательно",
+  "passwordHelp": "Минимум 8 символов, буквы и цифры",
+  "usernameExists": "Это имя пользователя уже существует",
+  "phoneExists": "Этот номер телефона уже зарегистрирован",
+  "networkError": "Ошибка подключения к интернету. Пожалуйста, проверьте соединение",
+  "contactSeller": "Связаться с продавцом",
+  "callToReveal": "Нажмите \"Позвонить\" чтобы увидеть"
 }

@@ -23,7 +23,6 @@ class CommentsService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print(data);
       return (data as List)
           .map((postJson) => Comments.fromJson(postJson))
           .toList();
@@ -47,7 +46,6 @@ class CommentsService {
         'Authorization': 'Token $token'
       },
     );
-    print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = json.decode(response.body);
       return Comments.fromJson(
@@ -102,7 +100,6 @@ class CommentsService {
       // Return true for successful deletion (204 or 200)
       return response.statusCode == 204 || response.statusCode == 200;
     } catch (e) {
-      print('Error deleting comment: $e');
       return false;
     }
   }
@@ -146,9 +143,6 @@ class CommentsService {
         throw Exception('No authentication token found');
       }
 
-      print('📤 Posting reply to comment: $commentId');
-      print('   Reply text: $text');
-
       final response = await http.post(
         Uri.parse(
             '$baseUrl/services/api/comments/$commentId/replies/'), // Full URL with baseUrl
@@ -162,9 +156,6 @@ class CommentsService {
         }),
       );
 
-      print('📊 Reply response status: ${response.statusCode}');
-      print('📊 Reply response body: ${response.body}');
-
       if (response.statusCode == 201 || response.statusCode == 200) {
         final responseData = json.decode(response.body);
         return responseData as Map<String, dynamic>;
@@ -173,14 +164,12 @@ class CommentsService {
             'Failed to post reply: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      print('❌ Error posting reply: $e');
       rethrow;
     }
   }
 
   Future<List<Comments>> getSingleComment({required String id}) async {
     try {
-      print(id);
       final response = await http.get(Uri.parse(''));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

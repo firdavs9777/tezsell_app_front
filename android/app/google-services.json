@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "523279655368",
+    "project_id": "tezsell-2c2f4",
+    "storage_bucket": "tezsell-2c2f4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523279655368:android:521af4531976bf788ba0fd",
+        "android_client_info": {
+          "package_name": "uz.tezsell.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrPL4932rQGJZrXSx_NdVVSK6MDvhRB-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

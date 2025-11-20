@@ -123,7 +123,6 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         );
       }
     } catch (e) {
-      print('ERROR - Failed to send code: $e');
       setState(() {
         isSendingCode = false;
       });

@@ -1,8 +1,9 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ServiceDetailsSection extends StatelessWidget {
+class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
     super.key,
     required this.service,
@@ -13,7 +14,43 @@ class ServiceDetailsSection extends StatelessWidget {
   final VoidCallback? onChatPressed;
 
   @override
+  State<ServiceDetailsSection> createState() => _ServiceDetailsSectionState();
+}
+
+class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
+  String _maskedLocation(String region, String district) {
+    // Show only first part safely, e.g. "Seoul, ****"
+    return '$region, ****';
+  }
+
+  String _maskedPhone(String phoneNumber) {
+    // Show only beginning part safely, e.g. "010-12**-****"
+    if (phoneNumber.length > 7) {
+      return phoneNumber.replaceRange(7, phoneNumber.length, '****');
+    } else if (phoneNumber.length > 3) {
+      return phoneNumber.replaceRange(3, phoneNumber.length, '****');
+    } else {
+      return '****';
+    }
+  }
+
+  String getCategoryName() {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return widget.service.category?.nameUz ?? '';
+      case 'ru':
+        return widget.service.category?.nameRu ?? '';
+      case 'en':
+      default:
+        return widget.service.category?.nameEn ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20.0),
@@ -41,7 +78,9 @@ class ServiceDetailsSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  service.category.nameEn,
+                  getCategoryName().isNotEmpty
+                      ? getCategoryName()
+                      : (localizations?.newProductCategory ?? 'No Category'),
                   style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFFFF6F0F),
@@ -56,7 +95,7 @@ class ServiceDetailsSection extends StatelessWidget {
 
           // Service Title
           Text(
-            service.name!,
+            widget.service.name!,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -69,7 +108,7 @@ class ServiceDetailsSection extends StatelessWidget {
 
           // Service Description
           Text(
-            service.description!,
+            widget.service.description!,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[700],
@@ -165,7 +204,10 @@ class ServiceDetailsSection extends StatelessWidget {
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              '${service.userName.location.region}, ${service.userName.location.district}',
+                              _maskedLocation(
+                                widget.service.userName.location.region,
+                                widget.service.userName.location.district,
+                              ),
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -179,7 +221,6 @@ class ServiceDetailsSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
 
-                      // Phone number with icon
                       Row(
                         children: [
                           Icon(
@@ -189,12 +230,13 @@ class ServiceDetailsSection extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            service.userName.phoneNumber,
+                            _maskedPhone(widget.service.userName.phoneNumber),
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -226,7 +268,7 @@ class ServiceDetailsSection extends StatelessWidget {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: onChatPressed ??
+                      onTap: widget.onChatPressed ??
                           () {
                             // Default action if no callback is provided
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -282,7 +324,7 @@ class ServiceDetailsSection extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () async {
-                        final phoneNumber = service.userName.phoneNumber;
+                        final phoneNumber = widget.service.userName.phoneNumber;
                         final Uri phoneUri = Uri(
                           scheme: 'tel',
                           path: phoneNumber,

@@ -22,13 +22,10 @@ class SavedProperties extends ConsumerWidget {
           child: Text('Error loading authentication'),
         ),
         data: (token) {
-          print(
-              '📱 Token from provider: ${token?.substring(0, 20)}...'); // Add this - show more chars
 
           if (token == null) {
             return _buildLoginRequired(context, theme, l10n);
           }
-          print(token);
 
           return _SavedPropertiesList(token: token);
         },
@@ -115,7 +112,6 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
     super.initState();
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('Forcing provider refresh...');
       ref.invalidate(savedPropertiesNotifierProvider(widget.token));
     });
   }
@@ -222,7 +218,6 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
     final savedPropertiesAsync =
         ref.watch(savedPropertiesNotifierProvider(widget.token));
 
-    print(savedPropertiesAsync);
     return CustomScrollView(
       controller: _scrollController,
       slivers: [
@@ -288,10 +283,6 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
             ),
           ),
           data: (response) {
-            print(response.results);
-            print('✅ State: DATA');
-            print('   Count: ${response.count}');
-            print('   Results length: ${response.results.length}');
             if (response.results.isEmpty) {
               return SliverFillRemaining(
                 child: _buildEmptyState(context, theme, l10n),

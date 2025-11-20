@@ -42,7 +42,6 @@ class _RegisterState extends State<Register> {
     });
 
     try {
-      print(URL);
       final response = await http.get(
         Uri.parse(URL),
         headers: {
@@ -55,8 +54,6 @@ class _RegisterState extends State<Register> {
               'Connection timeout. Please check your internet connection.');
         },
       );
-
-      print(response.body);
 
       if (!mounted) return;
 
@@ -89,7 +86,6 @@ class _RegisterState extends State<Register> {
         });
       }
     } catch (error) {
-      print('Error fetching data: $error');
 
       if (!mounted) return;
 

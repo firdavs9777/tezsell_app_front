@@ -2,7 +2,7 @@ name: app
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+10
+version: 1.0.0+16
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -11,6 +11,10 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+#  firebase_core: ^2.24.2
+#
+#  firebase_messaging: ^14.7.9
+  flutter_local_notifications: ^16.3.0
   cupertino_icons: ^1.0.2
   http: ^1.1.0
   google_fonts: ^6.1.0
@@ -20,6 +24,9 @@ dependencies:
   shared_preferences: ^2.2.2
   smooth_page_indicator: ^1.2.0+3
   intl: ^0.18.1
+  record: ^5.0.4
+  audioplayers: ^5.2.1
+  path_provider: ^2.1.2
   dio: ^5.0.0
   socket_io_client: ^2.0.3+1
   country_code_picker: ^3.3.0
@@ -30,15 +37,18 @@ dependencies:
   web_socket_channel: ^2.4.0
   provider: ^6.1.5
   url_launcher: ^6.2.1
+  mime: ^1.0.4
+  emoji_picker_flutter: ^1.6.4
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+
 flutter_launcher_icons:
     android: true
-    ios: false
+    ios: true
     image_path: "assets/logo/logo.png"
     adaptive_icon_background: "#FFFFFF"
     adaptive_icon_foreground: "assets/logo/logo.png"

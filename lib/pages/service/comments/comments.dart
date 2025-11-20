@@ -46,7 +46,6 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
       DateTime localTime = utcTime.toLocal();
       return DateFormat('M/d/yyyy, h:mm:ss a').format(localTime);
     } catch (e) {
-      print('Error formatting time: $e');
       return 'Unknown Date';
     }
   }
@@ -61,7 +60,6 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
         });
       }
     } catch (e) {
-      print('Error loading current user ID: $e');
     }
   }
 

@@ -7,11 +7,13 @@ class ChatListWebSocketService {
   WebSocketChannel? _channel;
   final StreamController<Map<String, dynamic>> _messageController =
       StreamController<Map<String, dynamic>>.broadcast();
+  bool _isConnected = false;
 
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
 
-  // TODO: Replace with your backend WebSocket URL
-  static const String wsUrl = 'ws://127.0.0.1:8000/ws/chatlist';
+  static const String wsUrl = 'wss://api.webtezsell.com/ws/chatlist';
+
+  bool get isConnected => _isConnected && _channel != null;
 
   Future<void> connectToChatList() async {
     try {
@@ -22,40 +24,68 @@ class ChatListWebSocketService {
         throw Exception('No authentication token found');
       }
 
-      print(wsUrl);
-      print(token);
       final uri = Uri.parse('$wsUrl?token=$token');
       _channel = WebSocketChannel.connect(uri);
-
-      print('🔥 Connecting to chat list WebSocket: $wsUrl');
 
       _channel!.stream.listen(
         (data) {
           try {
             final message = json.decode(data);
-            print('🔥 Chat list WS received: ${message['type']}');
+
+            // Mark as connected when we get connection_established
+            if (message['type'] == 'connection_established') {
+              _isConnected = true;
+
+            }
+            
             _messageController.add(message);
           } catch (e) {
-            print('🚨 Error parsing chat list message: $e');
+
           }
         },
         onError: (error) {
-          print('🚨 Chat list WebSocket error: $error');
+
+          _isConnected = false;
         },
         onDone: () {
-          print('🔥 Chat list WebSocket closed');
+
+          _isConnected = false;
         },
       );
+      
+      // Mark as connected after a short delay (connection is established)
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _isConnected = true;
+      });
     } catch (e) {
-      print('🚨 Error connecting to chat list WebSocket: $e');
+
       rethrow;
     }
   }
 
+  // 🔥 NEW: Request list refresh
+  void requestListRefresh() {
+    if (!isConnected || _channel == null) {
+
+      return;
+    }
+    
+    try {
+      final message = json.encode({
+        'type': 'request_list',
+      });
+      _channel!.sink.add(message);
+
+    } catch (e) {
+
+    }
+  }
+
   Future<void> disconnect() async {
+    _isConnected = false;
     await _channel?.sink.close();
     _channel = null;
-    print('🔥 Chat list WebSocket disconnected');
+
   }
 
   void dispose() {
@@ -80,11 +110,11 @@ class ChatRoomWebSocketService {
   bool get isConnecting => _isConnecting;
   Future<void> get ready => _connectionCompleter.future;
 
-  static const String wsBaseUrl = 'ws://127.0.0.1:8000';
+  static const String wsBaseUrl = 'wss://api.webtezsell.com';
 
   Future<void> connectToChatRoom(int roomId) async {
     if (_isConnecting) {
-      print('⏳ Already connecting to chat room');
+
       return ready;
     }
 
@@ -101,13 +131,9 @@ class ChatRoomWebSocketService {
         throw Exception('No authentication token found');
       }
 
-      final wsUrl = 'ws://127.0.0.1:8000/ws/chat/$roomId/?token=$token';
+      final wsUrl = 'wss://api.webtezsell.com/ws/chat/$roomId/?token=$token';
       final uri = Uri.parse(wsUrl);
 
-      print('🔥 Connecting to chat room $roomId WebSocket: $wsUrl');
-
-      print('🔍 WS URL Final: $wsUrl');
-      print('🔍 Parsed URI: $uri');
       _channel = WebSocketChannel.connect(uri);
       _reconnectAttempts = 0;
 
@@ -116,7 +142,6 @@ class ChatRoomWebSocketService {
         (data) {
           try {
             final message = json.decode(data);
-            print('📨 Chat room WS received: ${message['type']}');
 
             // Mark as connected when we get connection_established
             if (message['type'] == 'connection_established') {
@@ -125,18 +150,18 @@ class ChatRoomWebSocketService {
               if (!_connectionCompleter.isCompleted) {
                 _connectionCompleter.complete();
               }
-              print('✅ Connection established');
+
             }
 
             if (!_messageController.isClosed) {
               _messageController.add(message);
             }
           } catch (e) {
-            print('🚨 Error parsing chat room message: $e');
+
           }
         },
         onError: (error) {
-          print('🚨 Chat room WebSocket error: $error');
+
           _isConnected = false;
           _isConnecting = false;
           if (!_connectionCompleter.isCompleted) {
@@ -145,7 +170,7 @@ class ChatRoomWebSocketService {
           _attemptReconnect(roomId);
         },
         onDone: () {
-          print('🔥 Chat room WebSocket closed');
+
           _isConnected = false;
           _isConnecting = false;
         },
@@ -156,15 +181,14 @@ class ChatRoomWebSocketService {
       await ready.timeout(
         const Duration(seconds: 5),
         onTimeout: () {
-          print('⏱️ Connection timeout, assuming connected');
+
           _isConnected = true;
           _isConnecting = false;
         },
       );
 
-      print('✅ Connected to chat room $roomId');
     } catch (e) {
-      print('🚨 Error connecting to chat room WebSocket: $e');
+
       _isConnected = false;
       _isConnecting = false;
       if (!_connectionCompleter.isCompleted) {
@@ -177,7 +201,7 @@ class ChatRoomWebSocketService {
 
   void _attemptReconnect(int roomId) {
     if (_reconnectAttempts >= maxReconnectAttempts) {
-      print('🚨 Max reconnect attempts reached');
+
       return;
     }
 
@@ -185,8 +209,6 @@ class ChatRoomWebSocketService {
     _reconnectAttempts++;
 
     final delay = Duration(seconds: _reconnectAttempts * 2);
-    print(
-        '🔄 Attempting to reconnect in ${delay.inSeconds} seconds (attempt $_reconnectAttempts)');
 
     _reconnectTimer = Timer(delay, () {
       connectToChatRoom(roomId);
@@ -195,26 +217,29 @@ class ChatRoomWebSocketService {
 
   void sendChatMessage(String content) {
     if (!_isConnected || _channel == null) {
-      print(
-          '🚨 Cannot send message - WebSocket not connected (connected: $_isConnected, channel: ${_channel != null})');
       return;
     }
 
     try {
+      // 🔥 FIX: Backend expects "type": "message" field according to documentation
+      // Format: {"type": "message", "message": "content"}
       final message = json.encode({
+        'type': 'message',
         'message': content,
       });
 
+      // 🔥 Ensure UTF-8 encoding when sending
       _channel!.sink.add(message);
-      print('📤 Sent message: $content');
+
     } catch (e) {
-      print('🚨 Error sending message: $e');
+
       _isConnected = false;
     }
   }
 
   void sendTypingStatus(bool isTyping) {
     if (!_isConnected || _channel == null) {
+
       return;
     }
 
@@ -225,13 +250,13 @@ class ChatRoomWebSocketService {
       });
 
       _channel!.sink.add(message);
+
     } catch (e) {
-      print('🚨 Error sending typing status: $e');
+
     }
   }
 
   Future<void> disconnect() async {
-    print('🔥 Disconnecting chat room WebSocket');
 
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
@@ -243,7 +268,7 @@ class ChatRoomWebSocketService {
       await _channel?.sink.close();
       _channel = null;
     } catch (e) {
-      print('🚨 Error closing chat room WebSocket: $e');
+
     }
   }
 

@@ -54,20 +54,14 @@ class SavedPropertiesResponse {
   });
 
   factory SavedPropertiesResponse.fromJson(Map<String, dynamic> json) {
-    print('🔍 Parsing SavedPropertiesResponse');
-    print('   Raw JSON: $json');
 
     final resultsData = json['results'] as List? ?? [];
-    print('   Results data length: ${resultsData.length}');
 
     final results = resultsData.map((item) {
-      print('   Parsing item: $item');
       try {
         if (item['property'] != null) {
-          print('   Has property field, parsing as SavedProperty');
           return SavedProperty.fromJson(item);
         } else {
-          print('   No property field, parsing as direct RealEstate');
           return SavedProperty(
             id: DateTime.now().millisecondsSinceEpoch,
             property: RealEstate.fromJson(item),
@@ -75,12 +69,9 @@ class SavedPropertiesResponse {
           );
         }
       } catch (e) {
-        print('   ❌ Error parsing item: $e');
         rethrow;
       }
     }).toList();
-
-    print('   Parsed ${results.length} results');
 
     return SavedPropertiesResponse(
       count: json['count'] ?? 0,
@@ -107,7 +98,6 @@ class RealEstateService {
 
   void _logPerformance(String operation, int milliseconds) {
     if (kDebugMode) {
-      print('⏱️ $operation took ${milliseconds}ms');
     }
   }
 
@@ -162,11 +152,8 @@ class RealEstateService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        print(data);
 
         if (kDebugMode) {
-          print(
-              '📊 Filtered properties count: ${(data['results'] as List).length}');
         }
 
         return (data['results'] as List)
@@ -194,8 +181,6 @@ class RealEstateService {
         final data = response.data;
 
         if (kDebugMode) {
-          print('📊 Single property fetched successfully');
-          print('Property data: $data');
         }
 
         if (data['success'] == true && data['property'] != null) {
@@ -216,7 +201,6 @@ class RealEstateService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error fetching single property: $e');
       }
       rethrow;
     }
@@ -237,7 +221,6 @@ class RealEstateService {
 
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {
-        print('🔄 Filtered properties request already in progress');
       }
       return await _pendingRequests[cacheKey] as List<RealEstate>;
     }
@@ -341,9 +324,6 @@ class RealEstateService {
     final timer = Stopwatch()..start();
 
     try {
-      print('📡 Fetching saved properties...');
-      print('   Token: ${token.substring(0, 10)}...'); // Show first 10 chars
-      print('   Page: $page, PageSize: $pageSize');
 
       final response = await dio.get(
         REAL_ESTATE_SAVED_PROPERTIES,
@@ -360,15 +340,11 @@ class RealEstateService {
         ),
       );
 
-      print('📊 Response Status: ${response.statusCode}');
-      print('📊 Response Data: ${response.data}');
-
       timer.stop();
       _logPerformance('Get Saved Properties', timer.elapsed.inMilliseconds);
 
       if (response.statusCode == 200) {
         final parsedResponse = SavedPropertiesResponse.fromJson(response.data);
-        print('✅ Parsed ${parsedResponse.results.length} saved properties');
         return parsedResponse;
       } else {
         throw DioException(
@@ -378,10 +354,7 @@ class RealEstateService {
         );
       }
     } catch (e) {
-      print('❌ Error fetching saved properties: $e');
       if (e is DioException) {
-        print('   Status Code: ${e.response?.statusCode}');
-        print('   Response Data: ${e.response?.data}');
       }
       rethrow;
     }
@@ -408,10 +381,8 @@ class RealEstateService {
       timer.stop();
       _logPerformance('Toggle Save Property', timer.elapsed.inMilliseconds);
 
-      print(response);
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (kDebugMode) {
-          print('✅ Property save status toggled successfully');
         }
         return response.data;
       } else {
@@ -423,7 +394,6 @@ class RealEstateService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error toggling save property: $e');
       }
       rethrow;
     }
@@ -450,10 +420,8 @@ class RealEstateService {
       timer.stop();
       _logPerformance('Unsave Property', timer.elapsed.inMilliseconds);
 
-      print(response.data);
       if (response.statusCode == 200 || response.statusCode == 204) {
         if (kDebugMode) {
-          print('✅ Property unsaved successfully');
         }
       } else {
         throw DioException(
@@ -464,7 +432,6 @@ class RealEstateService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error unsaving property: $e');
       }
       rethrow;
     }
@@ -493,7 +460,6 @@ class RealEstateService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error checking if property is saved: $e');
       }
       return false;
     }
@@ -511,9 +477,6 @@ class SavedPropertiesNotifier
 
   SavedPropertiesNotifier(this._service, this._token)
       : super(const AsyncValue.loading()) {
-    print('🎬 SavedPropertiesNotifier created');
-    print('   Token: ${_token.substring(0, 10)}...');
-    print('   Service: ${_service.hashCode}');
     loadSavedProperties();
   }
 
@@ -550,7 +513,6 @@ class SavedPropertiesNotifier
       await refreshSavedProperties();
     } catch (error) {
       if (kDebugMode) {
-        print('Error unsaving property: $error');
       }
       rethrow;
     }

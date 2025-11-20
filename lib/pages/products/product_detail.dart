@@ -34,6 +34,33 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     _pageController.dispose();
     super.dispose();
   }
+  // Add this helper method to your _ProductDetailState class
+
+  String _maskPhoneNumber(String phoneNumber) {
+    if (phoneNumber.isEmpty) return '';
+
+    // Remove any spaces or special characters
+    final cleaned = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+
+    if (cleaned.length <= 4) return cleaned;
+
+    // Show first 3 and last 2 digits: +998 90 *** ** 45
+    if (cleaned.startsWith('+')) {
+      // International format: +998 90 123 45 67 → +998 90 *** ** 67
+      if (cleaned.length > 7) {
+        final countryCode = cleaned.substring(0, 4); // +998
+        final firstDigits = cleaned.substring(4, 6); // 90
+        final lastDigits = cleaned.substring(cleaned.length - 2); // 67
+        return '$countryCode $firstDigits *** ** $lastDigits';
+      }
+    }
+
+    // Local format: show first 2 and last 2
+    final first = cleaned.substring(0, 2);
+    final last = cleaned.substring(cleaned.length - 2);
+    final maskLength = cleaned.length - 4;
+    return '$first${'*' * maskLength}$last';
+  }
 
   String getCategoryName() {
     final locale = Localizations.localeOf(context).languageCode;
@@ -156,8 +183,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Chat Error'),
-            content: Text('sss'),
+            title: Text(localizations?.error ?? 'Chat Error'),
+            content: Text(
+              e.toString().contains('Failed to create')
+                  ? 'Failed to start chat. Please try again.'
+                  : e.toString(),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -315,7 +346,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations?.newProductTitle ?? 'Detail Page'),
+        title: Text(localizations?.productDetail ?? 'Detail Page'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -647,28 +678,45 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              // Phone number display
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Contact Seller',
+                      localizations?.contactSeller ?? 'Contact Seller',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[600],
                       ),
                     ),
                     const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Icon(Icons.phone, size: 14, color: Colors.grey[600]),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            _maskPhoneNumber(
+                                widget.product.userName.phoneNumber),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // 🔥 Add hint text
                     Text(
-                      widget.product.userName.phoneNumber,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                      localizations?.callToReveal ?? 'Tap "Call" to reveal',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.blue[600],
+                        fontStyle: FontStyle.italic,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

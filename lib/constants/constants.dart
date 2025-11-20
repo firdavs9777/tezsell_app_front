@@ -1,4 +1,4 @@
-const String baseUrl = 'http://127.0.0.1:8000';
+const String baseUrl = 'https://api.webtezsell.com';
 const String PRODUCTS_URL = '/products/api/products/';
 const String SERVICES_URL = '/services/api/services';
 const String REGISTER_URL = '/accounts/register/';

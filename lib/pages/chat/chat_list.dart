@@ -1,5 +1,6 @@
 import 'package:app/pages/chat//chat_room.dart';
 import 'package:app/pages/chat/user_list.dart';
+import 'package:app/pages/chat/blocked_users_screen.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,16 @@ class MessagesList extends ConsumerStatefulWidget {
   ConsumerState<MessagesList> createState() => _MessagesListState();
 }
 
-class _MessagesListState extends ConsumerState<MessagesList> {
+class _MessagesListState extends ConsumerState<MessagesList>
+    with WidgetsBindingObserver {
   bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize chat on first load - FIXED
+    WidgetsBinding.instance.addObserver(this);
+
+    // Initialize chat on first load
     Future.microtask(() {
       if (mounted) {
         ref.read(chatProvider.notifier).initialize();
@@ -31,11 +35,53 @@ class _MessagesListState extends ConsumerState<MessagesList> {
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      // App came back to foreground
+      ref.read(chatProvider.notifier).ensureChatListConnected();
+    }
+  }
+
+  // 🔥 ADD THIS - Called when widget becomes visible again
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Reconnect chat list WebSocket when returning to this screen
+    if (mounted && _isInitialized) {
+      Future.microtask(() {
+        ref.read(chatProvider.notifier).ensureChatListConnected();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final chatState = ref.watch(chatProvider);
     final isAuthenticated = chatState.isAuthenticated;
-    final chatRooms = chatState.chatRooms;
+    final allChatRooms = chatState.chatRooms;
+    final blockedUserIds = chatState.blockedUserIds;
     final isLoading = chatState.isLoading;
+
+    // 🔥 NEW: Filter out chat rooms with blocked users (Karrot-style)
+    final chatRooms = allChatRooms.where((room) {
+      // For direct chats, check if the other participant is blocked
+      if (!room.isGroup && room.participants.isNotEmpty) {
+        final otherUser = room.participants.firstWhere(
+          (p) => p.id != chatState.currentUserId,
+          orElse: () => room.participants.first,
+        );
+        return !blockedUserIds.contains(otherUser.id);
+      }
+      // For group chats, show them (can't block groups)
+      return true;
+    }).toList();
 
     // Don't build until initialized
     if (!_isInitialized) {
@@ -81,11 +127,38 @@ class _MessagesListState extends ConsumerState<MessagesList> {
             },
             tooltip: 'New Message',
           ),
+          // 🔥 NEW: Blocked users menu
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'blocked') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BlockedUsersScreen(),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'blocked',
+                child: Row(
+                  children: [
+                    Icon(Icons.block, size: 20),
+                    SizedBox(width: 8),
+                    Text('Blocked Users'),
+                  ],
+                ),
+              ),
+            ],
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
               if (mounted) {
                 ref.read(chatProvider.notifier).loadChatRooms();
+                ref.read(chatProvider.notifier).loadBlockedUsers();
               }
             },
           ),
@@ -99,18 +172,25 @@ class _MessagesListState extends ConsumerState<MessagesList> {
                   onRefresh: () async {
                     if (mounted) {
                       await ref.read(chatProvider.notifier).loadChatRooms();
+                      await ref.read(chatProvider.notifier).loadBlockedUsers();
                     }
                   },
                   child: ListView.separated(
+                    padding: EdgeInsets.zero,
                     itemCount: chatRooms.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1),
+                    separatorBuilder: (context, index) => Divider(
+                      height: 1,
+                      thickness: 0.5,
+                      indent: 84, // Align with content (avatar + padding)
+                      color: Colors.grey[200],
+                    ),
                     itemBuilder: (context, index) {
                       final chatRoom = chatRooms[index];
-                      return ChatListTile(
-                        chatRoom: chatRoom,
-                        currentUserId: chatState.currentUserId!,
-                        onTap: () {
+                      return _buildSwipeableChatTile(
+                        context,
+                        chatRoom,
+                        chatState.currentUserId!,
+                        () {
                           if (mounted) {
                             Navigator.push(
                               context,
@@ -126,6 +206,109 @@ class _MessagesListState extends ConsumerState<MessagesList> {
                     },
                   ),
                 ),
+    );
+  }
+
+  // 🔥 NEW: Swipeable chat tile with delete action
+  Widget _buildSwipeableChatTile(
+    BuildContext context,
+    ChatRoom chatRoom,
+    int currentUserId,
+    VoidCallback onTap,
+  ) {
+    return Dismissible(
+      key: Key('chat_${chatRoom.id}'),
+      direction: DismissDirection.endToStart, // Swipe left to delete
+      background: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.delete,
+              color: Colors.white,
+              size: 28,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        // Show confirmation dialog
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Delete Chat'),
+            content: Text(
+              'Are you sure you want to delete the chat with ${chatRoom.name}? This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        );
+        return confirmed ?? false;
+      },
+      onDismissed: (direction) async {
+        // Delete the chat room
+        if (mounted) {
+          final success = await ref.read(chatProvider.notifier).deleteChatRoom(chatRoom.id);
+          if (mounted) {
+            if (success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Chat with ${chatRoom.name} deleted'),
+                  backgroundColor: Colors.green,
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    textColor: Colors.white,
+                    onPressed: () {
+                      // Note: Undo would require restoring the chat room
+                      // This would need backend support for undo functionality
+                    },
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Failed to delete chat'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        }
+      },
+      child: ChatListTile(
+        chatRoom: chatRoom,
+        currentUserId: currentUserId,
+        onTap: onTap,
+      ),
     );
   }
 
@@ -174,7 +357,6 @@ class _MessagesListState extends ConsumerState<MessagesList> {
   }
 }
 
-// Chat List Tile Widget (no changes needed but included for completeness)
 class ChatListTile extends StatelessWidget {
   final ChatRoom chatRoom;
   final int currentUserId;
@@ -207,69 +389,162 @@ class ChatListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasUnread = chatRoom.unreadCount > 0;
-    print(chatRoom.lastMessagePreview);
-    return ListTile(
-      onTap: onTap,
-      leading: CircleAvatar(
-        backgroundColor: Colors.blue,
-        child: Text(
-          chatRoom.name[0].toUpperCase(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      title: Text(
-        chatRoom.name,
-        style: TextStyle(
-          fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        chatRoom.lastMessagePreview?.isEmpty ?? true
-            ? 'No messages yet'
-            : chatRoom.lastMessagePreview!,
-        style: TextStyle(
-          color: hasUnread ? Colors.black87 : Colors.grey,
-          fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            _formatTimestamp(chatRoom.lastMessageTimestamp),
-            style: TextStyle(
-              fontSize: 12,
-              color: hasUnread ? Colors.blue : Colors.grey,
-              fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-          if (hasUnread) ...[
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                '${chatRoom.unreadCount}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+
+    // 🔥 FIX: Handle empty name
+    final displayName = chatRoom.name.isNotEmpty ? chatRoom.name : 'Unknown';
+    final avatarLetter = displayName[0].toUpperCase();
+    
+    // 🔥 NEW: Get other user for online status (for direct chats)
+    User? otherUser;
+    if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty) {
+      otherUser = chatRoom.participants.firstWhere(
+        (p) => p.id != currentUserId,
+        orElse: () => chatRoom.participants.first,
+      );
+    }
+
+    // 🔥 NEW: KakaoTalk-style modern chat list tile
+    return Container(
+      color: Colors.white,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                // 🔥 NEW: Larger avatar (KakaoTalk style)
+                Stack(
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: hasUnread
+                              ? [Colors.blue[400]!, Colors.blue[600]!]
+                              : [Colors.grey[400]!, Colors.grey[600]!],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          avatarLetter,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Online status indicator (smaller, more subtle)
+                    if (otherUser != null && otherUser.isOnline)
+                      Positioned(
+                        right: 2,
+                        bottom: 2,
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-              ),
+                const SizedBox(width: 12),
+                // Message content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              displayName,
+                              style: TextStyle(
+                                fontWeight: hasUnread ? FontWeight.bold : FontWeight.w600,
+                                fontSize: 17,
+                                color: Colors.black87,
+                                letterSpacing: -0.3,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            _formatTimestamp(chatRoom.lastMessageTimestamp),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              chatRoom.lastMessagePreview?.isEmpty ?? true
+                                  ? 'No messages yet'
+                                  : chatRoom.lastMessagePreview!,
+                              style: TextStyle(
+                                color: hasUnread ? Colors.black87 : Colors.grey[600],
+                                fontWeight: hasUnread ? FontWeight.w500 : FontWeight.normal,
+                                fontSize: 14,
+                                letterSpacing: -0.2,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (hasUnread) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: chatRoom.unreadCount > 99 ? 7 : 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red[500],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  chatRoom.unreadCount > 99 ? '99+' : '${chatRoom.unreadCount}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ],
+          ),
+        ),
       ),
     );
   }

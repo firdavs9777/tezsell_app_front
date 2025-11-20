@@ -1997,5 +1997,17 @@
   "saveChanges": "Save Changes",
   "propertyOwner": "Property Owner",
   "errorLoadingServices": "Error loading services",
-  "noRecommendedServicesFound": "No recommended services found."
+  "noRecommendedServicesFound": "No recommended services found.",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 8 characters",
+  "passwordRequirements": "Password must contain letters and numbers",
+  "usernameRequired": "Username is required",
+  "usernameTooShort": "Username must be at least 3 characters",
+  "confirmPasswordRequired": "Password confirmation is required",
+  "passwordHelp": "At least 8 characters, letters and numbers",
+  "usernameExists": "This username already exists",
+  "phoneExists": "This phone number is already registered",
+  "networkError": "Network connection error. Please check your connection",
+  "contactSeller": "Contact Seller",
+  "callToReveal": "Tap \"Call\" to reveal"
 }
