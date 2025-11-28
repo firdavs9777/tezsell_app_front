@@ -2007,5 +2007,21 @@
   "phoneExists": "Bu telefon raqami allaqachon ro'yxatdan o'tgan",
   "networkError": "Internetga ulanishda xatolik. Iltimos, ulanishni tekshiring",
   "contactSeller": "Sotuvchi bilan bog'lanish",
-  "callToReveal": "Ko'rish uchun \"Qo'ng'iroq\" bosing"
+  "callToReveal": "Ko'rish uchun \"Qo'ng'iroq\" bosing",
+  "camera": "Kamera",
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "gallery": "Galereya",
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "selectImageSource": "Rasm manbasini tanlang",
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "uploading": "Yuklanmoqda...",
+  "@uploading": {
+    "description": "Uploading state text"
+  }
 }

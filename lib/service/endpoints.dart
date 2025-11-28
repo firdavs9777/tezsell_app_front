@@ -1,3 +1,11 @@
+/// @deprecated Use [AppConfig] from `lib/config/app_config.dart` instead.
+/// This file is kept for backward compatibility but will be removed in a future version.
+/// 
+/// Migration guide:
+/// - Replace `Endpoints.baseURL` with `AppConfig.baseUrl`
+/// - Replace `Endpoints.wsUrl` with `AppConfig.wsBaseUrl`
+/// - Replace endpoint constants with `AppConfig.*Path` constants
+/// - Use `AppConfig.get*Url()` methods for full URLs
 class Endpoints {
   static String baseURL = "https://api.webtezsell.com/api/v1/";
   static String wsUrl = 'wss://api.webtezsell.com/';

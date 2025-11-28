@@ -2010,5 +2010,21 @@
   "phoneExists": "Этот номер телефона уже зарегистрирован",
   "networkError": "Ошибка подключения к интернету. Пожалуйста, проверьте соединение",
   "contactSeller": "Связаться с продавцом",
-  "callToReveal": "Нажмите \"Позвонить\" чтобы увидеть"
+  "callToReveal": "Нажмите \"Позвонить\" чтобы увидеть",
+  "camera": "Камера",
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "gallery": "Галерея",
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "selectImageSource": "Выберите источник изображения",
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "uploading": "Загрузка...",
+  "@uploading": {
+    "description": "Uploading state text"
+  }
 }

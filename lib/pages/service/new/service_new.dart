@@ -2,6 +2,8 @@ import 'package:app/common_widgets/common_button.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/utils/error_handler.dart';
+import 'package:app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ServiceNew extends ConsumerStatefulWidget {
   const ServiceNew({super.key});
@@ -19,6 +22,7 @@ class ServiceNew extends ConsumerStatefulWidget {
 
 class _ServiceNewState extends ConsumerState<ServiceNew> {
   final _formatter = NumberFormat('#,##0', 'en_US');
+  
   @override
   void initState() {
     super.initState();
@@ -29,7 +33,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-
     super.dispose();
   }
 
@@ -37,10 +40,24 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   final _descriptionController = TextEditingController();
 
   List<CategoryModel> availableCategories = [];
-
   int? selectedCategory;
   List<File> _selectedImages = [];
   final picker = ImagePicker();
+  bool _isUploading = false; // Track upload state
+
+  // Function to get the appropriate category name based on current locale
+  String getCategoryName(CategoryModel category) {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return category.nameUz;
+      case 'ru':
+        return category.nameRu;
+      case 'en':
+      default:
+        return category.nameEn;
+    }
+  }
 
   Future<void> _fetchCategories() async {
     try {
@@ -49,73 +66,247 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         availableCategories = categories;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading categories: $e')),
-      );
+      AppErrorHandler.logError('ServiceNew._fetchCategories', e);
+      AppErrorHandler.showError(context, e);
     }
   }
 
-  Future<void> _pickImage({bool isMulti = false}) async {
+  /// Shows a bottom sheet to choose between camera and gallery
+  Future<void> _showImageSourceDialog({bool isMulti = false}) async {
+    if (!mounted) return;
+    
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Select Image Source',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              title: const Text('Camera'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.purple),
+              title: const Text('Gallery'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (source != null) {
+      await _pickImage(source: source, isMulti: isMulti);
+    }
+  }
+
+  /// Picks image(s) from the specified source
+  Future<void> _pickImage({
+    required ImageSource source,
+    bool isMulti = false,
+  }) async {
     try {
-      if (isMulti) {
-        final pickedFiles = await picker.pickMultiImage();
-        if (pickedFiles != null) {
+      if (isMulti && source == ImageSource.gallery) {
+        // Multi-image picker only works with gallery
+        final pickedFiles = await picker.pickMultiImage(
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 85,
+        );
+        if (pickedFiles != null && mounted) {
           setState(() {
-            _selectedImages
-                .addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
+            _selectedImages.addAll(
+              pickedFiles.map((pickedFile) => File(pickedFile.path)),
+            );
           });
+          AppLogger.debug('Selected ${pickedFiles.length} images from gallery');
         }
       } else {
-        final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
+        // Single image from camera or gallery
+        final pickedFile = await picker.pickImage(
+          source: source,
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 85,
+        );
+        if (pickedFile != null && mounted) {
+          final imageFile = File(pickedFile.path);
+          
+          // Check file size (max 10MB)
+          final fileSize = await imageFile.length();
+          const maxSize = 10 * 1024 * 1024; // 10MB
+          
+          if (fileSize > maxSize) {
+            if (mounted) {
+              AppErrorHandler.showWarning(
+                context,
+                'Image is too large. Maximum size is 10MB',
+              );
+            }
+            return;
+          }
+          
           setState(() {
-            _selectedImages.add(File(pickedFile.path));
+            _selectedImages.add(imageFile);
           });
+          AppLogger.debug('Selected image from ${source.name}');
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking images: $e')),
-      );
+      AppErrorHandler.logError('ServiceNew._pickImage', e);
+      AppErrorHandler.showError(context, e);
     }
   }
 
   Future<void> _submitProduct() async {
-    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all the fields')),
+    // Prevent multiple submissions
+    if (_isUploading) {
+      AppLogger.debug('Service submission already in progress');
+      return;
+    }
+
+    final localizations = AppLocalizations.of(context);
+
+    // Validation
+    if (_titleController.text.trim().isEmpty ||
+        _descriptionController.text.trim().isEmpty) {
+      AppErrorHandler.showWarning(
+        context,
+        localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
       );
       return;
     }
 
-    final service = await ref.read(serviceMainProvider).createService(
-        name: _titleController.text,
-        description: _descriptionController.text,
-        categoryId: selectedCategory!,
-        imageFiles: _selectedImages);
-    if (service != null) {
-      Navigator.push(
+    if (selectedCategory == null) {
+      AppErrorHandler.showWarning(
         context,
-        MaterialPageRoute(
-            builder: (context) => const TabsScreen(
-                  initialIndex: 1,
-                )),
+        'Please select a valid category.',
       );
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Service successfully added'),
-        duration: const Duration(seconds: 3),
-      ));
+      return;
+    }
+
+    if (_selectedImages.isEmpty) {
+      AppErrorHandler.showWarning(
+        context,
+        'At least one service image is required',
+      );
+      return;
+    }
+
+    // Set uploading state
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      AppLogger.debug('Starting service creation...');
+      
+      // Show loading indicator
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Text('Uploading service...'),
+            ],
+          ),
+          duration: const Duration(seconds: 30),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+      );
+
+      final service = await ref.read(serviceMainProvider).createService(
+            name: _titleController.text.trim(),
+            description: _descriptionController.text.trim(),
+            categoryId: selectedCategory!,
+            imageFiles: _selectedImages,
+          );
+
+      if (!mounted) return;
+
+      // Hide loading indicator
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (service != null) {
+        AppLogger.info('Service created successfully: ${service.id}');
+        
+        // Show success message BEFORE navigation
+        AppErrorHandler.showSuccess(
+          context,
+          'Service successfully added!',
+        );
+
+        // Wait a bit for user to see the success message
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        if (!mounted) return;
+
+        // Navigate to home
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TabsScreen(initialIndex: 1),
+          ),
+        );
+      } else {
+        AppLogger.error('Service creation returned null');
+        AppErrorHandler.showError(
+          context,
+          'Error while creating service. Please try again.',
+        );
+      }
+    } catch (e) {
+      AppErrorHandler.logError('ServiceNew._submitProduct', e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        AppErrorHandler.showError(
+          context,
+          'Error while creating service. Please try again.',
+        );
+      }
+    } finally {
+      // Reset uploading state
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(serviceMainProvider).getCategories();
+    final localizations = AppLocalizations.of(context);
+    
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Yangi mahsulot post yaratish'),
+          title: Text(localizations?.addNewProductBtn ?? 'Create New Service'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -126,7 +317,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    'Yangi service yaratish',
+                    localizations?.addNewProductBtn ?? 'Create New Service',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -142,15 +333,15 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                   labelText: 'Service Name',
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Service haqida batafsil'),
+                _buildSectionTitle('Service Description'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: 'Service haqida yozing',
+                  labelText: 'Service Description',
                   maxLines: 5,
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Service Kategoriyani tanlash'),
+                _buildSectionTitle('Select Category'),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -163,40 +354,45 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                   items: availableCategories
                       .map((category) => DropdownMenuItem(
                             value: category,
-                            child: Text(category.nameEn),
+                            child: Text(getCategoryName(category)),
                           ))
                       .toList(),
-                  onChanged: (CategoryModel? value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedCategory = value.id;
-                      });
-                    }
-                  },
-                  hint: const Text('Kategoriyani tanlang'),
+                  onChanged: _isUploading
+                      ? null
+                      : (CategoryModel? value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedCategory = value.id;
+                            });
+                          }
+                        },
+                  hint: const Text('Select Category'),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Image'),
+                _buildSectionTitle('Images'),
                 const SizedBox(height: 10),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Button color
-                    foregroundColor: Colors.white, // Icon and text color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildImageSourceButton(
+                      icon: Icons.camera_alt,
+                      label: 'Camera',
+                      color: Colors.blue,
+                      onPressed: () => _showImageSourceDialog(isMulti: false),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 16),
-                  ),
-                  onPressed: () => _pickImage(isMulti: true),
-                  icon: const Icon(Icons.upload_file, size: 24),
-                  label: const Text("Upload", style: TextStyle(fontSize: 16)),
+                    _buildImageSourceButton(
+                      icon: Icons.photo_library,
+                      label: 'Gallery',
+                      color: Colors.purple,
+                      onPressed: () => _showImageSourceDialog(isMulti: true),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 if (_selectedImages.isEmpty)
                   const Center(
                     child: Text(
-                      'Images will appear here. Please press the upload icon above.',
+                      'Images will appear here. Please select images using the buttons above.',
                     ),
                   )
                 else
@@ -206,33 +402,46 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      crossAxisSpacing: 3.0,
-                      mainAxisSpacing: 3.0,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
                     ),
                     itemCount: _selectedImages.length,
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
-                          Image.file(_selectedImages[index],
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              _selectedImages[index],
                               width: double.infinity,
                               height: double.infinity,
-                              fit: BoxFit.cover),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           Positioned(
-                            top: 1,
-                            right: 0.1,
+                            top: 2,
+                            right: 2,
                             child: Container(
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red.withOpacity(1),
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.close,
-                                    color: Colors.white, size: 18),
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
                                 onPressed: () {
                                   setState(() {
                                     _selectedImages.removeAt(index);
                                   });
                                 },
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(
+                                  minWidth: 24,
+                                  minHeight: 24,
+                                ),
                               ),
                             ),
                           ),
@@ -249,9 +458,17 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
           child: Container(
             color: Colors.orange,
             height: 60,
-            child: CommonButton(
-              buttonText: 'Yuklash',
-              onPressed: _submitProduct,
+            child: AbsorbPointer(
+              absorbing: _isUploading,
+              child: Opacity(
+                opacity: _isUploading ? 0.6 : 1.0,
+                child: CommonButton(
+                  buttonText: _isUploading
+                      ? 'Uploading...'
+                      : (localizations?.upload ?? 'Upload'),
+                  onPressed: _submitProduct,
+                ),
+              ),
             ),
           ),
         ),
@@ -281,10 +498,38 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       maxLines: maxLines,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      enabled: !_isUploading, // Disable fields during upload
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  /// Builds a button for selecting image source (camera or gallery)
+  Widget _buildImageSourceButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ElevatedButton.icon(
+          onPressed: _isUploading ? null : onPressed,
+          icon: Icon(icon, color: Colors.white),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
       ),
     );

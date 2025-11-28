@@ -2,7 +2,7 @@ name: app
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+16
+version: 1.0.0+17
 
 environment:
   sdk: '>=3.1.4 <4.0.0'
@@ -39,6 +39,8 @@ dependencies:
   url_launcher: ^6.2.1
   mime: ^1.0.4
   emoji_picker_flutter: ^1.6.4
+  logger: ^2.0.2
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

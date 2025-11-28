@@ -1,3 +1,10 @@
+/// @deprecated Use [AppConfig] from `lib/config/app_config.dart` instead.
+/// This file is kept for backward compatibility but will be removed in a future version.
+/// 
+/// Migration guide:
+/// - Replace `baseUrl` with `AppConfig.baseUrl`
+/// - Replace endpoint constants with `AppConfig.*Path` constants
+/// - Use `AppConfig.get*Url()` methods for full URLs
 const String baseUrl = 'https://api.webtezsell.com';
 const String PRODUCTS_URL = '/products/api/products/';
 const String SERVICES_URL = '/services/api/services';

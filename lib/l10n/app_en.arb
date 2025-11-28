@@ -2009,5 +2009,21 @@
   "phoneExists": "This phone number is already registered",
   "networkError": "Network connection error. Please check your connection",
   "contactSeller": "Contact Seller",
-  "callToReveal": "Tap \"Call\" to reveal"
+  "callToReveal": "Tap \"Call\" to reveal",
+  "camera": "Camera",
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "selectImageSource": "Select Image Source",
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "uploading": "Uploading...",
+  "@uploading": {
+    "description": "Uploading state text"
+  }
 }

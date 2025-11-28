@@ -4,6 +4,8 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/utils/image_utils.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -334,15 +336,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    List<ImageProvider> images = widget.product.images.isNotEmpty
+    // Build image URLs for cached image slider
+    final List<String> imageUrls = widget.product.images.isNotEmpty
         ? widget.product.images
-            .map((image) =>
-                NetworkImage('${baseUrl}${image.image}') as ImageProvider)
+            .map((image) => ImageUtils.buildImageUrl(image.image))
             .toList()
-        : [
-            const AssetImage('assets/logo/logo_no_background.png')
-                as ImageProvider,
-          ];
+        : [];
 
     return Scaffold(
       appBar: AppBar(
@@ -351,13 +350,13 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            _buildImageSlider(images),
-            if (images.length > 1)
+            _buildImageSlider(imageUrls),
+            if (imageUrls.length > 1)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: SmoothPageIndicator(
+                  child: SmoothPageIndicator(
                   controller: _pageController,
-                  count: images.length,
+                  count: imageUrls.length,
                   effect: const WormEffect(
                     dotWidth: 8.0,
                     dotHeight: 8.0,
@@ -378,7 +377,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     );
   }
 
-  Widget _buildImageSlider(List<ImageProvider> images) {
+  Widget _buildImageSlider(List<String> imageUrls) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
@@ -388,30 +387,14 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         ),
         child: Stack(
           children: [
-            PageView.builder(
-              controller: _pageController,
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image(
-                    image: images[index],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey.shade200,
-                        child: const Icon(
-                          Icons.image_not_supported,
-                          color: Colors.grey,
-                          size: 50,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
+            CachedImageSlider(
+              imageUrls: imageUrls,
+              height: 250,
+              fit: BoxFit.cover,
+              pageController: _pageController,
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            if (images.length > 1) ...[
+            if (imageUrls.length > 1) ...[
               Positioned(
                 left: 10,
                 top: 100,
@@ -452,7 +435,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                       if (_pageController.hasClients &&
                           _pageController.page != null) {
                         int currentPage = _pageController.page!.toInt();
-                        if (currentPage < images.length - 1) {
+                        if (currentPage < imageUrls.length - 1) {
                           _pageController.nextPage(
                             duration: const Duration(milliseconds: 200),
                             curve: Curves.easeInOut,
@@ -477,18 +460,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: <Widget>[
-          CircleAvatar(
+          CachedNetworkImageWidget.circular(
+            imageUrl: widget.product.userName?.profileImage?.image,
             radius: 21,
-            backgroundImage: widget
-                        .product.userName?.profileImage?.image?.isNotEmpty ==
-                    true
-                ? NetworkImage(
-                    '${baseUrl}${widget.product.userName!.profileImage!.image}')
-                : null,
-            child:
-                widget.product.userName?.profileImage?.image?.isNotEmpty != true
-                    ? const Icon(Icons.person, color: Colors.grey)
-                    : null,
+            errorWidget: const Icon(Icons.person, color: Colors.grey),
           ),
           const SizedBox(width: 12),
           Expanded(

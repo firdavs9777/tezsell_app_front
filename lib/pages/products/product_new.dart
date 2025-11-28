@@ -3,6 +3,8 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/utils/thousand_separator.dart';
+import 'package:app/utils/error_handler.dart';
+import 'package:app/utils/app_logger.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +46,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   int? selectedCategory;
   List<File> _selectedImages = [];
   final picker = ImagePicker();
+  bool _isUploading = false; // Track upload state
 
   // Function to get the appropriate category name based on current locale
 
@@ -68,101 +71,251 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         availableCategories = categories;
       });
     } catch (e) {
-      final localizations = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              '${localizations?.loadingCategoryError ?? "Error loading categories:"} $e'),
-        ),
-      );
+      AppErrorHandler.logError('ProductNew._fetchCategories', e);
+      AppErrorHandler.showError(context, e);
     }
   }
 
-  Future<void> _pickImage({bool isMulti = false}) async {
+  /// Shows a bottom sheet to choose between camera and gallery
+  Future<void> _showImageSourceDialog({bool isMulti = false}) async {
+    final localizations = AppLocalizations.of(context);
+    
+    if (!mounted) return;
+    
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Select Image Source',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              title: const Text('Camera'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.purple),
+              title: const Text('Gallery'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (source != null) {
+      await _pickImage(source: source, isMulti: isMulti);
+    }
+  }
+
+  /// Picks image(s) from the specified source
+  Future<void> _pickImage({
+    required ImageSource source,
+    bool isMulti = false,
+  }) async {
     try {
-      if (isMulti) {
-        final pickedFiles = await picker.pickMultiImage();
-        if (pickedFiles != null) {
+      if (isMulti && source == ImageSource.gallery) {
+        // Multi-image picker only works with gallery
+        final pickedFiles = await picker.pickMultiImage(
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 85,
+        );
+        if (pickedFiles != null && mounted) {
           setState(() {
-            _selectedImages
-                .addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
+            _selectedImages.addAll(
+              pickedFiles.map((pickedFile) => File(pickedFile.path)),
+            );
           });
+          AppLogger.debug('Selected ${pickedFiles.length} images from gallery');
         }
       } else {
-        final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
+        // Single image from camera or gallery
+        final pickedFile = await picker.pickImage(
+          source: source,
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 85,
+        );
+        if (pickedFile != null && mounted) {
+          final imageFile = File(pickedFile.path);
+          
+          // Check file size (max 10MB)
+          final fileSize = await imageFile.length();
+          const maxSize = 10 * 1024 * 1024; // 10MB
+          
+          if (fileSize > maxSize) {
+            if (mounted) {
+              AppErrorHandler.showWarning(
+                context,
+                'Image is too large. Maximum size is 10MB',
+              );
+            }
+            return;
+          }
+          
           setState(() {
-            _selectedImages.add(File(pickedFile.path));
+            _selectedImages.add(imageFile);
           });
+          AppLogger.debug('Selected image from ${source.name}');
         }
       }
     } catch (e) {
-      final localizations = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              '${localizations?.errorMessage ?? "Error picking images:"} $e'),
-        ),
-      );
+      AppErrorHandler.logError('ProductNew._pickImage', e);
+      AppErrorHandler.showError(context, e);
     }
   }
 
   Future<void> _submitProduct() async {
+    // Prevent multiple submissions
+    if (_isUploading) {
+      AppLogger.debug('Product submission already in progress');
+      return;
+    }
+
     final localizations = AppLocalizations.of(context);
 
-    if (_titleController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
-        _amountController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations?.pleaseFillAllRequired ??
-              'Please fill all the fields'),
-        ),
+    // Validation
+    if (_titleController.text.trim().isEmpty ||
+        _descriptionController.text.trim().isEmpty ||
+        _amountController.text.trim().isEmpty) {
+      AppErrorHandler.showWarning(
+        context,
+        localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
       );
       return;
     }
-    int? price = int.tryParse(_amountController.text.replaceAll(',', ''));
-    if (price == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.priceRequiredMessage ??
-            'Invalid price entered. Please enter a valid number.'),
-        duration: const Duration(seconds: 3),
-      ));
-    } else if (selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.categoryRequiredMessage ??
-            'Please select a valid category.'),
-        duration: const Duration(seconds: 3),
-      ));
-    } else if (_selectedImages.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(localizations?.oneImageConfirmMessage ??
-            'At least one product image is required'),
-        duration: const Duration(seconds: 3),
-      ));
-    } else {
+
+    final price = int.tryParse(_amountController.text.replaceAll(',', ''));
+    if (price == null || price <= 0) {
+      AppErrorHandler.showWarning(
+        context,
+        localizations?.priceRequiredMessage ??
+            'Invalid price entered. Please enter a valid number.',
+      );
+      return;
+    }
+
+    if (selectedCategory == null) {
+      AppErrorHandler.showWarning(
+        context,
+        localizations?.categoryRequiredMessage ??
+            'Please select a valid category.',
+      );
+      return;
+    }
+
+    if (_selectedImages.isEmpty) {
+      AppErrorHandler.showWarning(
+        context,
+        localizations?.oneImageConfirmMessage ??
+            'At least one product image is required',
+      );
+      return;
+    }
+
+    // Set uploading state
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      AppLogger.debug('Starting product creation...');
+      
+      // Show loading indicator
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Text('Uploading product...'),
+            ],
+          ),
+          duration: const Duration(seconds: 30),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+      );
+
       final product = await ref.read(productsServiceProvider).createProduct(
-          title: _titleController.text,
-          description: _descriptionController.text,
-          price: price,
-          categoryId: selectedCategory!,
-          imageFiles: _selectedImages);
+            title: _titleController.text.trim(),
+            description: _descriptionController.text.trim(),
+            price: price,
+            categoryId: selectedCategory!,
+            imageFiles: _selectedImages,
+          );
+
+      if (!mounted) return;
+
+      // Hide loading indicator
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
       if (product != null) {
+        AppLogger.info('Product created successfully: ${product.id}');
+        
+        // Show success message BEFORE navigation
+        AppErrorHandler.showSuccess(
+          context,
+          localizations?.productCreatedSuccess ??
+              'Product successfully added!',
+        );
+
+        // Wait a bit for user to see the success message
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        if (!mounted) return;
+
+        // Navigate to home
         await Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => TabsScreen()),
+          MaterialPageRoute(builder: (context) => const TabsScreen()),
         );
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(localizations?.productCreatedSuccess ??
-              'Product successfully added'),
-          duration: Duration(seconds: 3),
-        ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(localizations?.errorCreatingProduct ??
-              'Error while creating product'),
-          duration: Duration(seconds: 3),
-        ));
+        AppLogger.error('Product creation returned null');
+        AppErrorHandler.showError(
+          context,
+          localizations?.errorCreatingProduct ??
+              'Error while creating product. Please try again.',
+        );
+      }
+    } catch (e) {
+      AppErrorHandler.logError('ProductNew._submitProduct', e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        AppErrorHandler.showError(
+          context,
+          localizations?.errorCreatingProduct ??
+              'Error while creating product. Please try again.',
+        );
+      }
+    } finally {
+      // Reset uploading state
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
       }
     }
   }
@@ -248,26 +401,37 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                             child: Text(getCategoryName(category)),
                           ))
                       .toList(),
-                  onChanged: (CategoryModel? value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedCategory = value.id;
-                      });
-                    }
-                  },
+                  onChanged: _isUploading
+                      ? null
+                      : (CategoryModel? value) {
+                          if (value != null) {
+                            setState(() {
+                              selectedCategory = value.id;
+                            });
+                          }
+                        },
                   hint: Text(
                       localizations?.selectCategory ?? 'Kategoriyani tanlang'),
                 ),
                 const SizedBox(height: 20),
                 _buildSectionTitle(localizations?.newProductImages ?? 'Image'),
                 const SizedBox(height: 10),
-                IconButton(
-                  color: Colors.red,
-                  icon: const Icon(
-                    Icons.upload_file,
-                    size: 30,
-                  ),
-                  onPressed: () => _pickImage(isMulti: true),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildImageSourceButton(
+                      icon: Icons.camera_alt,
+                      label: 'Camera',
+                      color: Colors.blue,
+                      onPressed: () => _showImageSourceDialog(isMulti: false),
+                    ),
+                    _buildImageSourceButton(
+                      icon: Icons.photo_library,
+                      label: 'Gallery',
+                      color: Colors.purple,
+                      onPressed: () => _showImageSourceDialog(isMulti: true),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 if (_selectedImages.isEmpty)
@@ -340,9 +504,17 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           child: Container(
             color: Colors.orange,
             height: 60,
-            child: CommonButton(
-              buttonText: localizations?.upload ?? 'Yuklash',
-              onPressed: _submitProduct,
+            child: AbsorbPointer(
+              absorbing: _isUploading,
+              child: Opacity(
+                opacity: _isUploading ? 0.6 : 1.0,
+                child: CommonButton(
+                  buttonText: _isUploading
+                      ? 'Uploading...'
+                      : (localizations?.upload ?? 'Yuklash'),
+                  onPressed: _submitProduct,
+                ),
+              ),
             ),
           ),
         ),
@@ -372,10 +544,38 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       maxLines: maxLines,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      enabled: !_isUploading, // Disable fields during upload
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  /// Builds a button for selecting image source (camera or gallery)
+  Widget _buildImageSourceButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ElevatedButton.icon(
+          onPressed: _isUploading ? null : onPressed,
+          icon: Icon(icon, color: Colors.white),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
       ),
     );

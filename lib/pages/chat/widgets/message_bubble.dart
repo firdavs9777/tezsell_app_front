@@ -1,4 +1,6 @@
 import 'package:app/providers/provider_models/message_model.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -254,78 +256,16 @@ class MessageBubble extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => Scaffold(
-              backgroundColor: Colors.black,
-              appBar: AppBar(
-                backgroundColor: Colors.black,
-                iconTheme: const IconThemeData(color: Colors.white),
-              ),
-              body: Center(
-                child: InteractiveViewer(
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.broken_image, size: 64, color: Colors.white),
-                            SizedBox(height: 16),
-                            Text(
-                              'Failed to load image',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            builder: (_) => ImageViewer(imageUrl: imageUrl),
           ),
         );
       },
-      child: ClipRRect(
+      child: CachedNetworkImageWidget(
+        imageUrl: imageUrl,
+        width: 200,
+        height: 200,
+        fit: BoxFit.cover,
         borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          imageUrl,
-          width: 200,
-          height: 200,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
-              width: 200,
-              height: 200,
-              color: Colors.grey[300],
-              child: Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                      : null,
-                ),
-              ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: 200,
-              height: 200,
-              color: Colors.grey[300],
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                  SizedBox(height: 8),
-                  Text('Failed to load', style: TextStyle(fontSize: 12)),
-                ],
-              ),
-            );
-          },
-        ),
       ),
     );
   }

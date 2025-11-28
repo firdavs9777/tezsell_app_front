@@ -2,6 +2,7 @@ import 'package:app/constants/constants.dart';
 import 'package:app/pages/products/product_detail.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -50,27 +51,15 @@ class ProductMain extends ConsumerWidget {
               child: SizedBox(
                 width: 100,
                 height: 100,
-                child: product.images.isNotEmpty
-                    ? Image.network(
-                        '${baseUrl}${product.images[0].image}',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            'assets/logo/logo_no_background.png',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        'assets/logo/logo_no_background.png',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
+                child: CachedNetworkImageWidget(
+                  imageUrl: product.images.isNotEmpty
+                      ? product.images[0].image
+                      : null,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
             ),
             const SizedBox(width: 16.0),
