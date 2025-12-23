@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:app/pages/city/towns.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class CityList extends StatelessWidget {
   const CityList({super.key, required this.cityList, required this.cityId});

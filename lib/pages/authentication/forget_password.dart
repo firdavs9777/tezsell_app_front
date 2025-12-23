@@ -2,8 +2,7 @@ import 'package:app/pages/authentication/login.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ForgotPasswordPage extends ConsumerStatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -13,21 +12,16 @@ class ForgotPasswordPage extends ConsumerStatefulWidget {
 }
 
 class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  String _countryCode = '+998';
-  String _countryName = 'Uzbekistan';
   bool _isLoading = false;
 
   Color get _primaryColor => Theme.of(context).primaryColor;
 
-  // Get full phone number with country code
-  String get fullPhoneNumber => '$_countryCode${_phoneController.text.trim()}';
-
   @override
   void dispose() {
-    _phoneController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -108,7 +102,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
                 // Description
                 Text(
-                  'Enter your phone number and we\'ll send you a verification code to reset your password.',
+                  'Enter your email address and we\'ll send you a verification code to reset your password.',
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey[600],
@@ -117,7 +111,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
                 const SizedBox(height: 32),
 
-                // Phone Number Field with Country Code Picker
+                // Email Field
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -126,104 +120,30 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     borderRadius: BorderRadius.circular(12),
                     color: _isLoading ? Colors.grey.shade100 : null,
                   ),
-                  child: Row(
-                    children: [
-                      // Country Code Picker
-                      SizedBox(
-                        width: 150,
-                        child: CountryCodePicker(
-                          onChanged: _isLoading
-                              ? null
-                              : (country) {
-                                  setState(() {
-                                    _countryCode = country.dialCode!;
-                                    _countryName = country.name!;
-                                  });
-                                },
-                          initialSelection: 'UZ',
-                          favorite: [
-                            '+998',
-                            'UZ',
-                            '+82',
-                            'KR',
-                            '+1',
-                            'US',
-                            '+91',
-                            'IN'
-                          ],
-                          showCountryOnly: false,
-                          showFlag: true,
-                          showDropDownButton: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          textStyle: TextStyle(
-                            fontSize: 14,
-                            color: _isLoading
-                                ? Colors.grey.shade400
-                                : Colors.black,
-                          ),
-                          enabled: !_isLoading,
-                          flagWidth: 20,
-                        ),
-                      ),
-
-                      // Divider
-                      Container(
-                        height: 50,
-                        width: 1,
+                  child: TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    enabled: !_isLoading,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
                         color: _isLoading
-                            ? Colors.grey.shade300
-                            : Colors.grey.shade400,
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                       ),
-
-                      // Phone Number Input
-                      Expanded(
-                        child: TextField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.number,
-                          enabled: !_isLoading,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: localizations?.enterPhoneNumber ??
-                                'Enter phone number',
-                            hintStyle: TextStyle(
-                              color: _isLoading
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 15,
-                              horizontal: 15,
-                            ),
-                          ),
-                        ),
+                      hintText: 'Enter email address',
+                      hintStyle: TextStyle(
+                        color: _isLoading
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                       ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Country and Full Number Preview
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${localizations?.selectedCountryLabel ?? "Selected:"} $_countryName ($_countryCode)',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 15,
                       ),
                     ),
-                    if (_phoneController.text.isNotEmpty)
-                      Text(
-                        '${localizations?.fullPhoneLabel ?? "Full:"} $fullPhoneNumber',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: _primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
 
                 const SizedBox(height: 32),
@@ -298,8 +218,15 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   }
 
   Future<void> _sendOTP() async {
-    if (_phoneController.text.trim().isEmpty) {
-      _showError('Please enter your phone number');
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      _showError('Please enter your email address');
+      return;
+    }
+
+    // Basic email validation
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      _showError('Please enter a valid email address');
       return;
     }
 
@@ -307,15 +234,15 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
     final authService = ref.read(authenticationServiceProvider);
     final result = await authService.sendOtpChangePassword(
-      phoneNumber: fullPhoneNumber, // Use full phone number with country code
+      email: email,
     );
 
     if (mounted) setState(() => _isLoading = false);
 
     if (result['success']) {
       if (mounted) {
-        _showSuccess('Verification code sent to your phone');
-        _showPasswordResetDialog(fullPhoneNumber);
+        _showSuccess('Verification code sent to your email');
+        _showPasswordResetDialog(email);
       }
     } else {
       if (mounted) {
@@ -324,7 +251,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     }
   }
 
-  void _showPasswordResetDialog(String phoneNumber) {
+  void _showPasswordResetDialog(String email) {
     final otpController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
@@ -352,7 +279,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Enter the verification code sent to $phoneNumber',
+                    'Enter the verification code sent to $email',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[600]),
                   ),
@@ -453,7 +380,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   await _resetPassword(
-                    phoneNumber,
+                    email,
                     otpController.text,
                     newPasswordController.text,
                     confirmPasswordController.text,
@@ -472,7 +399,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     );
   }
 
-  Future<void> _resetPassword(String phoneNumber, String otp,
+  Future<void> _resetPassword(String email, String otp,
       String newPassword, String confirmPassword) async {
     final navigator = Navigator.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -488,8 +415,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
     final authService = ref.read(authenticationServiceProvider);
     final result = await authService.changePassword(
-      phoneNumber: phoneNumber,
-      otp: otp,
+      email: email,
+      verificationCode: otp, // Changed from otp to verificationCode
       newPassword: newPassword,
       confirmPassword: confirmPassword,
     );
@@ -540,7 +467,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
-        _showPasswordResetDialog(phoneNumber);
+        _showPasswordResetDialog(email);
       }
     }
   }

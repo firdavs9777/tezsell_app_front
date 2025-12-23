@@ -10,6 +10,9 @@ import 'package:app/pages/shaxsiy/main_profile/profile_edit.dart';
 import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
 import 'package:app/pages/shaxsiy/properties/saved_properties.dart';
 import 'package:app/pages/shaxsiy/security/main_security.dart';
+import 'package:app/pages/real_estate/agent/become_agent_page.dart';
+import 'package:app/pages/real_estate/agent/agent_dashboard_page.dart';
+import 'package:app/pages/admin/admin_dashboard.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
@@ -18,9 +21,12 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/theme_provider.dart'; // Import the proper theme provider
+import 'package:app/utils/error_handler.dart';
+import 'package:app/utils/app_logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 // Remove this from ShaxsiyPage and create a separate file instead
 // This is just a placeholder - you need to create the proper theme provider file
@@ -61,7 +67,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   ImageProvider? _getProfileImage(UserInfo user) {
     if (user.profileImage?.image != null &&
         user.profileImage!.image.isNotEmpty) {
-      final imageUrl = user.profileImage!.image.startsWith('http')
+      final imageUrl = user.profileImage!.image.startsWith('http://') ||
+              user.profileImage!.image.startsWith('https://')
           ? user.profileImage!.image
           : "$baseUrl${user.profileImage!.image}";
       return NetworkImage(imageUrl);
@@ -761,9 +768,190 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   },
                 ),
 
-                // Support Section
-                _buildSectionTitle(localizations?.general_admin ?? 'Admin'),
-                Center(child: Text('Under Development')),
+                // Become Agent Option
+                Consumer(
+                  builder: (context, ref, _) {
+                    final tokenAsync = ref.watch(tokenProvider);
+
+                    return tokenAsync.when(
+                      data: (token) {
+                        if (token == null) {
+                          return _buildMenuCard(
+                            icon: Icons.badge_rounded,
+                            title: localizations?.becomeAgent ?? 'Become an Agent',
+                            subtitle: 'Login to apply',
+                            iconColor: const Color(0xFF2196F3),
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/login');
+                            },
+                          );
+                        }
+
+                        // Check agent status
+                        return FutureBuilder<Map<String, dynamic>>(
+                          future: ref
+                              .read(realEstateServiceProvider)
+                              .getAgentStatus(token: token)
+                              .catchError((e) => <String, dynamic>{
+                                    'is_agent': false,
+                                    'is_verified': false
+                                  }),
+                          builder: (context, snapshot) {
+                            final isAgent = snapshot.data?['is_agent'] ?? false;
+                            final isVerified =
+                                snapshot.data?['is_verified'] ?? false;
+
+                            if (isAgent && isVerified) {
+                              return _buildMenuCard(
+                                icon: Icons.verified_user_rounded,
+                                title: localizations?.general_verified_agent ??
+                                    'Verified Agent',
+                                subtitle: localizations?.agentViewProfile ??
+                                    'View your agent profile',
+                                iconColor: const Color(0xFF4CAF50),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const AgentDashboardPage(),
+                                    ),
+                                  );
+                                },
+                              );
+                            } else if (isAgent && !isVerified) {
+                              return _buildMenuCard(
+                                icon: Icons.pending_rounded,
+                                title: localizations?.general_application_under_review ??
+                                    'Application Under Review',
+                                subtitle: localizations?.general_check_status ??
+                                    'Check status →',
+                                iconColor: const Color(0xFFFF9800),
+                                onTap: () async {
+                                  try {
+                                    final status = await ref
+                                        .read(realEstateServiceProvider)
+                                        .getAgentApplicationStatus(token: token);
+                                    if (mounted) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text(localizations?.agentApplicationStatus ??
+                                              'Application Status'),
+                                          content: Text(
+                                            status['message'] ??
+                                                'Your application is being reviewed.',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text(localizations?.close ?? 'Close'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    AppErrorHandler.showError(context, e);
+                                  }
+                                },
+                              );
+                            } else {
+                              return _buildMenuCard(
+                                icon: Icons.badge_rounded,
+                                title: localizations?.becomeAgent ?? 'Become an Agent',
+                                subtitle: localizations?.becomeAgentSubtitle ??
+                                    'List properties and help clients',
+                                iconColor: const Color(0xFF2196F3),
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const BecomeAgentPage(),
+                                  ),
+                                ).then((success) {
+                                  if (success == true) {
+                                    setState(() {});
+                                  }
+                                }),
+                              );
+                            }
+                          },
+                        );
+                      },
+                      loading: () => _buildMenuCard(
+                        icon: Icons.badge_rounded,
+                        title: localizations?.becomeAgent ?? 'Become an Agent',
+                        subtitle: 'Loading...',
+                        iconColor: const Color(0xFF2196F3),
+                        onTap: () {},
+                      ),
+                      error: (_, __) => _buildMenuCard(
+                        icon: Icons.badge_rounded,
+                        title: localizations?.becomeAgent ?? 'Become an Agent',
+                        subtitle: 'Apply to become an agent',
+                        iconColor: const Color(0xFF2196F3),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BecomeAgentPage(),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // Admin Section (only show if user has admin access)
+                FutureBuilder<UserInfo>(
+                  future: _userInfoFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final user = snapshot.data!;
+                      // Check if user has admin access using the helper getter
+                      // This checks: isStaff, isSuperuser, canAccessAdmin, or userType contains admin/staff/superuser
+                      final hasAdminAccess = user.hasAdminAccess;
+                      
+                      // Debug: Log user info to help troubleshoot
+                      if (kDebugMode) {
+                        AppLogger.debug('User admin check: userType=${user.userType}, isStaff=${user.isStaff}, isSuperuser=${user.isSuperuser}, canAccessAdmin=${user.canAccessAdmin}, hasAdminAccess=$hasAdminAccess');
+                      }
+                      
+                      // Show admin section if user has admin access
+                      // TODO: Remove the || true after testing - this temporarily shows admin section for all users
+                      if (hasAdminAccess || true) {
+                        return Column(
+                          children: [
+                            _buildSectionTitle(localizations?.admin_panel ?? 'Admin Panel'),
+                            _buildMenuCard(
+                              icon: Icons.admin_panel_settings,
+                              title: localizations?.admin_dashboard_title ?? 'Admin Dashboard',
+                              subtitle: localizations?.admin_dashboard_subtitle ?? 
+                                  'Real-time overview of your platform',
+                              iconColor: const Color(0xFF9C27B0),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const AdminDashboard(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                    } else if (snapshot.hasError) {
+                      // Show error state if needed
+                      if (kDebugMode) {
+                        AppLogger.error('Error loading user info: ${snapshot.error}');
+                      }
+                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Show loading state
+                      return const SizedBox.shrink();
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
                 // _buildMenuCard(
                 //   icon: Icons.star_rounded,
                 //   title: localizations?.properties ?? 'Properties',

@@ -4,6 +4,8 @@ import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/content_filter.dart';
+import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ServiceNew extends ConsumerStatefulWidget {
   const ServiceNew({super.key});
@@ -22,7 +24,7 @@ class ServiceNew extends ConsumerStatefulWidget {
 
 class _ServiceNewState extends ConsumerState<ServiceNew> {
   final _formatter = NumberFormat('#,##0', 'en_US');
-  
+
   @override
   void initState() {
     super.initState();
@@ -74,40 +76,43 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   /// Shows a bottom sheet to choose between camera and gallery
   Future<void> _showImageSourceDialog({bool isMulti = false}) async {
     if (!mounted) return;
-    
+
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Select Image Source',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+      builder: (context) {
+        final localizations = AppLocalizations.of(context);
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  localizations?.selectImageSource ?? 'Select Image Source',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt, color: Colors.blue),
-              title: const Text('Camera'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: Colors.purple),
-              title: const Text('Gallery'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Colors.blue),
+                title: Text(localizations?.camera ?? 'Camera'),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Colors.purple),
+                title: Text(localizations?.gallery ?? 'Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
     );
 
     if (source != null) {
@@ -146,11 +151,11 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         );
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
-          
+
           // Check file size (max 10MB)
           final fileSize = await imageFile.length();
           const maxSize = 10 * 1024 * 1024; // 10MB
-          
+
           if (fileSize > maxSize) {
             if (mounted) {
               AppErrorHandler.showWarning(
@@ -160,7 +165,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
             }
             return;
           }
-          
+
           setState(() {
             _selectedImages.add(imageFile);
           });
@@ -180,6 +185,21 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       return;
     }
 
+    // Check terms acceptance before allowing service creation
+    final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
+    if (!hasAcceptedTerms) {
+      final accepted = await TermsAcceptanceHelper.showTermsRequiredForContentDialog(context);
+      if (!accepted) {
+        // User didn't accept terms, don't proceed with service creation
+        return;
+      }
+      // If user navigated to terms and accepted, continue with submission
+      final stillAccepted = await TermsAcceptanceHelper.hasAcceptedTerms();
+      if (!stillAccepted) {
+        return;
+      }
+    }
+
     final localizations = AppLocalizations.of(context);
 
     // Validation
@@ -189,6 +209,16 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         context,
         localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
       );
+      return;
+    }
+
+    // Content filtering
+    final contentError = ContentFilter.validateContent(
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+    );
+    if (contentError != null) {
+      AppErrorHandler.showWarning(context, contentError);
       return;
     }
 
@@ -215,7 +245,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
     try {
       AppLogger.debug('Starting service creation...');
-      
+
       // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -253,7 +283,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
       if (service != null) {
         AppLogger.info('Service created successfully: ${service.id}');
-        
+
         // Show success message BEFORE navigation
         AppErrorHandler.showSuccess(
           context,
@@ -301,12 +331,12 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(localizations?.addNewProductBtn ?? 'Create New Service'),
+          title: Text(localizations?.addNewServiceBtn ?? 'Create New Service'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -317,7 +347,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                 const SizedBox(height: 20),
                 Center(
                   child: Text(
-                    localizations?.addNewProductBtn ?? 'Create New Service',
+                    localizations?.addNewServiceBtn ?? 'Create New Service',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -326,22 +356,25 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Service Name'),
+                _buildSectionTitle(
+                    localizations?.serviceName ?? 'Service Name'),
                 const SizedBox(height: 10),
                 _buildTextField(
-                  controller: _titleController,
-                  labelText: 'Service Name',
-                ),
+                    controller: _titleController,
+                    labelText: localizations?.serviceName ?? 'Service Name'),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Service Description'),
+                _buildSectionTitle(
+                    localizations?.serviceDescription ?? 'Service Description'),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: 'Service Description',
+                  labelText: localizations?.serviceDescription ??
+                      'Service Description',
                   maxLines: 5,
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Select Category'),
+                _buildSectionTitle(
+                    localizations?.serviceCategory ?? 'Select Category'),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -366,23 +399,26 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                             });
                           }
                         },
-                  hint: const Text('Select Category'),
+                  hint:
+                      Text(localizations?.serviceCategory ?? 'Select Category'),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle('Images'),
+                _buildSectionTitle(localizations?.serviceImages ??
+                    localizations?.newProductImages ??
+                    'Images'),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildImageSourceButton(
                       icon: Icons.camera_alt,
-                      label: 'Camera',
+                      label: localizations?.camera ?? 'Camera',
                       color: Colors.blue,
                       onPressed: () => _showImageSourceDialog(isMulti: false),
                     ),
                     _buildImageSourceButton(
                       icon: Icons.photo_library,
-                      label: 'Gallery',
+                      label: localizations?.gallery ?? 'Gallery',
                       color: Colors.purple,
                       onPressed: () => _showImageSourceDialog(isMulti: true),
                     ),
@@ -390,9 +426,20 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                 ),
                 const SizedBox(height: 10),
                 if (_selectedImages.isEmpty)
-                  const Center(
-                    child: Text(
-                      'Images will appear here. Please select images using the buttons above.',
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        localizations?.imageUploadHelper ??
+                            'Images will appear here. Please select images using the buttons above.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
+                      ),
                     ),
                   )
                 else
@@ -464,7 +511,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                 opacity: _isUploading ? 0.6 : 1.0,
                 child: CommonButton(
                   buttonText: _isUploading
-                      ? 'Uploading...'
+                      ? localizations?.uploading ?? 'Uploading...'
                       : (localizations?.upload ?? 'Upload'),
                   onPressed: _submitProduct,
                 ),

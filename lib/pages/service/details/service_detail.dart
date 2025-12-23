@@ -12,10 +12,11 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ServiceDetail extends ConsumerStatefulWidget {
   final Services service;
@@ -33,8 +34,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   final FocusNode commentFocusNode = FocusNode();
   bool showCommentField = false;
 
-  // 🔥 Add phone reveal state
-  bool _phoneNumberRevealed = false;
 
   // Edit state variables
   bool isEditingComment = false;
@@ -54,75 +53,27 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     _fetchRecommendedServices();
   }
 
-  // 🔥 Add phone masking helper
-  String _maskPhoneNumber(String phoneNumber) {
-    if (phoneNumber.isEmpty) return '';
-
-    final cleaned = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-    if (cleaned.length <= 4) return cleaned;
-
-    if (cleaned.startsWith('+')) {
-      if (cleaned.length > 7) {
-        final countryCode = cleaned.substring(0, 4);
-        final firstDigits = cleaned.substring(4, 6);
-        final lastDigits = cleaned.substring(cleaned.length - 2);
-        return '$countryCode $firstDigits *** ** $lastDigits';
-      }
-    }
-
-    final first = cleaned.substring(0, 2);
-    final last = cleaned.substring(cleaned.length - 2);
-    final maskLength = cleaned.length - 4;
-    return '$first${'*' * maskLength}$last';
-  }
-
-  // 🔥 Add display phone helper
-  String _getDisplayPhoneNumber() {
-    if (_phoneNumberRevealed) {
-      return widget.service.userName.phoneNumber;
-    }
-    return _maskPhoneNumber(widget.service.userName.phoneNumber);
-  }
-
-  // 🔥 Add phone call handler
-  Future<void> _makePhoneCall() async {
-    final phoneNumber = widget.service.userName.phoneNumber;
-
-    // Reveal the number first
-    setState(() {
-      _phoneNumberRevealed = true;
-    });
-
-    // Small delay to show revealed number
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final Uri phoneUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
+  Future<void> _showReportDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ReportContentDialog(
+        contentType: 'service',
+        contentId: widget.service.id,
+        contentTitle: widget.service.name,
+      ),
     );
-
-    try {
-      if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri);
-      } else {
-        throw Exception('Could not launch phone dialer');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open phone dialer'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
+    
+    // Show success message if report was successful
+    if (result == true && mounted) {
+      final localizations = AppLocalizations.of(context);
+      AppErrorHandler.showSuccess(
+        context,
+        localizations?.reportSubmitted ??
+            'Thank you for your report. We will review it within 24 hours.',
+      );
     }
   }
+
 
   Future<void> _fetchSingleService() async {
     try {
@@ -347,6 +298,10 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     final userName = widget.service.userName.username ?? 'Service Provider';
     final localizations = AppLocalizations.of(context);
 
+    // Initialize chat provider if not already initialized
+    await ref.read(chatProvider.notifier).initialize();
+
+    // Check authentication after initialization
     final chatState = ref.read(chatProvider);
     if (!chatState.isAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -497,9 +452,63 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
-          title: Text(localizations?.serviceDetailTitle ?? 'Service Detail')),
+        elevation: 0,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        foregroundColor: colorScheme.onSurface,
+        title: Text(
+          localizations?.serviceDetailTitle ?? 'Service Detail',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+          ),
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert_rounded,
+              color: colorScheme.onSurface,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onSelected: (value) {
+              if (value == 'report') {
+                _showReportDialog();
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<String>(
+                value: 'report',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.flag_rounded,
+                      color: colorScheme.error,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      localizations?.reportService ?? 'Report Service',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: _serviceData == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -627,96 +636,72 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   // 🔥 Add contact bottom bar
   Widget _buildContactBottomBar() {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outline.withOpacity(0.08),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: theme.shadowColor.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           child: Row(
             children: [
+              // Chat button - expanded to take full width
               Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations?.contactSeller ?? 'Contact Seller',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(Icons.phone, size: 14, color: Colors.grey[600]),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            _getDisplayPhoneNumber(),
-                            style: const TextStyle(
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: _startChat,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: colorScheme.onPrimary,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations?.chat ?? 'Chat',
+                            style: TextStyle(
+                              color: colorScheme.onPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-                    if (!_phoneNumberRevealed)
-                      Text(
-                        localizations?.callToReveal ?? 'Tap "Call" to reveal',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.blue[600],
-                          fontStyle: FontStyle.italic,
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton.icon(
-                onPressed: _startChat,
-                icon: const Icon(Icons.chat_bubble_outline, size: 20),
-                label: Text(localizations?.chat ?? 'Chat'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton.icon(
-                onPressed: _makePhoneCall,
-                icon: const Icon(Icons.phone, size: 20),
-                label: Text('Call'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                    ),
                   ),
                 ),
               ),

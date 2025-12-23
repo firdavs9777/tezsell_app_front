@@ -10,6 +10,11 @@ import 'app_logger.dart';
 class AppErrorHandler {
   /// Get a user-friendly error message from various error types
   static String getErrorMessage(dynamic error) {
+    // If it's already a String, return it directly
+    if (error is String) {
+      return error;
+    }
+    
     if (error is SocketException) {
       return 'No internet connection. Please check your network and try again.';
     } else if (error is TimeoutException) {
@@ -25,13 +30,21 @@ class AppErrorHandler {
   }
 
   /// Show error message as a SnackBar
+  /// 
+  /// [error] can be a String message or an error object
   static void showError(BuildContext context, dynamic error) {
     if (!context.mounted) return;
     
     final message = getErrorMessage(error);
-    AppLogger.error('Error shown to user: $message', error);
+    // Only log as error if it's not already a user-friendly string
+    if (error is String) {
+      AppLogger.warning('Error message shown to user: $message');
+    } else {
+      AppLogger.error('Error shown to user: $message', error);
+    }
     
-    ScaffoldMessenger.of(context).showSnackBar(
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
@@ -41,7 +54,10 @@ class AppErrorHandler {
           label: 'Dismiss',
           textColor: Colors.white,
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            // Check if context is still mounted before hiding
+            if (context.mounted) {
+              scaffoldMessenger.hideCurrentSnackBar();
+            }
           },
         ),
       ),

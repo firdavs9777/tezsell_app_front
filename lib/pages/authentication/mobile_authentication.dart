@@ -1,9 +1,8 @@
 import 'package:app/pages/authentication/password_set.dart';
 import 'package:flutter/material.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/service/mobile_authentication.dart';
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'dart:async'; // Import the async library for Timer
+import 'dart:async';
 
 class MobileAuthentication extends StatefulWidget {
   final String regionName;
@@ -20,58 +19,101 @@ class MobileAuthentication extends StatefulWidget {
 }
 
 class _MobileAuthenticationState extends State<MobileAuthentication> {
-  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _verificationCodeController =
       TextEditingController();
 
-  String _countryCode = '+998';
-  String _countryName = 'Uzbekistan';
-
   bool columnVisible = false;
   bool isSendingCode = false;
+  bool isVerifyingCode = false;
   bool isResendingCode = false;
-  bool isValid = false;
-  Timer? _timer; // Timer to track 5 minutes
+  String? _verifiedEmail; // Store verified email
+  Timer? _timer;
   int _timeLeft = 300; // 5 minutes in seconds
-
-  // Get full phone number with country code
-  String get fullPhoneNumber => '$_countryCode${_phoneNumberController.text}';
 
   // Verifying the code and navigating to the next step if valid
   Future<void> _verifyCode() async {
-    final phoneNumber = fullPhoneNumber;
-    final otp = _verificationCodeController.text;
+    final email = _emailController.text.trim();
+    final code = _verificationCodeController.text.trim();
 
-    bool verificationSuccess = await verifyVerificationCode(phoneNumber, otp);
-    if (verificationSuccess) {
-      // If verification is successful, navigate to the next screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PasswordReset(
-              regionName: widget.regionName,
-              districtId: widget.districtId,
-              districtName: widget.districtName,
-              phone_number: phoneNumber),
-        ),
-      );
-    } else {
-      // If verification failed, show an error message
+    if (code.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)?.invalidVerificationCode ??
-              'Invalid verification code'),
+          content: Text('Please enter the verification code'),
+          backgroundColor: Colors.red,
         ),
       );
+      return;
+    }
+
+    if (code.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Verification code must be 6 digits'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isVerifyingCode = true;
+    });
+
+    final result = await verifyEmailCode(email, code);
+
+    setState(() {
+      isVerifyingCode = false;
+    });
+
+    if (result['success'] == true && result['verified'] == true) {
+      _timer?.cancel();
+      // Store verified email
+      _verifiedEmail = email;
+      // Verification successful, proceed to password setup
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PasswordReset(
+                regionName: widget.regionName,
+                districtId: widget.districtId,
+                districtName: widget.districtName,
+                email: email,
+                verificationCode: code), // Pass verification code to registration
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['error'] ?? 'Invalid or expired verification code'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   Future<void> _sendCode() async {
-    if (_phoneNumberController.text.trim().isEmpty) {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)?.pleaseEnterPhoneNumber ??
-              'Please enter your phone number'),
+          content: Text('Please enter your email address'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Basic email validation
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a valid email address'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -81,116 +123,95 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       isSendingCode = true;
     });
 
-    final phoneNumber = fullPhoneNumber;
-    bool codeSent = false;
+    final result = await sendEmailVerificationCode(email);
 
-    try {
-      // Check if it's an Uzbek number
-      if (phoneNumber.contains('+998')) {
-        // Use ESKIZ for Uzbek numbers
-        codeSent = await sendVerificationCodeEskiz(phoneNumber);
-      } else {
-        // Use Twilio for other numbers
-        codeSent = await sendVerificationCode(phoneNumber);
-      }
+    setState(() {
+      isSendingCode = false;
+    });
 
-      if (codeSent) {
-        setState(() {
-          columnVisible = true;
-          isSendingCode = false;
-          _timeLeft = 300; // Reset timer
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)?.verificationCodeSent ??
-                'Verification code sent successfully'),
-          ),
-        );
-
-        // Start the 5-minute timer after the code is sent
-        _startTimer();
-      } else {
-        setState(() {
-          isSendingCode = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)?.failedToSendCode ??
-                'Failed to send verification code'),
-          ),
-        );
-      }
-    } catch (e) {
+    if (result['success']) {
       setState(() {
-        isSendingCode = false;
+        columnVisible = true;
+        _timeLeft = 300; // Reset timer
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)?.failedToSendCode ??
-              'Failed to send verification code'),
-        ),
-      );
+      _startTimer();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Verification code sent to your email'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['error'] ?? 'Failed to send verification code'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
-  // Resending the verification code
   Future<void> _resendCode() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) return;
+
     setState(() {
       isResendingCode = true;
     });
 
-    final phoneNumber = fullPhoneNumber;
-    if (await sendVerificationCode(phoneNumber)) {
+    final result = await sendEmailVerificationCode(email);
+
+    setState(() {
+      isResendingCode = false;
+    });
+
+    if (result['success']) {
       setState(() {
-        isResendingCode = false;
         _timeLeft = 300; // Reset timer
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)?.verificationCodeResent ??
-              'Verification code resent successfully'),
-        ),
-      );
-
-      // Restart the timer if the code is resent
       _startTimer();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Verification code resent'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } else {
-      setState(() {
-        isResendingCode = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)?.failedToResendCode ??
-              'Failed to resend verification code'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['error'] ?? 'Failed to resend code'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
-  // Start the 5-minute timer
   void _startTimer() {
-    // Cancel any existing timer
     _timer?.cancel();
-
-    // Update time every second
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_timeLeft > 0) {
         setState(() {
           _timeLeft--;
         });
       } else {
-        timer.cancel(); // Stop the timer after time runs out
+        timer.cancel();
         setState(() {
-          columnVisible = false; // Hide verification input after time is up
+          columnVisible = false;
         });
       }
     });
   }
 
-  // Format the time remaining as mm:ss
   String get formattedTime {
     int minutes = _timeLeft ~/ 60;
     int seconds = _timeLeft % 60;
@@ -199,8 +220,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
-    _phoneNumberController.dispose();
+    _timer?.cancel();
+    _emailController.dispose();
     _verificationCodeController.dispose();
     super.dispose();
   }
@@ -209,8 +230,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.phoneVerification ??
-            'Telefon No\'merni Tasdiqlash'),
+        title: Text('Email Verification'),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
       ),
@@ -221,8 +241,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              AppLocalizations.of(context)?.enterPhonePrompt ??
-                  'Iltimos telefon raqamingizni kiriting',
+              'Please enter your email address',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -232,89 +251,25 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
             ),
             SizedBox(height: 30),
 
-            // Country Code Picker + Phone number input
+            // Email input
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade400),
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.grey[200],
               ),
-              child: Row(
-                children: [
-                  // Country Code Picker
-                  CountryCodePicker(
-                    onChanged: (country) {
-                      setState(() {
-                        _countryCode = country.dialCode!;
-                        _countryName = country.name!;
-                      });
-                    },
-                    initialSelection: 'UZ',
-                    favorite: [
-                      '+998',
-                      'UZ',
-                      '+82',
-                      'KR',
-                      '+1',
-                      'US',
-                      '+91',
-                      'IN'
-                    ],
-                    showCountryOnly: false,
-                    showFlag: true,
-                    showDropDownButton: true,
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    textStyle: TextStyle(fontSize: 16),
-                  ),
-
-                  // Divider line
-                  Container(
-                    height: 50,
-                    width: 1,
-                    color: Colors.grey.shade400,
-                  ),
-
-                  // Phone number input
-                  Expanded(
-                    child: TextField(
-                      controller: _phoneNumberController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)
-                                ?.enterPhoneNumberHint ??
-                            'Enter phone number',
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            // Show selected country and full number preview
-            Text(
-              AppLocalizations.of(context)
-                      ?.selectedCountry(_countryName, _countryCode) ??
-                  'Selected: $_countryName ($_countryCode)',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-            ),
-            if (_phoneNumberController.text.isNotEmpty)
-              Text(
-                AppLocalizations.of(context)?.fullNumber(fullPhoneNumber) ??
-                    'Full number: $fullPhoneNumber',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.blue[600],
-                  fontWeight: FontWeight.w500,
+              child: TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.email_outlined),
+                  hintText: 'Enter email address',
+                  border: InputBorder.none,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 ),
               ),
+            ),
 
             SizedBox(height: 30),
 
@@ -323,7 +278,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
               child: isSendingCode
                   ? CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      AppLocalizations.of(context)?.sendCode ?? 'Kod Yuborish',
+                      'Continue',
                       style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 55),
@@ -334,21 +289,24 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
             ),
             SizedBox(height: 20),
 
-            // Verification code section
+            // Verification code section (shown after code is sent)
             if (columnVisible)
               Column(
                 children: [
-                  // Verification code input field
                   TextField(
                     controller: _verificationCodeController,
                     keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    enabled: !isVerifyingCode,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 8,
+                    ),
                     decoration: InputDecoration(
-                      labelText:
-                          AppLocalizations.of(context)?.enterVerificationCode ??
-                              'Enter verification code',
-                      hintText:
-                          AppLocalizations.of(context)?.verificationCodeHint ??
-                              '123456',
+                      labelText: 'Verification Code',
+                      hintText: '000000',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -356,45 +314,27 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                       fillColor: Colors.grey[200],
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      counterText: '',
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
+                      TextButton.icon(
                         onPressed: isResendingCode ? null : _resendCode,
-                        child: isResendingCode
-                            ? SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(AppLocalizations.of(context)?.resendCode ??
-                                'Resend Code'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size(120, 45),
-                          backgroundColor: Colors.orange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
+                        icon: Icon(Icons.refresh, size: 18),
+                        label: Text(isResendingCode ? 'Sending...' : 'Resend Code'),
                       ),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.red[50],
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.red[200]!),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)
-                                  ?.expires(formattedTime) ??
-                              'Expires: $formattedTime',
+                          'Expires: $formattedTime',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -404,13 +344,28 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _verifyCode,
-                    child: Text(
-                        AppLocalizations.of(context)?.verifyAndContinue ??
+                    onPressed: isVerifyingCode ? null : _verifyCode,
+                    child: isVerifyingCode
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Text('Verifying...'),
+                            ],
+                          )
+                        : Text(
                             'Verify and Continue',
-                        style: TextStyle(fontSize: 16)),
+                            style: TextStyle(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(double.infinity, 55),
                       backgroundColor: Colors.green,

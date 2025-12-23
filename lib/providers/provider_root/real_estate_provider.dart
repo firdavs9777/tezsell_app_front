@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/utils/app_logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -54,7 +57,6 @@ class SavedPropertiesResponse {
   });
 
   factory SavedPropertiesResponse.fromJson(Map<String, dynamic> json) {
-
     final resultsData = json['results'] as List? ?? [];
 
     final results = resultsData.map((item) {
@@ -97,8 +99,7 @@ class RealEstateService {
   final Map<String, Future> _pendingRequests = {};
 
   void _logPerformance(String operation, int milliseconds) {
-    if (kDebugMode) {
-    }
+    if (kDebugMode) {}
   }
 
   // ============= EXISTING METHODS =============
@@ -113,6 +114,7 @@ class RealEstateService {
     );
 
     if (response.statusCode == 200) {
+      print(response.body);
       final data = json.decode(response.body);
       return (data['results'] as List)
           .map((propertyJson) => RealEstate.fromJson(propertyJson))
@@ -149,12 +151,13 @@ class RealEstateService {
         '$REAL_ESTATE_PROPERTIES',
         queryParameters: queryParams,
       );
+      print(response.data);
+      print(queryParams);
 
       if (response.statusCode == 200) {
         final data = response.data;
 
-        if (kDebugMode) {
-        }
+        if (kDebugMode) {}
 
         return (data['results'] as List)
             .map((propertyJson) => RealEstate.fromJson(propertyJson))
@@ -180,8 +183,7 @@ class RealEstateService {
       if (response.statusCode == 200) {
         final data = response.data;
 
-        if (kDebugMode) {
-        }
+        if (kDebugMode) {}
 
         if (data['success'] == true && data['property'] != null) {
           return RealEstate.fromJson(data['property']);
@@ -200,8 +202,7 @@ class RealEstateService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       rethrow;
     }
   }
@@ -220,8 +221,7 @@ class RealEstateService {
         'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${minPrice}_$maxPrice';
 
     if (_pendingRequests.containsKey(cacheKey)) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return await _pendingRequests[cacheKey] as List<RealEstate>;
     }
 
@@ -269,49 +269,118 @@ class RealEstateService {
     }
   }
 
-  Future<RealEstate> createProperty({
+  /// Create property with full support for all fields and images
+  Future<Map<String, dynamic>> createProperty({
     required String title,
+    required String description,
     required String propertyType,
     required String listingType,
-    required String price,
-    required int squareMeters,
-    required int bedrooms,
-    required int bathrooms,
     required String address,
-    required String latitude,
-    required String longitude,
+    required int squareMeters,
+    required String price,
+    required String currency,
+    List<File>? images,
+    String? latitude,
+    String? longitude,
+    int? userLocation,
+    int? bedrooms,
+    int? bathrooms,
+    int? floor,
+    int? totalFloors,
+    int? yearBuilt,
+    int? parkingSpaces,
+    bool hasBalcony = false,
+    bool hasGarage = false,
+    bool hasGarden = false,
+    bool hasPool = false,
+    bool hasElevator = false,
+    bool isFurnished = false,
+    int? metroDistance,
+    int? schoolDistance,
+    int? hospitalDistance,
+    int? shoppingDistance,
+    int? agent,
+    required String token,
   }) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    String? userLocation = prefs.getString('userLocation');
-
-    final response = await http.post(
-      Uri.parse('$baseUrl$REAL_ESTATE_PROPERTIES'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Token $token',
-      },
-      body: json.encode({
+    try {
+      final formData = FormData.fromMap({
         'title': title,
+        'description': description,
         'property_type': propertyType,
         'listing_type': listingType,
-        'price': price,
-        'square_meters': squareMeters,
-        'bedrooms': bedrooms,
-        'bathrooms': bathrooms,
         'address': address,
-        'latitude': latitude,
-        'longitude': longitude,
-        'location_id': int.tryParse(userLocation ?? '0'),
-      }),
-    );
+        'square_meters': squareMeters,
+        'price': price,
+        'currency': currency,
+        if (latitude != null && latitude.isNotEmpty) 'latitude': latitude,
+        if (longitude != null && longitude.isNotEmpty) 'longitude': longitude,
+        if (userLocation != null) 'user_location': userLocation,
+        if (bedrooms != null) 'bedrooms': bedrooms,
+        if (bathrooms != null) 'bathrooms': bathrooms,
+        if (floor != null) 'floor': floor,
+        if (totalFloors != null) 'total_floors': totalFloors,
+        if (yearBuilt != null) 'year_built': yearBuilt,
+        if (parkingSpaces != null) 'parking_spaces': parkingSpaces,
+        'has_balcony': hasBalcony,
+        'has_garage': hasGarage,
+        'has_garden': hasGarden,
+        'has_pool': hasPool,
+        'has_elevator': hasElevator,
+        'is_furnished': isFurnished,
+        if (metroDistance != null) 'metro_distance': metroDistance,
+        if (schoolDistance != null) 'school_distance': schoolDistance,
+        if (hospitalDistance != null) 'hospital_distance': hospitalDistance,
+        if (shoppingDistance != null) 'shopping_distance': shoppingDistance,
+        if (agent != null) 'agent': agent,
+      });
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = json.decode(response.body);
-      return RealEstate.fromJson(data);
-    } else {
-      throw Exception('Failed to create property');
+      // Add images if provided
+      if (images != null && images.isNotEmpty) {
+        for (int i = 0; i < images.length; i++) {
+          formData.files.add(MapEntry(
+            'images',
+            await MultipartFile.fromFile(
+              images[i].path,
+              filename: 'image_$i.jpg',
+            ),
+          ));
+        }
+      }
+
+      final response = await dio.post(
+        AppConfig.realEstatePropertiesPath,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Token $token',
+            'Content-Type': 'multipart/form-data',
+          },
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = response.data;
+        // Handle both response formats
+        if (responseData['success'] == true && responseData['data'] != null) {
+          return responseData['data'];
+        }
+        return responseData;
+      } else {
+        final errorMessage = response.data is Map
+            ? (response.data['error'] ?? response.data.toString())
+            : 'Failed to create property';
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: errorMessage,
+        );
+      }
+    } catch (e) {
+      if (e is DioException) {
+        rethrow;
+      }
+      throw Exception('Failed to create property: $e');
     }
   }
 
@@ -324,7 +393,6 @@ class RealEstateService {
     final timer = Stopwatch()..start();
 
     try {
-
       final response = await dio.get(
         REAL_ESTATE_SAVED_PROPERTIES,
         queryParameters: {
@@ -354,8 +422,7 @@ class RealEstateService {
         );
       }
     } catch (e) {
-      if (e is DioException) {
-      }
+      if (e is DioException) {}
       rethrow;
     }
   }
@@ -382,8 +449,7 @@ class RealEstateService {
       _logPerformance('Toggle Save Property', timer.elapsed.inMilliseconds);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (kDebugMode) {
-        }
+        if (kDebugMode) {}
         return response.data;
       } else {
         throw DioException(
@@ -393,8 +459,7 @@ class RealEstateService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       rethrow;
     }
   }
@@ -421,8 +486,7 @@ class RealEstateService {
       _logPerformance('Unsave Property', timer.elapsed.inMilliseconds);
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        if (kDebugMode) {
-        }
+        if (kDebugMode) {}
       } else {
         throw DioException(
           requestOptions: response.requestOptions,
@@ -431,8 +495,7 @@ class RealEstateService {
         );
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       rethrow;
     }
   }
@@ -459,9 +522,390 @@ class RealEstateService {
         return false;
       }
     } catch (e) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       return false;
+    }
+  }
+
+  // ============= PROPERTY INQUIRIES METHODS =============
+  Future<Map<String, dynamic>> createInquiry({
+    required String propertyId,
+    required String inquiryType,
+    String? message,
+    String? preferredContactTime,
+    String? offeredPrice,
+    required String token,
+  }) async {
+    try {
+      final response = await dio.post(
+        '${AppConfig.realEstateInquiriesPath}',
+        data: {
+          'property': propertyId,
+          'inquiry_type': inquiryType,
+          if (message != null && message.isNotEmpty) 'message': message,
+          if (preferredContactTime != null && preferredContactTime.isNotEmpty)
+            'preferred_contact_time': preferredContactTime,
+          if (offeredPrice != null && offeredPrice.isNotEmpty)
+            'offered_price': offeredPrice,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to create inquiry: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // ============= MAP METHODS =============
+  Future<Map<String, dynamic>> getMapProperties({
+    required double north,
+    required double south,
+    required double east,
+    required double west,
+    int limit = 500,
+    Map<String, dynamic>? filters,
+    String? token,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'north': north.toString(),
+        'south': south.toString(),
+        'east': east.toString(),
+        'west': west.toString(),
+        'limit': limit.toString(),
+      };
+
+      if (filters != null) {
+        queryParams.addAll(filters);
+      }
+
+      final headers = <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      if (token != null) {
+        headers['Authorization'] = 'Token $token';
+      }
+
+      final response = await dio.get(
+        AppConfig.realEstateMapBoundsPath,
+        queryParameters: queryParams,
+        options: Options(headers: headers),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load map properties: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getMapStats({
+    required double north,
+    required double south,
+    required double east,
+    required double west,
+    Map<String, dynamic>? filters,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'north': north.toString(),
+        'south': south.toString(),
+        'east': east.toString(),
+        'west': west.toString(),
+      };
+
+      if (filters != null) {
+        queryParams.addAll(filters);
+      }
+
+      final response = await dio.get(
+        AppConfig.realEstateMapStatsPath,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load map stats: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // ============= LOCATION METHODS =============
+  Future<Map<String, dynamic>> getLocationChoices() async {
+    try {
+      final response = await dio.get(
+        AppConfig.realEstateLocationsChoicesPath,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['success'] == true) {
+          return {
+            'countries': List<Map<String, dynamic>>.from(data['countries'] ?? []),
+            'regions': List<Map<String, dynamic>>.from(data['regions'] ?? []),
+            'districts': List<Map<String, dynamic>>.from(data['districts'] ?? []),
+          };
+        }
+        return {'countries': [], 'regions': [], 'districts': []};
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load location choices: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Get all UserLocation objects for selection
+  /// Returns empty list if endpoint requires auth or fails
+  Future<List<Map<String, dynamic>>> getUserLocations() async {
+    try {
+      // Get authentication token
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString(AppConfig.tokenKey);
+      
+      final headers = <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      
+      // Add authorization header if token is available
+      if (token != null) {
+        headers['Authorization'] = 'Token $token';
+      }
+      
+      final response = await dio.get(
+        AppConfig.realEstateLocationsUserLocationsPath,
+        options: Options(
+          headers: headers,
+          validateStatus: (status) => status! < 500, // Don't throw on 401/403
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['success'] == true && data['locations'] != null) {
+          return List<Map<String, dynamic>>.from(data['locations']);
+        }
+        return [];
+      } else {
+        // If auth required or other error, return empty list (not critical)
+        // Only log in debug mode to avoid noise
+        if (kDebugMode) {
+          AppLogger.error('UserLocations endpoint returned ${response.statusCode}, using district IDs from profile provider');
+        }
+        return [];
+      }
+    } catch (e) {
+      // Return empty list on error - we'll use district IDs from profile provider
+      // Only log in debug mode to avoid noise
+      if (kDebugMode) {
+        AppLogger.error('Error fetching user locations: $e');
+      }
+      return [];
+    }
+  }
+
+  // ============= STATISTICS METHODS =============
+  Future<Map<String, dynamic>> getStatistics() async {
+    try {
+      final response = await dio.get(
+        AppConfig.realEstateStatsPath,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load statistics: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // ============= AGENT METHODS =============
+  Future<Map<String, dynamic>> becomeAgent({
+    required String agencyName,
+    required String licenceNumber,
+    required int yearsExperience,
+    required String specialization,
+    required String token,
+  }) async {
+    try {
+      final response = await dio.post(
+        AppConfig.realEstateAgentBecomePath,
+        data: {
+          'agency_name': agencyName,
+          'licence_number': licenceNumber,
+          'years_experience': yearsExperience,
+          'specialization': specialization,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to submit agent application: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getAgentStatus({
+    required String token,
+  }) async {
+    try {
+      final response = await dio.get(
+        AppConfig.realEstateAgentStatusPath,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to get agent status: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getAgentApplicationStatus({
+    required String token,
+  }) async {
+    try {
+      final response = await dio.get(
+        AppConfig.realEstateAgentApplicationStatusPath,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to get application status: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Get agent dashboard data
+  Future<Map<String, dynamic>> getAgentDashboard({
+    required String token,
+  }) async {
+    try {
+      final response = await dio.get(
+        AppConfig.realEstateAgentDashboardPath,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else if (response.statusCode == 403) {
+        throw Exception('You are not registered as an agent.');
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to get agent dashboard: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }
@@ -512,8 +956,7 @@ class SavedPropertiesNotifier
       await _service.unsaveProperty(propertyId: propertyId, token: _token);
       await refreshSavedProperties();
     } catch (error) {
-      if (kDebugMode) {
-      }
+      if (kDebugMode) {}
       rethrow;
     }
   }

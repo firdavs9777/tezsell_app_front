@@ -7,7 +7,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ProductsList extends ConsumerStatefulWidget {
   final String regionName;
@@ -154,96 +154,158 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
-          Padding(
+          // Enhanced Header
+          Container(
             padding: const EdgeInsets.only(
-                left: 8.0, bottom: 10.0, top: 8.0, right: 10.0),
-            child: Row(
-              children: [
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to category filter screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => ProductFilter(
-                            regionName: widget.regionName,
-                            districtName: widget.districtName),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Icon(
-                      Icons.filter_list_sharp,
-                      size: 30,
-                      color: Colors.black,
-                    ),
-                  ),
+              left: 12.0,
+              right: 12.0,
+              top: 8.0,
+              bottom: 12.0,
+            ),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              boxShadow: [
+                BoxShadow(
+                  color: theme.shadowColor.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-                const Spacer(),
-                // Show current location filter
-                if (widget.regionName.isNotEmpty ||
-                    widget.districtName.isNotEmpty)
-                  GestureDetector(
-                    onTap: _navigateToLocationChange,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                      ),
-                      child: Text(
-                        '📍 ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.blue),
+              ],
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Row(
+                children: [
+                  // Filter Button
+                  Material(
+                    color: colorScheme.surfaceVariant.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) => ProductFilter(
+                                regionName: widget.regionName,
+                                districtName: widget.districtName),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Icon(
+                          Icons.tune_rounded,
+                          size: 22,
+                          color: colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
-              ],
+                  const SizedBox(width: 12),
+                  // Location Badge
+                  if (widget.regionName.isNotEmpty ||
+                      widget.districtName.isNotEmpty)
+                    Expanded(
+                      child: Material(
+                        color: colorScheme.primaryContainer.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: _navigateToLocationChange,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.location_on_rounded,
+                                  size: 16,
+                                  color: colorScheme.primary,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    widget.districtName.isNotEmpty
+                                        ? widget.districtName
+                                        : widget.regionName,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: colorScheme.primary,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: 18,
+                                  color: colorScheme.primary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
+              color: colorScheme.primary,
               child: _buildProductsList(),
             ),
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            // Navigate to product creation or perform desired action
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) => const ProductNew(),
-            ));
-          },
-          backgroundColor: const Color(0xFFFFA500),
-          icon: const Icon(
-            Icons.add,
-            color: Colors.black,
-            size: 24,
-          ),
-          label: Text(
-            AppLocalizations.of(context)?.upload ?? 'Yuklash',
-            style: const TextStyle(fontSize: 18, color: Colors.black),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (ctx) => const ProductNew(),
+          ));
+        },
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        elevation: 4,
+        icon: const Icon(Icons.add_rounded, size: 24),
+        label: Text(
+          localizations?.upload ?? 'Yuklash',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
   Widget _buildProductsList() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final localizations = AppLocalizations.of(context);
+
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: CircularProgressIndicator(
+          color: colorScheme.primary,
+        ),
+      );
     }
 
     if (_allProducts.isEmpty) {
@@ -252,37 +314,46 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.inventory_2_outlined,
-                  size: 64,
-                  color: Colors.grey,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalizations.of(context)?.productError ??
-                      'No products available.',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceVariant.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.inventory_2_outlined,
+                      size: 64,
+                      color: colorScheme.onSurface.withOpacity(0.4),
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                if (widget.regionName.isNotEmpty ||
-                    widget.districtName.isNotEmpty) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 24),
                   Text(
-                    'No products found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
+                    localizations?.productError ?? 'No products available.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 8),
+                  if (widget.regionName.isNotEmpty ||
+                      widget.districtName.isNotEmpty)
+                    Text(
+                      'No products found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -303,10 +374,12 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         // Show loading indicator at the bottom
         if (_hasMoreData) {
           return Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0),
             child: Center(
               child: _isLoadingMore
-                  ? const CircularProgressIndicator()
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                    )
                   : const SizedBox.shrink(),
             ),
           );
@@ -314,13 +387,14 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
         // Show "end of list" indicator
         return Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24.0),
           child: Center(
             child: Text(
               'No more products to load',
               style: TextStyle(
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

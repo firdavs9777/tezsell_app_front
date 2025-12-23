@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class TermsAndConditionsPage extends StatefulWidget {
   const TermsAndConditionsPage({super.key});
@@ -362,13 +362,42 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Lottery tickets or gambling services'),
         _buildBulletPoint('Pyramid schemes or MLM'),
         _buildBulletPoint('Hacking tools or malware'),
-        _buildSectionTitle('5. USER CONDUCT', theme),
+        _buildSectionTitle('5. USER-GENERATED CONTENT & ZERO TOLERANCE POLICY', theme),
+        _buildParagraph(
+          'Tezsell has a ZERO TOLERANCE policy for objectionable content and abusive users. By using this App, you agree that:',
+        ),
+        _buildSubsectionTitle('Content Moderation:'),
+        _buildBulletPoint(
+            'We actively monitor and filter objectionable content using automated systems and user reports'),
+        _buildBulletPoint(
+            'All user-generated content (listings, messages, comments, images) is subject to review'),
+        _buildBulletPoint(
+            'We reserve the right to remove any content that violates these Terms without notice'),
+        _buildSubsectionTitle('Zero Tolerance for:'),
+        _buildBulletPoint('Hate speech, discrimination, or harassment of any kind'),
+        _buildBulletPoint('Obscene, pornographic, or sexually explicit content'),
+        _buildBulletPoint('Violence, threats, or intimidation'),
+        _buildBulletPoint('Fraudulent, misleading, or scam content'),
+        _buildBulletPoint('Illegal activities or solicitation of illegal activities'),
+        _buildBulletPoint('Spam, repetitive, or low-quality content'),
+        _buildSubsectionTitle('Reporting & Enforcement:'),
+        _buildBulletPoint(
+            'Users can report objectionable content or abusive users through the in-app reporting mechanism'),
+        _buildBulletPoint(
+            'We review all reports within 24 hours and take immediate action'),
+        _buildBulletPoint(
+            'Violations result in immediate content removal and user account suspension or permanent ban'),
+        _buildBulletPoint(
+            'Repeated violations or severe offenses result in permanent account termination'),
+        _buildBulletPoint(
+            'We cooperate with law enforcement when illegal activity is detected'),
+        _buildSectionTitle('6. USER CONDUCT', theme),
         _buildSubsectionTitle('You agree to:'),
         _buildBulletPoint('Treat other users with respect and professionalism'),
         _buildBulletPoint('Communicate honestly and transparently'),
         _buildBulletPoint('Honor your commitments to buy or sell'),
         _buildBulletPoint('Meet in safe, public locations for transactions'),
-        _buildBulletPoint('Report suspicious or inappropriate behavior'),
+        _buildBulletPoint('Report suspicious or inappropriate behavior immediately'),
         _buildSubsectionTitle('You agree NOT to:'),
         _buildBulletPoint('Scam, defraud, or mislead other users'),
         _buildBulletPoint('Use offensive, abusive, or threatening language'),
@@ -376,7 +405,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
             'Discriminate based on race, religion, gender, nationality'),
         _buildBulletPoint('Create fake listings or accounts'),
         _buildBulletPoint('Leave false reviews or ratings'),
-        _buildSectionTitle('6. PAYMENTS & TRANSACTIONS', theme),
+        _buildSectionTitle('7. PAYMENTS & TRANSACTIONS', theme),
         _buildParagraph(
           'Currently, Tezsell does NOT process payments. All payment arrangements are made directly between buyers and sellers. Users may use cash, bank transfers, or any mutually agreed payment method. Tezsell is NOT responsible for payment disputes.',
         ),
@@ -385,27 +414,27 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Inspect items thoroughly before purchasing'),
         _buildBulletPoint('Never send money to someone you haven\'t met'),
         _buildBulletPoint('Trust your instincts'),
-        _buildSectionTitle('7. FEES AND CHARGES', theme),
+        _buildSectionTitle('8. FEES AND CHARGES', theme),
         _buildParagraph(
           'Tezsell is currently FREE to use. No fees for posting listings, no commission on sales, and no subscription charges. We reserve the right to introduce fees in the future with 30 days notice.',
         ),
-        _buildSectionTitle('8. DISCLAIMERS', theme),
+        _buildSectionTitle('9. DISCLAIMERS', theme),
         _buildParagraph(
           'TO THE MAXIMUM EXTENT PERMITTED BY LAW: The App is provided "AS IS" and "AS AVAILABLE". We make NO WARRANTIES about the App\'s reliability, accuracy, or availability. We are NOT responsible for the quality, safety, legality, or accuracy of listings. You use the App at your own risk.',
         ),
-        _buildSectionTitle('9. LIMITATION OF LIABILITY', theme),
+        _buildSectionTitle('10. LIMITATION OF LIABILITY', theme),
         _buildParagraph(
           'Tezsell Corporation shall NOT be liable for indirect, incidental, special, or consequential damages, loss of profits, personal injury, or property damage from transactions. Our total liability shall not exceed the amount you paid to Tezsell in the 12 months prior (currently zero).',
         ),
-        _buildSectionTitle('10. DISPUTE RESOLUTION', theme),
+        _buildSectionTitle('11. DISPUTE RESOLUTION', theme),
         _buildParagraph(
           'These Terms are governed by the laws of the Republic of Uzbekistan. Any disputes shall be resolved in the courts of Tashkent, Uzbekistan. Before filing any legal action, you agree to attempt informal resolution by contacting us at: support@tezsell.uz',
         ),
-        _buildSectionTitle('11. TERMINATION', theme),
+        _buildSectionTitle('12. TERMINATION', theme),
         _buildParagraph(
           'You may delete your account at any time through the App settings. We may suspend or terminate your account if you violate these Terms, engage in fraudulent activity, or if the account has been inactive for over 12 months.',
         ),
-        _buildSectionTitle('12. CONTACT US', theme),
+        _buildSectionTitle('13. CONTACT US', theme),
         _buildParagraph(
           'For questions, concerns, or reports, please contact us at support@tezsell.uz or legal@tezsell.uz',
         ),
@@ -470,7 +499,36 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Лотерейные билеты, азартные игры'),
         _buildBulletPoint('Финансовые пирамиды'),
         _buildBulletPoint('Инструменты для взлома'),
-        _buildSectionTitle('5. ПОВЕДЕНИЕ ПОЛЬЗОВАТЕЛЕЙ', theme),
+        _buildSectionTitle('5. КОНТЕНТ ПОЛЬЗОВАТЕЛЕЙ И ПОЛИТИКА НУЛЕВОЙ ТЕРПИМОСТИ', theme),
+        _buildParagraph(
+          'Tezsell имеет политику НУЛЕВОЙ ТЕРПИМОСТИ к неприемлемому контенту и оскорбительным пользователям. Используя это Приложение, вы соглашаетесь, что:',
+        ),
+        _buildSubsectionTitle('Модерация контента:'),
+        _buildBulletPoint(
+            'Мы активно отслеживаем и фильтруем неприемлемый контент с помощью автоматизированных систем и отчетов пользователей'),
+        _buildBulletPoint(
+            'Весь пользовательский контент (объявления, сообщения, комментарии, изображения) подлежит проверке'),
+        _buildBulletPoint(
+            'Мы оставляем за собой право удалять любой контент, нарушающий эти Условия, без уведомления'),
+        _buildSubsectionTitle('Нулевая терпимость к:'),
+        _buildBulletPoint('Разжиганию ненависти, дискриминации или преследованию любого рода'),
+        _buildBulletPoint('Непристойному, порнографическому или откровенно сексуальному контенту'),
+        _buildBulletPoint('Насилию, угрозам или запугиванию'),
+        _buildBulletPoint('Мошенническому, вводящему в заблуждение или обманному контенту'),
+        _buildBulletPoint('Незаконной деятельности или призыву к незаконной деятельности'),
+        _buildBulletPoint('Спаму, повторяющемуся или некачественному контенту'),
+        _buildSubsectionTitle('Отчетность и принуждение:'),
+        _buildBulletPoint(
+            'Пользователи могут сообщать о неприемлемом контенте или оскорбительных пользователях через механизм отчетности в приложении'),
+        _buildBulletPoint(
+            'Мы рассматриваем все отчеты в течение 24 часов и принимаем немедленные меры'),
+        _buildBulletPoint(
+            'Нарушения приводят к немедленному удалению контента и приостановке или постоянной блокировке учетной записи пользователя'),
+        _buildBulletPoint(
+            'Повторные нарушения или серьезные правонарушения приводят к постоянному прекращению учетной записи'),
+        _buildBulletPoint(
+            'Мы сотрудничаем с правоохранительными органами при обнаружении незаконной деятельности'),
+        _buildSectionTitle('6. ПОВЕДЕНИЕ ПОЛЬЗОВАТЕЛЕЙ', theme),
         _buildSubsectionTitle('Вы соглашаетесь:'),
         _buildBulletPoint('Относиться к другим пользователям с уважением'),
         _buildBulletPoint('Общаться честно и прозрачно'),
@@ -483,31 +541,31 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Дискриминировать по любым признакам'),
         _buildBulletPoint('Создавать фальшивые объявления'),
         _buildBulletPoint('Оставлять ложные отзывы'),
-        _buildSectionTitle('6. ПЛАТЕЖИ И ТРАНЗАКЦИИ', theme),
+        _buildSectionTitle('7. ПЛАТЕЖИ И ТРАНЗАКЦИИ', theme),
         _buildParagraph(
           'В настоящее время Tezsell НЕ обрабатывает платежи. Все платежные договоренности заключаются напрямую между покупателями и продавцами. Tezsell НЕ несет ответственности за платежные споры.',
         ),
-        _buildSectionTitle('7. ТАРИФЫ И СБОРЫ', theme),
+        _buildSectionTitle('8. ТАРИФЫ И СБОРЫ', theme),
         _buildParagraph(
           'Tezsell в настоящее время БЕСПЛАТЕН. Мы оставляем за собой право вводить сборы в будущем с уведомлением за 30 дней.',
         ),
-        _buildSectionTitle('8. ОТКАЗ ОТ ГАРАНТИЙ', theme),
+        _buildSectionTitle('9. ОТКАЗ ОТ ГАРАНТИЙ', theme),
         _buildParagraph(
           'Приложение предоставляется "КАК ЕСТЬ". Мы НЕ даем НИКАКИХ ГАРАНТИЙ. Вы используете Приложение на свой риск.',
         ),
-        _buildSectionTitle('9. ОГРАНИЧЕНИЕ ОТВЕТСТВЕННОСТИ', theme),
+        _buildSectionTitle('10. ОГРАНИЧЕНИЕ ОТВЕТСТВЕННОСТИ', theme),
         _buildParagraph(
           'Tezsell Corporation НЕ несет ответственности за косвенный ущерб, потерю прибыли или данных. Наша общая ответственность не превышает сумму, которую вы заплатили за 12 месяцев (в настоящее время ноль).',
         ),
-        _buildSectionTitle('10. РАЗРЕШЕНИЕ СПОРОВ', theme),
+        _buildSectionTitle('11. РАЗРЕШЕНИЕ СПОРОВ', theme),
         _buildParagraph(
           'Эти Условия регулируются законами Республики Узбекистан. Споры разрешаются в судах Ташкента. Свяжитесь с нами: support@tezsell.uz',
         ),
-        _buildSectionTitle('11. ПРЕКРАЩЕНИЕ', theme),
+        _buildSectionTitle('12. ПРЕКРАЩЕНИЕ', theme),
         _buildParagraph(
           'Вы можете удалить свой аккаунт в любое время. Мы можем закрыть аккаунт при нарушении Условий или неактивности более 12 месяцев.',
         ),
-        _buildSectionTitle('12. СВЯЖИТЕСЬ С НАМИ', theme),
+        _buildSectionTitle('13. СВЯЖИТЕСЬ С НАМИ', theme),
         _buildParagraph(
           'По вопросам обращайтесь: support@tezsell.uz или legal@tezsell.uz',
         ),
@@ -573,7 +631,36 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Lotereya chiptalari, qimor'),
         _buildBulletPoint('Piramida sxemalari'),
         _buildBulletPoint('Buzish vositalari'),
-        _buildSectionTitle('5. FOYDALANUVCHI XULQ-ATVORI', theme),
+        _buildSectionTitle('5. FOYDALANUVCHI KONTENTI VA NOL TOLERANTLIK SIYOSATI', theme),
+        _buildParagraph(
+          'Tezsell noqonuniy kontent va haqoratli foydalanuvchilar uchun NOL TOLERANTLIK siyosatiga ega. Ushbu Ilovadan foydalanish orqali siz quyidagilarga rozisiz:',
+        ),
+        _buildSubsectionTitle('Kontentni moderatsiya qilish:'),
+        _buildBulletPoint(
+            'Biz avtomatlashtirilgan tizimlar va foydalanuvchilar hisobotlaridan foydalanib, noqonuniy kontentni faol kuzatamiz va filtrlashimiz'),
+        _buildBulletPoint(
+            'Barcha foydalanuvchi tomonidan yaratilgan kontent (e\'lonlar, xabarlar, sharhlar, rasmlar) ko\'rib chiqishga bo\'ysunadi'),
+        _buildBulletPoint(
+            'Biz ushbu Shartlarni buzadigan har qanday kontentni ogohlantirishsiz olib tashlash huquqini o\'zimizda saqlab qolamiz'),
+        _buildSubsectionTitle('Nol tolerantlik quyidagilar uchun:'),
+        _buildBulletPoint('Har qanday turdagi nafrat so\'zlari, kamsitish yoki bezorilik'),
+        _buildBulletPoint('Uyatsiz, pornografik yoki jinsiy jihatdan aniq kontent'),
+        _buildBulletPoint('Zo\'ravonlik, tahdidlar yoki qo\'rqitish'),
+        _buildBulletPoint('Aldash, yolg\'on yoki firibgarlik kontenti'),
+        _buildBulletPoint('Noqonuniy faoliyat yoki noqonuniy faoliyatga chaqirish'),
+        _buildBulletPoint('Spam, takrorlanuvchi yoki past sifatli kontent'),
+        _buildSubsectionTitle('Hisobot berish va majburlash:'),
+        _buildBulletPoint(
+            'Foydalanuvchilar ilova ichidagi hisobot mexanizmi orqali noqonuniy kontent yoki haqoratli foydalanuvchilar haqida xabar berishlari mumkin'),
+        _buildBulletPoint(
+            'Biz barcha hisobotlarni 24 soat ichida ko\'rib chiqamiz va darhol choralar ko\'ramiz'),
+        _buildBulletPoint(
+            'Buzilishlar darhol kontentni olib tashlash va foydalanuvchi hisobini to\'xtatish yoki doimiy bloklashga olib keladi'),
+        _buildBulletPoint(
+            'Takrorlanuvchi buzilishlar yoki og\'ir qonunbuzarliklar doimiy hisobni to\'xtatishga olib keladi'),
+        _buildBulletPoint(
+            'Noqonuniy faoliyat aniqlanganda biz qonunni qo\'llash organlari bilan hamkorlik qilamiz'),
+        _buildSectionTitle('6. FOYDALANUVCHI XULQ-ATVORI', theme),
         _buildSubsectionTitle('Siz quyidagilarga rozisiz:'),
         _buildBulletPoint(
             'Boshqa foydalanuvchilarga hurmat bilan munosabatda bo\'lish'),
@@ -587,31 +674,31 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         _buildBulletPoint('Har qanday asosda kamsitish'),
         _buildBulletPoint('Soxta e\'lonlar yaratish'),
         _buildBulletPoint('Yolg\'on sharhlar qoldirish'),
-        _buildSectionTitle('6. TO\'LOVLAR VA BITIMLAR', theme),
+        _buildSectionTitle('7. TO\'LOVLAR VA BITIMLAR', theme),
         _buildParagraph(
           'Hozirda Tezsell to\'lovlarni qayta ishlamaydi. Barcha to\'lov shartnomalari xaridorlar va sotuvchilar o\'rtasida to\'g\'ridan-to\'g\'ri tuziladi. Tezsell to\'lov nizolari uchun javobgar emas.',
         ),
-        _buildSectionTitle('7. TARIFLAR VA TO\'LOVLAR', theme),
+        _buildSectionTitle('8. TARIFLAR VA TO\'LOVLAR', theme),
         _buildParagraph(
           'Tezsell hozirda BEPUL. Kelajakda to\'lovlar kiritish huquqini o\'zimizda saqlab qolamiz (30 kun oldin xabardorlik bilan).',
         ),
-        _buildSectionTitle('8. KAFOLATLARDAN VOZ KECHISH', theme),
+        _buildSectionTitle('9. KAFOLATLARDAN VOZ KECHISH', theme),
         _buildParagraph(
           'Ilova "SHUNDAYLIGICHA" taqdim etiladi. Biz HECH QANDAY KAFOLAT bermaymiz. Siz Ilovadan o\'z xavf-xataringiz ostida foydalanasiz.',
         ),
-        _buildSectionTitle('9. JAVOBGARLIKNI CHEKLASH', theme),
+        _buildSectionTitle('10. JAVOBGARLIKNI CHEKLASH', theme),
         _buildParagraph(
           'Tezsell Corporation bilvosita zarar, foyda yo\'qotish yoki ma\'lumotlar uchun javobgar EMAS. Bizning umumiy javobgarligimiz 12 oy ichida to\'lagan summangizdan oshmaydi (hozirda nol).',
         ),
-        _buildSectionTitle('10. NIZOLARNI HAL QILISH', theme),
+        _buildSectionTitle('11. NIZOLARNI HAL QILISH', theme),
         _buildParagraph(
           'Ushbu Shartlar O\'zbekiston Respublikasi qonunlari bilan tartibga solinadi. Nizolar Toshkent shahri sudlarida hal qilinadi. Biz bilan bog\'laning: support@tezsell.uz',
         ),
-        _buildSectionTitle('11. TO\'XTATISH', theme),
+        _buildSectionTitle('12. TO\'XTATISH', theme),
         _buildParagraph(
           'Siz hisobingizni istalgan vaqtda o\'chirishingiz mumkin. Biz Shartlarni buzish yoki 12 oydan ortiq faol bo\'lmaslik holatida hisobni yopishimiz mumkin.',
         ),
-        _buildSectionTitle('12. BIZ BILAN BOG\'LANING', theme),
+        _buildSectionTitle('13. BIZ BILAN BOG\'LANING', theme),
         _buildParagraph(
           'Savollar uchun murojaat qiling: support@tezsell.uz yoki legal@tezsell.uz',
         ),

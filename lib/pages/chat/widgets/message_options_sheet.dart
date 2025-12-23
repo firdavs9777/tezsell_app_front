@@ -1,4 +1,6 @@
 import 'package:app/providers/provider_models/message_model.dart';
+import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class MessageOptionsSheet extends StatelessWidget {
@@ -61,7 +63,33 @@ class MessageOptionsSheet extends StatelessWidget {
                 onAddReaction();
               },
             ),
+          // Report option (for messages from others)
+          if (!isOwnMessage && message.id != null)
+            ListTile(
+              leading: Icon(Icons.flag, color: Theme.of(context).colorScheme.error),
+              title: Text(
+                AppLocalizations.of(context)?.reportMessage ?? 'Report Message',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                _showReportDialog(context);
+              },
+            ),
         ],
+      ),
+    );
+  }
+
+  void _showReportDialog(BuildContext context) {
+    if (message.id == null) return;
+    
+    showDialog(
+      context: context,
+      builder: (dialogContext) => ReportContentDialog(
+        contentType: 'message',
+        contentId: message.id!,
+        contentTitle: message.content?.substring(0, message.content!.length > 50 ? 50 : message.content!.length) ?? 'Message',
       ),
     );
   }

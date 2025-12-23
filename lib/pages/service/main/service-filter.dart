@@ -3,7 +3,7 @@ import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ServiceFilter extends ConsumerStatefulWidget {
   final String regionName;
@@ -149,58 +149,68 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                 final category = availableCategories[index];
                 IconData? iconData = iconMap[category.icon];
 
-                return InkWell(
-                  onTap: () => _applyFilter(category.nameEn),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey.shade200,
+                final theme = Theme.of(context);
+                final colorScheme = theme.colorScheme;
+
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _applyFilter(category.nameEn),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: colorScheme.outline.withOpacity(0.1),
                           width: 1,
                         ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        // Icon with circular background
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: Colors.brown.shade50,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            iconData ?? Icons.handyman,
-                            color: Colors.brown.shade700,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-
-                        // Category name
-                        Expanded(
-                          child: Text(
-                            getCategoryName(category),
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                      child: Row(
+                        children: [
+                          // Icon with circular background
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primaryContainer.withOpacity(0.3),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              iconData ?? Icons.handyman_rounded,
+                              color: colorScheme.primary,
+                              size: 24,
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 14),
 
-                        // Arrow icon
-                        Icon(
-                          Icons.chevron_right,
-                          color: Colors.grey.shade400,
-                          size: 24,
-                        ),
-                      ],
+                          // Category name
+                          Expanded(
+                            child: Text(
+                              getCategoryName(category),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+
+                          // Arrow icon
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: colorScheme.onSurface.withOpacity(0.4),
+                            size: 24,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

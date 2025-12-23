@@ -75,7 +75,10 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                       borderRadius: BorderRadius.circular(8.0),
                       child: product.images.isNotEmpty
                           ? Image.network(
-                              '$baseUrl/products${product.images[0].image}',
+                              product.images[0].image.startsWith('http://') ||
+                                      product.images[0].image.startsWith('https://')
+                                  ? product.images[0].image
+                                  : '$baseUrl/products${product.images[0].image}',
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,

@@ -1,10 +1,11 @@
 import 'package:app/pages/real_estate/real_estate_detail.dart';
+import 'package:app/pages/real_estate/property_create_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class RealEstateMain extends ConsumerStatefulWidget {
   final String regionName;
@@ -326,7 +327,31 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _navigateToCreateProperty(),
+        backgroundColor: theme.primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        icon: const Icon(Icons.add_rounded, size: 24),
+        label: Text(
+          localizations?.general_create_property ?? 'Create Property',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  void _navigateToCreateProperty() {
+    // Check if user is logged in
+    // TODO: Add permission check for agent status
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const PropertyCreatePage(),
+      ),
     );
   }
 

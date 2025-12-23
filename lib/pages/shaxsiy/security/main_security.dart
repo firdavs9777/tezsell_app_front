@@ -4,7 +4,7 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SecuritySettingsPage extends ConsumerStatefulWidget {
@@ -301,92 +301,64 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
   void _showChangePasswordDialog() async {
     if (!mounted) return;
     final localizations = AppLocalizations.of(context);
+    final currentPasswordController = TextEditingController();
 
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
-
-    try {
-      final userInfo = await _userInfoFuture;
-      final phoneNumber = userInfo.phoneNumber ?? '+998901234567';
-
-      if (!mounted) return;
-      Navigator.pop(context);
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.security, color: _primaryColor),
-              const SizedBox(width: 8),
-              Text(localizations?.change_password ?? 'Change Password'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                localizations?.verification_code_message ??
-                    'We\'ll send a verification code to confirm it\'s you.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Icon(Icons.phone_android,
-                  size: 48, color: _primaryColor.withOpacity(0.7)),
-              const SizedBox(height: 12),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.phone, size: 20),
-                    const SizedBox(width: 8),
-                    Text(phoneNumber,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 16)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(localizations?.cancel ?? 'Cancel'),
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.security, color: _primaryColor),
+            const SizedBox(width: 8),
+            Text(localizations?.change_password ?? 'Change Password'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Enter your current password to verify your identity',
+              textAlign: TextAlign.center,
             ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                _sendOTPForPasswordChange(phoneNumber);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _primaryColor,
-                foregroundColor: Colors.white,
+            const SizedBox(height: 16),
+            TextField(
+              controller: currentPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Current Password',
+                border: const OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock, color: _primaryColor),
               ),
-              child: Text(localizations?.send_code ?? 'Send Code'),
             ),
           ],
         ),
-      );
-    } catch (e) {
-      if (mounted) {
-        Navigator.pop(context);
-        _showError(
-            '${localizations?.failed_to_load_user_info ?? "Failed to load user information"}: ${e.toString()}');
-      }
-    }
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations?.cancel ?? 'Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final currentPassword = currentPasswordController.text.trim();
+              if (currentPassword.isEmpty) {
+                _showError('Please enter your current password');
+                return;
+              }
+              Navigator.pop(context);
+              await _requestPasswordUpdate(currentPassword);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Continue'),
+          ),
+        ],
+      ),
+    );
   }
 
-  Future<void> _sendOTPForPasswordChange(String phoneNumber) async {
+  Future<void> _requestPasswordUpdate(String currentPassword) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -395,15 +367,16 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
     );
 
     final authService = ref.read(authenticationServiceProvider);
-    final result =
-        await authService.sendOtpChangePassword(phoneNumber: phoneNumber);
+    final result = await authService.requestPasswordUpdate(
+      currentPassword: currentPassword,
+    );
 
     if (mounted) Navigator.pop(context);
 
     if (result['success']) {
       if (mounted) {
         _showSuccess(result['message']);
-        _showPasswordResetDialog(phoneNumber);
+        _showPasswordUpdateDialog();
       }
     } else {
       if (mounted) {
@@ -412,7 +385,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
     }
   }
 
-  void _showPasswordResetDialog(String phoneNumber) {
+  void _showPasswordUpdateDialog() {
     final localizations = AppLocalizations.of(context);
     final otpController = TextEditingController();
     final newPasswordController = TextEditingController();
@@ -520,7 +493,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                   TextButton.icon(
                     onPressed: () {
                       Navigator.pop(context);
-                      _sendOTPForPasswordChange(phoneNumber);
+                      _showChangePasswordDialog(); // Restart the flow
                     },
                     icon: Icon(Icons.refresh, size: 18, color: _primaryColor),
                     label: Text(
@@ -553,9 +526,8 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                   );
 
                   final authService = ref.read(authenticationServiceProvider);
-                  final result = await authService.changePassword(
-                    phoneNumber: phoneNumber,
-                    otp: otpController.text,
+                  final result = await authService.updatePassword(
+                    verificationCode: otpController.text,
                     newPassword: newPasswordController.text,
                     confirmPassword: confirmPasswordController.text,
                   );
@@ -605,7 +577,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                       );
-                      _showPasswordResetDialog(phoneNumber);
+                      _showPasswordUpdateDialog();
                     }
                   }
                 }

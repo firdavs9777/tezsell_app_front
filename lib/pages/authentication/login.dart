@@ -2,11 +2,13 @@ import 'package:app/pages/authentication/forget_password.dart';
 import 'package:app/pages/authentication/register.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
+import 'package:app/service/token_refresh_service.dart';
+import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'dart:developer' as developer;
 
 class Login extends ConsumerStatefulWidget {
@@ -17,12 +19,9 @@ class Login extends ConsumerStatefulWidget {
 }
 
 class _LoginState extends ConsumerState<Login> {
-  late final TextEditingController _phoneNumberController;
+  late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   late final AuthenticationService _authService;
-
-  String _countryCode = '+998';
-  String _countryName = 'Uzbekistan';
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
@@ -32,10 +31,6 @@ class _LoginState extends ConsumerState<Login> {
   final Map<String, int> _performanceMetrics = {};
   DateTime? _loginStartTime;
 
-  // Get full phone number with country code
-  String get fullPhoneNumber =>
-      '$_countryCode${_phoneNumberController.text.trim()}';
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +38,7 @@ class _LoginState extends ConsumerState<Login> {
     // Track initialization time
     final initTimer = Stopwatch()..start();
 
-    _phoneNumberController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _authService = ref.read(authenticationServiceProvider);
 
@@ -56,7 +51,7 @@ class _LoginState extends ConsumerState<Login> {
     // Print performance summary before disposing
     _printPerformanceSummary();
 
-    _phoneNumberController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -129,9 +124,15 @@ class _LoginState extends ConsumerState<Login> {
       // Validation timing
       final validationTimer = Stopwatch()..start();
 
-      if (_phoneNumberController.text.trim().isEmpty) {
-        _showError(AppLocalizations.of(context)?.pleaseEnterPhoneNumber ??
-            'Please enter your phone number');
+      final email = _emailController.text.trim();
+      if (email.isEmpty) {
+        _showError('Please enter your email');
+        return;
+      }
+
+      // Basic email validation
+      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+        _showError('Please enter a valid email address');
         return;
       }
 
@@ -155,7 +156,6 @@ class _LoginState extends ConsumerState<Login> {
 
       // Data preparation timing
       final dataTimer = Stopwatch()..start();
-      final String phoneNumber = fullPhoneNumber;
       final String password = _passwordController.text.trim();
       dataTimer.stop();
       _logPerformance('Data Preparation', dataTimer.elapsed.inMilliseconds);
@@ -165,7 +165,7 @@ class _LoginState extends ConsumerState<Login> {
 
       // Network request timing (this is usually the bottleneck)
       final networkTimer = Stopwatch()..start();
-      final result = await _authService.login(context, phoneNumber, password);
+      final result = await _authService.login(context, email, password);
       networkTimer.stop();
       _logPerformance('Network Request', networkTimer.elapsed.inMilliseconds);
 
@@ -177,6 +177,27 @@ class _LoginState extends ConsumerState<Login> {
       // Navigation timing
       if (result != null) {
         final navigationTimer = Stopwatch()..start();
+
+        // Start automatic token refresh service
+        _startTokenRefreshService();
+
+        // Check terms acceptance before allowing app access
+        final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
+        
+        if (!hasAcceptedTerms) {
+          // Show terms acceptance dialog
+          final accepted = await TermsAcceptanceHelper.showTermsAcceptanceDialog(context);
+          
+          if (!accepted) {
+            // User didn't accept terms, log them out
+            await _authService.logout();
+            if (mounted) {
+              _showError(AppLocalizations.of(context)?.acceptTermsRequired ??
+                  'You must accept the Terms and Conditions to use this app.');
+            }
+            return;
+          }
+        }
 
         // Login successful - navigate and replace current route
         Navigator.of(context).pushReplacement(
@@ -236,6 +257,17 @@ class _LoginState extends ConsumerState<Login> {
         margin: const EdgeInsets.all(16),
       ),
     );
+  }
+
+  /// Start the automatic token refresh service
+  void _startTokenRefreshService() {
+    try {
+      final tokenRefreshService = TokenRefreshService(_authService);
+      tokenRefreshService.start();
+      AppLogger.info('Token refresh service started after login');
+    } catch (e) {
+      AppLogger.error('Error starting token refresh service: $e');
+    }
   }
 
   @override
@@ -305,7 +337,7 @@ class _LoginState extends ConsumerState<Login> {
 
                 const SizedBox(height: 40.0),
 
-                // Phone number input - Karrot style
+                // Email input - Karrot style
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -318,80 +350,33 @@ class _LoginState extends ConsumerState<Login> {
                       ),
                     ],
                   ),
-                  child: Row(
-                    children: [
-                      // Country code picker
-                      Container(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: CountryCodePicker(
-                          onChanged: (code) {
-                            setState(() {
-                              _countryCode = code.dialCode ?? '+998';
-                              _countryName = code.name ?? 'Uzbekistan';
-                            });
-                          },
-                          initialSelection: 'UZ',
-                          favorite: const [
-                            '+998',
-                            'UZ',
-                            '+1',
-                            'US',
-                            '+91',
-                            'IN',
-                            '+82',
-                            'KR',
-                          ],
-                          showCountryOnly: false,
-                          showFlag: true,
-                          showDropDownButton: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          textStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: _isLoading
-                                ? Colors.grey.shade400
-                                : const Color(0xFF212124),
-                          ),
-                          enabled: !_isLoading,
-                          flagWidth: 24,
-                        ),
+                  child: TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    enabled: !_isLoading,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF212124),
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: _isLoading
+                            ? Colors.grey.shade400
+                            : const Color(0xFF212124),
                       ),
-
-                      // Divider
-                      Container(
-                        height: 40,
-                        width: 1,
-                        color: const Color(0xFFE9ECEF),
+                      hintText: 'Email address',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontWeight: FontWeight.w500,
                       ),
-
-                      // Phone input
-                      Expanded(
-                        child: TextField(
-                          controller: _phoneNumberController,
-                          keyboardType: TextInputType.number,
-                          enabled: !_isLoading,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF212124),
-                          ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: AppLocalizations.of(context)
-                                    ?.enterPhoneNumber ??
-                                'Phone number',
-                            hintStyle: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 16,
-                            ),
-                          ),
-                        ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 16,
                       ),
-                    ],
+                    ),
                   ),
                 ),
 

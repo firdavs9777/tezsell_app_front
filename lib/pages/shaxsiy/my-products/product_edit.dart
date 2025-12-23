@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ProductEdit extends ConsumerStatefulWidget {
   final Products product; // Pass the existing product to edit

@@ -1,7 +1,6 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
@@ -23,16 +22,6 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
     return '$region, ****';
   }
 
-  String _maskedPhone(String phoneNumber) {
-    // Show only beginning part safely, e.g. "010-12**-****"
-    if (phoneNumber.length > 7) {
-      return phoneNumber.replaceRange(7, phoneNumber.length, '****');
-    } else if (phoneNumber.length > 3) {
-      return phoneNumber.replaceRange(3, phoneNumber.length, '****');
-    } else {
-      return '****';
-    }
-  }
 
   String getCategoryName() {
     final locale = Localizations.localeOf(context).languageCode;
@@ -49,316 +38,263 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(20.0),
+      color: theme.scaffoldBackgroundColor,
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Category Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0),
-              borderRadius: BorderRadius.circular(8),
+              color: colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFFF6F0F).withOpacity(0.2),
+                color: colorScheme.primary.withOpacity(0.2),
                 width: 1,
               ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.category_outlined,
-                  size: 14,
-                  color: Color(0xFFFF6F0F),
+                Icon(
+                  Icons.category_rounded,
+                  size: 16,
+                  color: colorScheme.onPrimaryContainer,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   getCategoryName().isNotEmpty
                       ? getCategoryName()
                       : (localizations?.newProductCategory ?? 'No Category'),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFFFF6F0F),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
+                    letterSpacing: 0.1,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
           // Service Title
           Text(
             widget.service.name!,
-            style: const TextStyle(
-              fontSize: 24,
+            style: TextStyle(
+              fontSize: 26,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF212124),
+              color: colorScheme.onSurface,
               height: 1.3,
               letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
 
           // Service Description
-          Text(
-            widget.service.description!,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
-              height: 1.6,
-              letterSpacing: 0.2,
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Divider
           Container(
-            height: 1,
-            color: Colors.grey[200],
-          ),
-          const SizedBox(height: 24),
-
-          // Seller Info Label
-          Text(
-            'Service Provider',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-              textBaseline: TextBaseline.alphabetic,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Seller Info Card
-          Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF5),
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFFFF6F0F).withOpacity(0.1),
-                width: 1.5,
+                color: colorScheme.outline.withOpacity(0.08),
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF6F0F).withOpacity(0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  color: theme.shadowColor.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Avatar with gradient
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFFF6F0F),
-                        Color(0xFFFF8C3A),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.description_rounded,
+                      size: 20,
+                      color: colorScheme.primary,
                     ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFF6F0F).withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+                    const SizedBox(width: 8),
+                    Text(
+                      localizations?.newProductDescription ?? 'Description',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface,
+                        letterSpacing: -0.3,
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.person_rounded,
-                    color: Colors.white,
-                    size: 28,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  widget.service.description!,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: colorScheme.onSurface.withOpacity(0.8),
+                    height: 1.6,
+                    letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(width: 16),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
 
-                // Provider Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Location with icon
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 16,
-                            color: Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              _maskedLocation(
-                                widget.service.userName.location.region,
-                                widget.service.userName.location.district,
-                              ),
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF212124),
-                                letterSpacing: 0.2,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+          // Service Provider Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colorScheme.outline.withOpacity(0.08),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.shadowColor.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Service Provider',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface.withOpacity(0.7),
+                    letterSpacing: 0.1,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    // Avatar with border
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: colorScheme.primary.withOpacity(0.2),
+                          width: 2,
+                        ),
                       ),
-                      const SizedBox(height: 6),
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.person_rounded,
+                          color: colorScheme.primary,
+                          size: 28,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
 
-                      Row(
+                    // Provider Info
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.phone_rounded,
-                            size: 14,
-                            color: Colors.grey[500],
-                          ),
-                          const SizedBox(width: 4),
+                          // Username
                           Text(
-                            _maskedPhone(widget.service.userName.phoneNumber),
+                            widget.service.userName.username ?? 'Service Provider',
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                              letterSpacing: -0.3,
                             ),
-                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 8),
+                          // Location with icon
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_rounded,
+                                size: 16,
+                                color: colorScheme.primary,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  _maskedLocation(
+                                    widget.service.userName.location.region,
+                                    widget.service.userName.location.district,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: colorScheme.onSurface.withOpacity(0.7),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(width: 8),
-
-                // Chat Button
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFFFF6F0F).withOpacity(0.3),
-                      width: 1.5,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFF6F0F).withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+
+                    const SizedBox(width: 12),
+
+                    // Chat Button
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: widget.onChatPressed ??
-                          () {
-                            // Default action if no callback is provided
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Opening chat...'),
-                                backgroundColor: const Color(0xFFFF6F0F),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                margin: const EdgeInsets.all(16),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                      customBorder: const CircleBorder(),
-                      child: const Center(
-                        child: Icon(
-                          Icons.chat_bubble_outline_rounded,
-                          color: Color(0xFFFF6F0F),
-                          size: 22,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: widget.onChatPressed ??
+                              () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Opening chat...'),
+                                    backgroundColor: colorScheme.primary,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    margin: const EdgeInsets.all(16),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                          child: Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: colorScheme.onPrimaryContainer,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
 
-                const SizedBox(width: 8),
-
-                // Call Button
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFFF6F0F),
-                        Color(0xFFFF8C3A),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFFF6F0F).withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () async {
-                        final phoneNumber = widget.service.userName.phoneNumber;
-                        final Uri phoneUri = Uri(
-                          scheme: 'tel',
-                          path: phoneNumber,
-                        );
-
-                        if (await canLaunchUrl(phoneUri)) {
-                          await launchUrl(phoneUri);
-                        } else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    const Text('Could not open phone dialer'),
-                                backgroundColor: const Color(0xFFFF6B6B),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                margin: const EdgeInsets.all(16),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      customBorder: const CircleBorder(),
-                      child: const Center(
-                        child: Icon(
-                          Icons.phone_rounded,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),

@@ -2025,5 +2025,349 @@
   "uploading": "Uploading...",
   "@uploading": {
     "description": "Uploading state text"
+  },
+  "acceptTermsRequired": "You must accept the Terms and Conditions to continue",
+  "@acceptTermsRequired": {
+    "description": "Error message when user hasn't accepted terms"
+  },
+  "iAgreeToTerms": "I agree to the ",
+  "@iAgreeToTerms": {
+    "description": "Terms acceptance checkbox text prefix"
+  },
+  "termsAndConditions": "Terms and Conditions",
+  "@termsAndConditions": {
+    "description": "Terms and Conditions text"
+  },
+  "zeroToleranceStatement": " and understand that there is zero tolerance for objectionable content or abusive users.",
+  "@zeroToleranceStatement": {
+    "description": "Zero tolerance statement for terms acceptance"
+  },
+  "viewTerms": "View Terms and Conditions",
+  "@viewTerms": {
+    "description": "Button to view terms"
+  },
+  "reportContent": "Report Content",
+  "@reportContent": {
+    "description": "Title for report content dialog"
+  },
+  "selectReportReason": "Please select a reason for reporting:",
+  "@selectReportReason": {
+    "description": "Prompt to select report reason"
+  },
+  "additionalDetails": "Additional details (optional)",
+  "@additionalDetails": {
+    "description": "Label for additional details field in report dialog"
+  },
+  "reportDetailsHint": "Provide any additional information...",
+  "@reportDetailsHint": {
+    "description": "Hint text for report details field"
+  },
+  "reportSubmitted": "Thank you for your report. We will review it within 24 hours.",
+  "@reportSubmitted": {
+    "description": "Success message after submitting report"
+  },
+  "reportProduct": "Report Product",
+  "@reportProduct": {
+    "description": "Menu option to report a product"
+  },
+  "reportService": "Report Service",
+  "@reportService": {
+    "description": "Menu option to report a service"
+  },
+  "reportMessage": "Report Message",
+  "@reportMessage": {
+    "description": "Menu option to report a message"
+  },
+  "reportUser": "Report User",
+  "@reportUser": {
+    "description": "Menu option to report a user"
+  },
+  "reportErrorNotImplemented": "The reporting feature is not yet available. Please contact support or try again later.",
+  "@reportErrorNotImplemented": {
+    "description": "Error message when reporting endpoint is not implemented"
+  },
+  "reportAlreadySubmitted": "You have already reported this content. We are reviewing your previous report.",
+  "@reportAlreadySubmitted": {
+    "description": "Message shown when user tries to report content they've already reported"
+  },
+  "reportFailedGeneric": "Failed to submit report. Please try again.",
+  "@reportFailedGeneric": {
+    "description": "Generic error message when report submission fails"
+  },
+  "reportFailedNetwork": "Network error occurred. Please check your connection and try again.",
+  "@reportFailedNetwork": {
+    "description": "Error message when network error occurs during report submission"
+  },
+  "becomeAgentTitle": "Join as a Real Estate Agent",
+  "@becomeAgentTitle": {
+    "description": "Title for become agent page"
+  },
+  "becomeAgentSubtitle": "List properties and help clients find their dream homes",
+  "@becomeAgentSubtitle": {
+    "description": "Subtitle for become agent page"
+  },
+  "agentBenefits": "Benefits:",
+  "@agentBenefits": {
+    "description": "Label for agent benefits section"
+  },
+  "agentBenefitVerified": "Verified agent badge",
+  "@agentBenefitVerified": {
+    "description": "Agent benefit - verified badge"
+  },
+  "agentBenefitAnalytics": "Access to analytics and insights",
+  "@agentBenefitAnalytics": {
+    "description": "Agent benefit - analytics"
+  },
+  "agentBenefitClients": "Direct contact with potential clients",
+  "@agentBenefitClients": {
+    "description": "Agent benefit - client contact"
+  },
+  "agentBenefitReputation": "Build your professional reputation",
+  "@agentBenefitReputation": {
+    "description": "Agent benefit - reputation"
+  },
+  "agentApplicationForm": "Application Form",
+  "@agentApplicationForm": {
+    "description": "Title for agent application form"
+  },
+  "agentAgencyName": "Agency Name",
+  "@agentAgencyName": {
+    "description": "Label for agency name field"
+  },
+  "agentAgencyNameHint": "Enter your real estate agency name",
+  "@agentAgencyNameHint": {
+    "description": "Hint for agency name field"
+  },
+  "agentAgencyNameRequired": "Agency name is required",
+  "@agentAgencyNameRequired": {
+    "description": "Error message for required agency name"
+  },
+  "agentLicenceNumber": "License Number",
+  "@agentLicenceNumber": {
+    "description": "Label for license number field"
+  },
+  "agentLicenceNumberHint": "Enter your real estate license number",
+  "@agentLicenceNumberHint": {
+    "description": "Hint for license number field"
+  },
+  "agentLicenceNumberRequired": "License number is required",
+  "@agentLicenceNumberRequired": {
+    "description": "Error message for required license number"
+  },
+  "agentYearsExperience": "Years of Experience",
+  "@agentYearsExperience": {
+    "description": "Label for years of experience field"
+  },
+  "agentYearsExperienceHint": "Enter number of years",
+  "@agentYearsExperienceHint": {
+    "description": "Hint for years of experience field"
+  },
+  "agentYearsExperienceRequired": "Years of experience is required",
+  "@agentYearsExperienceRequired": {
+    "description": "Error message for required years of experience"
+  },
+  "agentYearsExperienceInvalid": "Please enter a valid number",
+  "@agentYearsExperienceInvalid": {
+    "description": "Error message for invalid years of experience"
+  },
+  "agentSpecialization": "Specialization",
+  "@agentSpecialization": {
+    "description": "Label for specialization field"
+  },
+  "agentApplicationNote": "Your application will be reviewed by our team. You will be notified once your application is approved.",
+  "@agentApplicationNote": {
+    "description": "Note about application review process"
+  },
+  "agentSubmitApplication": "Submit Application",
+  "@agentSubmitApplication": {
+    "description": "Button text to submit agent application"
+  },
+  "agentApplicationSubmitted": "Application submitted successfully! We will review it soon.",
+  "@agentApplicationSubmitted": {
+    "description": "Success message after submitting agent application"
+  },
+  "agentApplicationStatus": "Application Status",
+  "@agentApplicationStatus": {
+    "description": "Title for application status dialog"
+  },
+  "agentViewProfile": "View your agent profile",
+  "@agentViewProfile": {
+    "description": "Subtitle for verified agent menu item"
+  },
+  "agentDashboardComingSoon": "Agent dashboard coming soon!",
+  "@agentDashboardComingSoon": {
+    "description": "Message when agent dashboard is not yet implemented"
+  },
+  "property_create_basic_information": "Basic Information",
+  "@property_create_basic_information": {
+    "description": "Section title for basic information in property creation"
+  },
+  "property_create_property_title": "Property Title *",
+  "@property_create_property_title": {
+    "description": "Label for property title field"
+  },
+  "property_create_property_title_hint": "e.g., Modern 3BR Apartment in City Center",
+  "@property_create_property_title_hint": {
+    "description": "Hint text for property title field"
+  },
+  "property_create_property_title_required": "Please enter property title",
+  "@property_create_property_title_required": {
+    "description": "Validation error for property title"
+  },
+  "property_create_description": "Description *",
+  "@property_create_description": {
+    "description": "Label for description field"
+  },
+  "property_create_description_hint": "Describe your property in detail...",
+  "@property_create_description_hint": {
+    "description": "Hint text for description field"
+  },
+  "property_create_description_required": "Please enter description",
+  "@property_create_description_required": {
+    "description": "Validation error for description"
+  },
+  "property_create_property_type": "Property Type",
+  "@property_create_property_type": {
+    "description": "Label for property type field"
+  },
+  "property_create_property_type_required": "Property Type *",
+  "@property_create_property_type_required": {
+    "description": "Label for required property type field"
+  },
+  "property_create_listing_type_required": "Listing Type *",
+  "@property_create_listing_type_required": {
+    "description": "Label for required listing type field"
+  },
+  "property_create_pricing": "Pricing",
+  "@property_create_pricing": {
+    "description": "Section title for pricing"
+  },
+  "property_create_price": "Price *",
+  "@property_create_price": {
+    "description": "Label for price field"
+  },
+  "property_create_price_hint": "Enter price",
+  "@property_create_price_hint": {
+    "description": "Hint text for price field"
+  },
+  "property_create_price_required": "Please enter price",
+  "@property_create_price_required": {
+    "description": "Validation error for price"
+  },
+  "property_create_currency": "Currency",
+  "@property_create_currency": {
+    "description": "Label for currency field"
+  },
+  "property_create_property_details": "Property Details",
+  "@property_create_property_details": {
+    "description": "Section title for property details"
+  },
+  "property_create_square_meters": "Sq. Meters *",
+  "@property_create_square_meters": {
+    "description": "Label for square meters field"
+  },
+  "property_create_bedrooms": "Bedrooms *",
+  "@property_create_bedrooms": {
+    "description": "Label for bedrooms field"
+  },
+  "property_create_bathrooms": "Bathrooms *",
+  "@property_create_bathrooms": {
+    "description": "Label for bathrooms field"
+  },
+  "property_create_floor": "Floor",
+  "@property_create_floor": {
+    "description": "Label for floor field"
+  },
+  "property_create_total_floors": "Total Floors",
+  "@property_create_total_floors": {
+    "description": "Label for total floors field"
+  },
+  "property_create_parking": "Parking",
+  "@property_create_parking": {
+    "description": "Label for parking spaces field"
+  },
+  "property_create_year_built": "Year Built",
+  "@property_create_year_built": {
+    "description": "Label for year built field"
+  },
+  "property_create_location": "Location",
+  "@property_create_location": {
+    "description": "Section title for location"
+  },
+  "property_create_address": "Address *",
+  "@property_create_address": {
+    "description": "Label for address field"
+  },
+  "property_create_address_hint": "Enter property address",
+  "@property_create_address_hint": {
+    "description": "Hint text for address field"
+  },
+  "property_create_address_required": "Please enter address",
+  "@property_create_address_required": {
+    "description": "Validation error for address"
+  },
+  "property_create_location_detected": "Location Detected",
+  "@property_create_location_detected": {
+    "description": "Text shown when location is detected"
+  },
+  "property_create_get_location": "Get Current Location",
+  "@property_create_get_location": {
+    "description": "Button text to get current location"
+  },
+  "property_create_features": "Features",
+  "@property_create_features": {
+    "description": "Section title for features"
+  },
+  "property_create_feature_balcony": "Balcony",
+  "@property_create_feature_balcony": {
+    "description": "Feature name: Balcony"
+  },
+  "property_create_feature_garage": "Garage",
+  "@property_create_feature_garage": {
+    "description": "Feature name: Garage"
+  },
+  "property_create_feature_garden": "Garden",
+  "@property_create_feature_garden": {
+    "description": "Feature name: Garden"
+  },
+  "property_create_feature_pool": "Pool",
+  "@property_create_feature_pool": {
+    "description": "Feature name: Pool"
+  },
+  "property_create_feature_elevator": "Elevator",
+  "@property_create_feature_elevator": {
+    "description": "Feature name: Elevator"
+  },
+  "property_create_feature_furnished": "Furnished",
+  "@property_create_feature_furnished": {
+    "description": "Feature name: Furnished"
+  },
+  "property_create_images": "Property Images",
+  "@property_create_images": {
+    "description": "Section title for property images"
+  },
+  "property_create_tap_to_add_images": "Tap to add images",
+  "@property_create_tap_to_add_images": {
+    "description": "Text shown in empty image picker"
+  },
+  "property_create_at_least_one_image": "At least 1 image required",
+  "@property_create_at_least_one_image": {
+    "description": "Text shown below image picker"
+  },
+  "property_create_add_more": "Add More",
+  "@property_create_add_more": {
+    "description": "Button text to add more images"
+  },
+  "property_create_required": "Required",
+  "@property_create_required": {
+    "description": "Generic required field validation message"
+  },
+  "property_create_location_required": "Please enable location services to create a property",
+  "@property_create_location_required": {
+    "description": "Error message when location is not available"
+  },
+  "property_create_image_required": "At least one property image is required",
+  "@property_create_image_required": {
+    "description": "Error message when no images are selected"
   }
 }

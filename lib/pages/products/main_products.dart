@@ -16,6 +16,8 @@ class ProductMain extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     // Cache the formatted price to avoid recalculating
     final formattedPrice = _getFormattedPrice();
 
@@ -29,130 +31,166 @@ class ProductMain extends ConsumerWidget {
         ).then((_) => ref.invalidate(productsProvider));
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-        padding: const EdgeInsets.all(12.0),
+        margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0),
-          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.shade200,
-              spreadRadius: 4,
-              blurRadius: 4,
+              color: theme.shadowColor.withOpacity(0.08),
+              spreadRadius: 0,
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product Image - Left side like Carrot
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: SizedBox(
-                width: 100,
-                height: 100,
-                child: CachedNetworkImageWidget(
-                  imageUrl: product.images.isNotEmpty
-                      ? product.images[0].image
-                      : null,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16.0),
-            Expanded(
-              child: SizedBox(
-                height: 100,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Top section: Title and Location
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title - Top priority like Carrot
-                        Text(
-                          product.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16.0,
-                            color: Colors.black87,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16.0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductDetail(product: product)),
+              ).then((_) => ref.invalidate(productsProvider));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Product Image - Left side
+                  Hero(
+                    tag: 'product_image_${product.id}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: SizedBox(
+                        width: 110,
+                        height: 110,
+                        child: CachedNetworkImageWidget(
+                          imageUrl: product.images.isNotEmpty
+                              ? product.images[0].image
+                              : null,
+                          width: 110,
+                          height: 110,
+                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        const SizedBox(height: 4.0),
-
-                        // Location - Second line like Carrot
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              size: 14,
-                              color: Colors.redAccent,
-                            ),
-                            const SizedBox(width: 2.0),
-                            Expanded(
-                              child: Text(
-                                _getLocationText(),
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12.0,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14.0),
+                  Expanded(
+                    child: SizedBox(
+                      height: 110,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Top section: Title and Location
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Title
+                                Text(
+                                  product.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                    color: colorScheme.onSurface,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                                const SizedBox(height: 6.0),
+
+                                // Location
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_rounded,
+                                      size: 13,
+                                      color: colorScheme.primary,
+                                    ),
+                                    const SizedBox(width: 3.0),
+                                    Expanded(
+                                      child: Text(
+                                        _getLocationText(),
+                                        style: TextStyle(
+                                          color: colorScheme.onSurface.withOpacity(0.6),
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        // Price - Bottom left like Carrot
-                        Expanded(
-                          child: Text(
-                            formattedPrice,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                              color: Colors.green,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.favorite_border,
-                              color: Colors.grey,
-                              size: 18.0,
-                            ),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              '${product.likeCount}',
-                              style: const TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey,
+                          // Bottom section: Price and Likes
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Price
+                              Flexible(
+                                child: Text(
+                                  formattedPrice,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.0,
+                                    color: colorScheme.primary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              // Likes
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6.0,
+                                  vertical: 3.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surfaceVariant.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.favorite_rounded,
+                                      color: colorScheme.error,
+                                      size: 14.0,
+                                    ),
+                                    const SizedBox(width: 3.0),
+                                    Text(
+                                      '${product.likeCount}',
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: colorScheme.onSurface.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

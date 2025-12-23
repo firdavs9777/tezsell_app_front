@@ -22,10 +22,14 @@ class AppConfig {
   static const String loginPath = '/accounts/login/';
   static const String registerPath = '/accounts/register/';
   static const String userInfoPath = '/accounts/user/info/';
+  static const String usersPath = '/api/accounts/users/';
   static const String sendSmsPath = '/accounts/send-sms/';
   static const String verifySmsPath = '/accounts/verify-code/';
   static const String regionsPath = '/accounts/regions/';
   static const String districtsPath = '/accounts/districts/';
+  static const String refreshTokenPath = '/accounts/refresh-token/';
+  static const String verifyTokenPath = '/accounts/verify-token/';
+  static const String logoutPath = '/accounts/logout/';
 
   // Products Endpoints
   static const String productsPath = '/products/api/products/';
@@ -41,6 +45,27 @@ class AppConfig {
   static const String realEstatePropertiesPath = '/real_estate/api/properties/';
   static const String realEstateSavedPropertiesPath =
       '/real_estate/api/properties/saved/';
+  static const String realEstateMapBoundsPath = '/real_estate/api/map/bounds/';
+  static const String realEstateMapStatsPath = '/real_estate/api/map/stats/';
+  static const String realEstateInquiriesPath = '/real_estate/api/inquiries/';
+  static const String realEstateLocationsChoicesPath =
+      '/real_estate/api/locations/choices/';
+  static const String realEstateLocationsUserLocationsPath =
+      '/real_estate/api/locations/user-locations/';
+  static const String realEstateStatsPath = '/real_estate/api/stats/';
+  static const String realEstateAgentsPath = '/real_estate/api/agents/';
+  static const String realEstateAgentBecomePath = '/real_estate/api/agent/become/';
+  static const String realEstateAgentProfilePath =
+      '/real_estate/api/agent/profile/';
+  static const String realEstateAgentStatusPath =
+      '/real_estate/api/agent/status/';
+  static const String realEstateAgentApplicationStatusPath =
+      '/real_estate/api/agent/application-status/';
+  static const String realEstateAgentDashboardPath =
+      '/real_estate/api/agent/dashboard/';
+  static const String realEstateAgentInquiriesPath =
+      '/real_estate/api/agent/inquiries/';
+  static const String realEstateAgentTopPath = '/real_estate/api/agents/top/';
 
   // Global/Likes Endpoints
   static const String favoriteItemsPath = '/global/liked-items/';
@@ -51,6 +76,26 @@ class AppConfig {
 
   // Comments Endpoints
   static const String commentPath = '/comments';
+
+  // Content Reporting Endpoints
+  static const String reportPath = '/api/reports/';
+
+  // Admin Endpoints (under real_estate app)
+  static const String adminDashboardPath = '/real_estate/admin/dashboard/';
+  static const String adminDashboardChartsPath = '/real_estate/admin/dashboard/charts/';
+  static const String adminAgentVerificationPath = '/real_estate/admin/agents/verification/';
+  static const String adminPendingAgentsPath = '/real_estate/api/admin/agents/pending/';
+  static const String adminVerifyAgentPath = '/real_estate/api/admin/agents/{id}/verify/';
+  // Note: Reports, Users, Content endpoints need to be implemented in backend
+  // For now, using placeholder paths that match the pattern
+  static const String adminReportsPath = '/api/admin/reports/';
+  static const String adminUsersPath = '/api/admin/users/';
+  static const String adminContentPath = '/api/admin/content/';
+  static const String adminStatsPath = '/api/admin/stats/';
+  static const String adminUserSuspendPath = '/api/admin/users/{id}/suspend/';
+  static const String adminUserBanPath = '/api/admin/users/{id}/ban/';
+  static const String adminContentRemovePath = '/api/admin/content/{id}/remove/';
+  static const String adminReportUpdatePath = '/api/admin/reports/{id}/update/';
 
   // Chat Endpoints (using v1 API)
   static const String chatListPath = '/api/chats/';
@@ -63,8 +108,10 @@ class AppConfig {
   static const String chatRoomWsPath = '/ws/chat/'; // append room_id
 
   // Local Storage Keys
-  static const String tokenKey = 'auth_token';
-  static const String userIdKey = 'user_id';
+  static const String tokenKey = 'token'; // Access token (backward compatible)
+  static const String accessTokenKey = 'access_token';
+  static const String refreshTokenKey = 'refresh_token';
+  static const String userIdKey = 'userId';
   static const String usernameKey = 'username';
 
   // UI Constants
@@ -94,6 +141,9 @@ class AppConfig {
   static String getLoginUrl() => '$baseUrl$loginPath';
   static String getRegisterUrl() => '$baseUrl$registerPath';
   static String getUserInfoUrl() => '$baseUrl$userInfoPath';
+  static String getRefreshTokenUrl() => '$baseUrl$refreshTokenPath';
+  static String getVerifyTokenUrl() => '$baseUrl$verifyTokenPath';
+  static String getLogoutUrl() => '$baseUrl$logoutPath';
   static String getProductsUrl() => '$baseUrl$productsPath';
   static String getServicesUrl() => '$baseUrl$servicesPath';
   static String getChatListUrl() => '$baseUrl$chatListPath';

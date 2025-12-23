@@ -93,7 +93,10 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                     backgroundImage: widget.parentComment.user.profileImage !=
                             null
                         ? NetworkImage(
-                            '${baseUrl}${widget.parentComment.user.profileImage!.image}')
+                            widget.parentComment.user.profileImage!.image.startsWith('http://') ||
+                                    widget.parentComment.user.profileImage!.image.startsWith('https://')
+                                ? widget.parentComment.user.profileImage!.image
+                                : '${baseUrl}${widget.parentComment.user.profileImage!.image}')
                         : null,
                     backgroundColor: Colors.grey[300],
                     child: widget.parentComment.user.profileImage == null

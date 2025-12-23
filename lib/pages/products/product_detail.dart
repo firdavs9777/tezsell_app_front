@@ -6,12 +6,14 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:app/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class ProductDetail extends ConsumerStatefulWidget {
   const ProductDetail({super.key, required this.product});
@@ -36,33 +38,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     _pageController.dispose();
     super.dispose();
   }
-  // Add this helper method to your _ProductDetailState class
-
-  String _maskPhoneNumber(String phoneNumber) {
-    if (phoneNumber.isEmpty) return '';
-
-    // Remove any spaces or special characters
-    final cleaned = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
-
-    if (cleaned.length <= 4) return cleaned;
-
-    // Show first 3 and last 2 digits: +998 90 *** ** 45
-    if (cleaned.startsWith('+')) {
-      // International format: +998 90 123 45 67 → +998 90 *** ** 67
-      if (cleaned.length > 7) {
-        final countryCode = cleaned.substring(0, 4); // +998
-        final firstDigits = cleaned.substring(4, 6); // 90
-        final lastDigits = cleaned.substring(cleaned.length - 2); // 67
-        return '$countryCode $firstDigits *** ** $lastDigits';
-      }
-    }
-
-    // Local format: show first 2 and last 2
-    final first = cleaned.substring(0, 2);
-    final last = cleaned.substring(cleaned.length - 2);
-    final maskLength = cleaned.length - 4;
-    return '$first${'*' * maskLength}$last';
-  }
 
   String getCategoryName() {
     final locale = Localizations.localeOf(context).languageCode;
@@ -77,19 +52,43 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
+  Future<void> _showReportDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ReportContentDialog(
+        contentType: 'product',
+        contentId: widget.product.id,
+        contentTitle: widget.product.title,
+      ),
+    );
+    
+    // Show success message if report was successful
+    if (result == true && mounted) {
+      final localizations = AppLocalizations.of(context);
+      AppErrorHandler.showSuccess(
+        context,
+        localizations?.reportSubmitted ??
+            'Thank you for your report. We will review it within 24 hours.',
+      );
+    }
+  }
+
   // Add chat functionality
   Future<void> _startChat() async {
     final targetUserId = widget.product.userName.id;
     final userName = widget.product.userName.username ?? 'Product Seller';
     final localizations = AppLocalizations.of(context);
 
-    // Check authentication
+    // Initialize chat provider if not already initialized
+    await ref.read(chatProvider.notifier).initialize();
+
+    // Check authentication after initialization
     final chatState = ref.read(chatProvider);
     if (!chatState.isAuthenticated) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Please log in to start a chat'),
+            content: Text(localizations?.chatLoginMessage ?? 'Please log in to start a chat'),
             backgroundColor: Colors.orange,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -210,37 +209,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
-  Future<void> _makePhoneCall() async {
-    final phoneNumber = widget.product.userName.phoneNumber;
-    final localizations = AppLocalizations.of(context);
-
-    final Uri phoneUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-
-    try {
-      if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri);
-      } else {
-        throw Exception('Could not launch phone dialer');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open phone dialer'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
-    }
-  }
 
   Future<void> _likeProduct() async {
     if (_isLiking) return;
@@ -343,28 +311,67 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             .toList()
         : [];
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
-        title: Text(localizations?.productDetail ?? 'Detail Page'),
+        elevation: 0,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        foregroundColor: colorScheme.onSurface,
+        title: Text(
+          localizations?.productDetail ?? 'Detail Page',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+          ),
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert_rounded,
+              color: colorScheme.onSurface,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onSelected: (value) {
+              if (value == 'report') {
+                _showReportDialog();
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<String>(
+                value: 'report',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.flag_rounded,
+                      color: colorScheme.error,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      localizations?.reportProduct ?? 'Report Product',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             _buildImageSlider(imageUrls),
-            if (imageUrls.length > 1)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: imageUrls.length,
-                  effect: const WormEffect(
-                    dotWidth: 8.0,
-                    dotHeight: 8.0,
-                    dotColor: Colors.grey,
-                    activeDotColor: Colors.blue,
-                  ),
-                ),
-              ),
             _buildUserProfile(),
             _buildProductTitle(),
             _buildProductCategory(),
@@ -378,34 +385,56 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildImageSlider(List<String> imageUrls) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: Container(
-        height: 250,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Stack(
-          children: [
-            CachedImageSlider(
-              imageUrls: imageUrls,
-              height: 250,
-              fit: BoxFit.cover,
-              pageController: _pageController,
-              borderRadius: BorderRadius.circular(8.0),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return Container(
+      height: 380,
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+      ),
+      child: Stack(
+        children: [
+          CachedImageSlider(
+            imageUrls: imageUrls,
+            height: 380,
+            fit: BoxFit.cover,
+            pageController: _pageController,
+            borderRadius: BorderRadius.zero,
+          ),
+          // Gradient overlay at bottom for better text readability
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.3),
+                  ],
+                ),
+              ),
             ),
-            if (imageUrls.length > 1) ...[
-              Positioned(
-                left: 10,
-                top: 100,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                    onPressed: () {
+          ),
+          if (imageUrls.length > 1) ...[
+            // Left navigation button
+            Positioned(
+              left: 16,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: Material(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(24),
+                  elevation: 2,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(24),
+                    onTap: () {
                       if (_pageController.hasClients &&
                           _pageController.page != null) {
                         int currentPage = _pageController.page!.toInt();
@@ -417,55 +446,136 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                         }
                       }
                     },
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.chevron_left_rounded,
+                        color: colorScheme.onSurface,
+                        size: 28,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              Positioned(
-                right: 10,
-                top: 100,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios,
-                        color: Colors.white),
-                    onPressed: () {
+            ),
+            // Right navigation button
+            Positioned(
+              right: 16,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: Material(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(24),
+                  elevation: 2,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(24),
+                    onTap: () {
                       if (_pageController.hasClients &&
                           _pageController.page != null) {
                         int currentPage = _pageController.page!.toInt();
                         if (currentPage < imageUrls.length - 1) {
                           _pageController.nextPage(
-                            duration: const Duration(milliseconds: 200),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         }
                       }
                     },
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        color: colorScheme.onSurface,
+                        size: 28,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ],
+            ),
+            // Page indicator at bottom
+            Positioned(
+              bottom: 16,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: SmoothPageIndicator(
+                  controller: _pageController,
+                  count: imageUrls.length,
+                  effect: WormEffect(
+                    dotWidth: 8.0,
+                    dotHeight: 8.0,
+                    spacing: 6.0,
+                    dotColor: Colors.white.withOpacity(0.4),
+                    activeDotColor: Colors.white,
+                    paintStyle: PaintingStyle.fill,
+                  ),
+                ),
+              ),
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildUserProfile() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.08),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: <Widget>[
-          CachedNetworkImageWidget.circular(
-            imageUrl: widget.product.userName?.profileImage?.image,
-            radius: 21,
-            errorWidget: const Icon(Icons.person, color: Colors.grey),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: colorScheme.primary.withOpacity(0.2),
+                width: 2,
+              ),
+            ),
+            child: CachedNetworkImageWidget.circular(
+              imageUrl: widget.product.userName?.profileImage?.image,
+              radius: 28,
+              errorWidget: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colorScheme.surfaceContainerHighest,
+                ),
+                child: Icon(
+                  Icons.person_rounded,
+                  color: colorScheme.onSurface.withOpacity(0.5),
+                  size: 28,
+                ),
+              ),
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -473,20 +583,37 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 Text(
                   widget.product.userName?.username ??
                       (localizations?.username ?? 'Unknown User'),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 17,
+                    color: colorScheme.onSurface,
+                    letterSpacing: -0.3,
                   ),
                 ),
-                Text(
-                  widget.product.userName?.location != null
-                      ? '${widget.product.userName!.location!.region ?? ''}, ${widget.product.userName!.location!.district ?? ''}'
-                      : (localizations?.searchLocation ??
-                          'Location not available'),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_rounded,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        widget.product.userName?.location != null
+                            ? '${widget.product.userName!.location!.region ?? ''}, ${widget.product.userName!.location!.district ?? ''}'
+                            : (localizations?.searchLocation ??
+                                'Location not available'),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: colorScheme.onSurface.withOpacity(0.7),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -497,40 +624,112 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildProductTitle() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
+    // Format price
+    final priceValue = int.tryParse(widget.product.price) ?? 0;
+    final formattedPrice = NumberFormat('#,##0', 'ko_KR').format(priceValue);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Text(
-          widget.product.title ??
-              (localizations?.newProductTitle ?? 'No Title'),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Price display - prominent at top
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colorScheme.primary.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '$formattedPrice',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onPrimaryContainer,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  widget.product.currency,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 16),
+          // Title
+          Text(
+            widget.product.title ??
+                (localizations?.newProductTitle ?? 'No Title'),
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+              height: 1.3,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildProductCategory() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       child: Align(
         alignment: Alignment.topLeft,
-        child: Text(
-          getCategoryName().isNotEmpty
-              ? getCategoryName()
-              : (localizations?.newProductCategory ?? 'No Category'),
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 14,
-            decoration: TextDecoration.underline,
-            decorationThickness: 2,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: colorScheme.primary.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.category_rounded,
+                size: 16,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                getCategoryName().isNotEmpty
+                    ? getCategoryName()
+                    : (localizations?.newProductCategory ?? 'No Category'),
+                style: TextStyle(
+                  color: colorScheme.onPrimaryContainer,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.1,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -538,20 +737,63 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildProductDescription() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Text(
-          widget.product.description ??
-              (localizations?.newProductDescription ?? 'No Description'),
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.normal,
-          ),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.08),
+          width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.description_rounded,
+                size: 20,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                localizations?.newProductDescription ?? 'Description',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            widget.product.description ??
+                (localizations?.newProductDescription ?? 'No Description'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              color: colorScheme.onSurface.withOpacity(0.8),
+              height: 1.6,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -635,104 +877,73 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildBottomNavigationBar() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outline.withOpacity(0.08),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: theme.shadowColor.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: SafeArea(
+        top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           child: Row(
             children: [
+              // Chat button - expanded to take full width
               Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations?.contactSeller ?? 'Contact Seller',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(Icons.phone, size: 14, color: Colors.grey[600]),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            _maskPhoneNumber(
-                                widget.product.userName.phoneNumber),
-                            style: const TextStyle(
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: _startChat,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: colorScheme.onPrimary,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            localizations?.chat ?? 'Chat',
+                            style: TextStyle(
+                              color: colorScheme.onPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
-                    ),
-                    // 🔥 Add hint text
-                    Text(
-                      localizations?.callToReveal ?? 'Tap "Call" to reveal',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.blue[600],
-                        fontStyle: FontStyle.italic,
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 12),
-
-              // Chat button
-              ElevatedButton.icon(
-                onPressed: _startChat,
-                icon: const Icon(Icons.chat_bubble_outline, size: 20),
-                label: Text(localizations?.chat ?? 'Chat'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 8),
-
-              // Call button
-              ElevatedButton.icon(
-                onPressed: _makePhoneCall,
-                icon: const Icon(Icons.phone, size: 20),
-                label: Text('Call'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
                   ),
                 ),
               ),

@@ -2,7 +2,7 @@ import 'package:app/pages/authentication/login.dart';
 import 'package:app/pages/authentication/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 
 class Home extends ConsumerWidget {

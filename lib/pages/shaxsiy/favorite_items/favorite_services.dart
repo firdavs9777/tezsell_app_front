@@ -4,7 +4,7 @@ import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class FavoriteServices extends ConsumerStatefulWidget {
   final List<Services> services;
@@ -81,7 +81,10 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                         borderRadius: BorderRadius.circular(8.0),
                         child: service.images.isNotEmpty
                             ? Image.network(
-                                '${baseUrl}/services${service.images[0].image}',
+                                service.images[0].image.startsWith('http://') ||
+                                        service.images[0].image.startsWith('https://')
+                                    ? service.images[0].image
+                                    : '${baseUrl}/services${service.images[0].image}',
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,

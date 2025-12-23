@@ -1,4 +1,9 @@
 import 'package:app/pages/language/language_selection.dart';
+import 'package:app/pages/tab_bar/tab_bar.dart';
+import 'package:app/service/authentication_service.dart';
+import 'package:app/service/token_refresh_service.dart';
+import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,17 +24,129 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
-    // Show splash screen for 3 seconds
-    await Future.delayed(const Duration(seconds: 3));
+    // Show splash screen for at least 2 seconds
+    final splashTimer = Future.delayed(const Duration(seconds: 2));
+
+    // Check authentication in parallel
+    final authCheck = _checkAuthentication();
+
+    // Wait for both to complete
+    await Future.wait([splashTimer, authCheck]);
 
     if (!mounted) return;
 
-    // Always navigate to language selection after splash
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const LanguageSelectionScreen(),
-      ),
-    );
+    // Navigate based on authentication status
+    final authService = ref.read(authenticationServiceProvider);
+    final isLoggedIn = await authService.isLoggedIn();
+
+    if (isLoggedIn) {
+      // User is logged in - check terms acceptance before allowing app access
+      AppLogger.info('User is logged in, checking terms acceptance...');
+      final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
+      
+      if (!hasAcceptedTerms) {
+        // User hasn't accepted terms, show terms acceptance screen
+        AppLogger.info('User has not accepted terms, showing terms acceptance screen');
+        if (mounted) {
+          final accepted = await Navigator.push<bool>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TermsAcceptanceScreen(),
+            ),
+          );
+          
+          if (accepted == true && mounted) {
+            // User accepted terms, navigate to main app
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const TabsScreen(),
+              ),
+            );
+          } else if (mounted) {
+            // User didn't accept terms, log them out and go to language selection
+            await authService.logout();
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const LanguageSelectionScreen(),
+              ),
+            );
+          }
+        }
+      } else {
+        // User has accepted terms, navigate to main app
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const TabsScreen(),
+          ),
+        );
+      }
+    } else {
+      // User is not logged in - go to language selection
+      AppLogger.info('User is not logged in, navigating to language selection');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const LanguageSelectionScreen(),
+        ),
+      );
+    }
+  }
+
+  /// Check authentication and refresh token if needed
+  Future<void> _checkAuthentication() async {
+    try {
+      final authService = ref.read(authenticationServiceProvider);
+      
+      // Check if user has tokens
+      final hasAccessToken = await authService.getStoredToken() != null;
+      final hasRefreshToken = await authService.getStoredRefreshToken() != null;
+
+      if (hasAccessToken || hasRefreshToken) {
+        AppLogger.info('Found stored tokens, verifying/refreshing...');
+
+        // First, try to verify the current access token
+        final isValid = await authService.verifyToken();
+
+        if (!isValid && hasRefreshToken) {
+          // Access token is invalid, try to refresh
+          AppLogger.info('Access token invalid, attempting refresh...');
+          final newToken = await authService.refreshToken();
+          
+          if (newToken != null) {
+            AppLogger.info('Token refreshed successfully');
+            // Start automatic token refresh service
+            _startTokenRefreshService(authService);
+          } else {
+            AppLogger.warning('Token refresh failed, user will need to login');
+            // Clear invalid tokens
+            await authService.logout();
+          }
+        } else if (isValid) {
+          AppLogger.info('Access token is valid');
+          // Only start token refresh service if refresh token exists
+          if (hasRefreshToken) {
+            _startTokenRefreshService(authService);
+          } else {
+            AppLogger.info('No refresh token found - user has old token. Will get refresh token on next login.');
+          }
+        }
+      } else {
+        AppLogger.info('No stored tokens found');
+      }
+    } catch (e) {
+      AppLogger.error('Error checking authentication: $e');
+      // On error, assume user is not logged in
+    }
+  }
+
+  /// Start the automatic token refresh service
+  void _startTokenRefreshService(AuthenticationService authService) {
+    try {
+      final tokenRefreshService = TokenRefreshService(authService);
+      tokenRefreshService.start();
+      AppLogger.info('Token refresh service started');
+    } catch (e) {
+      AppLogger.error('Error starting token refresh service: $e');
+    }
   }
 
   @override

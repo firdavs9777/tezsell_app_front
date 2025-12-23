@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ProfileEditScreen extends ConsumerStatefulWidget {
   const ProfileEditScreen({super.key});
@@ -423,7 +423,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     if (selectedImage != null) {
       return FileImage(selectedImage!);
     } else if (currentUser?.profileImage != null) {
-      return NetworkImage("$baseUrl${currentUser!.profileImage!.image}");
+      final imagePath = currentUser!.profileImage!.image;
+      final imageUrl = imagePath.startsWith('http://') ||
+              imagePath.startsWith('https://')
+          ? imagePath
+          : "$baseUrl$imagePath";
+      return NetworkImage(imageUrl);
     }
     return null;
   }

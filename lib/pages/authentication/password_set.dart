@@ -4,20 +4,24 @@ import 'package:app/service/authentication_service.dart';
 import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PasswordReset extends StatefulWidget {
   final String regionName;
   final String districtName;
   final String districtId;
-  final String phone_number;
+  final String email;
+  final String? verificationCode; // Verification code from email verification step
 
   const PasswordReset({
     super.key,
     required this.regionName,
     required this.districtName,
     required this.districtId,
-    required this.phone_number,
+    required this.email,
+    this.verificationCode,
   });
 
   @override
@@ -28,6 +32,7 @@ class _PasswordResetState extends State<PasswordReset> {
   bool _isObscure = true;
   bool _isObscure_secondary = true;
   bool _isLoading = false;
+  bool _termsAccepted = false;
   late AuthenticationService authService;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
@@ -107,6 +112,15 @@ class _PasswordResetState extends State<PasswordReset> {
       return;
     }
 
+    // Check terms acceptance
+    if (!_termsAccepted) {
+      _showErrorDialog(
+        AppLocalizations.of(context)?.acceptTermsRequired ??
+            'You must accept the Terms and Conditions to continue',
+      );
+      return;
+    }
+
     String userName = _userNameController.text.trim();
     String password = _passwordController.text;
     String passwordConfirmation = _passwordConfirmationController.text;
@@ -124,20 +138,33 @@ class _PasswordResetState extends State<PasswordReset> {
 
     try {
 
+      // Check if verification code is provided (required for registration)
+      if (widget.verificationCode == null || widget.verificationCode!.isEmpty) {
+        _showErrorDialog('Verification code is required. Please verify your email first.');
+        return;
+      }
+
       // Pass the selected images to the registration service
       final result = await authService.register(
-        widget.phone_number,
+        widget.email,
         password,
         userName,
         widget.regionName,
         widget.districtName,
         widget.districtId,
         _selectedImages.isNotEmpty ? _selectedImages[0] : null,
+        null, // phone_number is optional
+        widget.verificationCode!, // Required verification code
       );
 
       if (!mounted) return;
 
       if (result != null) {
+        // Store terms acceptance
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('terms_accepted', true);
+        await prefs.setString('terms_accepted_date', DateTime.now().toIso8601String());
+        
         // Success
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => const TabsScreen()),
@@ -158,10 +185,9 @@ class _PasswordResetState extends State<PasswordReset> {
       String errorString = e.toString().toLowerCase();
 
       // Check for specific error patterns from backend
-      if (errorString.contains('phone number already exists') ||
-          errorString.contains('user with this phone number')) {
-        errorMessage = AppLocalizations.of(context)?.phoneExists ??
-            'Bu telefon raqami allaqachon ro\'yxatdan o\'tgan';
+      if (errorString.contains('email already exists') ||
+          errorString.contains('user with this email')) {
+        errorMessage = 'Bu email allaqachon ro\'yxatdan o\'tgan';
       } else if (errorString.contains('username already exists') ||
           errorString.contains('user with that username')) {
         errorMessage = AppLocalizations.of(context)?.usernameExists ??
@@ -423,6 +449,90 @@ class _PasswordResetState extends State<PasswordReset> {
                 ),
 
               SizedBox(height: 15),
+
+              // Terms and Conditions acceptance
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      value: _termsAccepted,
+                      onChanged: _isLoading
+                          ? null
+                          : (value) {
+                              setState(() {
+                                _termsAccepted = value ?? false;
+                              });
+                            },
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: _isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _termsAccepted = !_termsAccepted;
+                                });
+                              },
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: AppLocalizations.of(context)
+                                        ?.iAgreeToTerms ??
+                                    'I agree to the ',
+                              ),
+                              TextSpan(
+                                text: AppLocalizations.of(context)
+                                        ?.termsAndConditions ??
+                                    'Terms and Conditions',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: AppLocalizations.of(context)
+                                        ?.zeroToleranceStatement ??
+                                    ' and understand that there is zero tolerance for objectionable content or abusive users.',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const TermsAndConditionsPage(),
+                            ),
+                          );
+                        },
+                  child: Text(
+                    AppLocalizations.of(context)?.viewTerms ??
+                        'View Terms and Conditions',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 10),
 
               // Submit button with loading state
               Padding(

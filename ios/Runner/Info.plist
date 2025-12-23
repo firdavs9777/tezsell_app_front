@@ -3,15 +3,11 @@
 <plist version="1.0">
 <dict>
    <key>NSMicrophoneUsageDescription</key>
-    <string>We need microphone access for voice messages</string>
+   <string>We need microphone access for voice messages</string>
    <key>CADisableMinimumFrameDurationOnPhone</key>
    <true/>
    <key>CFBundleDevelopmentRegion</key>
    <string>$(DEVELOPMENT_LANGUAGE)</string>
-   <key>LSApplicationQueriesSchemes</key>
-   <array>
-     <string>tel</string>
-   </array>
    <key>CFBundleDisplayName</key>
    <string>Tezsell</string>
    <key>CFBundleExecutable</key>
@@ -52,17 +48,21 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
    </array>
 
-   <!-- Permissions -->
+   <!-- Location Permissions - ALL THREE REQUIRED -->
    <key>NSLocationWhenInUseUsageDescription</key>
    <string>This app needs access to your location to show you relevant listings in your area.</string>
    <key>NSLocationAlwaysUsageDescription</key>
    <string>This app needs access to your location to show you relevant listings.</string>
+   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+   <string>This app needs access to your location to show you relevant listings in your area.</string>
+
+   <!-- Camera and Photos -->
    <key>NSPhotoLibraryUsageDescription</key>
    <string>This app requires access to your photo library for uploading product images.</string>
    <key>NSCameraUsageDescription</key>
    <string>This app requires access to your camera to take photos of products.</string>
 
-   <!-- URL Schemes for url_launcher -->
+   <!-- URL Schemes for url_launcher - MERGED into one -->
    <key>LSApplicationQueriesSchemes</key>
    <array>
       <string>mailto</string>
@@ -71,31 +71,33 @@
       <string>https</string>
       <string>http</string>
    </array>
-      <key>NSAppTransportSecurity</key>
-       <dict>
-           <key>NSAllowsArbitraryLoads</key>
-           <true/>
-           <!-- Optional: If you want to be more specific -->
-           <key>NSExceptionDomains</key>
-           <dict>
-               <key>api.webtezsell.com</key>
-               <dict>
-                   <key>NSIncludesSubdomains</key>
-                   <true/>
-                   <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-                   <true/>
-                   <key>NSTemporaryExceptionMinimumTLSVersion</key>
-                   <string>TLSv1.2</string>
-               </dict>
-           </dict>
-           </dict>
-           <key>UIBackgroundModes</key>
-           <array>
-               <string>fetch</string>
-               <string>remote-notification</string>
-           </array>
 
-           <key>FirebaseAppDelegateProxyEnabled</key>
-           <false/>
+   <key>NSAppTransportSecurity</key>
+   <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+      <!-- Optional: If you want to be more specific -->
+      <key>NSExceptionDomains</key>
+      <dict>
+         <key>api.webtezsell.com</key>
+         <dict>
+            <key>NSIncludesSubdomains</key>
+            <true/>
+            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+            <key>NSTemporaryExceptionMinimumTLSVersion</key>
+            <string>TLSv1.2</string>
+         </dict>
+      </dict>
+   </dict>
+
+   <key>UIBackgroundModes</key>
+   <array>
+      <string>fetch</string>
+      <string>remote-notification</string>
+   </array>
+
+   <key>FirebaseAppDelegateProxyEnabled</key>
+   <false/>
 </dict>
 </plist>

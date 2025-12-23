@@ -2,9 +2,11 @@ import 'package:app/common_widgets/common_button.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/terms_acceptance_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class ProductNew extends ConsumerStatefulWidget {
   const ProductNew({super.key});
@@ -79,9 +81,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   /// Shows a bottom sheet to choose between camera and gallery
   Future<void> _showImageSourceDialog({bool isMulti = false}) async {
     final localizations = AppLocalizations.of(context);
-    
+
     if (!mounted) return;
-    
+
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -153,11 +155,11 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         );
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
-          
+
           // Check file size (max 10MB)
           final fileSize = await imageFile.length();
           const maxSize = 10 * 1024 * 1024; // 10MB
-          
+
           if (fileSize > maxSize) {
             if (mounted) {
               AppErrorHandler.showWarning(
@@ -167,7 +169,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             }
             return;
           }
-          
+
           setState(() {
             _selectedImages.add(imageFile);
           });
@@ -187,6 +189,21 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       return;
     }
 
+    // Check terms acceptance before allowing product creation
+    final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
+    if (!hasAcceptedTerms) {
+      final accepted = await TermsAcceptanceHelper.showTermsRequiredForContentDialog(context);
+      if (!accepted) {
+        // User didn't accept terms, don't proceed with product creation
+        return;
+      }
+      // If user navigated to terms and accepted, continue with submission
+      final stillAccepted = await TermsAcceptanceHelper.hasAcceptedTerms();
+      if (!stillAccepted) {
+        return;
+      }
+    }
+
     final localizations = AppLocalizations.of(context);
 
     // Validation
@@ -197,6 +214,16 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         context,
         localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
       );
+      return;
+    }
+
+    // Content filtering
+    final contentError = ContentFilter.validateContent(
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+    );
+    if (contentError != null) {
+      AppErrorHandler.showWarning(context, contentError);
       return;
     }
 
@@ -235,7 +262,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
     try {
       AppLogger.debug('Starting product creation...');
-      
+
       // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -274,12 +301,11 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
       if (product != null) {
         AppLogger.info('Product created successfully: ${product.id}');
-        
+
         // Show success message BEFORE navigation
         AppErrorHandler.showSuccess(
           context,
-          localizations?.productCreatedSuccess ??
-              'Product successfully added!',
+          localizations?.productCreatedSuccess ?? 'Product successfully added!',
         );
 
         // Wait a bit for user to see the success message

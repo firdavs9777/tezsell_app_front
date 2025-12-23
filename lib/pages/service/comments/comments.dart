@@ -91,7 +91,11 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
           CircleAvatar(
             radius: 18,
             backgroundImage: reply.user.profileImage != null
-                ? NetworkImage('${baseUrl}${reply.user.profileImage!.image}')
+                ? NetworkImage(
+                    reply.user.profileImage!.image.startsWith('http://') ||
+                            reply.user.profileImage!.image.startsWith('https://')
+                        ? reply.user.profileImage!.image
+                        : '${baseUrl}${reply.user.profileImage!.image}')
                 : null,
             backgroundColor: Colors.grey[300],
             child: reply.user.profileImage == null
@@ -369,7 +373,10 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                           radius: 22,
                           backgroundImage: comment.user.profileImage != null
                               ? NetworkImage(
-                                  '${baseUrl}${comment.user.profileImage!.image}')
+                                  comment.user.profileImage!.image.startsWith('http://') ||
+                                          comment.user.profileImage!.image.startsWith('https://')
+                                      ? comment.user.profileImage!.image
+                                      : '${baseUrl}${comment.user.profileImage!.image}')
                               : null,
                           backgroundColor: Colors.grey[300],
                           child: comment.user.profileImage == null

@@ -1,268 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/real_estate/property_inquiry_dialog.dart';
+import 'package:app/config/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PropertyImage {
-  final int id;
-  final String image;
-  final String caption;
-
-  const PropertyImage({
-    required this.id,
-    required this.image,
-    required this.caption,
-  });
-
-  factory PropertyImage.fromJson(Map<String, dynamic> json) {
-    return PropertyImage(
-      id: json['id'] ?? 0,
-      image: json['image'] ?? '',
-      caption: json['caption'] ?? '',
-    );
-  }
-}
-
-class PropertyMapWidget extends StatefulWidget {
-  final RealEstate property;
-  final double height;
-  final bool showControls;
-  final VoidCallback? onFullscreenToggle;
-
-  const PropertyMapWidget({
-    Key? key,
-    required this.property,
-    this.height = 300,
-    this.showControls = true,
-    this.onFullscreenToggle,
-  }) : super(key: key);
-
-  @override
-  State<PropertyMapWidget> createState() => _PropertyMapWidgetState();
-}
-
-class _PropertyMapWidgetState extends State<PropertyMapWidget> {
-  late MapController _mapController;
-  double _currentZoom = 15.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _mapController = MapController();
-  }
-
-  @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
-  }
-
-  LatLng get _propertyLocation {
-    final lat = double.tryParse(widget.property.latitude);
-    final lng = double.tryParse(widget.property.longitude);
-
-    if (lat != null && lng != null) {
-      return LatLng(lat, lng);
-    }
-
-    return LatLng(41.2995, 69.2401);
-  }
-
-  void _zoomIn() {
-    setState(() {
-      _currentZoom = (_currentZoom + 1).clamp(1.0, 18.0);
-    });
-    _mapController.move(_propertyLocation, _currentZoom);
-  }
-
-  void _zoomOut() {
-    setState(() {
-      _currentZoom = (_currentZoom - 1).clamp(1.0, 18.0);
-    });
-    _mapController.move(_propertyLocation, _currentZoom);
-  }
-
-  void _centerOnProperty() {
-    _mapController.move(_propertyLocation, _currentZoom);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _propertyLocation,
-                initialZoom: _currentZoom,
-                minZoom: 1.0,
-                maxZoom: 18.0,
-                onMapEvent: (event) {
-                  if (event is MapEventMoveEnd) {
-                    setState(() {
-                      _currentZoom = event.camera.zoom;
-                    });
-                  }
-                },
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-                  subdomains: ['a', 'b', 'c', 'd'],
-                  userAgentPackageName: 'com.yourcompany.yourapp',
-                  maxZoom: 18,
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: _propertyLocation,
-                      width: 60,
-                      height: 60,
-                      child: _buildPropertyMarker(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            if (widget.showControls) ...[
-              Positioned(
-                right: 16,
-                top: 16,
-                child: Column(
-                  children: [
-                    _buildMapButton(
-                        icon: Icons.add,
-                        onPressed: _zoomIn,
-                        tooltip: 'Zoom In'),
-                    SizedBox(height: 8),
-                    _buildMapButton(
-                        icon: Icons.remove,
-                        onPressed: _zoomOut,
-                        tooltip: 'Zoom Out'),
-                    SizedBox(height: 8),
-                    _buildMapButton(
-                        icon: Icons.my_location,
-                        onPressed: _centerOnProperty,
-                        tooltip: 'Center on Property'),
-                  ],
-                ),
-              ),
-              if (widget.onFullscreenToggle != null)
-                Positioned(
-                  right: 16,
-                  bottom: 16,
-                  child: _buildMapButton(
-                      icon: Icons.fullscreen,
-                      onPressed: widget.onFullscreenToggle,
-                      tooltip: 'Fullscreen'),
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPropertyMarker() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.red,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Icon(Icons.location_on, color: Colors.white, size: 30),
-    );
-  }
-
-  Widget _buildMapButton({
-    required IconData icon,
-    required VoidCallback? onPressed,
-    required String tooltip,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            width: 40,
-            height: 40,
-            child: Icon(icon, color: Colors.grey[700], size: 20),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class FullscreenMapModal extends StatelessWidget {
-  final RealEstate property;
-  final VoidCallback onClose;
-
-  const FullscreenMapModal({
-    Key? key,
-    required this.property,
-    required this.onClose,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          PropertyMapWidget(
-            property: property,
-            height: double.infinity,
-            showControls: true,
-          ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: onClose,
-              backgroundColor: Colors.black.withOpacity(0.7),
-              child: Icon(Icons.close, color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// Import detail widgets
+import 'package:app/pages/real_estate/detail/property_image.dart';
+import 'package:app/pages/real_estate/detail/property_map_widget.dart';
+import 'package:app/pages/real_estate/detail/property_title_section.dart';
+import 'package:app/pages/real_estate/detail/property_stats_section.dart';
+import 'package:app/pages/real_estate/detail/property_location_section.dart';
+import 'package:app/pages/real_estate/detail/property_description_section.dart';
+import 'package:app/pages/real_estate/detail/property_features_section.dart';
+import 'package:app/pages/real_estate/detail/property_amenities_section.dart';
+import 'package:app/pages/real_estate/detail/property_details_section.dart';
+import 'package:app/pages/real_estate/detail/property_contact_section.dart';
+import 'package:app/pages/real_estate/detail/property_status_section.dart';
+import 'package:app/widgets/image_viewer.dart';
+import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/utils/error_handler.dart';
 
 class PropertyDetail extends ConsumerStatefulWidget {
   const PropertyDetail({super.key, required this.propertyId});
@@ -294,17 +55,32 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   List<PropertyImage> images = [];
   bool isActive = true;
   bool isSold = false;
+  int? metroDistance;
+  int? schoolDistance;
+  int? hospitalDistance;
+  int? shoppingDistance;
+  int currentImageIndex = 0;
+  PageController? _imagePageController;
 
   @override
   void initState() {
     super.initState();
+    _imagePageController = PageController(initialPage: 0);
     _initialize();
+  }
+
+  @override
+  void dispose() {
+    _imagePageController?.dispose();
+    super.dispose();
   }
 
   Future<void> _initialize() async {
     await _loadUserToken();
     await _loadPropertyDetails();
-    if (userToken != null && property != null) {
+    // isSaved is now set from API response in _loadPropertyDetails
+    // Only check if not already set
+    if (userToken != null && property != null && !isSaved) {
       await _checkIfPropertySaved();
     }
   }
@@ -317,8 +93,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           userToken = prefs.getString('token');
         });
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<void> _checkIfPropertySaved() async {
@@ -364,36 +139,78 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         errorMessage = null;
       });
 
-      final response = await ref
+      // Fetch property using the service
+      final propertyResponse = await ref
           .read(realEstateServiceProvider)
           .fetchSingleFilteredProperty(propertyId: widget.propertyId);
 
-      if (mounted) {
-        setState(() {
-          property = response;
-          description = "Test";
-          floor = 1;
-          totalFloors = 3;
-          yearBuilt = 1997;
-          parkingSpaces = 12323;
-          hasBalcony = true;
-          hasGarage = true;
-          hasGarden = false;
-          hasPool = false;
-          hasElevator = false;
-          isFurnished = false;
-          isActive = true;
-          isSold = false;
-          images = [
-            PropertyImage(
-              id: 1,
-              image:
-                  "https://api.webtezsell.com/media/properties/images/Properties.png",
-              caption: "main_home",
-            )
-          ];
-          isLoading = false;
-        });
+      // Also fetch raw response to get all fields
+      final realEstateService = ref.read(realEstateServiceProvider);
+      final rawResponse = await realEstateService.dio.get(
+        '${AppConfig.baseUrl}${AppConfig.realEstatePropertiesPath}${widget.propertyId}/',
+      );
+
+      if (mounted && rawResponse.statusCode == 200) {
+        final data = rawResponse.data;
+        if (data['success'] == true && data['property'] != null) {
+          final propertyData = data['property'];
+
+          setState(() {
+            property = propertyResponse;
+
+            // Extract all additional fields from raw response
+            description = propertyData['description'] ?? '';
+            floor = propertyData['floor'];
+            totalFloors = propertyData['total_floors'];
+            yearBuilt = propertyData['year_built'];
+            parkingSpaces = propertyData['parking_spaces'] ?? 0;
+            hasBalcony = propertyData['has_balcony'] ?? false;
+            hasGarage = propertyData['has_garage'] ?? false;
+            hasGarden = propertyData['has_garden'] ?? false;
+            hasPool = propertyData['has_pool'] ?? false;
+            hasElevator = propertyData['has_elevator'] ?? false;
+            isFurnished = propertyData['is_furnished'] ?? false;
+            isActive = propertyData['is_active'] ?? true;
+            isSold = propertyData['is_sold'] ?? false;
+            isSaved = propertyData['is_saved'] ?? false;
+            metroDistance = propertyData['metro_distance'];
+            schoolDistance = propertyData['school_distance'];
+            hospitalDistance = propertyData['hospital_distance'];
+            shoppingDistance = propertyData['shopping_distance'];
+
+            // Parse images array
+            if (propertyData['images'] != null &&
+                propertyData['images'] is List) {
+              images = (propertyData['images'] as List).map((img) {
+                return PropertyImage(
+                  id: img['id'] ?? 0,
+                  image: img['image'] ?? '',
+                  caption: img['caption'] ?? '',
+                );
+              }).toList();
+
+              // Initialize PageController after images are loaded
+              if (images.isNotEmpty) {
+                _imagePageController?.dispose();
+                _imagePageController = PageController(initialPage: 0);
+              }
+            } else if (property?.mainImage != null &&
+                property!.mainImage.isNotEmpty) {
+              // Fallback to main image if images array is empty
+              images = [
+                PropertyImage(
+                  id: 0,
+                  image: property!.mainImage,
+                  caption: '',
+                )
+              ];
+            }
+
+            isLoading = false;
+          });
+        } else {
+          throw Exception('Invalid response structure');
+        }
       }
     } catch (error) {
       if (mounted) {
@@ -441,7 +258,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               propertyId: property!.id.toString(),
               token: userToken!,
             );
-
       } else {
         // Was not saved, now saving - use POST (toggle)
 
@@ -477,7 +293,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         );
       }
     } catch (error) {
-
       // Revert optimistic update on error
       if (mounted) {
         setState(() {
@@ -527,23 +342,149 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Scaffold(
       body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 400,
             pinned: true,
             backgroundColor: theme.primaryColor,
+            actions: [
+              isCheckingSaved
+                  ? Padding(
+                      padding: EdgeInsets.all(8),
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        isSaved ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                      onPressed: _toggleSave,
+                    ),
+              IconButton(
+                icon: Icon(Icons.share, color: Colors.white),
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                },
+              ),
+              PopupMenuButton<String>(
+                icon: Icon(Icons.more_vert, color: Colors.white),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                onSelected: (value) {
+                  if (value == 'report') {
+                    _showReportDialog();
+                  }
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    value: 'report',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.flag_rounded,
+                          color: Theme.of(context).colorScheme.error,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          l10n.reportProduct ?? 'Report Property',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // Image Gallery with PageView
                   if (images.isNotEmpty)
-                    Image.network(
-                      images.first.image,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.apartment,
-                            size: 80, color: Colors.grey[500]),
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onHorizontalDragUpdate: (details) {
+                          // This captures horizontal drags for the PageView
+                        },
+                        child: PageView.builder(
+                          itemCount: images.length,
+                          controller: _imagePageController,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          onPageChanged: (index) {
+                            if (mounted) {
+                              setState(() {
+                                currentImageIndex = index;
+                              });
+                            }
+                          },
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ImageViewer(
+                                      imageUrl: images[index].image,
+                                      title:
+                                          'Image ${index + 1} of ${images.length}',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Image.network(
+                                images[index].image,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                  color: Colors.grey[300],
+                                  child: Icon(Icons.apartment,
+                                      size: 80, color: Colors.grey[500]),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  else if (property?.mainImage != null &&
+                      property!.mainImage.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ImageViewer(
+                              imageUrl: property!.mainImage,
+                              title: property!.title,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Image.network(
+                        property!.mainImage,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[300],
+                          child: Icon(Icons.apartment,
+                              size: 80, color: Colors.grey[500]),
+                        ),
                       ),
                     )
                   else
@@ -552,6 +493,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                       child: Icon(Icons.apartment,
                           size: 80, color: Colors.grey[500]),
                     ),
+                  // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -559,11 +501,35 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.3)
+                          Colors.black.withOpacity(0.5)
                         ],
                       ),
                     ),
                   ),
+                  // Image indicator
+                  if (images.length > 1)
+                    Positioned(
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(images.length, (index) {
+                          return Container(
+                            width: 8,
+                            height: 8,
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: currentImageIndex == index
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.4),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  // Badges
                   if (property != null) ...[
                     Positioned(
                       top: 60,
@@ -572,8 +538,15 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: theme.primaryColor,
+                          color: theme.primaryColor.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           property!.listingTypeDisplay,
@@ -592,15 +565,29 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                           padding:
                               EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.orange,
+                            color: Colors.orange.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: Text(
-                            l10n.propertyCardFeatured,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, color: Colors.white, size: 14),
+                              SizedBox(width: 4),
+                              Text(
+                                l10n.propertyCardFeatured,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -608,34 +595,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 ],
               ),
             ),
-            actions: [
-              isCheckingSaved
-                  ? Padding(
-                      padding: EdgeInsets.all(8),
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      ),
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        isSaved ? Icons.favorite : Icons.favorite_border,
-                        color: isSaved ? Colors.red : Colors.white,
-                      ),
-                      onPressed: _toggleSave,
-                    ),
-              IconButton(
-                icon: Icon(Icons.share, color: Colors.white),
-                onPressed: () {
-                  HapticFeedback.selectionClick();
-                },
-              ),
-            ],
           ),
           SliverToBoxAdapter(
             child: _buildContent(context, l10n),
@@ -711,544 +670,107 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTitleSection(localizations),
+          PropertyTitleSection(
+            property: property!,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildStatsSection(localizations),
+          PropertyStatsSection(
+            bedrooms: property!.bedrooms,
+            bathrooms: property!.bathrooms,
+            squareMeters: property!.squareMeters,
+            parkingSpaces: parkingSpaces,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildLocationSection(localizations),
+          PropertyLocationSection(
+            property: property!,
+            floor: floor,
+            totalFloors: totalFloors,
+            onFullscreenMap: _showFullscreenMap,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildDescriptionSection(localizations),
+          PropertyDescriptionSection(
+            description: description,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildFeaturesSection(localizations),
+          PropertyFeaturesSection(
+            hasBalcony: hasBalcony,
+            hasGarage: hasGarage,
+            hasGarden: hasGarden,
+            hasPool: hasPool,
+            hasElevator: hasElevator,
+            isFurnished: isFurnished,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildNearbyAmenitiesSection(localizations),
+          PropertyAmenitiesSection(
+            metroDistance: metroDistance,
+            schoolDistance: schoolDistance,
+            hospitalDistance: hospitalDistance,
+            shoppingDistance: shoppingDistance,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildDetailsSection(localizations),
+          PropertyDetailsSection(
+            property: property!,
+            yearBuilt: yearBuilt,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildContactSection(localizations),
+          PropertyContactSection(
+            property: property!,
+            onInquiry: _showInquiryDialog,
+            localizations: localizations,
+          ),
           SizedBox(height: 24),
-          _buildStatusSection(localizations),
+          PropertyStatusSection(
+            property: property!,
+            isActive: isActive,
+            localizations: localizations,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTitleSection(AppLocalizations? localizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          property!.title,
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[900]),
-        ),
-        SizedBox(height: 8),
-        Row(
-          children: [
-            Text(
-              '${property!.price} ${property!.currency}',
-              style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green[600]),
-            ),
-            Spacer(),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.visibility, size: 16, color: Colors.grey[600]),
-                  SizedBox(width: 4),
-                  Text(
-                    '${property!.viewsCount} ${localizations?.property_info_views ?? "views"}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        if (property!.pricePerSqm != null) ...[
-          SizedBox(height: 4),
-          Text(
-            '${property!.pricePerSqm} ${property!.currency}${localizations?.property_info_price_per_sqm ?? "/m²"}',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-          ),
-        ],
-      ],
-    );
+  void _showInquiryDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => PropertyInquiryDialog(
+        propertyId: property!.id,
+        propertyTitle: property!.title,
+      ),
+    ).then((success) {
+      if (success == true) {
+        // Inquiry was submitted successfully
+        HapticFeedback.mediumImpact();
+      }
+    });
   }
 
-  Widget _buildNearbyAmenitiesSection(AppLocalizations? localizations) {
-    final amenities = <String, int>{
-      localizations?.amenities_metro ?? 'Metro': 200,
-      localizations?.amenities_school ?? 'School': 100,
-      localizations?.amenities_hospital ?? 'Hospital': 3,
-      localizations?.amenities_shopping ?? 'Shopping': 6,
-    };
+  Future<void> _showReportDialog() async {
+    if (property == null) return;
 
-    final availableAmenities =
-        amenities.entries.where((e) => e.value > 0).toList();
-
-    if (availableAmenities.isEmpty) return SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: Column(
-            children: availableAmenities.map((amenity) {
-              IconData amenityIcon;
-              Color amenityColor;
-
-              if (amenity.key.toLowerCase().contains('metro')) {
-                amenityIcon = Icons.train;
-                amenityColor = Colors.blue;
-              } else if (amenity.key.toLowerCase().contains('school')) {
-                amenityIcon = Icons.school;
-                amenityColor = Colors.green;
-              } else if (amenity.key.toLowerCase().contains('hospital')) {
-                amenityIcon = Icons.local_hospital;
-                amenityColor = Colors.red;
-              } else if (amenity.key.toLowerCase().contains('shopping')) {
-                amenityIcon = Icons.shopping_cart;
-                amenityColor = Colors.orange;
-              } else {
-                amenityIcon = Icons.location_on;
-                amenityColor = Colors.grey;
-              }
-
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: amenityColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(amenityIcon, color: amenityColor, size: 20),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        amenity.key,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                    Text(
-                      '${amenity.value}m ${localizations?.amenities_away ?? "away"}',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => ReportContentDialog(
+        contentType: 'property',
+        contentId: property!.id,
+        contentTitle: property!.title,
+      ),
     );
-  }
 
-  Widget _buildStatsSection(AppLocalizations? localizations) {
-    return Row(
-      children: [
-        _buildStatItem(Icons.bed, '${property!.bedrooms}',
-            localizations?.property_card_bed ?? 'bed'),
-        SizedBox(width: 24),
-        _buildStatItem(Icons.bathroom, '${property!.bathrooms}',
-            localizations?.property_card_bath ?? 'bath'),
-        SizedBox(width: 24),
-        _buildStatItem(
-            Icons.square_foot, '${property!.squareMeters}m²', 'area'),
-        if (parkingSpaces > 0) ...[
-          SizedBox(width: 24),
-          _buildStatItem(Icons.local_parking, '$parkingSpaces',
-              localizations?.property_card_parking ?? 'parking'),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildStatItem(IconData icon, String value, String label) {
-    return Column(
-      children: [
-        Icon(icon, size: 24, color: Colors.grey[600]),
-        SizedBox(height: 4),
-        Text(value,
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[900])),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-      ],
-    );
-  }
-
-  Widget _buildLocationSection(AppLocalizations? localizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: Colors.red[400]),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      '${property!.address}, ${property!.city}, ${property!.district}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ],
-              ),
-              if (floor != null && totalFloors != null) ...[
-                SizedBox(height: 8),
-                Text(
-                  '${localizations?.property_details_floor ?? "Floor"}: $floor ${localizations?.property_details_of ?? "of"} $totalFloors',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ],
-          ),
-        ),
-        SizedBox(height: 16),
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: Offset(0, 2)),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Location',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                  TextButton.icon(
-                    onPressed: _showFullscreenMap,
-                    icon: Icon(Icons.fullscreen, size: 16),
-                    label:
-                        Text('View Fullscreen', style: TextStyle(fontSize: 12)),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              PropertyMapWidget(
-                property: property!,
-                height: 250,
-                showControls: true,
-                onFullscreenToggle: _showFullscreenMap,
-              ),
-              SizedBox(height: 12),
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.red[400], size: 16),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(property!.address,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14)),
-                          Text('${property!.district}, ${property!.city}',
-                              style: TextStyle(
-                                  color: Colors.grey[600], fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDescriptionSection(AppLocalizations? localizations) {
-    if (description == null || description!.isEmpty) {
-      return SizedBox.shrink();
+    // Show success message if report was successful
+    if (result == true && mounted) {
+      final localizations = AppLocalizations.of(context);
+      AppErrorHandler.showSuccess(
+        context,
+        localizations?.reportSubmitted ??
+            'Thank you for your report. We will review it within 24 hours.',
+      );
     }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          localizations?.sections_description ?? 'Description',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        Text(description!,
-            style:
-                TextStyle(fontSize: 16, height: 1.5, color: Colors.grey[700])),
-      ],
-    );
-  }
-
-  Widget _buildFeaturesSection(AppLocalizations? localizations) {
-    final features = <String, bool>{
-      localizations?.property_card_balcony ?? 'Balcony': hasBalcony,
-      localizations?.property_card_garage ?? 'Garage': hasGarage,
-      localizations?.property_card_garden ?? 'Garden': hasGarden,
-      localizations?.property_card_pool ?? 'Pool': hasPool,
-      localizations?.property_card_elevator ?? 'Elevator': hasElevator,
-      localizations?.property_card_furnished ?? 'Furnished': isFurnished,
-    };
-
-    final availableFeatures = features.entries.where((e) => e.value).toList();
-
-    if (availableFeatures.isEmpty) return SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          localizations?.property_details_features_amenities ??
-              'Features & Amenities',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: availableFeatures.map((feature) {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.blue[200]!),
-              ),
-              child: Text(
-                feature.key,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailsSection(AppLocalizations? localizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          localizations?.property_details_basic_information ??
-              'Basic Information',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        _buildDetailRow(
-          localizations?.property_details_property_type ?? 'Property Type:',
-          property!.propertyTypeDisplay,
-        ),
-        _buildDetailRow(
-          localizations?.property_details_listing_type ?? 'Listing Type:',
-          property!.listingTypeDisplay,
-        ),
-        if (yearBuilt != null)
-          _buildDetailRow(
-            localizations?.property_details_year_built ?? 'Year Built:',
-            yearBuilt.toString(),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(label,
-                style: TextStyle(
-                    fontWeight: FontWeight.w500, color: Colors.grey[600])),
-          ),
-          Expanded(
-            child: Text(value, style: TextStyle(color: Colors.grey[900])),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactSection(AppLocalizations? localizations) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            localizations?.contact_title ?? 'Contact Information',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          if (property!.agent != null) ...[
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.blue[100],
-                  child: Icon(Icons.person, color: Colors.blue[600]),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        localizations?.contact_modal_agent ?? 'Agent',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      Text(property!.agent!.username,
-                          style: TextStyle(color: Colors.grey[600])),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      _copyPhoneNumber(property!.agent!.phoneNumber),
-                  icon: Icon(Icons.phone, color: Colors.green),
-                ),
-              ],
-            ),
-          ] else ...[
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.green[100],
-                  child: Icon(Icons.home, color: Colors.green[600]),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        localizations?.contact_property_owner ??
-                            'Property Owner',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      Text(property!.owner.username,
-                          style: TextStyle(color: Colors.grey[600])),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      _copyPhoneNumber(property!.owner.phoneNumber),
-                  icon: Icon(Icons.phone, color: Colors.green),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusSection(AppLocalizations? localizations) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            localizations?.property_status_title ?? 'Property Status',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 12),
-          _buildDetailRow(
-            localizations?.property_status_availability ?? 'Availability:',
-            isActive
-                ? (localizations?.property_status_available ?? 'Available')
-                : (localizations?.property_status_not_available ??
-                    'Not Available'),
-          ),
-          _buildDetailRow(
-            localizations?.property_status_property_id ?? 'Property ID:',
-            property!.id,
-          ),
-          _buildDetailRow(
-            localizations?.property_info_listed ?? 'Listed:',
-            property!.createdAt.toString().split(' ')[0],
-          ),
-        ],
-      ),
-    );
   }
 }
