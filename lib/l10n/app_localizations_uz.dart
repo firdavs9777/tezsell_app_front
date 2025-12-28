@@ -3526,4 +3526,50 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get property_create_image_required =>
       'Kamida bitta mulk rasmi talab qilinadi';
+
+  @override
+  String get emailVerification => 'Email tasdiqlash';
+
+  @override
+  String get pleaseEnterYourEmailAddress =>
+      'Iltimos, email manzilingizni kiriting';
+
+  @override
+  String get enterEmailAddress => 'Email manzilini kiriting';
+
+  @override
+  String get resetYourPassword => 'Parolingizni tiklang';
+
+  @override
+  String get resetPasswordDescription =>
+      'Email manzilingizni kiriting va biz sizga parolni tiklash uchun tasdiqlash kodi yuboramiz.';
+
+  @override
+  String get sendVerificationCode => 'Tasdiqlash kodini yuborish';
+
+  @override
+  String get backToLogin => 'Kirishga qaytish';
+
+  @override
+  String get resetPassword => 'Parolni tiklash';
+
+  @override
+  String enterVerificationCodeSentTo(String email) {
+    return '$email ga yuborilgan tasdiqlash kodini kiriting';
+  }
+
+  @override
+  String get codeMustBe6Digits => 'Kod 6 raqamdan iborat bo\'lishi kerak';
+
+  @override
+  String get enterNewPassword => 'Yangi parolni kiriting';
+
+  @override
+  String get minimum8Characters => 'Kamida 8 belgi';
+
+  @override
+  String get sending => 'Yuborilmoqda...';
+
+  @override
+  String get verifying => 'Tekshirilmoqda...';
 }

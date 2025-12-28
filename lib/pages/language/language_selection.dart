@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/pages/home.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends ConsumerWidget {
   const LanguageSelectionScreen({super.key});
@@ -18,6 +19,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLocale = ref.watch(localeProvider);
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -57,7 +59,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
               // Title
               Center(
                 child: TezSellText(
-                  'Tilni tanlang',
+                  localizations?.chooseLanguage ?? 'Choose Your Language',
                   tezSellStyles:
                       Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -66,14 +68,16 @@ class LanguageSelectionScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              TezSellText(
-                'Ilova uchun afzal ko\'rgan tilingizni tanlang',
-                tezSellStyles: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
-                    ),
+              Center(
+                child: TezSellText(
+                  localizations?.selectPreferredLanguage ?? 'Select your preferred language for the app',
+                  tezSellStyles: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.6),
+                      ),
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -92,6 +96,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
+                            // Set the locale - this will trigger a rebuild and update the UI live
                             ref.read(localeProvider.notifier).setLocale(
                                   Locale(language['code']!),
                                 );
@@ -221,7 +226,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                         .withOpacity(0.38),
                   ),
                   child: TezSellText(
-                    'Davom etish',
+                    localizations?.continueButton ?? 'Continue',
                     tezSellStyles: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,

@@ -6765,6 +6765,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'At least one property image is required'**
   String get property_create_image_required;
+
+  /// Title for email verification screen
+  ///
+  /// In en, this message translates to:
+  /// **'Email Verification'**
+  String get emailVerification;
+
+  /// Instruction text for email input
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email address'**
+  String get pleaseEnterYourEmailAddress;
+
+  /// Placeholder text for email input field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address'**
+  String get enterEmailAddress;
+
+  /// Title for password reset screen
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Your Password'**
+  String get resetYourPassword;
+
+  /// Description text for password reset
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we\'ll send you a verification code to reset your password.'**
+  String get resetPasswordDescription;
+
+  /// Button text to send verification code
+  ///
+  /// In en, this message translates to:
+  /// **'Send Verification Code'**
+  String get sendVerificationCode;
+
+  /// Link text to go back to login screen
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get backToLogin;
+
+  /// Title for reset password dialog and button
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// Instruction for entering OTP
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to {email}'**
+  String enterVerificationCodeSentTo(String email);
+
+  /// Validation error for OTP length
+  ///
+  /// In en, this message translates to:
+  /// **'Code must be 6 digits'**
+  String get codeMustBe6Digits;
+
+  /// Validation error for empty new password
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new password'**
+  String get enterNewPassword;
+
+  /// Validation error for password minimum length
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 8 characters'**
+  String get minimum8Characters;
+
+  /// Loading text for sending code
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get sending;
+
+  /// Loading text for verifying code
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying...'**
+  String get verifying;
 }
 
 class _AppLocalizationsDelegate

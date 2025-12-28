@@ -3,7 +3,6 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
-import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,46 +39,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final isLoggedIn = await authService.isLoggedIn();
 
     if (isLoggedIn) {
-      // User is logged in - check terms acceptance before allowing app access
-      AppLogger.info('User is logged in, checking terms acceptance...');
-      final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
-      
-      if (!hasAcceptedTerms) {
-        // User hasn't accepted terms, show terms acceptance screen
-        AppLogger.info('User has not accepted terms, showing terms acceptance screen');
-        if (mounted) {
-          final accepted = await Navigator.push<bool>(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TermsAcceptanceScreen(),
-            ),
-          );
-          
-          if (accepted == true && mounted) {
-            // User accepted terms, navigate to main app
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const TabsScreen(),
-              ),
-            );
-          } else if (mounted) {
-            // User didn't accept terms, log them out and go to language selection
-            await authService.logout();
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const LanguageSelectionScreen(),
-              ),
-            );
-          }
-        }
-      } else {
-        // User has accepted terms, navigate to main app
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const TabsScreen(),
-          ),
-        );
-      }
+      // User is logged in - go to main app
+      AppLogger.info('User is logged in, navigating to main app');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const TabsScreen(),
+        ),
+      );
     } else {
       // User is not logged in - go to language selection
       AppLogger.info('User is not logged in, navigating to language selection');

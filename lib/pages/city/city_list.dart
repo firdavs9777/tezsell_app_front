@@ -14,25 +14,16 @@ class CityList extends StatelessWidget {
     if (cityList.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.search_off,
-                size: 64,
-                color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-              ),
-              SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)?.emptyList ??
-                    'Hech narsa topilmadi',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          padding: const EdgeInsets.all(24.0),
+          child: Text(
+            AppLocalizations.of(context)?.noResultsFound ??
+                'No results found.',
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodySmall?.color,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
       );
@@ -40,32 +31,27 @@ class CityList extends StatelessWidget {
 
     return ListView.builder(
       itemCount: cityList.length,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
       itemBuilder: (context, index) {
         return Card(
-          elevation: 2,
-          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          color: Theme.of(context).colorScheme.surface,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.only(bottom: 8.0),
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.orange.withOpacity(0.2),
-              child: Icon(
-                Icons.location_city,
-                color: Colors.orange,
-                size: 20,
-              ),
-            ),
             title: Text(
               cityList[index],
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+              Icons.chevron_right,
+              color: Colors.grey.shade400,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
             ),
             onTap: () async {
               bool? confirm = await showDialog<bool>(

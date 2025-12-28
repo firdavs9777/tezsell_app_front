@@ -2369,5 +2369,66 @@
   "property_create_image_required": "At least one property image is required",
   "@property_create_image_required": {
     "description": "Error message when no images are selected"
+  },
+  "emailVerification": "Email Verification",
+  "@emailVerification": {
+    "description": "Title for email verification screen"
+  },
+  "pleaseEnterYourEmailAddress": "Please enter your email address",
+  "@pleaseEnterYourEmailAddress": {
+    "description": "Instruction text for email input"
+  },
+  "enterEmailAddress": "Enter email address",
+  "@enterEmailAddress": {
+    "description": "Placeholder text for email input field"
+  },
+  "resetYourPassword": "Reset Your Password",
+  "@resetYourPassword": {
+    "description": "Title for password reset screen"
+  },
+  "resetPasswordDescription": "Enter your email address and we'll send you a verification code to reset your password.",
+  "@resetPasswordDescription": {
+    "description": "Description text for password reset"
+  },
+  "sendVerificationCode": "Send Verification Code",
+  "@sendVerificationCode": {
+    "description": "Button text to send verification code"
+  },
+  "backToLogin": "Back to Login",
+  "@backToLogin": {
+    "description": "Link text to go back to login screen"
+  },
+  "resetPassword": "Reset Password",
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "enterVerificationCodeSentTo": "Enter the verification code sent to {email}",
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "codeMustBe6Digits": "Code must be 6 digits",
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "enterNewPassword": "Enter new password",
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "minimum8Characters": "Minimum 8 characters",
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "sending": "Sending...",
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "verifying": "Verifying...",
+  "@verifying": {
+    "description": "Loading text for verifying code"
   }
 }

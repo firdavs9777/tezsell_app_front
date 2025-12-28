@@ -5,7 +5,6 @@ import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
-import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -183,21 +182,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
     if (_isUploading) {
       AppLogger.debug('Service submission already in progress');
       return;
-    }
-
-    // Check terms acceptance before allowing service creation
-    final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
-    if (!hasAcceptedTerms) {
-      final accepted = await TermsAcceptanceHelper.showTermsRequiredForContentDialog(context);
-      if (!accepted) {
-        // User didn't accept terms, don't proceed with service creation
-        return;
-      }
-      // If user navigated to terms and accepted, continue with submission
-      final stillAccepted = await TermsAcceptanceHelper.hasAcceptedTerms();
-      if (!stillAccepted) {
-        return;
-      }
     }
 
     final localizations = AppLocalizations.of(context);

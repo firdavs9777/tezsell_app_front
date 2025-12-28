@@ -2121,5 +2121,45 @@
   "property_create_add_more": "Yana qo'shish",
   "property_create_required": "Majburiy",
   "property_create_location_required": "Mulk yaratish uchun iltimos, geolokatsiya xizmatlarini yoqing",
-  "property_create_image_required": "Kamida bitta mulk rasmi talab qilinadi"
+  "property_create_image_required": "Kamida bitta mulk rasmi talab qilinadi",
+  "emailVerification": "Email tasdiqlash",
+  "pleaseEnterYourEmailAddress": "Iltimos, email manzilingizni kiriting",
+  "enterEmailAddress": "Email manzilini kiriting",
+  "resetYourPassword": "Parolingizni tiklang",
+  "resetPasswordDescription": "Email manzilingizni kiriting va biz sizga parolni tiklash uchun tasdiqlash kodi yuboramiz.",
+  "sendVerificationCode": "Tasdiqlash kodini yuborish",
+  "backToLogin": "Kirishga qaytish",
+  "resetPassword": "Parolni tiklash",
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "enterVerificationCodeSentTo": "{email} ga yuborilgan tasdiqlash kodini kiriting",
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "codeMustBe6Digits": "Kod 6 raqamdan iborat bo'lishi kerak",
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "enterNewPassword": "Yangi parolni kiriting",
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "minimum8Characters": "Kamida 8 belgi",
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "sending": "Yuborilmoqda...",
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "verifying": "Tekshirilmoqda...",
+  "@verifying": {
+    "description": "Loading text for verifying code"
+  }
 }

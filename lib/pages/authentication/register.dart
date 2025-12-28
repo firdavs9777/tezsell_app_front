@@ -151,44 +151,120 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           title: Text(
             AppLocalizations.of(context)?.appTitle ?? 'Tezsell',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.3,
+            ),
           ),
+          foregroundColor: Theme.of(context).colorScheme.onBackground,
         ),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 30),
-            SizedBox(height: 10),
-            Text(
-              AppLocalizations.of(context)?.selectRegion ??
-                  'Iltimos Viloyatingizni tanlang',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600),
+            const SizedBox(height: 40.0),
+            
+            // Logo with circular background matching login
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/logo/logo.png',
+                  fit: BoxFit.cover,
+                  width: 120,
+                  height: 120,
+                  errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.location_on,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      );
+                  },
+                ),
+              ),
             ),
+
+            const SizedBox(height: 32.0),
+
+            // Title
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Text(
+                AppLocalizations.of(context)?.selectRegion ??
+                    'Select Your Region',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            const SizedBox(height: 40.0),
+
+            // Search field - matching login style
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: TextField(
                 controller: searchController,
                 onChanged: _filterCities,
-                enabled: !isLoading, // Disable search while loading
+                enabled: !isLoading,
+                style: Theme.of(context).textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)?.search ?? 'Izlash',
-                  hintText: AppLocalizations.of(context)?.searchHint ??
-                      'Tuman yoki shaharni qidirish',
-                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: isLoading
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        : Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  hintText: AppLocalizations.of(context)?.searchHint ??
+                      'Search for city or region',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
                   ),
                 ),
               ),
             ),
+
+            const SizedBox(height: 24.0),
             // Show loading indicator, error message, or city list
             Expanded(
               child: isLoading
@@ -197,15 +273,14 @@ class _RegisterState extends State<Register> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircularProgressIndicator(
-                            color: Colors.orange,
+                            color: Theme.of(context).primaryColor,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             AppLocalizations.of(context)?.loading ??
-                                'Yuklanmoqda...',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 16,
+                                'Loading...',
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).textTheme.bodySmall?.color,
                             ),
                           ),
                         ],
@@ -213,43 +288,60 @@ class _RegisterState extends State<Register> {
                     )
                   : errorMessage != null
                       ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: 64,
-                                color: Colors.red,
-                              ),
-                              SizedBox(height: 16),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 32),
-                                child: Text(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 64,
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
                                   AppLocalizations.of(context)
                                           ?.dataLoadingError ??
-                                      'Ma\'lumotlarni yuklashda xatolik',
+                                      'Error loading data',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 16,
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: Theme.of(context).textTheme.bodySmall?.color,
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 24),
-                              ElevatedButton.icon(
-                                onPressed: fetchData,
-                                icon: Icon(Icons.refresh),
-                                label: Text(
-                                    AppLocalizations.of(context)?.retry ??
-                                        'Qayta urinish'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange,
-                                  foregroundColor: Colors.white,
+                                const SizedBox(height: 24),
+                                Container(
+                                  width: double.infinity,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: Theme.of(context).brightness == Brightness.dark
+                                        ? []
+                                        : [
+                                            BoxShadow(
+                                              color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: fetchData,
+                                    icon: const Icon(Icons.refresh),
+                                    label: Text(
+                                        AppLocalizations.of(context)?.retry ??
+                                            'Retry'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Theme.of(context).primaryColor,
+                                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         )
                       : CityList(
@@ -259,3 +351,4 @@ class _RegisterState extends State<Register> {
         ));
   }
 }
+

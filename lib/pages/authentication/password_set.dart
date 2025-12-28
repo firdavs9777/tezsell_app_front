@@ -233,285 +233,401 @@ class _PasswordResetState extends State<PasswordReset> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.passwordVerification ??
-            'Password Verification'),
+        title: Text(
+          AppLocalizations.of(context)?.passwordVerification ??
+              'Password Verification',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: Theme.of(context).colorScheme.onBackground,
+            letterSpacing: -0.3,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)?.completeRegistrationPrompt ??
-                        'Foydalanuvchi ismini va parol kiriting va ro\'yxatdan o\'tishni yakunlang',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
+              const SizedBox(height: 40.0),
+
+              // Logo with circular background matching login
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.1)
+                        : Colors.black.withOpacity(0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 10),
-
-              // Username field with validation
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _userNameController,
-                  validator: _validateUsername,
-                  enabled: !_isLoading,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)?.username ??
-                        'Foydalanuvchi Ism',
-                    hintText: AppLocalizations.of(context)?.usernameHint ??
-                        'Kimsanboy77',
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 10),
-
-              // Password field with validation
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: _isObscure,
-                  validator: _validatePassword,
-                  enabled: !_isLoading,
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isObscure = !_isObscure;
-                        });
-                      },
-                      child: Icon(
-                        _isObscure ? Icons.visibility_off : Icons.visibility,
-                        color: _isObscure ? Colors.grey : Colors.blue,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    labelText: AppLocalizations.of(context)?.enterPassword ??
-                        'Parolni Kiriting',
-                    helperText: AppLocalizations.of(context)?.passwordHelp ??
-                        'Kamida 8 belgi, harf va raqam',
-                    helperMaxLines: 2,
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.grey, width: 2),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorMaxLines: 2,
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/logo/logo.png',
+                    fit: BoxFit.cover,
+                    width: 120,
+                    height: 120,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.person_add,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      );
+                    },
                   ),
                 ),
               ),
 
-              SizedBox(height: 10),
+              const SizedBox(height: 32.0),
 
-              // Password confirmation field
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _passwordConfirmationController,
-                  obscureText: _isObscure_secondary,
-                  enabled: !_isLoading,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)
-                              ?.confirmPasswordRequired ??
-                          'Parolni tasdiqlash majburiy';
-                    }
-                    if (value != _passwordController.text) {
-                      return AppLocalizations.of(context)
-                              ?.passwordsDoNotMatch ??
-                          'Parollar mos kelmayapti';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isObscure_secondary = !_isObscure_secondary;
-                        });
-                      },
-                      child: Icon(
-                        _isObscure_secondary
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: _isObscure_secondary ? Colors.grey : Colors.blue,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    labelText: AppLocalizations.of(context)?.confirmPassword ??
-                        'Parolni tasdiqlang',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Colors.grey, width: 2),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.red, width: 2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorMaxLines: 2,
+              // Title
+              Text(
+                AppLocalizations.of(context)?.completeRegistrationPrompt ??
+                    'Complete Your Registration',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 40.0),
+
+              // Username field with validation - matching login style
+              TextFormField(
+                controller: _userNameController,
+                validator: _validateUsername,
+                enabled: !_isLoading,
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.person_outline,
+                    color: _isLoading
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        : Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  labelText: AppLocalizations.of(context)?.username ??
+                      'Username',
+                  hintText: AppLocalizations.of(context)?.usernameHint ??
+                      'Enter username',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
                   ),
                 ),
               ),
 
-              SizedBox(height: 15),
+              const SizedBox(height: 16.0),
 
-              // Profile image picker
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: TextEditingController(),
-                  decoration: InputDecoration(
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    hintText: AppLocalizations.of(context)?.profileImage ??
-                        'Profile Image',
-                    prefixIcon: Icon(Icons.image_outlined),
+              // Password field with validation - matching login style
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _isObscure,
+                validator: _validatePassword,
+                enabled: !_isLoading,
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  readOnly: true,
-                  onTap: _isLoading ? null : _pickImage,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock_outline,
+                    color: _isLoading
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        : Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscure
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: _isLoading
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
+                      size: 22,
+                    ),
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            setState(() {
+                              _isObscure = !_isObscure;
+                            });
+                          },
+                  ),
+                  hintText: AppLocalizations.of(context)?.enterPassword ??
+                      'Password',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  helperText: AppLocalizations.of(context)?.passwordHelp ??
+                      'Minimum 8 characters, letters and numbers',
+                  helperMaxLines: 2,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
                 ),
+              ),
+
+              const SizedBox(height: 16.0),
+
+              // Password confirmation field - matching login style
+              TextFormField(
+                controller: _passwordConfirmationController,
+                obscureText: _isObscure_secondary,
+                enabled: !_isLoading,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(context)
+                            ?.confirmPasswordRequired ??
+                        'Please confirm your password';
+                  }
+                  if (value != _passwordController.text) {
+                    return AppLocalizations.of(context)
+                            ?.passwordsDoNotMatch ??
+                        'Passwords do not match';
+                  }
+                  return null;
+                },
+                style: Theme.of(context).textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock_outline,
+                    color: _isLoading
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        : Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscure_secondary
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: _isLoading
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
+                      size: 22,
+                    ),
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            setState(() {
+                              _isObscure_secondary = !_isObscure_secondary;
+                            });
+                          },
+                  ),
+                  hintText: AppLocalizations.of(context)?.confirmPassword ??
+                      'Confirm Password',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16.0),
+
+              // Profile image picker - matching login style
+              TextFormField(
+                controller: TextEditingController(),
+                decoration: InputDecoration(
+                  filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                  ),
+                  prefixIcon: Icon(
+                    Icons.image_outlined,
+                    color: _isLoading
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        : Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  hintText: AppLocalizations.of(context)?.profileImage ??
+                      'Profile Image (Optional)',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
+                ),
+                readOnly: true,
+                onTap: _isLoading ? null : _pickImage,
               ),
 
               if (_selectedImages.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(top: 8.0),
                   child: Center(
                     child: Text(
                       AppLocalizations.of(context)?.imageInstructions ??
-                          'Images will appear here, please press profile image',
+                          'Tap above to select profile image (optional)',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey[600]),
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ),
 
               if (_selectedImages.isNotEmpty)
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 8.0,
-                    childAspectRatio: 1,
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 12,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(
+                        _selectedImages[0],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  itemCount: _selectedImages.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < _selectedImages.length) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.file(
-                          _selectedImages[index],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    } else {
-                      return GestureDetector(
-                        onTap: _isLoading ? null : _pickImage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            color: Colors.grey[200],
-                            child: const Icon(Icons.add, size: 50),
-                          ),
-                        ),
-                      );
-                    }
-                  },
                 ),
 
-              SizedBox(height: 15),
+              const SizedBox(height: 24.0),
 
               // Terms and Conditions acceptance
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                     Checkbox(
                       value: _termsAccepted,
-                      onChanged: _isLoading
+                      activeColor: Theme.of(context).primaryColor,
+                    onChanged: _isLoading
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _termsAccepted = value ?? false;
+                            });
+                          },
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _isLoading
                           ? null
-                          : (value) {
+                          : () {
                               setState(() {
-                                _termsAccepted = value ?? false;
+                                _termsAccepted = !_termsAccepted;
                               });
                             },
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _isLoading
-                            ? null
-                            : () {
-                                setState(() {
-                                  _termsAccepted = !_termsAccepted;
-                                });
-                              },
-                        child: RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.onSurface,
+                      child: RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: AppLocalizations.of(context)
+                                      ?.iAgreeToTerms ??
+                                  'I agree to the ',
                             ),
-                            children: [
-                              TextSpan(
-                                text: AppLocalizations.of(context)
-                                        ?.iAgreeToTerms ??
-                                    'I agree to the ',
-                              ),
                               TextSpan(
                                 text: AppLocalizations.of(context)
                                         ?.termsAndConditions ??
                                     'Terms and Conditions',
                                 style: TextStyle(
-                                  color: Colors.blue,
+                                  color: Theme.of(context).primaryColor,
                                   decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              TextSpan(
-                                text: AppLocalizations.of(context)
-                                        ?.zeroToleranceStatement ??
-                                    ' and understand that there is zero tolerance for objectionable content or abusive users.',
-                              ),
-                            ],
-                          ),
+                            TextSpan(
+                              text: AppLocalizations.of(context)
+                                      ?.zeroToleranceStatement ??
+                                  ' and understand that there is zero tolerance for objectionable content or abusive users.',
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              Align(
+                alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: _isLoading
                       ? null
@@ -524,54 +640,96 @@ class _PasswordResetState extends State<PasswordReset> {
                             ),
                           );
                         },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     AppLocalizations.of(context)?.viewTerms ??
                         'View Terms and Conditions',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 10),
-
-              // Submit button with loading state
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleRegistration,
-                  child: _isLoading
-                      ? SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12.0),
-                          child: Text(
-                            AppLocalizations.of(context)?.finish ?? 'Yakunlash',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        _isLoading ? Colors.grey : Colors.blue),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFFFF6F0F),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 24.0),
+
+              // Submit button with loading state - matching login style
+              Container(
+                width: double.infinity,
+                height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: _isLoading
+                        ? []
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleRegistration,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          : Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              AppLocalizations.of(context)?.loading ??
+                                  'Loading...',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.3,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Text(
+                          AppLocalizations.of(context)?.finish ?? 'Finish',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                ),
+              ),
+
+              const SizedBox(height: 32.0),
             ],
           ),
         ),

@@ -17,7 +17,6 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
   bool _isLoading = false;
 
-  Color get _primaryColor => Theme.of(context).primaryColor;
 
   @override
   void dispose() {
@@ -31,137 +30,162 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                _primaryColor,
-                _primaryColor.withOpacity(0.8),
-              ],
-            ),
-          ),
-        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF212124)),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Forgot Password',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
+        title: Text(
+          localizations?.forgotPassword ?? 'Forgot Password',
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
             fontSize: 20,
-            color: Colors.white,
+            color: Color(0xFF212124),
+            letterSpacing: -0.3,
           ),
         ),
       ),
       body: AbsorbPointer(
         absorbing: _isLoading,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 40.0),
 
-                // Icon
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: _primaryColor.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.lock_reset,
-                      size: 60,
-                      color: _primaryColor,
+                // Logo with circular background matching login
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/logo/logo.png',
+                      fit: BoxFit.cover,
+                      width: 120,
+                      height: 120,
+                      errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.lock_reset,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      );
+                      },
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 32.0),
 
                 // Title
-                const Text(
-                  'Reset Your Password',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                Text(
+                  localizations?.resetYourPassword ?? 'Reset Your Password',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF212124),
+                    letterSpacing: -0.5,
                   ),
+                  textAlign: TextAlign.center,
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 8.0),
 
                 // Description
                 Text(
-                  'Enter your email address and we\'ll send you a verification code to reset your password.',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[600],
+                  localizations?.resetPasswordDescription ?? 'Enter your email address and we\'ll send you a verification code to reset your password.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 40.0),
+
+                // Email Field - matching login style
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  enabled: !_isLoading,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.email_outlined,
+                      color: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          : Theme.of(context).textTheme.bodySmall?.color,
+                    ),
+                    hintText: localizations?.enterEmailAddress ?? 'Enter email address',
+                    hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
+                    ),
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 24.0),
 
-                // Email Field
+                // Send Code Button - matching login style
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _isLoading ? Colors.grey.shade300 : Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    color: _isLoading ? Colors.grey.shade100 : null,
-                  ),
-                  child: TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    enabled: !_isLoading,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: _isLoading
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
-                      ),
-                      hintText: 'Enter email address',
-                      hintStyle: TextStyle(
-                        color: _isLoading
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: 15,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Send Code Button
-                SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: _isLoading
+                        ? []
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                  ),
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _sendOTP,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          _isLoading ? Colors.grey.shade400 : _primaryColor,
+                      backgroundColor: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          : Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      elevation: 2,
                     ),
                     child: _isLoading
                         ? Row(
@@ -171,7 +195,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                                  strokeWidth: 2.5,
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                       Colors.white),
                                 ),
@@ -179,33 +203,45 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                               const SizedBox(width: 12),
                               Text(
                                 localizations?.loading ?? 'Loading...',
-                                style: const TextStyle(fontSize: 14),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.3,
+                                ),
                               ),
                             ],
                           )
-                        : const Text(
-                            'Send Verification Code',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                        : Text(
+                            localizations?.sendVerificationCode ?? 'Send Verification Code',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3,
                             ),
                           ),
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 24.0),
 
                 // Back to Login
-                Center(
-                  child: TextButton(
-                    onPressed: _isLoading ? null : () => Navigator.pop(context),
-                    child: Text(
-                      'Back to Login',
-                      style: TextStyle(
-                        color:
-                            _isLoading ? Colors.grey.shade400 : _primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+                TextButton(
+                  onPressed: _isLoading ? null : () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    localizations?.backToLogin ?? 'Back to Login',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          : Theme.of(context).textTheme.bodySmall?.color,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -218,6 +254,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   }
 
   Future<void> _sendOTP() async {
+    final localizations = AppLocalizations.of(context);
     final email = _emailController.text.trim();
     if (email.isEmpty) {
       _showError('Please enter your email address');
@@ -241,7 +278,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
     if (result['success']) {
       if (mounted) {
-        _showSuccess('Verification code sent to your email');
+        final localizations = AppLocalizations.of(context);
+        _showSuccess(localizations?.verificationCodeSent ?? 'Verification code sent to your email');
         _showPasswordResetDialog(email);
       }
     } else {
@@ -252,6 +290,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   }
 
   void _showPasswordResetDialog(String email) {
+    final localizations = AppLocalizations.of(context);
     final otpController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
@@ -267,9 +306,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         builder: (context, setDialogState) => AlertDialog(
           title: Row(
             children: [
-              Icon(Icons.verified_user, color: _primaryColor),
+              Icon(Icons.verified_user, color: Theme.of(context).primaryColor),
               const SizedBox(width: 8),
-              const Text('Reset Password'),
+              Text(localizations?.resetPassword ?? 'Reset Password'),
             ],
           ),
           content: Form(
@@ -279,9 +318,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Enter the verification code sent to $email',
+                    localizations?.enterVerificationCodeSentTo(email) ?? 'Enter the verification code sent to $email',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).textTheme.bodySmall?.color,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -289,19 +330,21 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     keyboardType: TextInputType.number,
                     maxLength: 6,
                     decoration: InputDecoration(
-                      labelText: 'Verification Code',
+                      labelText: localizations?.enterVerificationCode ?? 'Verification Code',
                       border: const OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.pin, color: _primaryColor),
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.pin, color: Theme.of(context).primaryColor),
                       counterText: '',
-                      hintText: '000000',
+                      hintText: localizations?.verificationCodeHint ?? '000000',
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: _primaryColor, width: 2),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Enter verification code';
-                      if (value.length != 6) return 'Code must be 6 digits';
+                        return localizations?.enterVerificationCode ?? 'Enter verification code';
+                      if (value.length != 6) return localizations?.codeMustBe6Digits ?? 'Code must be 6 digits';
                       return null;
                     },
                   ),
@@ -312,9 +355,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     decoration: InputDecoration(
                       labelText: 'New Password',
                       border: const OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock, color: _primaryColor),
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.lock, color: Theme.of(context).primaryColor),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: _primaryColor, width: 2),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(obscureNew
@@ -326,8 +371,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Enter new password';
-                      if (value.length < 8) return 'Minimum 8 characters';
+                        return localizations?.enterNewPassword ?? 'Enter new password';
+                      if (value.length < 8) return localizations?.minimum8Characters ?? 'Minimum 8 characters';
                       return null;
                     },
                   ),
@@ -336,12 +381,14 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     controller: confirmPasswordController,
                     obscureText: obscureConfirm,
                     decoration: InputDecoration(
-                      labelText: 'Confirm Password',
+                      labelText: localizations?.confirmPassword ?? 'Confirm Password',
                       border: const OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
                       prefixIcon:
-                          Icon(Icons.lock_open_sharp, color: _primaryColor),
+                          Icon(Icons.lock_open_sharp, color: Theme.of(context).primaryColor),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: _primaryColor, width: 2),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(obscureConfirm
@@ -353,7 +400,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     ),
                     validator: (value) {
                       if (value != newPasswordController.text)
-                        return 'Passwords do not match';
+                        return localizations?.passwordsDoNotMatch ?? 'Passwords do not match';
                       return null;
                     },
                   ),
@@ -363,9 +410,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       Navigator.pop(context);
                       _sendOTP();
                     },
-                    icon: Icon(Icons.refresh, size: 18, color: _primaryColor),
-                    label: Text('Resend Code',
-                        style: TextStyle(color: _primaryColor)),
+                    icon: Icon(Icons.refresh, size: 18, color: Theme.of(context).primaryColor),
+                    label: Text(localizations?.resendCode ?? 'Resend Code',
+                        style: TextStyle(color: Theme.of(context).primaryColor)),
                   ),
                 ],
               ),
@@ -374,7 +421,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(localizations?.cancel ?? 'Cancel'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -388,10 +435,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: _primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
-              child: const Text('Reset Password'),
+              child: Text(localizations?.resetPassword ?? 'Reset Password'),
             ),
           ],
         ),
@@ -410,7 +457,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-          Center(child: CircularProgressIndicator(color: _primaryColor)),
+          Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor)),
     );
 
     final authService = ref.read(authenticationServiceProvider);
@@ -434,7 +481,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 Expanded(child: Text(result['message'])),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             behavior: SnackBarBehavior.floating,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -461,7 +508,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 Expanded(child: Text(result['error'])),
               ],
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

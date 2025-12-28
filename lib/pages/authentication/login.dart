@@ -4,7 +4,6 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
-import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -181,24 +180,6 @@ class _LoginState extends ConsumerState<Login> {
         // Start automatic token refresh service
         _startTokenRefreshService();
 
-        // Check terms acceptance before allowing app access
-        final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
-        
-        if (!hasAcceptedTerms) {
-          // Show terms acceptance dialog
-          final accepted = await TermsAcceptanceHelper.showTermsAcceptanceDialog(context);
-          
-          if (!accepted) {
-            // User didn't accept terms, log them out
-            await _authService.logout();
-            if (mounted) {
-              _showError(AppLocalizations.of(context)?.acceptTermsRequired ??
-                  'You must accept the Terms and Conditions to use this app.');
-            }
-            return;
-          }
-        }
-
         // Login successful - navigate and replace current route
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -275,7 +256,7 @@ class _LoginState extends ConsumerState<Login> {
     final buildTimer = Stopwatch()..start();
 
     final widget = Scaffold(
-      backgroundColor: const Color(0xFFFFFBF5), // Karrot warm cream background
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -290,7 +271,7 @@ class _LoginState extends ConsumerState<Login> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -315,12 +296,9 @@ class _LoginState extends ConsumerState<Login> {
                 // Welcome text - Karrot style
                 Text(
                   AppLocalizations.of(context)?.welcomeBack ?? 'Welcome back!',
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF212124),
-                    letterSpacing: -0.5,
-                  ),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                 ),
 
                 const SizedBox(height: 8.0),
@@ -328,110 +306,100 @@ class _LoginState extends ConsumerState<Login> {
                 Text(
                   AppLocalizations.of(context)?.loginToYourAccount ??
                       'Login to continue',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ),
 
                 const SizedBox(height: 40.0),
 
                 // Email input - Karrot style
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 12,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    enabled: !_isLoading,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF212124),
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  enabled: !_isLoading,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: _isLoading
-                            ? Colors.grey.shade400
-                            : const Color(0xFF212124),
-                      ),
-                      hintText: 'Email address',
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade400,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 16,
-                      ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.email_outlined,
+                      color: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          : Theme.of(context).textTheme.bodySmall?.color,
+                    ),
+                    hintText: 'Email address',
+                    hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 16.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 12,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: !_isPasswordVisible,
-                    enabled: !_isLoading,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF212124),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
+                  enabled: !_isLoading,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText:
-                          AppLocalizations.of(context)?.password ?? 'Password',
-                      hintStyle: TextStyle(
-                        color: Colors.grey.shade400,
-                        fontWeight: FontWeight.w500,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: _isLoading
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          : Theme.of(context).textTheme.bodySmall?.color,
+                    ),
+                    hintText:
+                        AppLocalizations.of(context)?.password ?? 'Password',
+                    hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility_rounded
+                            : Icons.visibility_off_rounded,
+                        color: _isLoading
+                            ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                            : Theme.of(context).textTheme.bodySmall?.color,
+                        size: 22,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 16,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility_rounded
-                              : Icons.visibility_off_rounded,
-                          color: _isLoading
-                              ? Colors.grey.shade400
-                              : Colors.grey.shade600,
-                          size: 22,
-                        ),
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
-                                });
-                              },
-                      ),
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
                     ),
                   ),
                 ),
@@ -482,22 +450,24 @@ class _LoginState extends ConsumerState<Login> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: _isLoading
                         ? []
-                        : [
-                            BoxShadow(
-                              color: const Color(0xFFFF6F0F).withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                   ),
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isLoading
-                          ? Colors.grey.shade300
-                          : const Color(0xFFFF6F0F), // Karrot orange
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          : Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
-                      disabledBackgroundColor: Colors.grey.shade300,
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -554,11 +524,9 @@ class _LoginState extends ConsumerState<Login> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         AppLocalizations.of(context)?.or ?? 'OR',
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
                       ),
                     ),
                     Expanded(
@@ -577,10 +545,8 @@ class _LoginState extends ConsumerState<Login> {
                     Text(
                       AppLocalizations.of(context)?.dontHaveAccount ??
                           "Don't have an account?",
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                     TextButton(
@@ -600,11 +566,10 @@ class _LoginState extends ConsumerState<Login> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)?.registerNow ?? 'Sign up',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: _isLoading
-                              ? Colors.grey.shade400
-                              : const Color(0xFFFF6F0F),
-                          fontSize: 15,
+                              ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                              : Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w700,
                         ),
                       ),

@@ -3469,4 +3469,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get property_create_image_required =>
       'At least one property image is required';
+
+  @override
+  String get emailVerification => 'Email Verification';
+
+  @override
+  String get pleaseEnterYourEmailAddress => 'Please enter your email address';
+
+  @override
+  String get enterEmailAddress => 'Enter email address';
+
+  @override
+  String get resetYourPassword => 'Reset Your Password';
+
+  @override
+  String get resetPasswordDescription =>
+      'Enter your email address and we\'ll send you a verification code to reset your password.';
+
+  @override
+  String get sendVerificationCode => 'Send Verification Code';
+
+  @override
+  String get backToLogin => 'Back to Login';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String enterVerificationCodeSentTo(String email) {
+    return 'Enter the verification code sent to $email';
+  }
+
+  @override
+  String get codeMustBe6Digits => 'Code must be 6 digits';
+
+  @override
+  String get enterNewPassword => 'Enter new password';
+
+  @override
+  String get minimum8Characters => 'Minimum 8 characters';
+
+  @override
+  String get sending => 'Sending...';
+
+  @override
+  String get verifying => 'Verifying...';
 }

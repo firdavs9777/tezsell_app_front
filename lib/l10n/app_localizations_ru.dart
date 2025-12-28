@@ -3507,4 +3507,50 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get property_create_image_required =>
       'Требуется минимум одна фотография недвижимости';
+
+  @override
+  String get emailVerification => 'Подтверждение электронной почты';
+
+  @override
+  String get pleaseEnterYourEmailAddress =>
+      'Пожалуйста, введите ваш адрес электронной почты';
+
+  @override
+  String get enterEmailAddress => 'Введите адрес электронной почты';
+
+  @override
+  String get resetYourPassword => 'Сбросить пароль';
+
+  @override
+  String get resetPasswordDescription =>
+      'Введите ваш адрес электронной почты, и мы отправим вам код подтверждения для сброса пароля.';
+
+  @override
+  String get sendVerificationCode => 'Отправить код подтверждения';
+
+  @override
+  String get backToLogin => 'Вернуться к входу';
+
+  @override
+  String get resetPassword => 'Сбросить пароль';
+
+  @override
+  String enterVerificationCodeSentTo(String email) {
+    return 'Введите код подтверждения, отправленный на $email';
+  }
+
+  @override
+  String get codeMustBe6Digits => 'Код должен состоять из 6 цифр';
+
+  @override
+  String get enterNewPassword => 'Введите новый пароль';
+
+  @override
+  String get minimum8Characters => 'Минимум 8 символов';
+
+  @override
+  String get sending => 'Отправка...';
+
+  @override
+  String get verifying => 'Проверка...';
 }

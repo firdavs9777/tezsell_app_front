@@ -12,7 +12,6 @@ import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
-import 'package:app/utils/terms_acceptance_helper.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -497,21 +496,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
 
   Future<void> _submitProperty() async {
     if (_isUploading) return;
-
-    // Check terms acceptance before allowing property creation
-    final hasAcceptedTerms = await TermsAcceptanceHelper.hasAcceptedTerms();
-    if (!hasAcceptedTerms) {
-      final accepted = await TermsAcceptanceHelper.showTermsRequiredForContentDialog(context);
-      if (!accepted) {
-        // User didn't accept terms, don't proceed with property creation
-        return;
-      }
-      // If user navigated to terms and accepted, continue with submission
-      final stillAccepted = await TermsAcceptanceHelper.hasAcceptedTerms();
-      if (!stillAccepted) {
-        return;
-      }
-    }
 
     final localizations = AppLocalizations.of(context);
 

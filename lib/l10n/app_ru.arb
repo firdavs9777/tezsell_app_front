@@ -2124,5 +2124,45 @@
   "property_create_add_more": "Добавить еще",
   "property_create_required": "Обязательно",
   "property_create_location_required": "Пожалуйста, включите службы геолокации для создания недвижимости",
-  "property_create_image_required": "Требуется минимум одна фотография недвижимости"
+  "property_create_image_required": "Требуется минимум одна фотография недвижимости",
+  "emailVerification": "Подтверждение электронной почты",
+  "pleaseEnterYourEmailAddress": "Пожалуйста, введите ваш адрес электронной почты",
+  "enterEmailAddress": "Введите адрес электронной почты",
+  "resetYourPassword": "Сбросить пароль",
+  "resetPasswordDescription": "Введите ваш адрес электронной почты, и мы отправим вам код подтверждения для сброса пароля.",
+  "sendVerificationCode": "Отправить код подтверждения",
+  "backToLogin": "Вернуться к входу",
+  "resetPassword": "Сбросить пароль",
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "enterVerificationCodeSentTo": "Введите код подтверждения, отправленный на {email}",
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "codeMustBe6Digits": "Код должен состоять из 6 цифр",
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "enterNewPassword": "Введите новый пароль",
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "minimum8Characters": "Минимум 8 символов",
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "sending": "Отправка...",
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "verifying": "Проверка...",
+  "@verifying": {
+    "description": "Loading text for verifying code"
+  }
 }
