@@ -451,11 +451,52 @@ class ChatMessage {
 
     // Parse reply_to message
     ChatMessage? replyToMessage;
-    if (json['reply_to'] != null && json['reply_to'] is Map) {
-      try {
-        replyToMessage =
-            ChatMessage.fromJson(json['reply_to'] as Map<String, dynamic>);
-      } catch (e) {
+    if (json['reply_to'] != null) {
+      if (json['reply_to'] is Map) {
+        // Full message object
+        try {
+          final replyToData = Map<String, dynamic>.from(json['reply_to'] as Map);
+          
+          // 🔥 FIX: Handle case where sender is a string (username) instead of full user object
+          if (replyToData['sender'] != null) {
+            if (replyToData['sender'] is String) {
+              final senderUsername = replyToData['sender'] as String;
+              // Create a minimal User object from the username
+              // Try to get sender ID from sender_id field if available
+              final senderId = replyToData['sender_id'] as int?;
+              
+              replyToData['sender'] = {
+                'id': senderId ?? 0, // Use 0 as fallback if no ID available
+                'username': senderUsername,
+                'is_online': false,
+              };
+            } else if (replyToData['sender'] is Map) {
+              // Already a Map, no conversion needed
+            } else {
+              // Try to create a minimal user object anyway
+              replyToData['sender'] = {
+                'id': 0,
+                'username': replyToData['sender'].toString(),
+                'is_online': false,
+              };
+            }
+          } else {
+            // Create a minimal user object as fallback
+            replyToData['sender'] = {
+              'id': 0,
+              'username': 'Unknown',
+              'is_online': false,
+            };
+          }
+          
+          replyToMessage = ChatMessage.fromJson(replyToData);
+        } catch (e, stackTrace) {
+          // If parsing fails, replyToMessage will remain null
+        }
+      } else if (json['reply_to'] is int) {
+        // Just an ID - we'll need to find the message from existing messages
+        // This will be handled by the provider if needed
+        // For now, we can't create a full message from just an ID
       }
     }
 

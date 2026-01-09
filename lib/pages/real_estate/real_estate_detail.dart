@@ -435,13 +435,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
+                                final imageUrls = images.map((img) => img.image).toList();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => ImageViewer(
-                                      imageUrl: images[index].image,
-                                      title:
-                                          'Image ${index + 1} of ${images.length}',
+                                      imageUrls: imageUrls,
+                                      initialIndex: index,
                                     ),
                                   ),
                                 );

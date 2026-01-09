@@ -2639,7 +2639,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get subject_required => 'Пожалуйста, введите тему';
 
   @override
-  String get message => 'Ваше сообщение';
+  String get message => 'Сообщение';
 
   @override
   String get message_required => 'Пожалуйста, введите сообщение';
@@ -3149,9 +3149,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorDislikingService => 'Ошибка удаления из избранного';
 
   @override
-  String get replyingTo => 'Ответ пользователю';
-
-  @override
   String get writeYourReply => 'Напишите ваш ответ...';
 
   @override
@@ -3553,4 +3550,323 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get verifying => 'Проверка...';
+
+  @override
+  String get new_message => 'Новое сообщение';
+
+  @override
+  String get messages => 'Сообщения';
+
+  @override
+  String get please_log_in =>
+      'Пожалуйста, войдите, чтобы просматривать сообщения';
+
+  @override
+  String get delete_chat => 'Удалить чат';
+
+  @override
+  String delete_chat_confirm(String name) {
+    return 'Вы уверены, что хотите удалить чат с $name? Это действие нельзя отменить.';
+  }
+
+  @override
+  String chat_deleted(String name) {
+    return 'Чат с $name удалён';
+  }
+
+  @override
+  String get delete_failed => 'Не удалось удалить чат';
+
+  @override
+  String get no_conversations => 'Пока нет диалогов';
+
+  @override
+  String get start_conversation_hint => 'Начните разговор, нажав кнопку +';
+
+  @override
+  String get start_conversation => 'Начать разговор';
+
+  @override
+  String get yesterday => 'Вчера';
+
+  @override
+  String get unknown => 'Неизвестно';
+
+  @override
+  String get no_messages_yet => 'Сообщений пока нет';
+
+  @override
+  String get unblock_user => 'Разблокировать пользователя';
+
+  @override
+  String get block_user => 'Заблокировать пользователя';
+
+  @override
+  String get no_blocked_users => 'Нет заблокированных пользователей';
+
+  @override
+  String get blocked_users_hint =>
+      'Заблокированные вами пользователи появятся здесь';
+
+  @override
+  String unblock_user_confirm(String username) {
+    return 'Вы уверены, что хотите разблокировать $username? Вы снова сможете получать сообщения от них.';
+  }
+
+  @override
+  String user_unblocked(String username) {
+    return '$username разблокирован';
+  }
+
+  @override
+  String user_blocked(String username) {
+    return '$username заблокирован';
+  }
+
+  @override
+  String get failed_to_unblock => 'Не удалось разблокировать пользователя';
+
+  @override
+  String get failed_to_block => 'Не удалось заблокировать пользователя';
+
+  @override
+  String get chat_info => 'Информация о чате';
+
+  @override
+  String get delete_message => 'Удалить сообщение';
+
+  @override
+  String get delete_message_confirm =>
+      'Вы уверены, что хотите удалить это сообщение?';
+
+  @override
+  String get typing => 'печатает...';
+
+  @override
+  String get online => 'в сети';
+
+  @override
+  String participants(int count) {
+    return '$count участников';
+  }
+
+  @override
+  String get you_are_blocked => 'Вы заблокированы';
+
+  @override
+  String user_blocked_you(String username) {
+    return '$username заблокировал вас. Вы не можете отправлять сообщения.';
+  }
+
+  @override
+  String you_blocked_user(String username) {
+    return 'Вы заблокировали $username';
+  }
+
+  @override
+  String get cannot_send_messages_blocked =>
+      'Вы не можете отправлять сообщения. Вы были заблокированы.';
+
+  @override
+  String get this_message_was_deleted => 'Это сообщение было удалено';
+
+  @override
+  String get edit => 'Редактировать';
+
+  @override
+  String get reply => 'Ответить';
+
+  @override
+  String get add_reaction => 'Добавить реакцию';
+
+  @override
+  String get editing_message => 'Редактирование сообщения';
+
+  @override
+  String replying_to(String username) {
+    return 'Ответ $username';
+  }
+
+  @override
+  String get voice => 'Голос';
+
+  @override
+  String get emoji => 'Эмодзи';
+
+  @override
+  String get photo => '📷 Фото';
+
+  @override
+  String get voice_message => '🎤 Голосовое сообщение';
+
+  @override
+  String get searching => 'Поиск...';
+
+  @override
+  String get loading_users => 'Загрузка пользователей...';
+
+  @override
+  String search_failed(String error) {
+    return 'Ошибка поиска: $error';
+  }
+
+  @override
+  String get invalid_user_data => 'Неверные данные пользователя';
+
+  @override
+  String failed_to_start_chat(String error) {
+    return 'Не удалось начать чат: $error';
+  }
+
+  @override
+  String get audio_file_not_available => 'Аудиофайл недоступен';
+
+  @override
+  String failed_to_play_audio(String error) {
+    return 'Не удалось воспроизвести аудио: $error';
+  }
+
+  @override
+  String get image_unavailable => 'Изображение недоступно';
+
+  @override
+  String get image_too_large =>
+      '❌ Изображение слишком большое. Максимальный размер 10 МБ';
+
+  @override
+  String get image_file_not_found => '❌ Файл изображения не найден';
+
+  @override
+  String get uploading_image => 'Загрузка изображения...';
+
+  @override
+  String get image_sent => '✅ Изображение отправлено!';
+
+  @override
+  String get failed_to_send_image => '❌ Не удалось отправить изображение';
+
+  @override
+  String get uploading_voice_message => 'Загрузка голосового сообщения...';
+
+  @override
+  String get voice_message_sent => '✅ Голосовое сообщение отправлено!';
+
+  @override
+  String get failed_to_send_voice_message =>
+      '❌ Не удалось отправить голосовое сообщение';
+
+  @override
+  String get recording => '🎙️ Запись...';
+
+  @override
+  String get microphone_permission_denied => 'Доступ к микрофону запрещён';
+
+  @override
+  String get starting_chat => 'Запуск чата...';
+
+  @override
+  String get refresh_users => 'Обновить пользователей';
+
+  @override
+  String get search_by_username_or_phone =>
+      'Поиск по имени пользователя или номеру телефона';
+
+  @override
+  String get no_users_found => 'Пользователи не найдены';
+
+  @override
+  String get try_different_search_term => 'Попробуйте другой поисковый запрос';
+
+  @override
+  String get no_users_available => 'Нет доступных пользователей';
+
+  @override
+  String get chat_exists => 'Чат существует';
+
+  @override
+  String block_user_confirm(String username) {
+    return 'Вы уверены, что хотите заблокировать $username? Вы не будете получать сообщения от них, и они будут удалены из вашего списка чатов.';
+  }
+
+  @override
+  String chat_room_label(String name) {
+    return 'Чат: $name';
+  }
+
+  @override
+  String id_label(int id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String get participants_label => 'Участники:';
+
+  @override
+  String get type_a_message => 'Введите сообщение...';
+
+  @override
+  String get edit_message_hint => 'Редактировать сообщение...';
+
+  @override
+  String error_label(String error) {
+    return 'Ошибка: $error';
+  }
+
+  @override
+  String get copy => 'Копировать';
+
+  @override
+  String comments_title(int count) {
+    return 'Комментарии ($count)';
+  }
+
+  @override
+  String get reply_button => 'Ответить';
+
+  @override
+  String replies_count(int count) {
+    return '$count ответов';
+  }
+
+  @override
+  String get you_label => 'Вы';
+
+  @override
+  String get delete_reply_title => 'Удалить ответ';
+
+  @override
+  String get delete_comment_title => 'Удалить комментарий';
+
+  @override
+  String get unknown_date => 'Неизвестная дата';
+
+  @override
+  String get press_enter_to_send => 'Нажмите Enter для отправки';
+
+  @override
+  String get comment_add_error => 'Не удалось добавить комментарий';
+
+  @override
+  String get service_provider => 'Поставщик услуг';
+
+  @override
+  String get opening_chat => 'Открытие чата...';
+
+  @override
+  String get failed_to_refresh => 'Не удалось обновить';
+
+  @override
+  String get cannot_chat_with_yourself => 'Вы не можете общаться с самим собой';
+
+  @override
+  String opening_chat_with(String username) {
+    return 'Открытие чата с $username...';
+  }
+
+  @override
+  String get this_will_only_take_a_moment => 'Это займет всего мгновение';
+
+  @override
+  String get unable_to_start_chat =>
+      'Не удалось начать чат. Пожалуйста, попробуйте снова.';
 }

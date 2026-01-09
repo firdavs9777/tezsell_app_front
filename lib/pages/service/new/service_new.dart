@@ -5,6 +5,7 @@ import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,9 +129,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       if (isMulti && source == ImageSource.gallery) {
         // Multi-image picker only works with gallery
         final pickedFiles = await picker.pickMultiImage(
-          maxWidth: 1920,
-          maxHeight: 1920,
-          imageQuality: 85,
+          maxWidth: 2560,
+          maxHeight: 2560,
+          imageQuality: 95,
         );
         if (pickedFiles != null && mounted) {
           setState(() {
@@ -144,9 +145,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         // Single image from camera or gallery
         final pickedFile = await picker.pickImage(
           source: source,
-          maxWidth: 1920,
-          maxHeight: 1920,
-          imageQuality: 85,
+          maxWidth: 2560,
+          maxHeight: 2560,
+          imageQuality: 95,
         );
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
@@ -280,12 +281,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         if (!mounted) return;
 
         // Navigate to home
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const TabsScreen(initialIndex: 1),
-          ),
-        );
+        if (context.mounted) {
+          context.go('/tabs?index=1');
+        }
       } else {
         AppLogger.error('Service creation returned null');
         AppErrorHandler.showError(

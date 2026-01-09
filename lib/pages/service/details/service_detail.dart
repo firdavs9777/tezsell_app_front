@@ -1,5 +1,6 @@
 import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/service/comments/comments.dart';
+import 'package:app/pages/service/comments/create_comment.dart';
 import 'package:app/pages/service/details/edit_comment.dart';
 import 'package:app/pages/service/details/recommended_services.dart';
 import 'package:app/pages/service/details/reply_comment.dart';
@@ -13,6 +14,8 @@ import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/widgets/notification_bell.dart';
+import 'package:app/providers/provider_root/notification_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,9 +91,10 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to refresh: $e'),
+            content: Text('${l10n?.failed_to_refresh ?? 'Failed to refresh'}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -295,8 +299,8 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
 
   Future<void> _startChat() async {
     final targetUserId = widget.service.userName.id;
-    final userName = widget.service.userName.username ?? 'Service Provider';
-    final localizations = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final userName = widget.service.userName.username ?? l10n.service_provider;
 
     // Initialize chat provider if not already initialized
     await ref.read(chatProvider.notifier).initialize();
@@ -306,8 +310,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     if (!chatState.isAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations?.chatLoginMessage ??
-              'Please log in to start a chat'),
+          content: Text(l10n.chatLoginMessage ?? 'Please log in to start a chat'),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
         ),
@@ -320,7 +323,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('You cannot chat with yourself'),
+            content: Text(l10n.cannot_chat_with_yourself),
             backgroundColor: Colors.orange,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -358,7 +361,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Opening chat with $userName...',
+              l10n.opening_chat_with(userName),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -367,7 +370,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
             ),
             const SizedBox(height: 8),
             Text(
-              'This will only take a moment',
+              l10n.this_will_only_take_a_moment,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[600],
@@ -403,11 +406,11 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Unable to start chat. Please try again.'),
+            content: Text(l10n.unable_to_start_chat),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             action: SnackBarAction(
-              label: 'Retry',
+              label: l10n.retry,
               textColor: Colors.white,
               onPressed: _startChat,
             ),
@@ -470,6 +473,13 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           ),
         ),
         actions: [
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            child: NotificationBell(
+              provider: commentNotificationProvider,
+              iconColor: colorScheme.onSurface,
+            ),
+          ),
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
@@ -628,8 +638,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         onCancel: _cancelReplyingComment,
       );
     } else {
-      // 🔥 Show contact bar instead of just comment field
-      return _buildContactBottomBar();
+      // Show create comment widget
+      return CreateComment(
+        id: _serviceData?.id.toString() ?? widget.service.id.toString(),
+        onCommentAdded: () {
+          // Refresh service data to get updated comments
+          _fetchSingleService();
+        },
+      );
     }
   }
 

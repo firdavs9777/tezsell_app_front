@@ -659,14 +659,14 @@ class ChatApiService {
     try {
       final headers = await _getHeaders(includeCharset: true);
 
-      final body = {
+      final body = <String, dynamic>{
         'content': content,
         'message_type': 'text',
       };
 
-      // if (replyToMessageId != null) {
-      //   body['reply_to'] = replyToMessageId;
-      // }
+      if (replyToMessageId != null) {
+        body['reply_to'] = replyToMessageId;
+      }
 
       final response = await http.post(
         Uri.parse('$baseUrl$chatBasePath/$chatId/messages/'),
@@ -677,8 +677,10 @@ class ChatApiService {
 
       if (response.statusCode == 201) {
         final data = json.decode(utf8.decode(response.bodyBytes));
-        return ChatMessage.fromJson(data);
+        final message = ChatMessage.fromJson(data);
+        return message;
       } else {
+        final errorBody = utf8.decode(response.bodyBytes);
         throw Exception('Failed to send message: ${response.statusCode}');
       }
     } catch (e) {

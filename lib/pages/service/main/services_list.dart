@@ -4,6 +4,7 @@ import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -76,12 +77,7 @@ class ServiceList extends ConsumerWidget {
               final Services singleService = await ref
                   .watch(serviceMainProvider)
                   .getSingleService(serviceId: service.id.toString());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ServiceDetail(service: singleService),
-                ),
-              ).then((_) => ref.refresh(servicesProvider));
+              context.push('/service/${service.id}').then((_) => ref.refresh(servicesProvider));
             },
             child: Padding(
               padding: const EdgeInsets.all(12.0),

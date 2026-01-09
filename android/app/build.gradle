@@ -45,10 +45,12 @@ android {
 
     defaultConfig {
         applicationId = "uz.tezsell.app"
+        // Explicitly set minSdkVersion for Firebase (21 minimum required)
         minSdkVersion = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        multiDexEnabled = true  // Add this for Firebase
     }
 
     signingConfigs {
@@ -72,9 +74,15 @@ flutter {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+    // Firebase BOM - Updated to latest version
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
+
+    // MultiDex support
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
 

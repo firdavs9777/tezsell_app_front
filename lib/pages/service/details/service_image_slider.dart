@@ -1,6 +1,8 @@
 // Keep the existing classes (ServiceImageSlider, ServiceDetailsSection, RecommendedServicesSection)
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -19,14 +21,9 @@ class ServiceImageSlider extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    List<ImageProvider> images = service.images.isNotEmpty
-        ? service.images
-            .map((image) => NetworkImage('${image.image}') as ImageProvider)
-            .toList()
-        : [
-            const AssetImage('assets/logo/logo_no_background.png')
-                as ImageProvider
-          ];
+    List<String> imageUrls = service.images.isNotEmpty
+        ? service.images.map((image) => image.image).toList()
+        : [];
 
     return Container(
       height: 380,
@@ -35,13 +32,39 @@ class ServiceImageSlider extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          PageView.builder(
-            controller: pageController,
-            itemCount: images.length,
-            itemBuilder: (context, index) {
-              return Image(image: images[index], fit: BoxFit.cover);
-            },
-          ),
+          imageUrls.isEmpty
+              ? Container(
+                  color: colorScheme.surfaceContainerHighest,
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported, size: 64),
+                  ),
+                )
+              : PageView.builder(
+                  controller: pageController,
+                  itemCount: imageUrls.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ImageViewer(
+                              imageUrls: imageUrls,
+                              initialIndex: index,
+                            ),
+                          ),
+                        );
+                      },
+                      child: CachedNetworkImageWidget(
+                        imageUrl: imageUrls[index],
+                        fit: BoxFit.contain,
+                        // No size restrictions for detail view - use full resolution
+                        width: null,
+                        height: null,
+                      ),
+                    );
+                  },
+                ),
           // Gradient overlay at bottom
           Positioned(
             bottom: 0,
@@ -61,7 +84,7 @@ class ServiceImageSlider extends StatelessWidget {
               ),
             ),
           ),
-          if (images.length > 1) ...[
+          if (imageUrls.length > 1) ...[
             // Left navigation button
             Positioned(
               left: 16,
@@ -116,7 +139,7 @@ class ServiceImageSlider extends StatelessWidget {
                       if (pageController.hasClients &&
                           pageController.page != null) {
                         int currentPage = pageController.page!.toInt();
-                        if (currentPage < images.length - 1) {
+                        if (currentPage < imageUrls.length - 1) {
                           pageController.nextPage(
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
@@ -146,7 +169,7 @@ class ServiceImageSlider extends StatelessWidget {
               child: Center(
                 child: SmoothPageIndicator(
                   controller: pageController,
-                  count: images.length,
+                  count: imageUrls.length,
                   effect: WormEffect(
                     dotWidth: 8.0,
                     dotHeight: 8.0,

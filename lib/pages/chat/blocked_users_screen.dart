@@ -1,6 +1,7 @@
 // lib/pages/chat/blocked_users_screen.dart
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,21 +40,22 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
   }
 
   Future<void> _unblockUser(User user) async {
+    final l = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Unblock User'),
-        content: Text('Are you sure you want to unblock ${user.username}? You will be able to receive messages from them again.'),
+        title: Text(l.unblock_user),
+        content: Text(l.unblock_user_confirm(user.username)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Unblock',
-              style: TextStyle(color: Colors.green),
+            child: Text(
+              l.unblock_user,
+              style: const TextStyle(color: Colors.green),
             ),
           ),
         ],
@@ -67,7 +69,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('${user.username} has been unblocked'),
+                content: Text(l.user_unblocked(user.username)),
                 backgroundColor: Colors.green,
               ),
             );
@@ -75,8 +77,8 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
             await _loadBlockedUsers();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Failed to unblock user'),
+              SnackBar(
+                content: Text(l.failed_to_unblock),
                 backgroundColor: Colors.red,
               ),
             );
@@ -104,9 +106,10 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
     // Get blocked users from the users list
     final blockedUsers = allUsers.where((user) => blockedUserIds.contains(user.id)).toList();
 
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blocked Users'),
+        title: Text(l.blocked_users),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -128,18 +131,18 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                         color: Colors.grey,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'No blocked users',
-                        style: TextStyle(
+                      Text(
+                        l.no_blocked_users,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Users you block will appear here',
-                        style: TextStyle(color: Colors.grey),
+                      Text(
+                        l.blocked_users_hint,
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -192,7 +195,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                           trailing: ElevatedButton.icon(
                             onPressed: () => _unblockUser(user),
                             icon: const Icon(Icons.lock_open, size: 18),
-                            label: const Text('Unblock'),
+                            label: Text(l.unblock_user),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               foregroundColor: Colors.white,

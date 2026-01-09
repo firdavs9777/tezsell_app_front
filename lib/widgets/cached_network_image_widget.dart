@@ -52,6 +52,9 @@ class CachedNetworkImageWidget extends StatelessWidget {
   /// Progress indicator color
   final Color? progressIndicatorColor;
 
+  /// Callback when image is tapped
+  final VoidCallback? onTap;
+
   const CachedNetworkImageWidget({
     super.key,
     required this.imageUrl,
@@ -67,6 +70,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
     this.fadeInDuration = const Duration(milliseconds: 300),
     this.showProgressIndicator = true,
     this.progressIndicatorColor,
+    this.onTap,
   });
 
   /// Creates a circular cached network image (useful for avatars)
@@ -78,6 +82,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
     Widget? errorWidget,
     Color? placeholderColor,
     Color? errorColor,
+    VoidCallback? onTap,
   }) {
     return CachedNetworkImageWidget(
       key: key,
@@ -90,6 +95,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
       errorWidget: errorWidget,
       placeholderColor: placeholderColor,
       errorColor: errorColor,
+      onTap: onTap,
     );
   }
 
@@ -115,16 +121,26 @@ class CachedNetworkImageWidget extends StatelessWidget {
         AppLogger.warning('Failed to load image: $url', error);
         return _buildErrorWidget(context);
       },
-      memCacheWidth: width?.toInt(),
-      memCacheHeight: height?.toInt(),
-      maxWidthDiskCache: 1000,
-      maxHeightDiskCache: 1000,
+      // Use 2x resolution for memory cache to improve quality on high-DPI screens
+      memCacheWidth: width != null ? (width! * 2).toInt() : null,
+      memCacheHeight: height != null ? (height! * 2).toInt() : null,
+      // Increase disk cache to preserve higher quality images
+      maxWidthDiskCache: 2048,
+      maxHeightDiskCache: 2048,
     );
 
     // Apply border radius if provided
     if (borderRadius != null) {
       imageWidget = ClipRRect(
         borderRadius: borderRadius!,
+        child: imageWidget,
+      );
+    }
+
+    // Wrap with GestureDetector if onTap is provided
+    if (onTap != null) {
+      imageWidget = GestureDetector(
+        onTap: onTap,
         child: imageWidget,
       );
     }
@@ -201,6 +217,7 @@ class CachedImageSlider extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Widget? placeholder;
   final Widget? errorWidget;
+  final Function(int index)? onImageTap;
 
   const CachedImageSlider({
     super.key,
@@ -211,6 +228,7 @@ class CachedImageSlider extends StatelessWidget {
     this.borderRadius,
     this.placeholder,
     this.errorWidget,
+    this.onImageTap,
   });
 
   @override
@@ -225,12 +243,18 @@ class CachedImageSlider extends StatelessWidget {
         controller: pageController,
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return CachedNetworkImageWidget(
-            imageUrl: imageUrls[index],
-            fit: fit,
-            borderRadius: borderRadius,
-            placeholder: placeholder,
-            errorWidget: errorWidget,
+          return GestureDetector(
+            onTap: () => onImageTap?.call(index),
+            child: CachedNetworkImageWidget(
+              imageUrl: imageUrls[index],
+              fit: fit,
+              borderRadius: borderRadius,
+              placeholder: placeholder,
+              errorWidget: errorWidget,
+              // For detail views, don't restrict size - use full resolution
+              width: null,
+              height: null,
+            ),
           );
         },
       ),

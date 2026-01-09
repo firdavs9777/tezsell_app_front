@@ -2,6 +2,8 @@
 import 'package:app/pages/chat//chat_room.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/widgets/image_viewer.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
@@ -74,9 +76,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         setState(() {
           _isSearching = false;
         });
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Search failed: $e'),
+            content: Text(l.search_failed(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -116,9 +119,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       if (isBlocked) {
         await ref.read(chatProvider.notifier).unblockUser(user.id);
         if (mounted) {
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${user.username} has been unblocked'),
+              content: Text(l.user_unblocked(user.username)),
               backgroundColor: Colors.green,
             ),
           );
@@ -126,9 +130,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       } else {
         await ref.read(chatProvider.notifier).blockUser(user.id);
         if (mounted) {
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${user.username} has been blocked'),
+              content: Text(l.user_blocked(user.username)),
               backgroundColor: Colors.orange,
             ),
           );
@@ -136,9 +141,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to ${isBlocked ? 'unblock' : 'block'} user: $e'),
+            content: Text(isBlocked ? l.failed_to_unblock : l.failed_to_block),
             backgroundColor: Colors.red,
           ),
         );
@@ -155,8 +161,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     final userId = searchResult['id'] as int? ?? 
                    searchResult['user_id'] as int?;
     if (userId == null) {
+      final l = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid user data')),
+            SnackBar(content: Text(l.invalid_user_data)),
       );
       return;
     }
@@ -205,15 +212,20 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         barrierDismissible: false,
         builder: (context) => WillPopScope(
           onWillPop: () async => false,
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text(
-                  'Starting chat...',
-                  style: TextStyle(color: Colors.white),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      l.starting_chat,
+                      style: const TextStyle(color: Colors.white),
+                    );
+                  },
                 ),
               ],
             ),
@@ -243,9 +255,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
 
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to start chat: ${e.toString()}'),
+            content: Text(l.failed_to_start_chat(e.toString())),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -273,15 +286,20 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         barrierDismissible: false,
         builder: (context) => WillPopScope(
           onWillPop: () async => false,
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text(
-                  'Starting chat...',
-                  style: TextStyle(color: Colors.white),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      l.starting_chat,
+                      style: const TextStyle(color: Colors.white),
+                    );
+                  },
                 ),
               ],
             ),
@@ -310,9 +328,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
 
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to start chat: ${e.toString()}'),
+            content: Text(l.failed_to_start_chat(e.toString())),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
@@ -344,12 +363,17 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Start a Conversation'),
+        title: Builder(
+          builder: (context) {
+            final l = AppLocalizations.of(context)!;
+                return Text(l.start_conversation);
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _isLoadingUsers ? null : _loadUsers,
-            tooltip: 'Refresh users',
+            tooltip: AppLocalizations.of(context)?.refresh_users ?? 'Refresh users',
           ),
         ],
       ),
@@ -376,7 +400,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       controller: _searchController,
                       autofocus: false,
                       decoration: InputDecoration(
-                        hintText: 'Search by username or phone number',
+                        hintText: AppLocalizations.of(context)?.search_by_username_or_phone ?? 'Search by username or phone number',
                         hintStyle: TextStyle(
                           color: Colors.grey[500],
                           fontSize: 14,
@@ -407,13 +431,18 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
           ),
           Expanded(
             child: _isSearching
-                ? const Center(
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 16),
-                        Text('Searching...'),
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Builder(
+                          builder: (context) {
+                            final l = AppLocalizations.of(context)!;
+                            return Text(l.searching);
+                          },
+                        ),
                       ],
                     ),
                   )
@@ -430,32 +459,47 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                   color: Colors.grey[400],
                                 ),
                                 const SizedBox(height: 16),
-                                Text(
-                                  'No users found',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Try a different search term',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[500],
-                                  ),
+                                Builder(
+                                  builder: (context) {
+                                    final l = AppLocalizations.of(context)!;
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          l.no_users_found,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          l.try_different_search_term,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[500],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ],
                             ),
                           )
                         : _isLoadingUsers
-                            ? const Center(
+                            ? Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    CircularProgressIndicator(),
-                                    SizedBox(height: 16),
-                                    Text('Loading users...'),
+                                    const CircularProgressIndicator(),
+                                    const SizedBox(height: 16),
+                                    Builder(
+                                      builder: (context) {
+                                        final l = AppLocalizations.of(context)!;
+                                        return Text(l.loading_users);
+                                      },
+                                    ),
                                   ],
                                 ),
                               )
@@ -470,18 +514,28 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                           color: Colors.grey[400],
                                         ),
                                         const SizedBox(height: 16),
-                                        Text(
-                                          'No users available',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        const SizedBox(height: 24),
-                                        ElevatedButton.icon(
-                                          onPressed: _loadUsers,
-                                          icon: const Icon(Icons.refresh),
-                                          label: const Text('Retry'),
+                                        Builder(
+                                          builder: (context) {
+                                            final l = AppLocalizations.of(context)!;
+                                            return Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  l.no_users_available,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 24),
+                                                ElevatedButton.icon(
+                                                  onPressed: _loadUsers,
+                                                  icon: const Icon(Icons.refresh),
+                                                  label: Text(l.retry),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),
@@ -551,7 +605,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     bool isOnline,
     String? profileImage,
   ) {
-    final username = userData['username'] as String? ?? 'Unknown';
+    final l = AppLocalizations.of(context)!;
+    final username = userData['username'] as String? ?? l.unknown;
     final displayName = userData['display_name'] as String? ?? 
                        '${userData['first_name'] ?? ''} ${userData['last_name'] ?? ''}'.trim() ??
                        username;
@@ -570,37 +625,37 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
             child: Row(
               children: [
                 // Avatar
-                Stack(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Colors.blue[400]!, Colors.blue[600]!],
-                        ),
-                      ),
-                      child: profileImage != null && profileImage.isNotEmpty
-                          ? ClipOval(
-                              child: Image.network(
-                                profileImage,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Center(
-                                  child: Text(
-                                    avatarLetter,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                ),
+                profileImage != null && profileImage.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ImageViewer(
+                                imageUrl: profileImage!,
+                                title: username ?? 'Profile Picture',
                               ),
-                            )
-                          : Center(
+                            ),
+                          );
+                        },
+                        child: Stack(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.blue[400]!, Colors.blue[600]!],
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: Image.network(
+                            profileImage!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Center(
                               child: Text(
                                 avatarLetter,
                                 style: const TextStyle(
@@ -610,23 +665,66 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                 ),
                               ),
                             ),
-                    ),
-                    if (isOnline)
-                      Positioned(
-                        right: 2,
-                        bottom: 2,
-                        child: Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                      if (isOnline)
+                        Positioned(
+                          right: 2,
+                          bottom: 2,
+                          child: Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+                    : Stack(
+                        children: [
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Colors.blue[400]!, Colors.blue[600]!],
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                avatarLetter,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (isOnline)
+                            Positioned(
+                              right: 2,
+                              bottom: 2,
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                 const SizedBox(width: 12),
                 // User info
                 Expanded(
@@ -657,13 +755,18 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                 color: Colors.blue[50],
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Text(
-                                'Chat exists',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              child: Builder(
+                                builder: (context) {
+                                  final l = AppLocalizations.of(context)!;
+                                  return Text(
+                                    l.chat_exists,
+                                    style: TextStyle(
+                                      color: Colors.blue[700],
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -786,13 +889,18 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                 color: Colors.green[50],
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Text(
-                                'Online',
-                                style: TextStyle(
-                                  color: Colors.green[700],
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              child: Builder(
+                                builder: (context) {
+                                  final l = AppLocalizations.of(context)!;
+                                  return Text(
+                                    l.online,
+                                    style: TextStyle(
+                                      color: Colors.green[700],
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -819,32 +927,35 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(isBlocked ? 'Unblock User' : 'Block User'),
-        content: Text(
-          isBlocked
-              ? 'Are you sure you want to unblock ${user.username}? You will be able to receive messages from them again.'
-              : 'Are you sure you want to block ${user.username}? You will not receive messages from them and they will be removed from your chat list.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder: (context) {
+        final l = AppLocalizations.of(context)!;
+        return AlertDialog(
+          title: Text(isBlocked ? l.unblock_user : l.block_user),
+          content: Text(
+            isBlocked
+                ? l.unblock_user_confirm(user.username)
+                : l.block_user_confirm(user.username),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await _toggleBlockUser(user, isBlocked);
-            },
-            child: Text(
-              isBlocked ? 'Unblock' : 'Block',
-              style: TextStyle(
-                color: isBlocked ? Colors.green : Colors.red,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l.cancel),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await _toggleBlockUser(user, isBlocked);
+              },
+              child: Text(
+                isBlocked ? l.unblock_user : l.block_user,
+                style: TextStyle(
+                  color: isBlocked ? Colors.green : Colors.red,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }

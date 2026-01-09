@@ -103,9 +103,16 @@ class AppConfig {
   static const String authPath = '/api/auth/';
   static const String chatPath = 'chats/';
 
+  // Notification Endpoints
+  static const String notificationsPath = '/api/notifications/';
+  static const String notificationsUnreadCountPath = '/api/notifications/unread-count/';
+  static const String notificationsMarkAllReadPath = '/api/notifications/mark-all-read/';
+  static const String fcmTokenPath = '/accounts/fcm-token/'; // FCM token registration endpoint
+
   // WebSocket Paths
   static const String chatListWsPath = '/ws/chatrooms/';
   static const String chatRoomWsPath = '/ws/chat/'; // append room_id
+  static const String notificationsWsPath = '/ws/notifications/';
 
   // Local Storage Keys
   static const String tokenKey = 'token'; // Access token (backward compatible)
@@ -148,9 +155,14 @@ class AppConfig {
   static String getServicesUrl() => '$baseUrl$servicesPath';
   static String getChatListUrl() => '$baseUrl$chatListPath';
   static String getUserListUrl() => '$baseUrl$userListPath';
+  static String getNotificationsUrl() => '$baseUrl$notificationsPath';
+  static String getNotificationsUnreadCountUrl() => '$baseUrl$notificationsUnreadCountPath';
+  static String getNotificationsMarkAllReadUrl() => '$baseUrl$notificationsMarkAllReadPath';
+  static String getFcmTokenUrl() => '$baseUrl$fcmTokenPath';
   
   // WebSocket URLs
   static String getChatListWsUrl() => '$wsBaseUrl$chatListWsPath';
   static String getChatRoomWsUrl(String roomId) => '$wsBaseUrl$chatRoomWsPath$roomId';
+  static String getNotificationsWsUrl() => '$wsBaseUrl$notificationsWsPath';
 }
 

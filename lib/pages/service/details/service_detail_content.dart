@@ -1,6 +1,8 @@
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/constants/constants.dart';
 
 class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
@@ -175,7 +177,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Service Provider',
+                  localizations?.service_provider ?? 'Service Provider',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -187,28 +189,77 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                 Row(
                   children: [
                     // Avatar with border
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: colorScheme.primary.withOpacity(0.2),
-                          width: 2,
-                        ),
-                      ),
-                      child: Container(
-                        width: 56,
-                        height: 56,
+                    widget.service.userName.profileImage?.image != null
+                        ? GestureDetector(
+                            onTap: () {
+                              final imageUrl = widget.service.userName.profileImage!.image.startsWith('http://') ||
+                                      widget.service.userName.profileImage!.image.startsWith('https://')
+                                  ? widget.service.userName.profileImage!.image
+                                  : '$baseUrl${widget.service.userName.profileImage!.image}';
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ImageViewer(
+                                    imageUrl: imageUrl,
+                                    title: widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
                           shape: BoxShape.circle,
+                          border: Border.all(
+                            color: colorScheme.primary.withOpacity(0.2),
+                            width: 2,
+                          ),
                         ),
-                        child: Icon(
-                          Icons.person_rounded,
-                          color: colorScheme.primary,
-                          size: 28,
+                        child: Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: colorScheme.primaryContainer,
+                            shape: BoxShape.circle,
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              widget.service.userName.profileImage!.image.startsWith('http://') ||
+                                      widget.service.userName.profileImage!.image.startsWith('https://')
+                                  ? widget.service.userName.profileImage!.image
+                                  : '$baseUrl${widget.service.userName.profileImage!.image}',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Icon(
+                                Icons.person_rounded,
+                                color: colorScheme.primary,
+                                size: 28,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    )
+                        : Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: colorScheme.primary.withOpacity(0.2),
+                                width: 2,
+                              ),
+                            ),
+                            child: Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: colorScheme.primaryContainer,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.person_rounded,
+                                color: colorScheme.primary,
+                                size: 28,
+                              ),
+                            ),
+                          ),
                     const SizedBox(width: 16),
 
                     // Provider Info
@@ -218,7 +269,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                         children: [
                           // Username
                           Text(
-                            widget.service.userName.username ?? 'Service Provider',
+                            widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -274,7 +325,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                               () {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: const Text('Opening chat...'),
+                                    content: Text(localizations?.opening_chat ?? 'Opening chat...'),
                                     backgroundColor: colorScheme.primary,
                                     behavior: SnackBarBehavior.floating,
                                     shape: RoundedRectangleBorder(

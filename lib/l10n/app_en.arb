@@ -1988,7 +1988,6 @@
   "errorLikingService": "Error liking service",
   "serviceDislikedSuccess": "Service disliked successfully!",
   "errorDislikingService": "Error disliking service",
-  "replyingTo": "Replying to",
   "writeYourReply": "Write your reply...",
   "postReply": "Post Reply",
   "anonymous": "Anonymous",
@@ -2430,5 +2429,315 @@
   "verifying": "Verifying...",
   "@verifying": {
     "description": "Loading text for verifying code"
+  },
+  "@new_message": {
+    "description": "Tooltip text for new message"
+  },
+  "new_message": "New Message",
+  "messages": "Messages",
+  "messages_and_conversations": "Messages",
+  "please_log_in": "Please log in to view messages",
+  "blocked_users": "Blocked Users",
+  "delete": "Delete",
+  "delete_chat": "Delete Chat",
+  "delete_chat_confirm": "Are you sure you want to delete the chat with {name}? This action cannot be undone.",
+  "@delete_chat_confirm": {
+    "description": "Delete chat confirmation message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "chat_deleted": "Chat with {name} deleted",
+  "@chat_deleted": {
+    "description": "Chat deleted success message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "delete_failed": "Failed to delete chat",
+  "no_conversations": "No conversations yet",
+  "start_conversation_hint": "Start a conversation by tapping the + button",
+  "start_conversation": "Start a Conversation",
+  "yesterday": "Yesterday",
+  "unknown": "Unknown",
+  "no_messages_yet": "No messages yet",
+  "unblock_user": "Unblock User",
+  "block_user": "Block User",
+  "no_blocked_users": "No blocked users",
+  "blocked_users_hint": "Users you block will appear here",
+  "unblock_user_confirm": "Are you sure you want to unblock {username}? You will be able to receive messages from them again.",
+  "@unblock_user_confirm": {
+    "description": "Unblock user confirmation",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "user_unblocked": "{username} has been unblocked",
+  "@user_unblocked": {
+    "description": "User unblocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "user_blocked": "{username} has been blocked",
+  "@user_blocked": {
+    "description": "User blocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "failed_to_unblock": "Failed to unblock user",
+  "failed_to_block": "Failed to block user",
+  "chat_info": "Chat Info",
+  "delete_message": "Delete Message",
+  "delete_message_confirm": "Are you sure you want to delete this message?",
+  "typing": "typing...",
+  "online": "online",
+  "participants": "{count} participants",
+  "@participants": {
+    "description": "Number of participants in group chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "you_are_blocked": "You are blocked",
+  "user_blocked_you": "{username} has blocked you. You cannot send messages.",
+  "@user_blocked_you": {
+    "description": "Message when user is blocked by another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "you_blocked_user": "You have blocked {username}",
+  "@you_blocked_user": {
+    "description": "Message when current user has blocked another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "cannot_send_messages_blocked": "You cannot send messages. You have been blocked.",
+  "this_message_was_deleted": "This message was deleted",
+  "edit": "Edit",
+  "reply": "Reply",
+  "add_reaction": "Add Reaction",
+  "editing_message": "Editing message",
+  "replying_to": "Replying to {username}",
+  "@replying_to": {
+    "description": "Reply preview text",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "gallery": "Gallery",
+  "camera": "Camera",
+  "voice": "Voice",
+  "emoji": "Emoji",
+  "photo": "📷 Photo",
+  "voice_message": "🎤 Voice message",
+  "searching": "Searching...",
+  "loading_users": "Loading users...",
+  "search_failed": "Search failed: {error}",
+  "@search_failed": {
+    "description": "Search error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invalid_user_data": "Invalid user data",
+  "failed_to_start_chat": "Failed to start chat: {error}",
+  "@failed_to_start_chat": {
+    "description": "Failed to start chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "audio_file_not_available": "Audio file not available",
+  "failed_to_play_audio": "Failed to play audio: {error}",
+  "@failed_to_play_audio": {
+    "description": "Failed to play audio error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "image_unavailable": "Image unavailable",
+  "image_too_large": "❌ Image is too large. Maximum size is 10MB",
+  "image_file_not_found": "❌ Image file not found",
+  "uploading_image": "Uploading image...",
+  "image_sent": "✅ Image sent!",
+  "failed_to_send_image": "❌ Failed to send image",
+  "uploading_voice_message": "Uploading voice message...",
+  "voice_message_sent": "✅ Voice message sent!",
+  "failed_to_send_voice_message": "❌ Failed to send voice message",
+  "recording": "🎙️ Recording...",
+  "microphone_permission_denied": "Microphone permission denied",
+  "starting_chat": "Starting chat...",
+  "refresh_users": "Refresh users",
+  "search_by_username_or_phone": "Search by username or phone number",
+  "no_users_found": "No users found",
+  "try_different_search_term": "Try a different search term",
+  "no_users_available": "No users available",
+  "chat_exists": "Chat exists",
+  "online": "online",
+  "block_user_confirm": "Are you sure you want to block {username}? You will not receive messages from them and they will be removed from your chat list.",
+  "@block_user_confirm": {
+    "description": "Block user confirmation message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_room_label": "Chat Room: {name}",
+  "@chat_room_label": {
+    "description": "Chat room label with name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "id_label": "ID: {id}",
+  "@id_label": {
+    "description": "ID label with value",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "participants_label": "Participants:",
+  "type_a_message": "Type a message...",
+  "edit_message_hint": "Edit message...",
+  "error_label": "Error: {error}",
+  "@error_label": {
+    "description": "Error label with error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "copy": "Copy",
+  "message": "Message",
+  "comments_title": "Comments ({count})",
+  "@comments_title": {
+    "description": "Comments section title with count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reply_button": "Reply",
+  "@reply_button": {
+    "description": "Reply button text"
+  },
+  "replies_count": "{count} replies",
+  "@replies_count": {
+    "description": "Replies count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "you_label": "You",
+  "@you_label": {
+    "description": "You label for current user"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "delete_reply_title": "Delete Reply",
+  "@delete_reply_title": {
+    "description": "Delete reply dialog title"
+  },
+  "delete_comment_title": "Delete Comment",
+  "@delete_comment_title": {
+    "description": "Delete comment dialog title"
+  },
+  "unknown_date": "Unknown Date",
+  "@unknown_date": {
+    "description": "Unknown date text"
+  },
+  "press_enter_to_send": "Press Enter to send",
+  "@press_enter_to_send": {
+    "description": "Hint text for sending comment"
+  },
+  "comment_add_error": "Failed to add comment",
+  "@comment_add_error": {
+    "description": "Error message when comment creation fails"
+  },
+  "replying_to": "Replying to {username}",
+  "@replying_to": {
+    "description": "Reply header text",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "service_provider": "Service Provider",
+  "@service_provider": {
+    "description": "Service provider label"
+  },
+  "opening_chat": "Opening chat...",
+  "@opening_chat": {
+    "description": "Opening chat message"
+  },
+  "failed_to_refresh": "Failed to refresh",
+  "@failed_to_refresh": {
+    "description": "Failed to refresh error message"
+  },
+  "cannot_chat_with_yourself": "You cannot chat with yourself",
+  "@cannot_chat_with_yourself": {
+    "description": "Error message when trying to chat with yourself"
+  },
+  "opening_chat_with": "Opening chat with {username}...",
+  "@opening_chat_with": {
+    "description": "Opening chat message with username",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "this_will_only_take_a_moment": "This will only take a moment",
+  "@this_will_only_take_a_moment": {
+    "description": "Loading message for chat"
+  },
+  "unable_to_start_chat": "Unable to start chat. Please try again.",
+  "@unable_to_start_chat": {
+    "description": "Error message when chat fails to start"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
   }
 }

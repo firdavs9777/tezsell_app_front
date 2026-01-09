@@ -1,6 +1,7 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,13 +70,14 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
         widget.onCommentAdded();
 
         // Show success feedback
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.white, size: 20),
-                SizedBox(width: 8),
-                Text('Comment added successfully'),
+                const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Text(l10n.commentCreated),
               ],
             ),
             backgroundColor: const Color(0xFF4CAF50),
@@ -90,9 +92,10 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add comment: $e'),
+            content: Text('${l10n.comment_add_error}: $e'),
             backgroundColor: const Color(0xFFFF6B6B),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -202,7 +205,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                           height: 1.4,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Write a comment...',
+                          hintText: AppLocalizations.of(context)?.writeComment ?? 'Write a comment...',
                           hintStyle: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 15,
@@ -293,7 +296,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Press Enter to send',
+                        AppLocalizations.of(context)?.press_enter_to_send ?? 'Press Enter to send',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],

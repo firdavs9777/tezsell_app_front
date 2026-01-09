@@ -4,6 +4,7 @@ import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -148,36 +149,24 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (ctx) => const TabsScreen()),
-            );
+            if (context.mounted) {
+              context.go('/tabs');
+            }
           },
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (ctx) => const ProductSearch(),
-                ),
-              );
+              context.push('/product/search');
             },
           ),
           IconButton(
             icon: Icon(Icons.category),
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (ctx) => ProductFilter(
-                    regionName: widget.regionName,
-                    districtName: widget.districtName,
-                  ),
-                ),
-              );
+              if (context.mounted) {
+                context.go('/products?region=${widget.regionName}&district=${widget.districtName}');
+              }
             },
           ),
         ],

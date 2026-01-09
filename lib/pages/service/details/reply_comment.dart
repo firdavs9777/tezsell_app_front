@@ -1,6 +1,7 @@
 // New widget for replying to comments
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ReplyCommentWidget extends StatefulWidget {
@@ -40,6 +41,7 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -64,7 +66,7 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Replying to ${widget.parentComment.user.username}',
+                    l10n.replying_to(widget.parentComment.user.username ?? l10n.anonymous),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -73,7 +75,7 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                 ),
                 TextButton(
                   onPressed: widget.onCancel,
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             ),
@@ -109,7 +111,7 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.parentComment.user.username ?? 'Anonymous',
+                          widget.parentComment.user.username ?? l10n.anonymous,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -132,10 +134,10 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
               controller: _controller,
               onChanged: widget.onTextChanged,
               maxLines: 3,
-              decoration: const InputDecoration(
-                hintText: 'Write your reply...',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
+              decoration: InputDecoration(
+                hintText: l10n.writeYourReply,
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.all(12),
               ),
             ),
             const SizedBox(height: 12),
@@ -147,9 +149,9 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: const Text(
-                  'Post Reply',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  l10n.postReply,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),

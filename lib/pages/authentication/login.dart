@@ -4,6 +4,7 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -180,12 +181,10 @@ class _LoginState extends ConsumerState<Login> {
         // Start automatic token refresh service
         _startTokenRefreshService();
 
-        // Login successful - navigate and replace current route
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const TabsScreen(),
-          ),
-        );
+        // Login successful - navigate to tabs
+        if (context.mounted) {
+          context.go('/tabs');
+        }
 
         navigationTimer.stop();
         _logPerformance('Navigation', navigationTimer.elapsed.inMilliseconds);

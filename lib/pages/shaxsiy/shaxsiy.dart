@@ -21,8 +21,12 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/theme_provider.dart'; // Import the proper theme provider
+import 'package:app/service/authentication_service.dart';
+import 'package:app/pages/authentication/login.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/widgets/image_viewer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +44,7 @@ class ShaxsiyPage extends ConsumerStatefulWidget {
 
 class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   late Future<UserInfo> _userInfoFuture;
+  int _refreshKey = 0; // Key to force FutureBuilder rebuild
 
   // Define supported languages - matching your LanguageSelectionScreen
   static const List<Map<String, String>> supportedLanguages = [
@@ -58,9 +63,24 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     return await ref.read(profileServiceProvider).getUserInfo();
   }
 
+  Future<List<dynamic>> _fetchAllData() async {
+    // Use ref.read() to get fresh data without invalidating during build
+    return Future.wait([
+      ref.read(profileServiceProvider).getUserInfo(),
+      ref.read(profileServiceProvider).getUserProducts(),
+      ref.read(profileServiceProvider).getUserServices(),
+      ref.read(profileServiceProvider).getUserFavoriteItems(),
+    ]);
+  }
+
   void _refreshProfile() {
+    // Schedule invalidation after build to avoid setState during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(profileServiceProvider);
+    });
     setState(() {
       _userInfoFuture = fetchUserInfo();
+      _refreshKey++; // Increment key to force FutureBuilder rebuild
     });
   }
 
@@ -108,10 +128,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       ),
       child: InkWell(
         onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
-          );
+          final result = await context.push<bool>('/profile/edit');
           if (result == true) {
             _refreshProfile();
           }
@@ -119,29 +136,60 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         borderRadius: BorderRadius.circular(16),
         child: Row(
           children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFFFF6F00).withOpacity(0.1),
-                  width: 3,
-                ),
-              ),
-              child: CircleAvatar(
-                radius: 30,
-                backgroundColor: const Color(0xFFF5F5F5),
-                backgroundImage: _getProfileImage(user),
-                child: _getProfileImage(user) == null
-                    ? const Icon(
+            _getProfileImage(user) != null
+                ? GestureDetector(
+                    onTap: () {
+                      final imageUrl = user.profileImage!.image.startsWith('http://') ||
+                              user.profileImage!.image.startsWith('https://')
+                          ? user.profileImage!.image
+                          : "$baseUrl${user.profileImage!.image}";
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ImageViewer(
+                            imageUrl: imageUrl,
+                            title: user.username,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFFF6F00).withOpacity(0.1),
+                          width: 3,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: const Color(0xFFF5F5F5),
+                        backgroundImage: _getProfileImage(user),
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: const Color(0xFFFF6F00).withOpacity(0.1),
+                        width: 3,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: const Color(0xFFF5F5F5),
+                      child: const Icon(
                         Icons.person_rounded,
                         color: Color(0xFF9E9E9E),
                         size: 32,
-                      )
-                    : null,
-              ),
-            ),
+                      ),
+                    ),
+                  ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -549,62 +597,195 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     );
   }
 
+  Future<void> _handleLogout() async {
+    final localizations = AppLocalizations.of(context);
+    final authService = ref.read(authenticationServiceProvider);
+    
+    // Show confirmation dialog
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations?.logout ?? 'Logout'),
+        content: Text(localizations?.logout_all_devices_message ?? 
+            'Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(localizations?.cancel ?? 'Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF6F00),
+            ),
+            child: Text(localizations?.logout ?? 'Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldLogout == true && mounted) {
+      try {
+        await authService.logout();
+        if (mounted) {
+          context.go('/login');
+        }
+      } catch (e) {
+        if (mounted) {
+          AppErrorHandler.showError(context, e);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: FutureBuilder<List<dynamic>>(
-        future: Future.wait([
-          ref.watch(profileServiceProvider).getUserInfo(),
-          ref.watch(profileServiceProvider).getUserProducts(),
-          ref.watch(profileServiceProvider).getUserServices(),
-          ref.watch(profileServiceProvider).getUserFavoriteItems(),
-        ]),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6F00)),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline_rounded,
-                    size: 48,
-                    color: Color(0xFFE57373),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error: ${snapshot.error}',
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
-                      fontSize: 14,
+      appBar: AppBar(
+        title: Text(localizations?.profile ?? 'Profile'),
+        actions: [
+          // Refresh button
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded),
+            tooltip: localizations?.refresh ?? 'Refresh',
+            onPressed: _refreshProfile,
+          ),
+          // Logout button
+          IconButton(
+            icon: const Icon(Icons.logout_rounded),
+            tooltip: localizations?.logout ?? 'Logout',
+            onPressed: _handleLogout,
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _refreshProfile();
+          // Wait a bit for the refresh to complete
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        child: FutureBuilder<List<dynamic>>(
+          key: ValueKey(_refreshKey), // Force rebuild when key changes
+          future: _fetchAllData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6F00)),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              final error = snapshot.error;
+              final errorMessage = error is Exception 
+                  ? error.toString().replaceFirst('Exception: ', '')
+                  : error.toString();
+              
+              return Center(
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          size: 64,
+                          color: Color(0xFFE57373),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          localizations?.failed_to_refresh ?? 
+                              'Error loading profile',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          errorMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.6),
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Retry button
+                        ElevatedButton.icon(
+                          onPressed: _refreshProfile,
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: Text(localizations?.retry ?? 'Retry'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF6F00),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Logout button
+                        OutlinedButton.icon(
+                          onPressed: _handleLogout,
+                          icon: const Icon(Icons.logout_rounded),
+                          label: Text(localizations?.logout ?? 'Logout'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Theme.of(context).colorScheme.error,
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            );
-          } else if (!snapshot.hasData) {
-            return Center(
-              child: Text(
-                'No user data available.',
-                style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                  fontSize: 16,
                 ),
-              ),
-            );
-          }
+              );
+            } else if (!snapshot.hasData) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No user data available.',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _userInfoFuture = fetchUserInfo();
+                        });
+                      },
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: Text(localizations?.refresh ?? 'Refresh'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF6F00),
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
 
           final user = snapshot.data![0] as UserInfo;
           final products = snapshot.data![1] as List<Products>;
@@ -630,10 +811,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   title: localizations?.myProductsTitle ?? 'My Products',
                   subtitle: '${products.length} items',
                   iconColor: const Color(0xFF4CAF50),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyProducts()),
-                  ),
+                  onTap: () => context.push('/profile/my-products'),
                 ),
 
                 _buildMenuCard(
@@ -641,10 +819,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   title: localizations?.myServicesTitle ?? 'My Services',
                   subtitle: '${services.length} services',
                   iconColor: const Color(0xFF2196F3),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyServices()),
-                  ),
+                  onTap: () => context.push('/profile/my-services'),
                 ),
 
                 const SizedBox(height: 8),
@@ -655,12 +830,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       'Favorite Products',
                   subtitle: '${favoriteItems.likedProducts.length} items',
                   iconColor: const Color(0xFFE91E63),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FavoriteProducts(
-                            products: favoriteItems.likedProducts)),
-                  ),
+                  onTap: () => context.push('/profile/favorites/products'),
                 ),
 
                 _buildMenuCard(
@@ -669,12 +839,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                       'Favorite Services',
                   subtitle: '${favoriteItems.likedServices.length} services',
                   iconColor: const Color(0xFFFF9800),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FavoriteServices(
-                            services: favoriteItems.likedServices)),
-                  ),
+                  onTap: () => context.push('/profile/favorites/services'),
                 ),
                 Consumer(
                   builder: (context, ref, _) {
@@ -1098,6 +1263,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
             ),
           );
         },
+      ),
       ),
     );
   }

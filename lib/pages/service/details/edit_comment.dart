@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class EditCommentWidget extends StatefulWidget {
   final String commentText;
@@ -35,6 +36,7 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -56,9 +58,9 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
               children: [
                 const Icon(Icons.edit, color: Colors.blue),
                 const SizedBox(width: 8),
-                const Text(
-                  'Edit Comment',
-                  style: TextStyle(
+                Text(
+                  l10n.editComment,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -66,7 +68,7 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
                 const Spacer(),
                 TextButton(
                   onPressed: widget.onCancel,
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             ),
@@ -75,10 +77,10 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
               controller: _controller,
               onChanged: widget.onTextChanged,
               maxLines: 3,
-              decoration: const InputDecoration(
-                hintText: 'Edit your comment...',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
+              decoration: InputDecoration(
+                hintText: l10n.editYourComment,
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.all(12),
               ),
             ),
             const SizedBox(height: 12),
@@ -90,9 +92,9 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: const Text(
-                  'Save Changes',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  l10n.saveChanges,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),

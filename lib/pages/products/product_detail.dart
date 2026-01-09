@@ -6,6 +6,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +27,45 @@ class ProductDetail extends ConsumerStatefulWidget {
 class _ProductDetailState extends ConsumerState<ProductDetail> {
   late PageController _pageController;
   bool _isLiking = false;
+  Products? _currentProduct; // Track current product state with updated like count
+  bool? _isLiked; // Track if product is liked
+  bool _isLoadingLikeStatus = false; // Track loading state for like status
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _currentProduct = widget.product; // Initialize with passed product
+    _loadLikeStatus(); // Load like status on init
+  }
+
+  Future<void> _loadLikeStatus({bool forceRefresh = false}) async {
+    if (_isLoadingLikeStatus || (!forceRefresh && _isLiked != null)) return;
+    
+    setState(() {
+      _isLoadingLikeStatus = true;
+    });
+
+    try {
+      final favoriteItems = await ref
+          .read(profileServiceProvider)
+          .getUserFavoriteItems();
+      
+      if (mounted) {
+        setState(() {
+          _isLiked = favoriteItems.likedProducts
+              .any((item) => item.id == widget.product.id);
+          _isLoadingLikeStatus = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _isLiked = false;
+          _isLoadingLikeStatus = false;
+        });
+      }
+    }
   }
 
   @override
@@ -224,6 +259,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           .likeSingleProduct(productId: widget.product.id.toString());
 
       if (product != null && mounted) {
+        setState(() {
+          _currentProduct = product; // Update product with new like count
+        });
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(milliseconds: 1000),
@@ -237,14 +276,19 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     } catch (e) {
       if (mounted) {
         final localizations = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(milliseconds: 1000),
-            content: Text(
-                localizations?.likeProductError ?? 'Error liking product: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        final errorMessage = e.toString();
+        
+        // Don't show error if already liked (this is expected behavior)
+        if (!errorMessage.contains('already liked')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: const Duration(milliseconds: 2000),
+              content: Text(
+                  localizations?.likeProductError ?? 'Error liking product: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) {
@@ -269,6 +313,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           .dislikeProductItem(productId: widget.product.id.toString());
 
       if (product != null && mounted) {
+        setState(() {
+          _currentProduct = product; // Update product with new like count
+        });
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             duration: const Duration(milliseconds: 1000),
@@ -282,14 +330,19 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     } catch (e) {
       if (mounted) {
         final localizations = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(milliseconds: 1000),
-            content: Text(localizations?.dislikeProductError ??
-                'Error disliking product: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        final errorMessage = e.toString();
+        
+        // Don't show error if already disliked (this is expected behavior)
+        if (!errorMessage.contains('already disliked')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: const Duration(milliseconds: 2000),
+              content: Text(localizations?.dislikeProductError ??
+                  'Error disliking product: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } finally {
       if (mounted) {
@@ -329,6 +382,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           ),
         ),
         actions: [
+          _buildLikeButton(),
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
@@ -398,9 +452,20 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           CachedImageSlider(
             imageUrls: imageUrls,
             height: 380,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
             pageController: _pageController,
             borderRadius: BorderRadius.zero,
+            onImageTap: (index) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ImageViewer(
+                    imageUrls: imageUrls,
+                    initialIndex: index,
+                  ),
+                ),
+              );
+            },
           ),
           // Gradient overlay at bottom for better text readability
           Positioned(
@@ -560,6 +625,19 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             child: CachedNetworkImageWidget.circular(
               imageUrl: widget.product.userName?.profileImage?.image,
               radius: 28,
+              onTap: widget.product.userName?.profileImage?.image != null
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ImageViewer(
+                            imageUrl: widget.product.userName!.profileImage!.image,
+                            title: widget.product.userName?.username ?? 'Profile Picture',
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               errorWidget: Container(
                 width: 56,
                 height: 56,
@@ -955,77 +1033,75 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildLikeButton() {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bool? isLiked;
-        bool isLoadingStatus = false;
+    final product = _currentProduct ?? widget.product;
+    final likeCount = product.likeCount;
 
-        if (isLiked == null && !isLoadingStatus) {
-          isLoadingStatus = true;
-          ref
-              .read(profileServiceProvider)
-              .getUserFavoriteItems()
-              .then((favoriteItems) {
-            if (mounted) {
-              setState(() {
-                isLiked = favoriteItems.likedProducts
-                    .any((item) => item.id == widget.product.id);
-                isLoadingStatus = false;
-              });
-            }
-          }).catchError((error) {
-            if (mounted) {
-              setState(() {
-                isLiked = false;
-                isLoadingStatus = false;
-              });
-            }
-          });
-        }
+    // Show loading indicator while checking like status or during like/unlike action
+    if ((_isLiked == null && _isLoadingLikeStatus) || _isLiking) {
+      return const SizedBox(
+        width: 48,
+        height: 48,
+        child: Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
 
-        if ((isLiked == null && isLoadingStatus) || _isLiking) {
-          return const SizedBox(
-            width: 48,
-            height: 48,
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-          );
-        }
+    final currentLikeStatus = _isLiked ?? false;
 
-        final currentLikeStatus = isLiked ?? false;
-
-        return TweenAnimationBuilder<double>(
-          duration: const Duration(milliseconds: 300),
-          tween: Tween<double>(begin: 1.0, end: currentLikeStatus ? 1.1 : 1.0),
-          curve: Curves.elasticInOut,
-          builder: (context, scale, child) {
-            return Transform.scale(
-              scale: scale,
-              child: IconButton(
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 300),
+      tween: Tween<double>(begin: 1.0, end: currentLikeStatus ? 1.1 : 1.0),
+      curve: Curves.elasticInOut,
+      builder: (context, scale, child) {
+        return Transform.scale(
+          scale: scale,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
                 icon: Icon(
                   currentLikeStatus ? Icons.favorite : Icons.favorite_border,
                   color: Colors.red,
                   size: 28.0,
                 ),
                 onPressed: () async {
+                  // Optimistic update
                   setState(() {
-                    isLiked = !currentLikeStatus;
+                    _isLiked = !currentLikeStatus;
                   });
 
-                  if (currentLikeStatus) {
-                    await _dislikeProduct();
-                  } else {
-                    await _likeProduct();
+                  try {
+                    if (currentLikeStatus) {
+                      await _dislikeProduct();
+                    } else {
+                      await _likeProduct();
+                    }
+                    // Refresh like status after action to ensure sync
+                    await _loadLikeStatus(forceRefresh: true);
+                  } catch (e) {
+                    // Revert on error
+                    setState(() {
+                      _isLiked = currentLikeStatus;
+                    });
                   }
                 },
               ),
-            );
-          },
+              if (likeCount > 0)
+                Text(
+                  likeCount.toString(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

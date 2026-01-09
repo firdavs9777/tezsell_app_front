@@ -5119,7 +5119,7 @@ abstract class AppLocalizations {
   /// No description provided for @message.
   ///
   /// In en, this message translates to:
-  /// **'Your Message'**
+  /// **'Message'**
   String get message;
 
   /// No description provided for @message_required.
@@ -5821,7 +5821,7 @@ abstract class AppLocalizations {
   /// No description provided for @messages_and_conversations.
   ///
   /// In en, this message translates to:
-  /// **'• Your messages and conversations'**
+  /// **'Messages'**
   String get messages_and_conversations;
 
   /// No description provided for @saved_items_and_preferences.
@@ -6093,12 +6093,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error disliking service'**
   String get errorDislikingService;
-
-  /// No description provided for @replyingTo.
-  ///
-  /// In en, this message translates to:
-  /// **'Replying to'**
-  String get replyingTo;
 
   /// No description provided for @writeYourReply.
   ///
@@ -6849,6 +6843,552 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verifying...'**
   String get verifying;
+
+  /// Tooltip text for new message
+  ///
+  /// In en, this message translates to:
+  /// **'New Message'**
+  String get new_message;
+
+  /// No description provided for @messages.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get messages;
+
+  /// No description provided for @please_log_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to view messages'**
+  String get please_log_in;
+
+  /// No description provided for @delete_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Chat'**
+  String get delete_chat;
+
+  /// Delete chat confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the chat with {name}? This action cannot be undone.'**
+  String delete_chat_confirm(String name);
+
+  /// Chat deleted success message
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with {name} deleted'**
+  String chat_deleted(String name);
+
+  /// No description provided for @delete_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete chat'**
+  String get delete_failed;
+
+  /// No description provided for @no_conversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get no_conversations;
+
+  /// No description provided for @start_conversation_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a conversation by tapping the + button'**
+  String get start_conversation_hint;
+
+  /// No description provided for @start_conversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a Conversation'**
+  String get start_conversation;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @no_messages_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get no_messages_yet;
+
+  /// No description provided for @unblock_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock User'**
+  String get unblock_user;
+
+  /// No description provided for @block_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Block User'**
+  String get block_user;
+
+  /// No description provided for @no_blocked_users.
+  ///
+  /// In en, this message translates to:
+  /// **'No blocked users'**
+  String get no_blocked_users;
+
+  /// No description provided for @blocked_users_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Users you block will appear here'**
+  String get blocked_users_hint;
+
+  /// Unblock user confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unblock {username}? You will be able to receive messages from them again.'**
+  String unblock_user_confirm(String username);
+
+  /// User unblocked success message
+  ///
+  /// In en, this message translates to:
+  /// **'{username} has been unblocked'**
+  String user_unblocked(String username);
+
+  /// User blocked success message
+  ///
+  /// In en, this message translates to:
+  /// **'{username} has been blocked'**
+  String user_blocked(String username);
+
+  /// No description provided for @failed_to_unblock.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unblock user'**
+  String get failed_to_unblock;
+
+  /// No description provided for @failed_to_block.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to block user'**
+  String get failed_to_block;
+
+  /// No description provided for @chat_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Info'**
+  String get chat_info;
+
+  /// No description provided for @delete_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Message'**
+  String get delete_message;
+
+  /// No description provided for @delete_message_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this message?'**
+  String get delete_message_confirm;
+
+  /// No description provided for @typing.
+  ///
+  /// In en, this message translates to:
+  /// **'typing...'**
+  String get typing;
+
+  /// No description provided for @online.
+  ///
+  /// In en, this message translates to:
+  /// **'online'**
+  String get online;
+
+  /// Number of participants in group chat
+  ///
+  /// In en, this message translates to:
+  /// **'{count} participants'**
+  String participants(int count);
+
+  /// No description provided for @you_are_blocked.
+  ///
+  /// In en, this message translates to:
+  /// **'You are blocked'**
+  String get you_are_blocked;
+
+  /// Message when user is blocked by another user
+  ///
+  /// In en, this message translates to:
+  /// **'{username} has blocked you. You cannot send messages.'**
+  String user_blocked_you(String username);
+
+  /// Message when current user has blocked another user
+  ///
+  /// In en, this message translates to:
+  /// **'You have blocked {username}'**
+  String you_blocked_user(String username);
+
+  /// No description provided for @cannot_send_messages_blocked.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot send messages. You have been blocked.'**
+  String get cannot_send_messages_blocked;
+
+  /// No description provided for @this_message_was_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This message was deleted'**
+  String get this_message_was_deleted;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @reply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get reply;
+
+  /// No description provided for @add_reaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Reaction'**
+  String get add_reaction;
+
+  /// No description provided for @editing_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing message'**
+  String get editing_message;
+
+  /// Reply header text
+  ///
+  /// In en, this message translates to:
+  /// **'Replying to {username}'**
+  String replying_to(String username);
+
+  /// No description provided for @voice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voice;
+
+  /// No description provided for @emoji.
+  ///
+  /// In en, this message translates to:
+  /// **'Emoji'**
+  String get emoji;
+
+  /// No description provided for @photo.
+  ///
+  /// In en, this message translates to:
+  /// **'📷 Photo'**
+  String get photo;
+
+  /// No description provided for @voice_message.
+  ///
+  /// In en, this message translates to:
+  /// **'🎤 Voice message'**
+  String get voice_message;
+
+  /// No description provided for @searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching...'**
+  String get searching;
+
+  /// No description provided for @loading_users.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading users...'**
+  String get loading_users;
+
+  /// Search error message
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed: {error}'**
+  String search_failed(String error);
+
+  /// No description provided for @invalid_user_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid user data'**
+  String get invalid_user_data;
+
+  /// Failed to start chat error
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to start chat: {error}'**
+  String failed_to_start_chat(String error);
+
+  /// No description provided for @audio_file_not_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio file not available'**
+  String get audio_file_not_available;
+
+  /// Failed to play audio error
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to play audio: {error}'**
+  String failed_to_play_audio(String error);
+
+  /// No description provided for @image_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Image unavailable'**
+  String get image_unavailable;
+
+  /// No description provided for @image_too_large.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Image is too large. Maximum size is 10MB'**
+  String get image_too_large;
+
+  /// No description provided for @image_file_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Image file not found'**
+  String get image_file_not_found;
+
+  /// No description provided for @uploading_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading image...'**
+  String get uploading_image;
+
+  /// No description provided for @image_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Image sent!'**
+  String get image_sent;
+
+  /// No description provided for @failed_to_send_image.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Failed to send image'**
+  String get failed_to_send_image;
+
+  /// No description provided for @uploading_voice_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading voice message...'**
+  String get uploading_voice_message;
+
+  /// No description provided for @voice_message_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Voice message sent!'**
+  String get voice_message_sent;
+
+  /// No description provided for @failed_to_send_voice_message.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Failed to send voice message'**
+  String get failed_to_send_voice_message;
+
+  /// No description provided for @recording.
+  ///
+  /// In en, this message translates to:
+  /// **'🎙️ Recording...'**
+  String get recording;
+
+  /// No description provided for @microphone_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission denied'**
+  String get microphone_permission_denied;
+
+  /// No description provided for @starting_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting chat...'**
+  String get starting_chat;
+
+  /// No description provided for @refresh_users.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh users'**
+  String get refresh_users;
+
+  /// No description provided for @search_by_username_or_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by username or phone number'**
+  String get search_by_username_or_phone;
+
+  /// No description provided for @no_users_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found'**
+  String get no_users_found;
+
+  /// No description provided for @try_different_search_term.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search term'**
+  String get try_different_search_term;
+
+  /// No description provided for @no_users_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No users available'**
+  String get no_users_available;
+
+  /// No description provided for @chat_exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat exists'**
+  String get chat_exists;
+
+  /// Block user confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to block {username}? You will not receive messages from them and they will be removed from your chat list.'**
+  String block_user_confirm(String username);
+
+  /// Chat room label with name
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Room: {name}'**
+  String chat_room_label(String name);
+
+  /// ID label with value
+  ///
+  /// In en, this message translates to:
+  /// **'ID: {id}'**
+  String id_label(int id);
+
+  /// No description provided for @participants_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Participants:'**
+  String get participants_label;
+
+  /// No description provided for @type_a_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get type_a_message;
+
+  /// No description provided for @edit_message_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit message...'**
+  String get edit_message_hint;
+
+  /// Error label with error message
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String error_label(String error);
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// Comments section title with count
+  ///
+  /// In en, this message translates to:
+  /// **'Comments ({count})'**
+  String comments_title(int count);
+
+  /// Reply button text
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get reply_button;
+
+  /// Replies count text
+  ///
+  /// In en, this message translates to:
+  /// **'{count} replies'**
+  String replies_count(int count);
+
+  /// You label for current user
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get you_label;
+
+  /// Delete reply dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Reply'**
+  String get delete_reply_title;
+
+  /// Delete comment dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Comment'**
+  String get delete_comment_title;
+
+  /// Unknown date text
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Date'**
+  String get unknown_date;
+
+  /// Hint text for sending comment
+  ///
+  /// In en, this message translates to:
+  /// **'Press Enter to send'**
+  String get press_enter_to_send;
+
+  /// Error message when comment creation fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add comment'**
+  String get comment_add_error;
+
+  /// Service provider label
+  ///
+  /// In en, this message translates to:
+  /// **'Service Provider'**
+  String get service_provider;
+
+  /// Opening chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Opening chat...'**
+  String get opening_chat;
+
+  /// Failed to refresh error message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to refresh'**
+  String get failed_to_refresh;
+
+  /// Error message when trying to chat with yourself
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot chat with yourself'**
+  String get cannot_chat_with_yourself;
+
+  /// Opening chat message with username
+  ///
+  /// In en, this message translates to:
+  /// **'Opening chat with {username}...'**
+  String opening_chat_with(String username);
+
+  /// Loading message for chat
+  ///
+  /// In en, this message translates to:
+  /// **'This will only take a moment'**
+  String get this_will_only_take_a_moment;
+
+  /// Error message when chat fails to start
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start chat. Please try again.'**
+  String get unable_to_start_chat;
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,4 @@
 import 'package:app/common_widgets/common_button.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/utils/content_filter.dart';
@@ -7,6 +6,7 @@ import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,8 +66,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   Future<void> _fetchCategories() async {
     try {
-      final categories =
-          await ref.read(productsServiceProvider).getCategories();
+      final categories = await ref
+          .read(productsServiceProvider)
+          .getCategories();
       setState(() {
         availableCategories = categories;
       });
@@ -132,9 +133,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       if (isMulti && source == ImageSource.gallery) {
         // Multi-image picker only works with gallery
         final pickedFiles = await picker.pickMultiImage(
-          maxWidth: 1920,
-          maxHeight: 1920,
-          imageQuality: 85,
+          maxWidth: 2560,
+          maxHeight: 2560,
+          imageQuality: 95,
         );
         if (pickedFiles != null && mounted) {
           setState(() {
@@ -148,9 +149,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         // Single image from camera or gallery
         final pickedFile = await picker.pickImage(
           source: source,
-          maxWidth: 1920,
-          maxHeight: 1920,
-          imageQuality: 85,
+          maxWidth: 2560,
+          maxHeight: 2560,
+          imageQuality: 95,
         );
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
@@ -270,7 +271,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         ),
       );
 
-      final product = await ref.read(productsServiceProvider).createProduct(
+      final product = await ref
+          .read(productsServiceProvider)
+          .createProduct(
             title: _titleController.text.trim(),
             description: _descriptionController.text.trim(),
             price: price,
@@ -298,10 +301,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         if (!mounted) return;
 
         // Navigate to home
-        await Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const TabsScreen()),
-        );
+        if (context.mounted) {
+          context.go('/tabs');
+        }
       } else {
         AppLogger.error('Product creation returned null');
         AppErrorHandler.showError(
@@ -339,8 +341,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(localizations?.addNewProductBtn ??
-              'Yangi mahsulot post yaratish'),
+          title: Text(
+            localizations?.addNewProductBtn ?? 'Yangi mahsulot post yaratish',
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -362,19 +365,23 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                 ),
                 const SizedBox(height: 20),
                 _buildSectionTitle(
-                    localizations?.newProductTitle ?? 'Mahsulot Nomi'),
+                  localizations?.newProductTitle ?? 'Mahsulot Nomi',
+                ),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _titleController,
                   labelText: localizations?.newProductTitle ?? 'Mahsulot Nomi',
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductDescription ??
-                    'Mahsulot haqida batafsil'),
+                _buildSectionTitle(
+                  localizations?.newProductDescription ??
+                      'Mahsulot haqida batafsil',
+                ),
                 const SizedBox(height: 10),
                 _buildTextField(
                   controller: _descriptionController,
-                  labelText: localizations?.newProductDescription ??
+                  labelText:
+                      localizations?.newProductDescription ??
                       'Mahsulot haqida yozing',
                   maxLines: 5,
                 ),
@@ -386,7 +393,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     ThousandsFormatter(), // Add the custom formatter
-                    FilteringTextInputFormatter.digitsOnly
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
                     labelText: localizations?.newProductPrice ?? 'Narxi',
@@ -394,8 +401,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductCategory ??
-                    'Kategoriyani tanlash'),
+                _buildSectionTitle(
+                  localizations?.newProductCategory ?? 'Kategoriyani tanlash',
+                ),
                 const SizedBox(height: 10),
                 DropdownButton<CategoryModel>(
                   isExpanded: true,
@@ -406,10 +414,12 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                         )
                       : null,
                   items: availableCategories
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(getCategoryName(category)),
-                          ))
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(getCategoryName(category)),
+                        ),
+                      )
                       .toList(),
                   onChanged: _isUploading
                       ? null
@@ -421,7 +431,8 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                           }
                         },
                   hint: Text(
-                      localizations?.selectCategory ?? 'Kategoriyani tanlang'),
+                    localizations?.selectCategory ?? 'Kategoriyani tanlang',
+                  ),
                 ),
                 const SizedBox(height: 20),
                 _buildSectionTitle(localizations?.newProductImages ?? 'Image'),
@@ -457,10 +468,10 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                        ),
                     itemCount: _selectedImages.length,
                     itemBuilder: (context, index) {
                       return Stack(
@@ -557,9 +568,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       enabled: !_isUploading, // Disable fields during upload
       decoration: InputDecoration(
         labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }

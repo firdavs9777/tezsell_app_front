@@ -11,6 +11,10 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/widgets/notification_bell.dart';
+import 'package:app/providers/provider_root/notification_provider.dart';
+import 'package:app/service/push_notification_service.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,6 +61,27 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
 
     _fabAnimationController.forward();
     _borderRadiusAnimationController.forward();
+    
+    // Initialize all notification providers to ensure they're all active
+    // This ensures all providers receive WebSocket notifications even when not on their page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(productNotificationProvider);
+      ref.read(serviceNotificationProvider);
+      ref.read(chatNotificationProvider);
+      ref.read(realEstateNotificationProvider);
+      ref.read(commentNotificationProvider);
+      print('✅ All notification providers initialized');
+      
+      // Initialize chat provider to auto-connect chat socket
+      ref.read(chatProvider.notifier).initialize();
+      print('✅ Chat provider initialized - socket will connect automatically');
+      
+      // Set notification WebSocket service in PushNotificationService
+      // This allows push notifications to be converted to in-app notifications
+      final notificationWebSocketService = ref.read(notificationWebSocketServiceProvider);
+      PushNotificationService().setNotificationWebSocketService(notificationWebSocketService);
+      print('✅ Push notification service connected to notification WebSocket service');
+    });
   }
 
   @override
@@ -93,13 +118,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   }
 
   Future<void> _navigateToLocationChange() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHomeTown(),
-        settings: RouteSettings(name: '/location-change'),
-      ),
-    );
+    final result = await context.push<bool>('/change-city');
 
     if (result == true) {
       ref.invalidate(profileServiceProvider);
@@ -213,46 +232,22 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
             ),
           ),
         if (_shouldShowNotification())
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            child: IconButton(
-              onPressed: () {
-                // Handle notifications
-              },
-              icon: Stack(
-                children: [
-                  Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.white,
-                    size: 26,
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: 12,
-                        minHeight: 12,
-                      ),
-                      child: Text(
-                        '3',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final provider = _getNotificationProvider();
+              if (provider == null) return const SizedBox.shrink();
+              // Watch the provider to ensure rebuilds happen
+              final state = ref.watch(provider);
+              print('🔔 AppBar Consumer: watching provider, unreadCount=${state.unreadCount}');
+              return Container(
+                margin: EdgeInsets.only(right: 8),
+                child: NotificationBell(
+                  key: ValueKey('notification_bell_$_selectedPageIndex'),
+                  provider: provider,
+                  iconColor: Colors.white,
+                ),
+              );
+            },
           ),
       ],
     );
@@ -328,12 +323,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
                       }
                       return GestureDetector(
                         onTap: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyHomeTown(),
-                            ),
-                          );
+                          await context.push('/change-city');
                         },
                         child: Text(
                           displayedText,
@@ -489,28 +479,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
 
   void _navigateToSearch(String regionName, String districtName) {
     if (_selectedPageIndex == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (ctx) => ProductSearch(
-                  regionName: regionName,
-                  districtName: districtName,
-                )),
-      );
+      context.push('/product/search?region=$regionName&district=$districtName');
     } else if (_selectedPageIndex == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (ctx) => ServiceSearch(
-                  regionName: regionName,
-                  districtName: districtName,
-                )),
-      );
+      context.push('/service/search?region=$regionName&district=$districtName');
     } else if (_selectedPageIndex == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (ctx) => const RealEstateSearch()),
-      );
+      context.push('/real-estate/search');
     }
   }
 
@@ -521,7 +494,30 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   }
 
   bool _shouldShowNotification() {
-    return _selectedPageIndex == 3; // Show on messages/chat page
+    // Show on all main pages: Products (0), Services (1), Chat (2), Real Estate (3)
+    return _selectedPageIndex >= 0 && _selectedPageIndex <= 3;
+  }
+
+  StateNotifierProvider<NotificationNotifier, NotificationState>? _getNotificationProvider() {
+    StateNotifierProvider<NotificationNotifier, NotificationState>? provider;
+    switch (_selectedPageIndex) {
+      case 0:
+        provider = productNotificationProvider; // Products
+        break;
+      case 1:
+        provider = serviceNotificationProvider; // Services
+        break;
+      case 2:
+        provider = chatNotificationProvider; // Chat/Messages
+        break;
+      case 3:
+        provider = realEstateNotificationProvider; // Real Estate
+        break;
+      default:
+        provider = null; // No provider
+    }
+    print('🔔 AppBar: Selected page index=$_selectedPageIndex, provider=${provider?.hashCode}');
+    return provider;
   }
 
   PageInfo _getPageInfo(int index, AppLocalizations? localizations,

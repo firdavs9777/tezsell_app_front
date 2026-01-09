@@ -1,7 +1,9 @@
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/providers/provider_root/notification_provider.dart';
 import 'package:app/pages/chat/widgets/chat_app_bar.dart';
 import 'package:app/pages/chat/widgets/message_list.dart';
+import 'package:app/pages/chat/widgets/chat_helpers.dart';
 import 'package:app/pages/chat/widgets/typing_indicator.dart';
 import 'package:app/pages/chat/widgets/reply_preview.dart';
 import 'package:app/pages/chat/widgets/edit_preview.dart';
@@ -10,6 +12,7 @@ import 'package:app/pages/chat/widgets/empty_message_state.dart';
 import 'package:app/pages/chat/widgets/media_options_sheet.dart';
 import 'package:app/pages/chat/widgets/message_options_sheet.dart';
 import 'package:app/pages/chat/widgets/reaction_picker.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,10 +25,7 @@ import 'dart:async';
 class ChatRoomScreen extends ConsumerStatefulWidget {
   final ChatRoom chatRoom;
 
-  const ChatRoomScreen({
-    super.key,
-    required this.chatRoom,
-  });
+  const ChatRoomScreen({super.key, required this.chatRoom});
 
   @override
   ConsumerState<ChatRoomScreen> createState() => _ChatRoomScreenState();
@@ -44,48 +44,99 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   bool _showEmojiPicker = false;
   int? _currentlyPlayingMessageId;
   PlayerState _audioPlayerState = PlayerState.stopped;
-  
+
   // Enhanced features state
   int? _replyingToMessageId;
   ChatMessage? _replyingToMessage;
   int? _editingMessageId;
   final TextEditingController _editController = TextEditingController();
-  
+
   // Typing indicator debounce timer
   Timer? _typingTimer;
   bool _hasSentTypingStatus = false;
   DateTime? _recordingStartTime;
 
+  // Scroll to bottom button state
+  bool _showScrollToBottom = false;
+
+  // Flag to track if widget is disposed
+  bool _isDisposed = false;
+
+  StreamSubscription<PlayerState>? _audioPlayerStateSubscription;
+
   @override
   void initState() {
     super.initState();
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      if (mounted) {
-        setState(() {
-          _audioPlayerState = state;
-          if (state == PlayerState.stopped || state == PlayerState.completed) {
-            _currentlyPlayingMessageId = null;
-          }
-        });
+    _audioPlayerStateSubscription = _audioPlayer.onPlayerStateChanged.listen((
+      state,
+    ) {
+      if (mounted && !_isDisposed) {
+        if (!_isDisposed) {
+          setState(() {
+            _audioPlayerState = state;
+            if (state == PlayerState.stopped ||
+                state == PlayerState.completed) {
+              _currentlyPlayingMessageId = null;
+            }
+          });
+        }
       }
     });
-    
+
     _scrollController.addListener(_onScroll);
-    
+
     Future.microtask(() {
       if (mounted) {
         ref.read(chatProvider.notifier).connectToChatRoom(widget.chatRoom.id);
+        // Mark all chat notifications for this room as read when entering
+        _markChatNotificationsAsRead(widget.chatRoom.id);
       }
     });
   }
 
+  /// Mark all chat notifications for a specific room as read
+  void _markChatNotificationsAsRead(int roomId) {
+    try {
+      final chatNotificationNotifier = ref.read(chatNotificationProvider.notifier);
+      final state = ref.read(chatNotificationProvider);
+      
+      // Find all unread chat notifications for this room
+      final roomNotifications = state.notifications.where((n) =>
+        n.type == 'chat' &&
+        !n.isRead &&
+        n.objectId == roomId
+      ).toList();
+      
+      if (roomNotifications.isNotEmpty) {
+        print('📬 Marking ${roomNotifications.length} chat notifications as read for room $roomId');
+        // Mark each notification as read
+        for (final notification in roomNotifications) {
+          chatNotificationNotifier.markAsRead(notification.id);
+        }
+      }
+    } catch (e) {
+      print('⚠️ Error marking chat notifications as read: $e');
+    }
+  }
+
   void _onScroll() {
     if (!_scrollController.hasClients) return;
-    
+
+    // Show/hide scroll to bottom button
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final isNearBottom = (maxScroll - currentScroll) < 200; // 200px threshold
+
+    if (mounted && !_isDisposed) {
+      setState(() {
+        _showScrollToBottom = !isNearBottom && maxScroll > 0;
+      });
+    }
+
     final chatState = ref.read(chatProvider);
-    
-    if (_scrollController.position.pixels <= 100 && 
-        chatState.hasMoreMessages && 
+
+    if (_scrollController.position.pixels <= 100 &&
+        chatState.hasMoreMessages &&
         !chatState.isLoadingOlderMessages) {
       _loadOlderMessages();
     }
@@ -96,27 +147,26 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (!chatState.hasMoreMessages || chatState.isLoadingOlderMessages) {
       return;
     }
-    
+
     if (!_scrollController.hasClients) return;
-    
+
     final currentScrollPosition = _scrollController.position.pixels;
     final messagesBefore = chatState.messages.length;
-    
+
     await ref.read(chatProvider.notifier).loadOlderMessages();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients && mounted) {
         final messagesAfter = ref.read(chatProvider).messages.length;
         final messagesAdded = messagesAfter - messagesBefore;
-        
+
         if (messagesAdded > 0) {
           const estimatedMessageHeight = 80.0;
           final heightAdded = messagesAdded * estimatedMessageHeight;
           final newPosition = currentScrollPosition + heightAdded;
-          _scrollController.jumpTo(newPosition.clamp(
-            0.0,
-            _scrollController.position.maxScrollExtent,
-          ));
+          _scrollController.jumpTo(
+            newPosition.clamp(0.0, _scrollController.position.maxScrollExtent),
+          );
         }
       }
     });
@@ -124,56 +174,93 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   void dispose() {
-    _typingTimer?.cancel();
-    if (_hasSentTypingStatus) {
-      ref.read(chatProvider.notifier).sendTypingStatus(false);
-    }
-    
-    if (!_isDisconnecting) {
-      _isDisconnecting = true;
-      Future.microtask(() {
-        ref.read(chatProvider.notifier).disconnectFromChatRoom();
-      });
-    }
+    // Mark as disposed FIRST to prevent any further updates
+    _isDisposed = true;
 
+    // Cancel all timers and subscriptions
+    _typingTimer?.cancel();
+    _audioPlayerStateSubscription?.cancel();
+    _scrollController.removeListener(_onScroll);
+
+    // Dispose controllers
     _messageController.dispose();
     _editController.dispose();
     _scrollController.dispose();
     _audioRecorder.dispose();
     _audioPlayer.dispose();
+
+    // Mark as disconnecting
+    _isDisconnecting = true;
+
+    // Call provider methods last, but don't wait for them
+    // These might trigger updates, but the widget is already disposed
+    if (_hasSentTypingStatus) {
+      // Use Future.microtask to avoid blocking dispose
+      Future.microtask(() {
+        try {
+          if (!_isDisposed) {
+            // Extra check
+            ref.read(chatProvider.notifier).sendTypingStatus(false);
+          }
+        } catch (e) {
+          // Ignore errors - widget is already disposed
+        }
+      });
+    }
+
+    // Disconnect from chat room
+    Future.microtask(() {
+      try {
+        if (!_isDisposed) {
+          // Extra check
+          ref.read(chatProvider.notifier).disconnectFromChatRoom();
+        }
+      } catch (e) {
+        // Ignore errors - widget is already disposed
+      }
+    });
+
     super.dispose();
   }
 
   Future<void> _toggleAudioPlayback(ChatMessage message) async {
     if (message.fileUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Audio file not available')),
-      );
+      final l = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.audio_file_not_available)));
       return;
     }
 
     try {
-      if (_currentlyPlayingMessageId == message.id && 
+      if (_currentlyPlayingMessageId == message.id &&
           _audioPlayerState == PlayerState.playing) {
         await _audioPlayer.pause();
-        setState(() => _currentlyPlayingMessageId = null);
+        if (!_isDisposed) {
+          setState(() => _currentlyPlayingMessageId = null);
+        }
         return;
       }
 
-      if (_currentlyPlayingMessageId != null && 
+      if (_currentlyPlayingMessageId != null &&
           _currentlyPlayingMessageId != message.id) {
         await _audioPlayer.stop();
       }
 
-      setState(() => _currentlyPlayingMessageId = message.id);
+      if (!_isDisposed) {
+        setState(() => _currentlyPlayingMessageId = message.id);
+      }
       await _audioPlayer.play(UrlSource(message.fileUrl!));
     } catch (e) {
       if (mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to play audio: $e')),
+          SnackBar(content: Text(l.failed_to_play_audio(e.toString()))),
         );
       }
-      setState(() => _currentlyPlayingMessageId = null);
+      if (!_isDisposed) {
+        setState(() => _currentlyPlayingMessageId = null);
+      }
     }
   }
 
@@ -181,16 +268,17 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final content = _messageController.text.trim();
     if (content.isNotEmpty && mounted) {
       if (_replyingToMessageId != null) {
-        ref.read(chatProvider.notifier).sendMessageWithReply(
-          content,
-          _replyingToMessageId,
-        );
-        setState(() {
-          _replyingToMessageId = null;
-          _replyingToMessage = null;
-        });
+        ref
+            .read(chatProvider.notifier)
+            .sendMessageWithReply(content, _replyingToMessageId);
+        if (!_isDisposed) {
+          setState(() {
+            _replyingToMessageId = null;
+            _replyingToMessage = null;
+          });
+        }
       } else {
-      ref.read(chatProvider.notifier).sendMessage(content);
+        ref.read(chatProvider.notifier).sendMessage(content);
       }
       _messageController.clear();
       _scrollToBottom();
@@ -199,17 +287,27 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   void _showMessageOptions(ChatMessage message, int currentUserId) {
     final isOwnMessage = message.sender.id == currentUserId;
-    
+
     showModalBottomSheet(
       context: context,
       builder: (context) => MessageOptionsSheet(
         message: message,
         isOwnMessage: isOwnMessage,
         onReply: () {
-          setState(() {
-            _replyingToMessageId = message.id;
-            _replyingToMessage = message;
-          });
+          if (mounted) {
+            if (!_isDisposed) {
+              setState(() {
+                _replyingToMessageId = message.id;
+                _replyingToMessage = message;
+              });
+            }
+            // Scroll to bottom to show reply preview
+            Future.delayed(const Duration(milliseconds: 200), () {
+              if (mounted) {
+                _scrollToBottom();
+              }
+            });
+          }
         },
         onEdit: () => _startEditingMessage(message),
         onDelete: () => _deleteMessage(message),
@@ -231,47 +329,51 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _startEditingMessage(ChatMessage message) {
-    setState(() {
-      _editingMessageId = message.id;
-      _editController.text = message.content ?? '';
-    });
+    if (!_isDisposed) {
+      setState(() {
+        _editingMessageId = message.id;
+        _editController.text = message.content ?? '';
+      });
+    }
   }
 
   Future<void> _saveEditedMessage() async {
     if (_editingMessageId == null || _editController.text.trim().isEmpty) {
       return;
     }
-    
-    final success = await ref.read(chatProvider.notifier).editMessage(
-      _editingMessageId!,
-      _editController.text.trim(),
-    );
-    
+
+    final success = await ref
+        .read(chatProvider.notifier)
+        .editMessage(_editingMessageId!, _editController.text.trim());
+
     if (success && mounted) {
-      setState(() {
-        _editingMessageId = null;
-        _editController.clear();
-      });
+      if (!_isDisposed) {
+        setState(() {
+          _editingMessageId = null;
+          _editController.clear();
+        });
+      }
     }
   }
 
   void _deleteMessage(ChatMessage message) {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Message'),
-        content: const Text('Are you sure you want to delete this message?'),
+        title: Text(l.delete_message),
+        content: Text(l.delete_message_confirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               await ref.read(chatProvider.notifier).deleteMessage(message.id!);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -286,8 +388,90 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
+        // Hide button after scrolling
+        if (mounted && !_isDisposed) {
+          setState(() {
+            _showScrollToBottom = false;
+          });
+        }
       }
     });
+  }
+
+  // Scroll to a specific message by ID
+  void _scrollToMessage(int messageId) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) {
+        return;
+      }
+
+      final chatState = ref.read(chatProvider);
+      final messages = chatState.messages;
+
+      // Find the message index
+      final sortedMessages = List<ChatMessage>.from(messages)
+        ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+      final messageIndex = sortedMessages.indexWhere((m) => m.id == messageId);
+
+      if (messageIndex == -1) {
+        // Message might be in older messages, try to load them
+        if (chatState.hasMoreMessages && !chatState.isLoadingOlderMessages) {
+          _loadOlderMessages().then((_) {
+            // Retry scrolling after loading
+            Future.delayed(const Duration(milliseconds: 500), () {
+              _scrollToMessage(messageId);
+            });
+          });
+        }
+        return;
+      }
+
+      // Estimate message height (adjust based on your actual message height)
+      const estimatedMessageHeight = 100.0; // Increased for better accuracy
+      const dateSeparatorHeight = 50.0;
+      const padding = 16.0; // ListView padding
+
+      // Calculate approximate scroll position
+      // We need to account for date separators and padding
+      double targetPosition = padding;
+
+      for (int i = 0; i < messageIndex; i++) {
+        // Check if we need to add date separator
+        if (i == 0 ||
+            !ChatHelpers.isSameDay(
+              sortedMessages[i].timestamp,
+              sortedMessages[i - 1].timestamp,
+            )) {
+          targetPosition += dateSeparatorHeight;
+        }
+        targetPosition += estimatedMessageHeight;
+      }
+
+      // Add some padding to show the message clearly (scroll a bit above the message)
+      targetPosition = (targetPosition - 150).clamp(
+        0.0,
+        _scrollController.position.maxScrollExtent,
+      );
+
+      // Instant scroll (no animation)
+      _scrollController.jumpTo(targetPosition);
+    });
+  }
+
+  Widget _buildScrollToBottomButton() {
+    if (!_showScrollToBottom) return const SizedBox.shrink();
+
+    return Positioned(
+      bottom: 80,
+      right: 16,
+      child: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.blue,
+        onPressed: _scrollToBottom,
+        child: const Icon(Icons.arrow_downward, color: Colors.white, size: 20),
+      ),
+    );
   }
 
   void _onTypingChanged(String text) {
@@ -295,13 +479,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     final isCurrentlyTyping = text.trim().isNotEmpty;
     _typingTimer?.cancel();
-    
+
     if (isCurrentlyTyping) {
       if (!_hasSentTypingStatus) {
         _hasSentTypingStatus = true;
         ref.read(chatProvider.notifier).sendTypingStatus(true);
       }
-      
+
       _typingTimer = Timer(const Duration(seconds: 3), () {
         if (mounted && _hasSentTypingStatus) {
           _hasSentTypingStatus = false;
@@ -332,11 +516,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
         if (fileSize > maxSize) {
           if (mounted) {
+            final l = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ Image is too large. Maximum size is 10MB'),
+              SnackBar(
+                content: Text(l.image_too_large),
                 backgroundColor: Colors.red,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               ),
             );
           }
@@ -345,9 +530,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
         if (!await imageFile.exists()) {
           if (mounted) {
+            final l = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ Image file not found'),
+              SnackBar(
+                content: Text(l.image_file_not_found),
                 backgroundColor: Colors.red,
               ),
             );
@@ -355,44 +541,46 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           return;
         }
 
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 ),
-                SizedBox(width: 16),
-                Text('Uploading image...'),
+                const SizedBox(width: 16),
+                Text(l.uploading_image),
               ],
             ),
-            duration: Duration(seconds: 30),
+            duration: const Duration(seconds: 30),
           ),
         );
 
-        final success = await ref.read(chatProvider.notifier).sendImageMessage(
-              imageFile,
-              widget.chatRoom.id,
-            );
+        final success = await ref
+            .read(chatProvider.notifier)
+            .sendImageMessage(imageFile, widget.chatRoom.id);
 
         if (mounted) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('✅ Image sent!'),
-                duration: Duration(seconds: 2),
+              SnackBar(
+                content: Text(l.image_sent),
+                duration: const Duration(seconds: 2),
               ),
             );
             _scrollToBottom();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ Failed to send image'),
+              SnackBar(
+                content: Text(l.failed_to_send_image),
                 backgroundColor: Colors.red,
               ),
             );
@@ -401,9 +589,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick image: $e')),
-        );
+        final l = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l.failed_to_send_image)));
       }
     }
   }
@@ -415,51 +604,54 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           ? DateTime.now().difference(_recordingStartTime!).inSeconds
           : 0;
 
-      setState(() {
-        _isRecording = false;
-        _recordingStartTime = null;
-      });
+      if (!_isDisposed) {
+        setState(() {
+          _isRecording = false;
+          _recordingStartTime = null;
+        });
+      }
 
       if (path != null && mounted) {
+        final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 ),
-                SizedBox(width: 16),
-                Text('Uploading voice message...'),
+                const SizedBox(width: 16),
+                Text(l.uploading_voice_message),
               ],
             ),
-            duration: Duration(seconds: 30),
+            duration: const Duration(seconds: 30),
           ),
         );
 
-        final success = await ref.read(chatProvider.notifier).sendVoiceMessage(
-              File(path),
-              widget.chatRoom.id,
-              duration,
-            );
+        final success = await ref
+            .read(chatProvider.notifier)
+            .sendVoiceMessage(File(path), widget.chatRoom.id, duration);
 
         if (mounted) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('✅ Voice message sent!'),
-                duration: Duration(seconds: 2),
+              SnackBar(
+                content: Text(l.voice_message_sent),
+                duration: const Duration(seconds: 2),
               ),
             );
             _scrollToBottom();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ Failed to send voice message'),
+              SnackBar(
+                content: Text(l.failed_to_send_voice_message),
                 backgroundColor: Colors.red,
               ),
             );
@@ -471,23 +663,27 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         final path =
             '${Directory.systemTemp.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
         await _audioRecorder.start(const RecordConfig(), path: path);
-        setState(() {
-          _isRecording = true;
-          _recordingStartTime = DateTime.now();
-        });
+        if (!_isDisposed) {
+          setState(() {
+            _isRecording = true;
+            _recordingStartTime = DateTime.now();
+          });
+        }
 
         if (mounted) {
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('🎙️ Recording...'),
-              duration: Duration(seconds: 1),
+            SnackBar(
+              content: Text(l.recording),
+              duration: const Duration(seconds: 1),
             ),
           );
         }
       } else {
         if (mounted) {
+          final l = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Microphone permission denied')),
+            SnackBar(content: Text(l.microphone_permission_denied)),
           );
         }
       }
@@ -495,31 +691,42 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _showChatInfo() {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Chat Info'),
+        title: Text(l.chat_info),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Chat Room: ${widget.chatRoom.name}',
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'ID: ${widget.chatRoom.id}',
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Participants:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+              Builder(
+                builder: (context) {
+                  final l = AppLocalizations.of(context)!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.chat_room_label(widget.chatRoom.name),
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l.id_label(widget.chatRoom.id),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l.participants_label,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 8),
               ...widget.chatRoom.participants.map(
@@ -569,7 +776,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l.cancel),
           ),
         ],
       ),
@@ -577,15 +784,16 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _showDeleteConfirmation() {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Chat'),
-        content: const Text('Are you sure you want to delete this chat?'),
+        title: Text(l.delete_chat),
+        content: Text(l.delete_chat_confirm(widget.chatRoom.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -599,7 +807,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 }
               }
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -628,24 +836,28 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final error = chatState.error;
 
     ref.listen(chatProvider, (previous, next) {
-      if (mounted && previous?.messages.length != next.messages.length) {
+      if (!mounted || _isDisposed)
+        return; // Guard against updates after disposal
+
+      if (previous?.messages.length != next.messages.length) {
         _scrollToBottom();
       }
 
-      if (mounted &&
-          previous?.isLoadingMessages == true &&
+      if (previous?.isLoadingMessages == true &&
           next.isLoadingMessages == false) {
         _scrollToBottom();
       }
     });
 
     // Check if user is blocked
-    final isBlocked = error != null && 
-        (error.toString().contains('blocked') || 
-         error.toString().contains('PermissionDenied') ||
-         error.toString().contains('Access denied'));
+    final isBlocked =
+        error != null &&
+        (error.toString().contains('blocked') ||
+            error.toString().contains('PermissionDenied') ||
+            error.toString().contains('Access denied'));
 
-    final otherUser = !widget.chatRoom.isGroup && widget.chatRoom.participants.isNotEmpty
+    final otherUser =
+        !widget.chatRoom.isGroup && widget.chatRoom.participants.isNotEmpty
         ? widget.chatRoom.participants.firstWhere(
             (p) => p.id != currentUserId,
             orElse: () => widget.chatRoom.participants.first,
@@ -660,132 +872,197 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         }
         return true;
       },
-      child: Scaffold(
-        appBar: ChatAppBar(
-          chatRoom: widget.chatRoom,
-          onInfoTap: _showChatInfo,
-          onBlockTap: _handleBlockUser,
-          onDeleteTap: _showDeleteConfirmation,
-        ),
-        body: Column(
-          children: [
-            // Blocked user banner
-            if (isBlocked && otherUser != null)
-              BlockedUserBanner(
-                username: otherUser.username,
-                isBlockedByUser: true,
-              ),
-            
-            // Error banner (non-blocking errors)
-            if (error != null && !isBlocked)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8),
-                color: Colors.red[100],
-                child: Row(
-          children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Error: $error',
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.red, size: 20),
-                      onPressed: () {
-                        ref.read(chatProvider.notifier).refresh();
-                      },
-            ),
-          ],
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          // Right swipe to navigate back (positive velocity means right swipe)
+          if (details.primaryVelocity != null &&
+              details.primaryVelocity! > 500) {
+            Navigator.pop(context);
+          }
+        },
+        child: Scaffold(
+          appBar: ChatAppBar(
+            chatRoom: widget.chatRoom,
+            onInfoTap: _showChatInfo,
+            onBlockTap: _handleBlockUser,
+            onDeleteTap: _showDeleteConfirmation,
+          ),
+          backgroundColor: const Color(
+            0xFFE5F3FF,
+          ), // Telegram light blue background
+          body: _buildChatBody(
+            chatState: chatState,
+            messages: messages,
+            isLoadingMessages: isLoadingMessages,
+            currentUserId: currentUserId,
+            error: error,
+            isBlocked: isBlocked,
+            otherUser: otherUser,
+          ),
         ),
       ),
-            
-            // Message list
-            Expanded(
-              child: isLoadingMessages
-                  ? const Center(child: CircularProgressIndicator())
-                  : messages.isEmpty
-                      ? EmptyMessageState(
-                          error: error,
-                          chatRoomId: widget.chatRoom.id,
-                        )
-                      : Column(
-                          children: [
-                            Expanded(
-                              child: MessageList(
-                                scrollController: _scrollController,
-                                currentlyPlayingMessageId: _currentlyPlayingMessageId,
-                                audioPlayerState: _audioPlayerState,
-                                onAudioTap: _toggleAudioPlayback,
-                                onMessageLongPress: _showMessageOptions,
-                              ),
-                            ),
-                            // Typing indicators
-                            TypingIndicator(
-                              typingUsers: chatState.typingUsers,
-                              participants: widget.chatRoom.participants,
-                              currentUserId: currentUserId!,
-                            ),
-                          ],
-                        ),
-            ),
-            
-            // Message input
-            _buildMessageInput(),
-            
-            // Emoji Picker
-            if (_showEmojiPicker)
-              SizedBox(
-                height: 250,
-                child: EmojiPicker(
-                  onEmojiSelected: (category, emoji) {
-                    _messageController.text += emoji.emoji;
-                    setState(() {});
-                  },
-                  config: Config(
-                    checkPlatformCompatibility: true,
+    );
+  }
+
+  Widget _buildChatBody({
+    required dynamic chatState,
+    required List<ChatMessage> messages,
+    required bool isLoadingMessages,
+    required int? currentUserId,
+    required String? error,
+    required bool isBlocked,
+    required dynamic otherUser,
+  }) {
+    return Column(
+      children: [
+        // Blocked user banner
+        if (isBlocked && otherUser != null)
+          BlockedUserBanner(
+            username: otherUser.username,
+            isBlockedByUser: true,
+          ),
+
+        // Error banner (non-blocking errors)
+        if (error != null && !isBlocked)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(8),
+            color: Colors.red[100],
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      final l = AppLocalizations.of(context)!;
+                      return Text(
+                        l.error_label(error.toString()),
+                        style: const TextStyle(color: Colors.red),
+                      );
+                    },
                   ),
                 ),
-              ),
-          ],
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.red, size: 20),
+                  onPressed: () {
+                    ref.read(chatProvider.notifier).refresh();
+                  },
+                ),
+              ],
+            ),
+          ),
+
+        // Message list - use Expanded to take remaining space
+        Expanded(
+          child: isLoadingMessages
+              ? const Center(child: CircularProgressIndicator())
+              : messages.isEmpty
+              ? EmptyMessageState(error: error, chatRoomId: widget.chatRoom.id)
+              : Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(
+                          child: MessageList(
+                            scrollController: _scrollController,
+                            currentlyPlayingMessageId:
+                                _currentlyPlayingMessageId,
+                            audioPlayerState: _audioPlayerState,
+                            onAudioTap: _toggleAudioPlayback,
+                            onMessageLongPress: _showMessageOptions,
+                            onReplyTap: _scrollToMessage,
+                            onMessageSwipeReply: (message) {
+                              if (mounted && !_isDisposed) {
+                                setState(() {
+                                  _replyingToMessageId = message.id;
+                                  _replyingToMessage = message;
+                                });
+                                // Scroll to bottom to show reply preview
+                                Future.delayed(
+                                  const Duration(milliseconds: 200),
+                                  () {
+                                    if (mounted) {
+                                      _scrollToBottom();
+                                    }
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        // Typing indicators
+                        TypingIndicator(
+                          typingUsers: chatState.typingUsers,
+                          participants: widget.chatRoom.participants,
+                          currentUserId: currentUserId!,
+                        ),
+                      ],
+                    ),
+                    // Scroll to bottom button
+                    _buildScrollToBottomButton(),
+                  ],
+                ),
         ),
-      ),
+
+        // Message input
+        _buildMessageInput(),
+
+        // Emoji Picker
+        if (_showEmojiPicker)
+          SizedBox(
+            height: 250,
+            child: EmojiPicker(
+              onEmojiSelected: (category, emoji) {
+                _messageController.text += emoji.emoji;
+                if (!_isDisposed) {
+                  setState(() {});
+                }
+              },
+              config: Config(checkPlatformCompatibility: true),
+            ),
+          ),
+      ],
     );
   }
 
   Widget _buildMessageInput() {
     final chatState = ref.watch(chatProvider);
     final error = chatState.error;
-    
-    final isBlocked = error != null && 
-        (error.toString().contains('blocked') || 
-         error.toString().contains('PermissionDenied') ||
-         error.toString().contains('Access denied'));
-    
+
+    final isBlocked =
+        error != null &&
+        (error.toString().contains('blocked') ||
+            error.toString().contains('PermissionDenied') ||
+            error.toString().contains('Access denied'));
+
     if (isBlocked) {
-    return Container(
+      return Container(
         padding: const EdgeInsets.all(16),
         color: Colors.grey[200],
-      child: Row(
-        children: [
+        child: Row(
+          children: [
             Icon(Icons.block, color: Colors.grey[600]),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                'You cannot send messages. You have been blocked.',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontStyle: FontStyle.italic,
-                ),
+              child: Builder(
+                builder: (context) {
+                  final l = AppLocalizations.of(context)!;
+                  return Text(
+                    l.cannot_send_messages_blocked,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  );
+                },
               ),
-          ),
-        ],
-      ),
-    );
+            ),
+          ],
+        ),
+      );
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
@@ -807,24 +1084,28 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               ReplyPreview(
                 replyToMessage: _replyingToMessage!,
                 onCancel: () {
-                  setState(() {
-                    _replyingToMessageId = null;
-                    _replyingToMessage = null;
-                  });
+                  if (!_isDisposed) {
+                    setState(() {
+                      _replyingToMessageId = null;
+                      _replyingToMessage = null;
+                    });
+                  }
                 },
               ),
-            
+
             // Edit preview
             if (_editingMessageId != null)
               EditPreview(
                 onCancel: () {
-                  setState(() {
-                    _editingMessageId = null;
-                    _editController.clear();
-                  });
+                  if (!_isDisposed) {
+                    setState(() {
+                      _editingMessageId = null;
+                      _editController.clear();
+                    });
+                  }
                 },
               ),
-            
+
             // Media options
             if (_showMediaOptions)
               MediaOptionsSheet(
@@ -832,10 +1113,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 onCameraTap: () => _pickAndSendImage(ImageSource.camera),
                 onVoiceTap: _toggleRecording,
                 onEmojiTap: () {
-                  setState(() {
-                    _showEmojiPicker = !_showEmojiPicker;
-                    _showMediaOptions = false;
-                  });
+                  if (!_isDisposed) {
+                    setState(() {
+                      _showEmojiPicker = !_showEmojiPicker;
+                      _showMediaOptions = false;
+                    });
+                  }
                 },
               ),
 
@@ -857,10 +1140,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     color: _showEmojiPicker ? Colors.blue : Colors.grey[600],
                   ),
                   onPressed: () {
-                    setState(() {
-                      _showEmojiPicker = !_showEmojiPicker;
-                      _showMediaOptions = false;
-                    });
+                    if (!_isDisposed) {
+                      setState(() {
+                        _showEmojiPicker = !_showEmojiPicker;
+                        _showMediaOptions = false;
+                      });
+                    }
                   },
                 ),
                 Expanded(
@@ -868,7 +1153,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       ? TextField(
                           controller: _editController,
                           decoration: InputDecoration(
-                            hintText: 'Edit message...',
+                            hintText:
+                                AppLocalizations.of(
+                                  context,
+                                )?.edit_message_hint ??
+                                'Edit message...',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(24),
                               borderSide: BorderSide.none,
@@ -880,7 +1169,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               vertical: 8,
                             ),
                           ),
-                          maxLines: null,
+                          maxLines: 6, // Limit to 6 lines max - automatically scrollable when exceeded
+                          minLines: 1,
+                          keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.send,
                           onSubmitted: (_) {
                             if (_editController.text.trim().isNotEmpty) {
@@ -892,10 +1183,14 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           controller: _messageController,
                           onChanged: (text) {
                             _onTypingChanged(text);
-                            setState(() {});
+                            if (!_isDisposed) {
+                              setState(() {});
+                            }
                           },
                           decoration: InputDecoration(
-                            hintText: 'Type a message...',
+                            hintText:
+                                AppLocalizations.of(context)?.type_a_message ??
+                                'Type a message...',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(24),
                               borderSide: BorderSide.none,
@@ -907,14 +1202,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               vertical: 8,
                             ),
                           ),
-                          maxLines: null,
+                          maxLines: 6, // Limit to 6 lines max - automatically scrollable when exceeded
+                          minLines: 1,
+                          keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.send,
                           onSubmitted: (_) {
                             if (_messageController.text.trim().isNotEmpty) {
                               _typingTimer?.cancel();
                               if (_hasSentTypingStatus) {
                                 _hasSentTypingStatus = false;
-                                ref.read(chatProvider.notifier).sendTypingStatus(false);
+                                ref
+                                    .read(chatProvider.notifier)
+                                    .sendTypingStatus(false);
                               }
                               _sendMessage();
                             }
@@ -964,4 +1263,3 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     );
   }
 }
-

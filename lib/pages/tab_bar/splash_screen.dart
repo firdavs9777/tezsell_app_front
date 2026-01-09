@@ -3,6 +3,7 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,19 +42,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (isLoggedIn) {
       // User is logged in - go to main app
       AppLogger.info('User is logged in, navigating to main app');
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const TabsScreen(),
-        ),
-      );
+      if (context.mounted) {
+        context.go('/tabs');
+      }
     } else {
       // User is not logged in - go to language selection
       AppLogger.info('User is not logged in, navigating to language selection');
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const LanguageSelectionScreen(),
-        ),
-      );
+      if (context.mounted) {
+        context.go('/language');
+      }
     }
   }
 

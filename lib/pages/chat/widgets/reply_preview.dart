@@ -1,4 +1,5 @@
 import 'package:app/providers/provider_models/message_model.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ReplyPreview extends StatelessWidget {
@@ -32,28 +33,38 @@ class ReplyPreview extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Replying to ${replyToMessage.sender.username}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[900],
-                  ),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      l.replying_to(replyToMessage.sender.username),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[900],
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  replyToMessage.content ?? 
-                  (replyToMessage.messageType == MessageType.image 
-                      ? '📷 Photo' 
-                      : replyToMessage.messageType == MessageType.voice 
-                          ? '🎤 Voice message'
-                          : ''),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.blue[700],
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      replyToMessage.content ?? 
+                      (replyToMessage.messageType == MessageType.image 
+                          ? l.photo
+                          : replyToMessage.messageType == MessageType.voice 
+                              ? l.voice_message
+                              : ''),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.blue[700],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
                 ),
               ],
             ),

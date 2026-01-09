@@ -1,6 +1,8 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
+import 'package:app/l10n/app_localizations.dart';
+import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -40,13 +42,13 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
     _loadCurrentUserId();
   }
 
-  String _formatLocalTime(String utcTimeString) {
+  String _formatLocalTime(String utcTimeString, BuildContext context) {
     try {
       DateTime utcTime = DateTime.parse(utcTimeString);
       DateTime localTime = utcTime.toLocal();
       return DateFormat('M/d/yyyy, h:mm:ss a').format(localTime);
     } catch (e) {
-      return 'Unknown Date';
+      return AppLocalizations.of(context)?.unknown_date ?? 'Unknown Date';
     }
   }
 
@@ -88,20 +90,38 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Reply avatar
-          CircleAvatar(
-            radius: 18,
-            backgroundImage: reply.user.profileImage != null
-                ? NetworkImage(
-                    reply.user.profileImage!.image.startsWith('http://') ||
+          reply.user.profileImage != null
+              ? GestureDetector(
+                  onTap: () {
+                    final imageUrl = reply.user.profileImage!.image.startsWith('http://') ||
                             reply.user.profileImage!.image.startsWith('https://')
                         ? reply.user.profileImage!.image
-                        : '${baseUrl}${reply.user.profileImage!.image}')
-                : null,
-            backgroundColor: Colors.grey[300],
-            child: reply.user.profileImage == null
-                ? const Icon(Icons.person, color: Colors.grey, size: 18)
-                : null,
-          ),
+                        : '${baseUrl}${reply.user.profileImage!.image}';
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ImageViewer(
+                          imageUrl: imageUrl,
+                          title: reply.user.username ?? AppLocalizations.of(context)?.anonymous ?? 'Anonymous',
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundImage: NetworkImage(
+                        reply.user.profileImage!.image.startsWith('http://') ||
+                                reply.user.profileImage!.image.startsWith('https://')
+                            ? reply.user.profileImage!.image
+                            : '${baseUrl}${reply.user.profileImage!.image}'),
+                    backgroundColor: Colors.grey[300],
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.grey[300],
+                  child: const Icon(Icons.person, color: Colors.grey, size: 18),
+                ),
           const SizedBox(width: 12),
           // Reply content
           Expanded(
@@ -136,9 +156,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                 border: Border.all(
                                     color: Colors.blue.withOpacity(0.3)),
                               ),
-                              child: const Text(
-                                'You',
-                                style: TextStyle(
+                              child: Text(
+                                AppLocalizations.of(context)?.you_label ?? 'You',
+                                style: const TextStyle(
                                   fontSize: 9,
                                   color: Colors.blue,
                                   fontWeight: FontWeight.w600,
@@ -151,7 +171,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      _formatLocalTime(reply.createdAt),
+                      _formatLocalTime(reply.createdAt, context),
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.grey[600],
@@ -181,27 +201,28 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                         },
                         itemBuilder: (BuildContext context) => [
                           if (widget.onEditReply != null)
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                               value: 'edit',
                               child: Row(
                                 children: [
-                                  Icon(Icons.edit,
+                                  const Icon(Icons.edit,
                                       color: Colors.blue, size: 16),
-                                  SizedBox(width: 8),
-                                  Text('Edit', style: TextStyle(fontSize: 13)),
+                                  const SizedBox(width: 8),
+                                  Text(AppLocalizations.of(context)?.editLabel ?? 'Edit',
+                                      style: const TextStyle(fontSize: 13)),
                                 ],
                               ),
                             ),
                           if (widget.onDeleteReply != null)
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Icon(Icons.delete,
+                                  const Icon(Icons.delete,
                                       color: Colors.red, size: 16),
-                                  SizedBox(width: 8),
-                                  Text('Delete',
-                                      style: TextStyle(fontSize: 13)),
+                                  const SizedBox(width: 8),
+                                  Text(AppLocalizations.of(context)?.deleteLabel ?? 'Delete',
+                                      style: const TextStyle(fontSize: 13)),
                                 ],
                               ),
                             ),
@@ -238,16 +259,17 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
   }
 
   void _confirmDeleteReply(Reply reply) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Reply'),
-          content: const Text('Are you sure you want to delete this reply?'),
+          title: Text(l10n.delete_reply_title),
+          content: Text(l10n.replyDeleteConfirmation),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -256,9 +278,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                   widget.onDeleteReply!(reply);
                 }
               },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+              child: Text(
+                l10n.deleteLabel,
+                style: const TextStyle(color: Colors.red),
               ),
             ),
           ],
@@ -277,25 +299,26 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
   }
 
   void _deleteComment(BuildContext context, Comments comment) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Comment'),
-          content: const Text('Are you sure you want to delete this comment?'),
+          title: Text(l10n.delete_comment_title),
+          content: Text(l10n.deleteConfirmationMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 widget.onDeleteComment(comment);
               },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+              child: Text(
+                l10n.deleteLabel,
+                style: const TextStyle(color: Colors.red),
               ),
             ),
           ],
@@ -306,17 +329,19 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     if (widget.comments.isEmpty) {
       return Card(
         color: Colors.transparent,
         elevation: 0,
         margin: const EdgeInsets.all(16.0),
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Text(
-              'No comments yet. Be the first to comment!',
-              style: TextStyle(
+              l10n.noComments,
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
               ),
@@ -336,7 +361,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
         collapsedIconColor: Colors.red,
         iconColor: Colors.red,
         title: Text(
-          'Izohlar (${widget.comments.length})',
+          l10n.comments_title(widget.comments.length),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -369,21 +394,39 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Comment avatar
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundImage: comment.user.profileImage != null
-                              ? NetworkImage(
-                                  comment.user.profileImage!.image.startsWith('http://') ||
+                        comment.user.profileImage != null
+                            ? GestureDetector(
+                                onTap: () {
+                                  final imageUrl = comment.user.profileImage!.image.startsWith('http://') ||
                                           comment.user.profileImage!.image.startsWith('https://')
                                       ? comment.user.profileImage!.image
-                                      : '${baseUrl}${comment.user.profileImage!.image}')
-                              : null,
-                          backgroundColor: Colors.grey[300],
-                          child: comment.user.profileImage == null
-                              ? const Icon(Icons.person,
-                                  color: Colors.grey, size: 22)
-                              : null,
-                        ),
+                                      : '${baseUrl}${comment.user.profileImage!.image}';
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ImageViewer(
+                                        imageUrl: imageUrl,
+                                        title: comment.user.username ?? l10n.anonymous,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: CircleAvatar(
+                                  radius: 22,
+                                  backgroundImage: NetworkImage(
+                                      comment.user.profileImage!.image.startsWith('http://') ||
+                                              comment.user.profileImage!.image.startsWith('https://')
+                                          ? comment.user.profileImage!.image
+                                          : '${baseUrl}${comment.user.profileImage!.image}'),
+                                  backgroundColor: Colors.grey[300],
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 22,
+                                backgroundColor: Colors.grey[300],
+                                child: const Icon(Icons.person,
+                                    color: Colors.grey, size: 22),
+                              ),
                         const SizedBox(width: 12),
                         // Comment content
                         Expanded(
@@ -395,7 +438,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      comment.user.username ?? 'Anonymous',
+                                      comment.user.username ?? l10n.anonymous,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
@@ -408,8 +451,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   Text(
                                     comment.created_at != null
                                         ? _formatLocalTime(
-                                            comment.created_at.toString())
-                                        : 'Unknown Date',
+                                            comment.created_at.toString(), context)
+                                        : l10n.unknown_date,
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey[600],
@@ -430,30 +473,33 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                             break;
                                         }
                                       },
-                                      itemBuilder: (BuildContext context) => [
-                                        const PopupMenuItem<String>(
-                                          value: 'edit',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.edit,
-                                                  color: Colors.blue, size: 18),
-                                              SizedBox(width: 8),
-                                              Text('Edit'),
-                                            ],
+                                      itemBuilder: (BuildContext context) {
+                                        final l10n = AppLocalizations.of(context)!;
+                                        return [
+                                          PopupMenuItem<String>(
+                                            value: 'edit',
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.edit,
+                                                    color: Colors.blue, size: 18),
+                                                const SizedBox(width: 8),
+                                                Text(l10n.editLabel),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        const PopupMenuItem<String>(
-                                          value: 'delete',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.delete,
-                                                  color: Colors.red, size: 18),
-                                              SizedBox(width: 8),
-                                              Text('Delete'),
-                                            ],
+                                          PopupMenuItem<String>(
+                                            value: 'delete',
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.delete,
+                                                    color: Colors.red, size: 18),
+                                                const SizedBox(width: 8),
+                                                Text(l10n.deleteLabel),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ];
+                                      },
                                     ),
                                 ],
                               ),
@@ -493,15 +539,15 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                         color: Colors.blue,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: const Row(
+                                      child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.thumb_up,
+                                          const Icon(Icons.thumb_up,
                                               color: Colors.white, size: 14),
-                                          SizedBox(width: 4),
+                                          const SizedBox(width: 4),
                                           Text(
-                                            'Like',
-                                            style: TextStyle(
+                                            l10n.likeLabel,
+                                            style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 12,
                                             ),
@@ -517,7 +563,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                       widget.onReplyComment(comment);
                                     },
                                     child: Text(
-                                      'Javob berish',
+                                      l10n.reply_button,
                                       style: TextStyle(
                                         color: Colors.grey[700],
                                         fontSize: 13,
@@ -534,7 +580,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            '$repliesCount javoblar',
+                                            l10n.replies_count(repliesCount),
                                             style: TextStyle(
                                               color: Colors.grey[700],
                                               fontSize: 13,

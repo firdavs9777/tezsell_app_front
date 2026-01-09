@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class MediaOptionsSheet extends StatelessWidget {
   final VoidCallback onGalleryTap;
@@ -16,34 +17,45 @@ class MediaOptionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+    final l = AppLocalizations.of(context)!;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMediaOption(
-            icon: Icons.photo_library,
-            label: 'Gallery',
-            color: Colors.purple,
-            onTap: onGalleryTap,
+          Expanded(
+            child: _buildMediaOption(
+              icon: Icons.photo_library,
+              label: l.gallery,
+              color: Colors.purple,
+              onTap: onGalleryTap,
+            ),
           ),
-          _buildMediaOption(
-            icon: Icons.camera_alt,
-            label: 'Camera',
-            color: Colors.blue,
-            onTap: onCameraTap,
+          Expanded(
+            child: _buildMediaOption(
+              icon: Icons.camera_alt,
+              label: l.camera,
+              color: Colors.blue,
+              onTap: onCameraTap,
+            ),
           ),
-          _buildMediaOption(
-            icon: Icons.mic,
-            label: 'Voice',
-            color: Colors.red,
-            onTap: onVoiceTap,
+          Expanded(
+            child: _buildMediaOption(
+              icon: Icons.mic,
+              label: l.voice,
+              color: Colors.red,
+              onTap: onVoiceTap,
+            ),
           ),
-          _buildMediaOption(
-            icon: Icons.emoji_emotions,
-            label: 'Emoji',
-            color: Colors.orange,
-            onTap: onEmojiTap,
+          Expanded(
+            child: _buildMediaOption(
+              icon: Icons.emoji_emotions,
+              label: l.emoji,
+              color: Colors.orange,
+              onTap: onEmojiTap,
+            ),
           ),
         ],
       ),
@@ -58,26 +70,36 @@ class MediaOptionsSheet extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              shape: BoxShape.circle,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 24),
             ),
-            child: Icon(icon, color: color),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[700],
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-

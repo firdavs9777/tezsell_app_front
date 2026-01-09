@@ -1,5 +1,6 @@
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,15 +56,20 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ),
             ],
           ),
-          Text(
-            chatRoom.isGroup
-                ? '${chatRoom.participants.length} participants'
-                : chatState.typingUsers.entries
-                        .where((e) => e.key != currentUserId && e.value)
-                        .isNotEmpty
-                    ? 'typing...'
-                    : 'online',
-            style: const TextStyle(fontSize: 12),
+          Builder(
+            builder: (context) {
+              final l = AppLocalizations.of(context)!;
+              return Text(
+                chatRoom.isGroup
+                    ? l.participants(chatRoom.participants.length)
+                    : chatState.typingUsers.entries
+                            .where((e) => e.key != currentUserId && e.value)
+                            .isNotEmpty
+                        ? l.typing
+                        : l.online,
+                style: const TextStyle(fontSize: 12),
+              );
+            },
           ),
         ],
       ),
@@ -83,31 +89,34 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
           },
         ),
         PopupMenuButton(
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'info',
-              child: Text('Chat Info'),
-            ),
-            // Block user option (for direct chats)
-            if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty)
+          itemBuilder: (context) {
+            final l = AppLocalizations.of(context)!;
+            return [
               PopupMenuItem(
-                value: 'block',
-                child: Text(
-                  chatState.blockedUserIds.contains(
-                    chatRoom.participants
-                        .firstWhere((p) => p.id != currentUserId,
-                            orElse: () => chatRoom.participants.first)
-                        .id,
-                  )
-                      ? 'Unblock User'
-                      : 'Block User',
-                ),
+                value: 'info',
+                child: Text(l.chat_info),
               ),
-            const PopupMenuItem(
-              value: 'delete',
-              child: Text('Delete Chat'),
-            ),
-          ],
+              // Block user option (for direct chats)
+              if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty)
+                PopupMenuItem(
+                  value: 'block',
+                  child: Text(
+                    chatState.blockedUserIds.contains(
+                      chatRoom.participants
+                          .firstWhere((p) => p.id != currentUserId,
+                              orElse: () => chatRoom.participants.first)
+                          .id,
+                    )
+                        ? l.unblock_user
+                        : l.block_user,
+                  ),
+                ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(l.delete_chat),
+              ),
+            ];
+          },
           onSelected: (value) {
             if (value == 'delete') {
               onDeleteTap();

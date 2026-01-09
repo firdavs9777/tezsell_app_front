@@ -1232,12 +1232,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
     final trimmedContent = content.trim();
 
     if (trimmedContent.isEmpty) {
-
       return;
     }
 
     if (!state.isAuthenticated || state.currentChatRoomId == null) {
-
       return;
     }
 
@@ -1246,10 +1244,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       state.currentChatRoomId!,
       trimmedContent,
       replyToMessageId,
-    ).then((message) {
-
-    }).catchError((e) {
-
+    ).catchError((e) {
       _safeUpdateState((s) => s.copyWith(error: 'Failed to send message: $e'));
     });
   }

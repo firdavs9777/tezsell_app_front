@@ -2161,5 +2161,295 @@
   "verifying": "Tekshirilmoqda...",
   "@verifying": {
     "description": "Loading text for verifying code"
+  },
+  "@new_message": {
+    "description": "Tooltip text for new message"
+  },
+  "new_message": "Yangi xabar",
+  "messages": "Xabarlar",
+  "please_log_in": "Xabarlarni ko‘rish uchun tizimga kiring",
+  "delete_chat": "Chatni o‘chirish",
+  "delete_chat_confirm": "{name} bilan bo‘lgan chatni o‘chirmoqchimisiz? Bu amalni bekor qilib bo‘lmaydi.",
+  "chat_deleted": "{name} bilan chat o‘chirildi",
+  "delete_failed": "Chatni o‘chirish amalga oshmadi",
+  "no_conversations": "Hozircha suhbatlar yo‘q",
+  "start_conversation_hint": "+ tugmasini bosib suhbatni boshlang",
+  "start_conversation": "Suhbatni boshlash",
+  "yesterday": "Kecha",
+  "unknown": "Noma'lum",
+  "no_messages_yet": "Hozircha xabarlar yo'q",
+  "unblock_user": "Foydalanuvchini blokdan olib tashlash",
+  "block_user": "Foydalanuvchini bloklash",
+  "no_blocked_users": "Bloklangan foydalanuvchilar yo'q",
+  "blocked_users_hint": "Bloklagan foydalanuvchilar bu yerda ko'rinadi",
+  "unblock_user_confirm": "{username} ni blokdan olib tashlamoqchimisiz? Siz yana ularning xabarlarini olishi mumkin bo'ladi.",
+  "@unblock_user_confirm": {
+    "description": "Foydalanuvchini blokdan olib tashlash tasdiqlash",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "user_unblocked": "{username} blokdan olib tashlandi",
+  "@user_unblocked": {
+    "description": "Foydalanuvchi blokdan olib tashlandi muvaffaqiyatli xabar",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "user_blocked": "{username} bloklandi",
+  "@user_blocked": {
+    "description": "Foydalanuvchi bloklandi muvaffaqiyatli xabar",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "failed_to_unblock": "Foydalanuvchini blokdan olib tashlab bo'lmadi",
+  "failed_to_block": "Foydalanuvchini bloklab bo'lmadi",
+  "chat_info": "Chat ma'lumotlari",
+  "delete_message": "Xabarni o'chirish",
+  "delete_message_confirm": "Bu xabarni o'chirmoqchimisiz?",
+  "typing": "yozmoqda...",
+  "online": "onlayn",
+  "participants": "{count} ishtirokchi",
+  "@participants": {
+    "description": "Guruh chatidagi ishtirokchilar soni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "you_are_blocked": "Siz bloklangansiz",
+  "user_blocked_you": "{username} sizni bloklagan. Siz xabar yubora olmaysiz.",
+  "@user_blocked_you": {
+    "description": "Foydalanuvchi boshqa foydalanuvchi tomonidan bloklanganida xabar",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "you_blocked_user": "Siz {username} ni bloklagansiz",
+  "@you_blocked_user": {
+    "description": "Joriy foydalanuvchi boshqa foydalanuvchini bloklaganida xabar",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "cannot_send_messages_blocked": "Siz xabar yubora olmaysiz. Siz bloklangansiz.",
+  "this_message_was_deleted": "Bu xabar o'chirilgan",
+  "edit": "Tahrirlash",
+  "reply": "Javob berish",
+  "add_reaction": "Reaksiya qo'shish",
+  "editing_message": "Xabarni tahrirlash",
+  "replying_to": "{username} ga javob",
+  "@replying_to": {
+    "description": "Javob oldindan ko'rish matni",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "gallery": "Galereya",
+  "camera": "Kamera",
+  "voice": "Ovoz",
+  "emoji": "Emoji",
+  "photo": "📷 Rasm",
+  "voice_message": "🎤 Ovozli xabar",
+  "searching": "Qidirilmoqda...",
+  "loading_users": "Foydalanuvchilar yuklanmoqda...",
+  "search_failed": "Qidiruv xatosi: {error}",
+  "@search_failed": {
+    "description": "Qidiruv xatosi xabari",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "invalid_user_data": "Noto'g'ri foydalanuvchi ma'lumotlari",
+  "failed_to_start_chat": "Chatni boshlab bo'lmadi: {error}",
+  "@failed_to_start_chat": {
+    "description": "Chatni boshlash xatosi",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "audio_file_not_available": "Audio fayl mavjud emas",
+  "failed_to_play_audio": "Audioni ijro etib bo'lmadi: {error}",
+  "@failed_to_play_audio": {
+    "description": "Audioni ijro etish xatosi",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "image_unavailable": "Rasm mavjud emas",
+  "image_too_large": "❌ Rasm juda katta. Maksimal hajmi 10 MB",
+  "image_file_not_found": "❌ Rasm fayli topilmadi",
+  "uploading_image": "Rasm yuklanmoqda...",
+  "image_sent": "✅ Rasm yuborildi!",
+  "failed_to_send_image": "❌ Rasmni yuborib bo'lmadi",
+  "uploading_voice_message": "Ovozli xabar yuklanmoqda...",
+  "voice_message_sent": "✅ Ovozli xabar yuborildi!",
+  "failed_to_send_voice_message": "❌ Ovozli xabarni yuborib bo'lmadi",
+  "recording": "🎙️ Yozilmoqda...",
+  "microphone_permission_denied": "Mikrofonga ruxsat berilmadi",
+  "starting_chat": "Chat boshlanmoqda...",
+  "refresh_users": "Foydalanuvchilarni yangilash",
+  "search_by_username_or_phone": "Foydalanuvchi nomi yoki telefon raqami bo'yicha qidirish",
+  "no_users_found": "Foydalanuvchilar topilmadi",
+  "try_different_search_term": "Boshqa qidiruv so'zini sinab ko'ring",
+  "no_users_available": "Mavjud foydalanuvchilar yo'q",
+  "chat_exists": "Chat mavjud",
+  "online": "onlayn",
+  "block_user_confirm": "{username} ni bloklamoqchimisiz? Siz ularning xabarlarini olmay qolasiz va ular chat ro'yxatingizdan olib tashlanadi.",
+  "@block_user_confirm": {
+    "description": "Foydalanuvchini bloklash tasdiqlash xabari",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_room_label": "Chat: {name}",
+  "@chat_room_label": {
+    "description": "Chat nomi bilan yorliq",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "id_label": "ID: {id}",
+  "@id_label": {
+    "description": "Qiymat bilan ID yorlig'i",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "participants_label": "Ishtirokchilar:",
+  "type_a_message": "Xabar kiriting...",
+  "edit_message_hint": "Xabarni tahrirlash...",
+  "error_label": "Xato: {error}",
+  "@error_label": {
+    "description": "Xato xabari bilan xato yorlig'i",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "copy": "Nusxa olish",
+  "message": "Xabar",
+  "comments_title": "Izohlar ({count})",
+  "@comments_title": {
+    "description": "Izohlar bo'limi sarlavhasi son bilan",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reply_button": "Javob berish",
+  "@reply_button": {
+    "description": "Javob berish tugmasi matni"
+  },
+  "replies_count": "{count} javoblar",
+  "@replies_count": {
+    "description": "Javoblar soni matni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "you_label": "Siz",
+  "@you_label": {
+    "description": "Joriy foydalanuvchi uchun yorliq"
+  },
+  "cancel": "Bekor qilish",
+  "@cancel": {
+    "description": "Bekor qilish tugmasi matni"
+  },
+  "delete_reply_title": "Javobni o'chirish",
+  "@delete_reply_title": {
+    "description": "Javobni o'chirish dialog sarlavhasi"
+  },
+  "delete_comment_title": "Izohni o'chirish",
+  "@delete_comment_title": {
+    "description": "Izohni o'chirish dialog sarlavhasi"
+  },
+  "unknown_date": "Noma'lum sana",
+  "@unknown_date": {
+    "description": "Noma'lum sana matni"
+  },
+  "press_enter_to_send": "Yuborish uchun Enter bosing",
+  "@press_enter_to_send": {
+    "description": "Izoh yuborish uchun ko'rsatma"
+  },
+  "comment_add_error": "Izoh qo'shishda xato",
+  "@comment_add_error": {
+    "description": "Izoh yaratishda xato xabari"
+  },
+  "replying_to": "{username} ga javob berish",
+  "@replying_to": {
+    "description": "Javob sarlavhasi",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "service_provider": "Xizmat ko'rsatuvchi",
+  "@service_provider": {
+    "description": "Xizmat ko'rsatuvchi yorlig'i"
+  },
+  "opening_chat": "Chat ochilmoqda...",
+  "@opening_chat": {
+    "description": "Chat ochilayotgan xabar"
+  },
+  "failed_to_refresh": "Yangilashda xato",
+  "@failed_to_refresh": {
+    "description": "Yangilashda xato xabari"
+  },
+  "cannot_chat_with_yourself": "O'zingiz bilan chat qila olmaysiz",
+  "@cannot_chat_with_yourself": {
+    "description": "O'zingiz bilan chat qilishga urinishda xato xabari"
+  },
+  "opening_chat_with": "{username} bilan chat ochilmoqda...",
+  "@opening_chat_with": {
+    "description": "Foydalanuvchi nomi bilan chat ochilayotgan xabar",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "this_will_only_take_a_moment": "Bu bir lahzada bo'ladi",
+  "@this_will_only_take_a_moment": {
+    "description": "Chat yuklanayotgan xabar"
+  },
+  "unable_to_start_chat": "Chatni boshlab bo'lmadi. Iltimos, qayta urinib ko'ring.",
+  "@unable_to_start_chat": {
+    "description": "Chat boshlanmaganida xato xabari"
+  },
+  "retry": "Qayta urinish",
+  "@retry": {
+    "description": "Qayta urinish tugmasi matni"
   }
 }

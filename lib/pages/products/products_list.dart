@@ -5,6 +5,7 @@ import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -27,6 +28,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   bool _isLoadingMore = false;
   bool _hasMoreData = true;
   bool _isInitialLoading = true;
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -37,6 +39,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
   @override
   void dispose() {
+    _isDisposed = true;
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -52,6 +56,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   }
 
   Future<void> _loadInitialProducts() async {
+    if (!mounted || _isDisposed) return;
+    
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -68,22 +74,26 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 districtName: widget.districtName,
               );
 
-      setState(() {
-        _allProducts = products;
-        _currentPage = 1;
-        _hasMoreData =
-            products.length >= 12; // If less than pageSize, no more data
-        _isInitialLoading = false;
-      });
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _allProducts = products;
+          _currentPage = 1;
+          _hasMoreData =
+              products.length >= 12; // If less than pageSize, no more data
+          _isInitialLoading = false;
+        });
+      }
     } catch (error) {
-      setState(() {
-        _isInitialLoading = false;
-      });
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _isInitialLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _loadMoreProducts() async {
-    if (_isLoadingMore || !_hasMoreData) return;
+    if (_isLoadingMore || !_hasMoreData || !mounted || _isDisposed) return;
 
     setState(() {
       _isLoadingMore = true;
@@ -99,22 +109,24 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 districtName: widget.districtName,
               );
 
-      setState(() {
-        if (newProducts.isNotEmpty) {
-          _allProducts.addAll(newProducts);
-          _currentPage = nextPage;
-          _hasMoreData = newProducts.length >= 12;
-        } else {
-          _hasMoreData = false;
-        }
-        _isLoadingMore = false;
-      });
+      if (mounted && !_isDisposed) {
+        setState(() {
+          if (newProducts.isNotEmpty) {
+            _allProducts.addAll(newProducts);
+            _currentPage = nextPage;
+            _hasMoreData = newProducts.length >= 12;
+          } else {
+            _hasMoreData = false;
+          }
+          _isLoadingMore = false;
+        });
+      }
     } catch (error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
-      // Show error snackbar
-      if (mounted) {
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+        // Show error snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading more products: $error'),
@@ -130,13 +142,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   }
 
   Future<void> _navigateToLocationChange() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHomeTown(),
-        settings: RouteSettings(name: '/location-change'),
-      ),
-    );
+    final result = await context.push<bool>('/change-city');
 
     ref.invalidate(productsServiceProvider);
     ref.invalidate(profileServiceProvider);
@@ -191,14 +197,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => ProductFilter(
-                                regionName: widget.regionName,
-                                districtName: widget.districtName),
-                          ),
-                        );
+                        context.push('/products?region=${widget.regionName}&district=${widget.districtName}');
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10.0),

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class DateSeparator extends StatelessWidget {
   final DateTime date;
 
   const DateSeparator({super.key, required this.date});
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(date);
+    final l = AppLocalizations.of(context)!;
 
     if (difference.inDays == 0) {
       return 'Today';
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return l.yesterday;
     } else {
       return DateFormat('MMMM d, y').format(date);
     }
@@ -31,7 +33,7 @@ class DateSeparator extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            _formatDate(date),
+            _formatDate(date, context),
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey[700],

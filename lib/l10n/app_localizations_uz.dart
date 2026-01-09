@@ -2653,7 +2653,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get subject_required => 'Iltimos, mavzuni kiriting';
 
   @override
-  String get message => 'Xabaringiz';
+  String get message => 'Xabar';
 
   @override
   String get message_required => 'Iltimos, xabar kiriting';
@@ -3167,9 +3167,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get errorDislikingService => 'Sevimlilardan o\'chirishda xatolik';
 
   @override
-  String get replyingTo => 'Javob berish';
-
-  @override
   String get writeYourReply => 'Javobingizni yozing...';
 
   @override
@@ -3572,4 +3569,322 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get verifying => 'Tekshirilmoqda...';
+
+  @override
+  String get new_message => 'Yangi xabar';
+
+  @override
+  String get messages => 'Xabarlar';
+
+  @override
+  String get please_log_in => 'Xabarlarni ko‘rish uchun tizimga kiring';
+
+  @override
+  String get delete_chat => 'Chatni o‘chirish';
+
+  @override
+  String delete_chat_confirm(String name) {
+    return '$name bilan bo‘lgan chatni o‘chirmoqchimisiz? Bu amalni bekor qilib bo‘lmaydi.';
+  }
+
+  @override
+  String chat_deleted(String name) {
+    return '$name bilan chat o‘chirildi';
+  }
+
+  @override
+  String get delete_failed => 'Chatni o‘chirish amalga oshmadi';
+
+  @override
+  String get no_conversations => 'Hozircha suhbatlar yo‘q';
+
+  @override
+  String get start_conversation_hint => '+ tugmasini bosib suhbatni boshlang';
+
+  @override
+  String get start_conversation => 'Suhbatni boshlash';
+
+  @override
+  String get yesterday => 'Kecha';
+
+  @override
+  String get unknown => 'Noma\'lum';
+
+  @override
+  String get no_messages_yet => 'Hozircha xabarlar yo\'q';
+
+  @override
+  String get unblock_user => 'Foydalanuvchini blokdan olib tashlash';
+
+  @override
+  String get block_user => 'Foydalanuvchini bloklash';
+
+  @override
+  String get no_blocked_users => 'Bloklangan foydalanuvchilar yo\'q';
+
+  @override
+  String get blocked_users_hint =>
+      'Bloklagan foydalanuvchilar bu yerda ko\'rinadi';
+
+  @override
+  String unblock_user_confirm(String username) {
+    return '$username ni blokdan olib tashlamoqchimisiz? Siz yana ularning xabarlarini olishi mumkin bo\'ladi.';
+  }
+
+  @override
+  String user_unblocked(String username) {
+    return '$username blokdan olib tashlandi';
+  }
+
+  @override
+  String user_blocked(String username) {
+    return '$username bloklandi';
+  }
+
+  @override
+  String get failed_to_unblock =>
+      'Foydalanuvchini blokdan olib tashlab bo\'lmadi';
+
+  @override
+  String get failed_to_block => 'Foydalanuvchini bloklab bo\'lmadi';
+
+  @override
+  String get chat_info => 'Chat ma\'lumotlari';
+
+  @override
+  String get delete_message => 'Xabarni o\'chirish';
+
+  @override
+  String get delete_message_confirm => 'Bu xabarni o\'chirmoqchimisiz?';
+
+  @override
+  String get typing => 'yozmoqda...';
+
+  @override
+  String get online => 'onlayn';
+
+  @override
+  String participants(int count) {
+    return '$count ishtirokchi';
+  }
+
+  @override
+  String get you_are_blocked => 'Siz bloklangansiz';
+
+  @override
+  String user_blocked_you(String username) {
+    return '$username sizni bloklagan. Siz xabar yubora olmaysiz.';
+  }
+
+  @override
+  String you_blocked_user(String username) {
+    return 'Siz $username ni bloklagansiz';
+  }
+
+  @override
+  String get cannot_send_messages_blocked =>
+      'Siz xabar yubora olmaysiz. Siz bloklangansiz.';
+
+  @override
+  String get this_message_was_deleted => 'Bu xabar o\'chirilgan';
+
+  @override
+  String get edit => 'Tahrirlash';
+
+  @override
+  String get reply => 'Javob berish';
+
+  @override
+  String get add_reaction => 'Reaksiya qo\'shish';
+
+  @override
+  String get editing_message => 'Xabarni tahrirlash';
+
+  @override
+  String replying_to(String username) {
+    return '$username ga javob berish';
+  }
+
+  @override
+  String get voice => 'Ovoz';
+
+  @override
+  String get emoji => 'Emoji';
+
+  @override
+  String get photo => '📷 Rasm';
+
+  @override
+  String get voice_message => '🎤 Ovozli xabar';
+
+  @override
+  String get searching => 'Qidirilmoqda...';
+
+  @override
+  String get loading_users => 'Foydalanuvchilar yuklanmoqda...';
+
+  @override
+  String search_failed(String error) {
+    return 'Qidiruv xatosi: $error';
+  }
+
+  @override
+  String get invalid_user_data => 'Noto\'g\'ri foydalanuvchi ma\'lumotlari';
+
+  @override
+  String failed_to_start_chat(String error) {
+    return 'Chatni boshlab bo\'lmadi: $error';
+  }
+
+  @override
+  String get audio_file_not_available => 'Audio fayl mavjud emas';
+
+  @override
+  String failed_to_play_audio(String error) {
+    return 'Audioni ijro etib bo\'lmadi: $error';
+  }
+
+  @override
+  String get image_unavailable => 'Rasm mavjud emas';
+
+  @override
+  String get image_too_large => '❌ Rasm juda katta. Maksimal hajmi 10 MB';
+
+  @override
+  String get image_file_not_found => '❌ Rasm fayli topilmadi';
+
+  @override
+  String get uploading_image => 'Rasm yuklanmoqda...';
+
+  @override
+  String get image_sent => '✅ Rasm yuborildi!';
+
+  @override
+  String get failed_to_send_image => '❌ Rasmni yuborib bo\'lmadi';
+
+  @override
+  String get uploading_voice_message => 'Ovozli xabar yuklanmoqda...';
+
+  @override
+  String get voice_message_sent => '✅ Ovozli xabar yuborildi!';
+
+  @override
+  String get failed_to_send_voice_message =>
+      '❌ Ovozli xabarni yuborib bo\'lmadi';
+
+  @override
+  String get recording => '🎙️ Yozilmoqda...';
+
+  @override
+  String get microphone_permission_denied => 'Mikrofonga ruxsat berilmadi';
+
+  @override
+  String get starting_chat => 'Chat boshlanmoqda...';
+
+  @override
+  String get refresh_users => 'Foydalanuvchilarni yangilash';
+
+  @override
+  String get search_by_username_or_phone =>
+      'Foydalanuvchi nomi yoki telefon raqami bo\'yicha qidirish';
+
+  @override
+  String get no_users_found => 'Foydalanuvchilar topilmadi';
+
+  @override
+  String get try_different_search_term =>
+      'Boshqa qidiruv so\'zini sinab ko\'ring';
+
+  @override
+  String get no_users_available => 'Mavjud foydalanuvchilar yo\'q';
+
+  @override
+  String get chat_exists => 'Chat mavjud';
+
+  @override
+  String block_user_confirm(String username) {
+    return '$username ni bloklamoqchimisiz? Siz ularning xabarlarini olmay qolasiz va ular chat ro\'yxatingizdan olib tashlanadi.';
+  }
+
+  @override
+  String chat_room_label(String name) {
+    return 'Chat: $name';
+  }
+
+  @override
+  String id_label(int id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String get participants_label => 'Ishtirokchilar:';
+
+  @override
+  String get type_a_message => 'Xabar kiriting...';
+
+  @override
+  String get edit_message_hint => 'Xabarni tahrirlash...';
+
+  @override
+  String error_label(String error) {
+    return 'Xato: $error';
+  }
+
+  @override
+  String get copy => 'Nusxa olish';
+
+  @override
+  String comments_title(int count) {
+    return 'Izohlar ($count)';
+  }
+
+  @override
+  String get reply_button => 'Javob berish';
+
+  @override
+  String replies_count(int count) {
+    return '$count javoblar';
+  }
+
+  @override
+  String get you_label => 'Siz';
+
+  @override
+  String get delete_reply_title => 'Javobni o\'chirish';
+
+  @override
+  String get delete_comment_title => 'Izohni o\'chirish';
+
+  @override
+  String get unknown_date => 'Noma\'lum sana';
+
+  @override
+  String get press_enter_to_send => 'Yuborish uchun Enter bosing';
+
+  @override
+  String get comment_add_error => 'Izoh qo\'shishda xato';
+
+  @override
+  String get service_provider => 'Xizmat ko\'rsatuvchi';
+
+  @override
+  String get opening_chat => 'Chat ochilmoqda...';
+
+  @override
+  String get failed_to_refresh => 'Yangilashda xato';
+
+  @override
+  String get cannot_chat_with_yourself => 'O\'zingiz bilan chat qila olmaysiz';
+
+  @override
+  String opening_chat_with(String username) {
+    return '$username bilan chat ochilmoqda...';
+  }
+
+  @override
+  String get this_will_only_take_a_moment => 'Bu bir lahzada bo\'ladi';
+
+  @override
+  String get unable_to_start_chat =>
+      'Chatni boshlab bo\'lmadi. Iltimos, qayta urinib ko\'ring.';
 }

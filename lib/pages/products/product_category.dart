@@ -1,6 +1,7 @@
 import 'package:app/pages/products/filtered_products.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -88,16 +89,7 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
   }
 
   void _applyFilter(String categoryName) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (ctx) => FilteredProducts(
-          categoryName: categoryName,
-          regionName: widget.regionName,
-          districtName: widget.districtName,
-        ),
-      ),
-    );
+    context.push('/products?category=$categoryName&region=${widget.regionName}&district=${widget.districtName}');
   }
 
   String getCategoryName(CategoryModel category) {

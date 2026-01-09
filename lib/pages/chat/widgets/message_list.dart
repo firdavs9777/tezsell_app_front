@@ -13,6 +13,8 @@ class MessageList extends ConsumerWidget {
   final PlayerState audioPlayerState;
   final Function(ChatMessage) onAudioTap;
   final Function(ChatMessage, int) onMessageLongPress;
+  final Function(int)? onReplyTap; // Callback when reply preview is tapped
+  final Function(ChatMessage)? onMessageSwipeReply; // Callback when message is swiped right to reply
 
   const MessageList({
     super.key,
@@ -21,6 +23,8 @@ class MessageList extends ConsumerWidget {
     required this.audioPlayerState,
     required this.onAudioTap,
     required this.onMessageLongPress,
+    this.onReplyTap,
+    this.onMessageSwipeReply,
   });
 
   @override
@@ -73,7 +77,7 @@ class MessageList extends ConsumerWidget {
           );
         }
 
-        return Column(
+        final messageWidget = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (showDateSeparator)
@@ -95,10 +99,51 @@ class MessageList extends ConsumerWidget {
                     emoji,
                   );
                 },
+                onReplyTap: onReplyTap,
               ),
             ),
           ],
         );
+
+        // Wrap in Dismissible for left swipe to reply
+        if (onMessageSwipeReply != null && message.id != null) {
+          return Dismissible(
+            key: Key('message_${message.id}'),
+            direction: DismissDirection.endToStart, // Left swipe
+            background: Container(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3390EC), // Telegram blue
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.reply, color: Colors.white, size: 28),
+                  SizedBox(height: 4),
+                  Text(
+                    'Reply',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            confirmDismiss: (direction) async {
+              // Trigger reply action but prevent dismissal
+              onMessageSwipeReply!(message);
+              return false; // Prevent the message from being dismissed
+            },
+            child: messageWidget,
+          );
+        }
+
+        return messageWidget;
       },
     );
   }

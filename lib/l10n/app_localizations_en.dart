@@ -2613,7 +2613,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subject_required => 'Please enter a subject';
 
   @override
-  String get message => 'Your Message';
+  String get message => 'Message';
 
   @override
   String get message_required => 'Please enter your message';
@@ -2976,7 +2976,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_listings_and_posts => '• All your listings and posts';
 
   @override
-  String get messages_and_conversations => '• Your messages and conversations';
+  String get messages_and_conversations => 'Messages';
 
   @override
   String get saved_items_and_preferences => '• Saved items and preferences';
@@ -3116,9 +3116,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorDislikingService => 'Error disliking service';
-
-  @override
-  String get replyingTo => 'Replying to';
 
   @override
   String get writeYourReply => 'Write your reply...';
@@ -3514,4 +3511,319 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get verifying => 'Verifying...';
+
+  @override
+  String get new_message => 'New Message';
+
+  @override
+  String get messages => 'Messages';
+
+  @override
+  String get please_log_in => 'Please log in to view messages';
+
+  @override
+  String get delete_chat => 'Delete Chat';
+
+  @override
+  String delete_chat_confirm(String name) {
+    return 'Are you sure you want to delete the chat with $name? This action cannot be undone.';
+  }
+
+  @override
+  String chat_deleted(String name) {
+    return 'Chat with $name deleted';
+  }
+
+  @override
+  String get delete_failed => 'Failed to delete chat';
+
+  @override
+  String get no_conversations => 'No conversations yet';
+
+  @override
+  String get start_conversation_hint =>
+      'Start a conversation by tapping the + button';
+
+  @override
+  String get start_conversation => 'Start a Conversation';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get no_messages_yet => 'No messages yet';
+
+  @override
+  String get unblock_user => 'Unblock User';
+
+  @override
+  String get block_user => 'Block User';
+
+  @override
+  String get no_blocked_users => 'No blocked users';
+
+  @override
+  String get blocked_users_hint => 'Users you block will appear here';
+
+  @override
+  String unblock_user_confirm(String username) {
+    return 'Are you sure you want to unblock $username? You will be able to receive messages from them again.';
+  }
+
+  @override
+  String user_unblocked(String username) {
+    return '$username has been unblocked';
+  }
+
+  @override
+  String user_blocked(String username) {
+    return '$username has been blocked';
+  }
+
+  @override
+  String get failed_to_unblock => 'Failed to unblock user';
+
+  @override
+  String get failed_to_block => 'Failed to block user';
+
+  @override
+  String get chat_info => 'Chat Info';
+
+  @override
+  String get delete_message => 'Delete Message';
+
+  @override
+  String get delete_message_confirm =>
+      'Are you sure you want to delete this message?';
+
+  @override
+  String get typing => 'typing...';
+
+  @override
+  String get online => 'online';
+
+  @override
+  String participants(int count) {
+    return '$count participants';
+  }
+
+  @override
+  String get you_are_blocked => 'You are blocked';
+
+  @override
+  String user_blocked_you(String username) {
+    return '$username has blocked you. You cannot send messages.';
+  }
+
+  @override
+  String you_blocked_user(String username) {
+    return 'You have blocked $username';
+  }
+
+  @override
+  String get cannot_send_messages_blocked =>
+      'You cannot send messages. You have been blocked.';
+
+  @override
+  String get this_message_was_deleted => 'This message was deleted';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get reply => 'Reply';
+
+  @override
+  String get add_reaction => 'Add Reaction';
+
+  @override
+  String get editing_message => 'Editing message';
+
+  @override
+  String replying_to(String username) {
+    return 'Replying to $username';
+  }
+
+  @override
+  String get voice => 'Voice';
+
+  @override
+  String get emoji => 'Emoji';
+
+  @override
+  String get photo => '📷 Photo';
+
+  @override
+  String get voice_message => '🎤 Voice message';
+
+  @override
+  String get searching => 'Searching...';
+
+  @override
+  String get loading_users => 'Loading users...';
+
+  @override
+  String search_failed(String error) {
+    return 'Search failed: $error';
+  }
+
+  @override
+  String get invalid_user_data => 'Invalid user data';
+
+  @override
+  String failed_to_start_chat(String error) {
+    return 'Failed to start chat: $error';
+  }
+
+  @override
+  String get audio_file_not_available => 'Audio file not available';
+
+  @override
+  String failed_to_play_audio(String error) {
+    return 'Failed to play audio: $error';
+  }
+
+  @override
+  String get image_unavailable => 'Image unavailable';
+
+  @override
+  String get image_too_large => '❌ Image is too large. Maximum size is 10MB';
+
+  @override
+  String get image_file_not_found => '❌ Image file not found';
+
+  @override
+  String get uploading_image => 'Uploading image...';
+
+  @override
+  String get image_sent => '✅ Image sent!';
+
+  @override
+  String get failed_to_send_image => '❌ Failed to send image';
+
+  @override
+  String get uploading_voice_message => 'Uploading voice message...';
+
+  @override
+  String get voice_message_sent => '✅ Voice message sent!';
+
+  @override
+  String get failed_to_send_voice_message => '❌ Failed to send voice message';
+
+  @override
+  String get recording => '🎙️ Recording...';
+
+  @override
+  String get microphone_permission_denied => 'Microphone permission denied';
+
+  @override
+  String get starting_chat => 'Starting chat...';
+
+  @override
+  String get refresh_users => 'Refresh users';
+
+  @override
+  String get search_by_username_or_phone =>
+      'Search by username or phone number';
+
+  @override
+  String get no_users_found => 'No users found';
+
+  @override
+  String get try_different_search_term => 'Try a different search term';
+
+  @override
+  String get no_users_available => 'No users available';
+
+  @override
+  String get chat_exists => 'Chat exists';
+
+  @override
+  String block_user_confirm(String username) {
+    return 'Are you sure you want to block $username? You will not receive messages from them and they will be removed from your chat list.';
+  }
+
+  @override
+  String chat_room_label(String name) {
+    return 'Chat Room: $name';
+  }
+
+  @override
+  String id_label(int id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String get participants_label => 'Participants:';
+
+  @override
+  String get type_a_message => 'Type a message...';
+
+  @override
+  String get edit_message_hint => 'Edit message...';
+
+  @override
+  String error_label(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String comments_title(int count) {
+    return 'Comments ($count)';
+  }
+
+  @override
+  String get reply_button => 'Reply';
+
+  @override
+  String replies_count(int count) {
+    return '$count replies';
+  }
+
+  @override
+  String get you_label => 'You';
+
+  @override
+  String get delete_reply_title => 'Delete Reply';
+
+  @override
+  String get delete_comment_title => 'Delete Comment';
+
+  @override
+  String get unknown_date => 'Unknown Date';
+
+  @override
+  String get press_enter_to_send => 'Press Enter to send';
+
+  @override
+  String get comment_add_error => 'Failed to add comment';
+
+  @override
+  String get service_provider => 'Service Provider';
+
+  @override
+  String get opening_chat => 'Opening chat...';
+
+  @override
+  String get failed_to_refresh => 'Failed to refresh';
+
+  @override
+  String get cannot_chat_with_yourself => 'You cannot chat with yourself';
+
+  @override
+  String opening_chat_with(String username) {
+    return 'Opening chat with $username...';
+  }
+
+  @override
+  String get this_will_only_take_a_moment => 'This will only take a moment';
+
+  @override
+  String get unable_to_start_chat => 'Unable to start chat. Please try again.';
 }

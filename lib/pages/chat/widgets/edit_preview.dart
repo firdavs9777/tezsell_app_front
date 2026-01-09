@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class EditPreview extends StatelessWidget {
   final VoidCallback onCancel;
@@ -21,14 +22,19 @@ class EditPreview extends StatelessWidget {
         children: [
           const Icon(Icons.edit, size: 16, color: Colors.orange),
           const SizedBox(width: 8),
-          const Expanded(
-            child: Text(
-              'Editing message',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange,
-              ),
+          Expanded(
+            child: Builder(
+              builder: (context) {
+                final l = AppLocalizations.of(context)!;
+                return Text(
+                  l.editing_message,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                );
+              },
             ),
           ),
           IconButton(

@@ -28,7 +28,22 @@ class ProfileService {
 
       return UserInfo.fromJson(data['data']);
     } else {
-      throw Exception('Failed to load posts');
+      String errorMessage = 'Failed to load user info';
+      try {
+        final errorData = json.decode(response.body);
+        if (errorData is Map && errorData.containsKey('error')) {
+          errorMessage = errorData['error'].toString();
+        } else if (errorData is Map && errorData.containsKey('message')) {
+          errorMessage = errorData['message'].toString();
+        } else if (errorData is Map && errorData.containsKey('detail')) {
+          errorMessage = errorData['detail'].toString();
+        } else {
+          errorMessage = 'Failed to load user info (Status: ${response.statusCode})';
+        }
+      } catch (e) {
+        errorMessage = 'Failed to load user info (Status: ${response.statusCode})';
+      }
+      throw Exception(errorMessage);
     }
   }
 
@@ -243,10 +258,21 @@ class ProfileService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      // Check if the response body contains the success message "done"
-      return Products.fromJson(data['liked_product']);
+      
+      // Check if response contains error (already liked)
+      if (data.containsKey('error')) {
+        throw Exception(data['error']);
+      }
+      
+      // Check if response contains success and liked_product
+      if (data.containsKey('liked_product')) {
+        return Products.fromJson(data['liked_product']);
+      }
+      
+      // Fallback: try to parse as product directly
+      return Products.fromJson(data);
     } else {
-      throw Exception('Failed to load service');
+      throw Exception('Failed to like product: ${response.statusCode}');
     }
   }
 
@@ -288,10 +314,21 @@ class ProfileService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      // Check if the response body contains the success message "done"
-      return Products.fromJson(data['disliked_product']);
+      
+      // Check if response contains error (already disliked)
+      if (data.containsKey('error')) {
+        throw Exception(data['error']);
+      }
+      
+      // Check if response contains disliked_product
+      if (data.containsKey('disliked_product')) {
+        return Products.fromJson(data['disliked_product']);
+      }
+      
+      // Fallback: try to parse as product directly
+      return Products.fromJson(data);
     } else {
-      throw Exception('Failed to load service');
+      throw Exception('Failed to unlike product: ${response.statusCode}');
     }
   }
 

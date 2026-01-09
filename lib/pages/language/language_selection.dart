@@ -1,5 +1,6 @@
 // lib/screens/language_selection_screen.dart
 import 'package:app/common_widgets/tezsell_text.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
@@ -204,11 +205,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                 child: ElevatedButton(
                   onPressed: selectedLocale != null
                       ? () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const Home(),
-                            ),
-                          );
+                          context.go('/home');
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

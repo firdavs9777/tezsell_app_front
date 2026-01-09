@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class BlockedUserBanner extends StatelessWidget {
   final String username;
@@ -24,21 +25,31 @@ class BlockedUserBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  isBlockedByUser ? 'You are blocked' : 'User blocked',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange[900],
-                  ),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      isBlockedByUser ? l.you_are_blocked : l.block_user,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange[900],
+                      ),
+                    );
+                  },
                 ),
-                Text(
-                  isBlockedByUser
-                      ? '$username has blocked you. You cannot send messages.'
-                      : 'You have blocked $username',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.orange[800],
-                  ),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      isBlockedByUser
+                          ? l.user_blocked_you(username)
+                          : l.you_blocked_user(username),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.orange[800],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
