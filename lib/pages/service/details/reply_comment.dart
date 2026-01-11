@@ -42,13 +42,14 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: colorScheme.shadow.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, -3),
@@ -62,14 +63,15 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
             // Header showing who we're replying to
             Row(
               children: [
-                const Icon(Icons.reply, color: Colors.blue),
+                Icon(Icons.reply, color: colorScheme.primary),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     l10n.replying_to(widget.parentComment.user.username ?? l10n.anonymous),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -84,9 +86,9 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
               margin: const EdgeInsets.symmetric(vertical: 8),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: colorScheme.outlineVariant),
               ),
               child: Row(
                 children: [
@@ -100,9 +102,9 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                                 ? widget.parentComment.user.profileImage!.image
                                 : '${baseUrl}${widget.parentComment.user.profileImage!.image}')
                         : null,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: colorScheme.surfaceContainerHighest,
                     child: widget.parentComment.user.profileImage == null
-                        ? const Icon(Icons.person, size: 16, color: Colors.grey)
+                        ? Icon(Icons.person, size: 16, color: colorScheme.onSurfaceVariant)
                         : null,
                   ),
                   const SizedBox(width: 8),
@@ -112,14 +114,15 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                       children: [
                         Text(
                           widget.parentComment.user.username ?? l10n.anonymous,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         Text(
                           widget.parentComment.text.toString(),
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -146,13 +149,11 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
               child: ElevatedButton(
                 onPressed: widget.onSave,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: Text(
-                  l10n.postReply,
-                  style: const TextStyle(color: Colors.white),
-                ),
+                child: Text(l10n.postReply),
               ),
             ),
           ],

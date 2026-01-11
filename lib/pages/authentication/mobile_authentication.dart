@@ -42,7 +42,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(localizations?.enterVerificationCode ?? 'Please enter the verification code'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
       return;
@@ -52,7 +52,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Verification code must be 6 digits'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
       return;
@@ -92,7 +92,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['error'] ?? (localizations?.invalidVerificationCode ?? 'Invalid or expired verification code')),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -106,7 +106,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please enter your email address'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
       return;
@@ -117,7 +117,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please enter a valid email address'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
       return;
@@ -145,7 +145,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? (localizations?.verificationCodeSent ?? 'Verification code sent to your email')),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
           ),
         );
       }
@@ -155,7 +155,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['error'] ?? (localizations?.failedToSendCode ?? 'Failed to send verification code')),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -187,7 +187,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message'] ?? (localizations?.verificationCodeResent ?? 'Verification code resent')),
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
           ),
         );
       }
@@ -197,7 +197,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['error'] ?? (localizations?.failedToResendCode ?? 'Failed to resend code')),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -243,8 +243,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       appBar: AppBar(
         title: Text(localizations?.emailVerification ?? 'Email Verification'),
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: const Color(0xFF212124),
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -264,7 +265,9 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white.withOpacity(0.1)
+                          : Colors.black.withOpacity(0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 4),
                     ),
@@ -363,7 +366,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                               ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
                               : Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: Colors.grey.shade300,
+                    disabledBackgroundColor: Theme.of(context).colorScheme.surfaceVariant,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

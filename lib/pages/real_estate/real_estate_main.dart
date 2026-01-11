@@ -185,7 +185,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading more properties: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -224,10 +224,10 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           // Modern Tab Bar
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: theme.colorScheme.shadow.withOpacity(0.05),
                   blurRadius: 10,
                   offset: Offset(0, 2),
                 ),
@@ -263,7 +263,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                           '${_allProperties.length} ta mulk',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey[600],
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -282,8 +282,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                       borderRadius: BorderRadius.circular(20),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.grey[600],
+                    labelColor: theme.colorScheme.onPrimary,
+                    unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
                     labelStyle: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -329,8 +329,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _navigateToCreateProperty(),
-        backgroundColor: theme.primaryColor,
-        foregroundColor: Colors.white,
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
         elevation: 4,
         icon: const Icon(Icons.add_rounded, size: 24),
         label: Text(
@@ -368,7 +368,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
             Text(
               'Mulklar yuklanmoqda...',
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),
@@ -389,13 +389,13 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 Container(
                   padding: EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.apartment,
                     size: 48,
-                    color: Colors.grey[400],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 SizedBox(height: 24),
@@ -405,7 +405,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -414,7 +414,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                       'Bu kategoriyada mulklar mavjud emas',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[500],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 if (widget.regionName.isNotEmpty ||
@@ -486,15 +486,16 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
   Widget _buildModernPropertyCard(RealEstate property) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: theme.colorScheme.shadow.withOpacity(isDark ? 0.3 : 0.08),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -526,21 +527,21 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
-                                color: Colors.grey[300],
+                                color: theme.colorScheme.surfaceContainerHighest,
                                 child: Icon(
                                   Icons.apartment,
                                   size: 48,
-                                  color: Colors.grey[500],
+                                  color: theme.colorScheme.onSurfaceVariant,
                                 ),
                               );
                             },
                           )
                         : Container(
-                            color: Colors.grey[300],
+                            color: theme.colorScheme.surfaceContainerHighest,
                             child: Icon(
                               Icons.apartment,
                               size: 48,
-                              color: Colors.grey[500],
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                   ),
@@ -559,7 +560,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     child: Text(
                       property.listingTypeDisplay,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -611,7 +612,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: Colors.grey[900],
+                      color: theme.colorScheme.onSurface,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -631,7 +632,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                         child: Text(
                           '${property.city}, ${property.district}',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: theme.colorScheme.onSurfaceVariant,
                             fontSize: 14,
                           ),
                           maxLines: 1,
@@ -661,7 +662,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.green[600],
+                      color: isDark ? theme.colorScheme.primary : const Color(0xFF43A047),
                     ),
                   ),
                 ],
@@ -674,19 +675,20 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   }
 
   Widget _buildDetailItem(IconData icon, String value) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Icon(
           icon,
           size: 16,
-          color: Colors.grey[600],
+          color: theme.colorScheme.onSurfaceVariant,
         ),
         SizedBox(width: 4),
         Text(
           value,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[700],
+            color: theme.colorScheme.onSurface,
             fontWeight: FontWeight.w500,
           ),
         ),

@@ -80,7 +80,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l.search_failed(e.toString())),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -123,7 +123,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l.user_unblocked(user.username)),
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? Theme.of(context).colorScheme.primary
+                  : const Color(0xFF43A047),
             ),
           );
         }
@@ -134,7 +136,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l.user_blocked(user.username)),
-              backgroundColor: Colors.orange,
+              backgroundColor: Theme.of(context).colorScheme.tertiary,
             ),
           );
         }
@@ -145,7 +147,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(isBlocked ? l.failed_to_unblock : l.failed_to_block),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -210,8 +212,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => WillPopScope(
-          onWillPop: () async => false,
+        builder: (context) => PopScope(
+          canPop: false,
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -223,7 +225,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                     final l = AppLocalizations.of(context)!;
                     return Text(
                       l.starting_chat,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     );
                   },
                 ),
@@ -233,7 +235,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ),
       );
 
-      // 🔥 NEW: Use new start chat endpoint (it's integrated in getOrCreateDirectChat)
+      // Use new start chat endpoint (it's integrated in getOrCreateDirectChat)
       // This will check for existing chat and only create if needed
       final chatRoom = await ref.read(chatProvider.notifier).getOrCreateDirectChat(userId);
 
@@ -259,7 +261,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l.failed_to_start_chat(e.toString())),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -284,8 +286,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => WillPopScope(
-          onWillPop: () async => false,
+        builder: (context) => PopScope(
+          canPop: false,
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -297,7 +299,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                     final l = AppLocalizations.of(context)!;
                     return Text(
                       l.starting_chat,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     );
                   },
                 ),
@@ -332,7 +334,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l.failed_to_start_chat(e.toString())),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -383,9 +385,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               border: Border(
-                bottom: BorderSide(color: Colors.grey[200]!, width: 0.5),
+                bottom: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 0.5),
               ),
             ),
             child: Row(
@@ -393,7 +395,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: TextField(
@@ -402,13 +404,13 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)?.search_by_username_or_phone ?? 'Search by username or phone number',
                         hintStyle: TextStyle(
-                          color: Colors.grey[500],
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 14,
                         ),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                        prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
-                                icon: Icon(Icons.clear, size: 20, color: Colors.grey[600]),
+                                icon: Icon(Icons.clear, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() {
@@ -456,7 +458,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                 Icon(
                                   Icons.search_off,
                                   size: 64,
-                                  color: Colors.grey[400],
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 const SizedBox(height: 16),
                                 Builder(
@@ -469,7 +471,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                           l.no_users_found,
                                           style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.grey[600],
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
@@ -477,7 +479,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                           l.try_different_search_term,
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: Colors.grey[500],
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ],
@@ -511,7 +513,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                         Icon(
                                           Icons.people_outline,
                                           size: 64,
-                                          color: Colors.grey[400],
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                         const SizedBox(height: 16),
                                         Builder(
@@ -524,7 +526,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                                   l.no_users_available,
                                                   style: TextStyle(
                                                     fontSize: 16,
-                                                    color: Colors.grey[600],
+                                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 24),
@@ -549,7 +551,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                         height: 1,
                                         thickness: 0.5,
                                         indent: 84,
-                                        color: Colors.grey[200],
+                                        color: Theme.of(context).colorScheme.outlineVariant,
                                       ),
                                       itemBuilder: (context, index) {
                                         final user = filteredUsers[index];
@@ -574,7 +576,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         height: 1,
         thickness: 0.5,
         indent: 84,
-        color: Colors.grey[200],
+        color: Theme.of(context).colorScheme.outlineVariant,
       ),
       itemBuilder: (context, index) {
         final result = _searchResults[index];
@@ -613,7 +615,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     final avatarLetter = username.isNotEmpty ? username[0].toUpperCase() : '?';
     
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -717,9 +719,11 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                 width: 14,
                                 height: 14,
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Theme.of(context).colorScheme.primary
+                                      : const Color(0xFF43A047),
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 2),
+                                  border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                                 ),
                               ),
                             ),
@@ -776,7 +780,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       Text(
                         '@$username',
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 14,
                           letterSpacing: -0.2,
                         ),
@@ -786,7 +790,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ],
             ),
@@ -799,7 +803,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
   // 🔥 NEW: Modern user tile (KakaoTalk-style)
   Widget _buildUserTile(BuildContext context, User user, bool isOnline) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -844,9 +848,11 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                           width: 14,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Theme.of(context).colorScheme.primary
+                                : const Color(0xFF43A047),
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
+                            border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                           ),
                         ),
                       ),
@@ -861,10 +867,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                     children: [
                       Text(
                         user.displayName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 17,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                           letterSpacing: -0.3,
                         ),
                         maxLines: 1,
@@ -876,7 +882,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                           Text(
                             '@${user.username}',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 14,
                               letterSpacing: -0.2,
                             ),
@@ -911,7 +917,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ],
             ),
@@ -920,7 +926,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       ),
     );
   }
-  
+
   // 🔥 NEW: Show block confirmation dialog
   void _showBlockDialog(User user) {
     final isBlocked = ref.read(chatProvider).blockedUserIds.contains(user.id);
@@ -949,7 +955,11 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
               child: Text(
                 isBlocked ? l.unblock_user : l.block_user,
                 style: TextStyle(
-                  color: isBlocked ? Colors.green : Colors.red,
+                  color: isBlocked
+                      ? (Theme.of(context).brightness == Brightness.dark
+                          ? Theme.of(context).colorScheme.primary
+                          : const Color(0xFF43A047))
+                      : Theme.of(context).colorScheme.error,
                 ),
               ),
             ),

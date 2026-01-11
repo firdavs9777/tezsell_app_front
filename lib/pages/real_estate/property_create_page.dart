@@ -12,6 +12,7 @@ import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/thousand_separator.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -426,12 +427,12 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt, color: Colors.blue),
+              leading: Icon(Icons.camera_alt, color: Theme.of(context).colorScheme.primary),
               title: Text(AppLocalizations.of(context)?.camera ?? 'Camera'),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: Colors.purple),
+              leading: Icon(Icons.photo_library, color: Theme.of(context).colorScheme.secondary),
               title: Text(AppLocalizations.of(context)?.gallery ?? 'Gallery'),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
@@ -563,7 +564,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         listingType: _selectedListingType,
         address: _addressController.text.trim(),
         squareMeters: int.tryParse(_squareMetersController.text) ?? 0,
-        price: _priceController.text.trim(),
+        price: _priceController.text.replaceAll(',', '').trim(),
         currency: _selectedCurrency,
         images: _selectedImages,
         latitude: _latitude,
@@ -585,13 +586,16 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       );
 
       if (mounted) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               localizations?.success_property_created_success ??
                   'Property created successfully!',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: isDark
+                ? Theme.of(context).colorScheme.primary
+                : const Color(0xFF43A047),
           ),
         );
 
@@ -819,7 +823,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                             ),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
+                              ThousandsFormatter(),
                             ],
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -912,6 +916,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     // Region Dropdown (Required)
                     DropdownButtonFormField<String>(
                       value: _selectedRegion,
+                      isExpanded: true,
                       decoration: InputDecoration(
                         labelText: '${localizations?.region ?? 'Region'} *',
                         border: OutlineInputBorder(
@@ -931,11 +936,17 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                               )
                             : null,
                       ),
-                      hint: Text(localizations?.selectRegion ?? 'Select Region'),
+                      hint: Text(
+                        localizations?.selectRegion ?? 'Select Region',
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       items: _regionsList.map((region) {
                         return DropdownMenuItem<String>(
                           value: region.region,
-                          child: Text(region.region),
+                          child: Text(
+                            region.region,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         );
                       }).toList(),
                       onChanged: _isLoadingRegions ? null : _onRegionChanged,
@@ -950,6 +961,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     // District Dropdown (Required)
                     DropdownButtonFormField<Districts>(
                       value: _selectedDistrict,
+                      isExpanded: true,
                       decoration: InputDecoration(
                         labelText: '${localizations?.districtSelectParagraph ?? 'District'} *',
                         border: OutlineInputBorder(
@@ -973,11 +985,15 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         _selectedRegion == null
                             ? (localizations?.selectRegion ?? 'Select region first')
                             : (localizations?.districtSelectParagraph ?? 'Select District'),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       items: _districtsList.map((district) {
                         return DropdownMenuItem<Districts>(
                           value: district,
-                          child: Text(district.district),
+                          child: Text(
+                            district.district,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         );
                       }).toList(),
                       onChanged: _selectedRegion == null || _isLoadingDistricts
@@ -993,97 +1009,113 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     const SizedBox(height: 12),
                     // Show location detected box only when coordinates are available
                     if (_latitude != null && _longitude != null && _latitude != '0.0' && _longitude != '0.0')
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: Colors.green.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.green.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            if (_isGeocoding)
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade700),
-                                ),
-                              )
-                            else
-                              Icon(Icons.check_circle, color: Colors.green.shade700, size: 20),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _isGeocoding
-                                        ? 'Getting Location...'
-                                        : (localizations?.property_create_location_detected ?? 'Location Detected'),
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.green.shade900,
+                      Builder(
+                        builder: (context) {
+                          final isDark = Theme.of(context).brightness == Brightness.dark;
+                          final successColor = isDark ? colorScheme.primary : const Color(0xFF43A047);
+                          final successBgColor = isDark ? colorScheme.primaryContainer.withOpacity(0.3) : const Color(0xFFE8F5E9);
+                          final successBorderColor = isDark ? colorScheme.primary.withOpacity(0.5) : const Color(0xFFA5D6A7);
+                          return Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: successBgColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: successBorderColor),
+                            ),
+                            child: Row(
+                              children: [
+                                if (_isGeocoding)
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(successColor),
                                     ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  if (_selectedRegion != null && _selectedDistrict != null)
-                                    Text(
-                                      '$_selectedRegion, ${_selectedDistrict!.district}',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.green.shade700,
-                                      ),
-                                    ),
-                                  if (!_isGeocoding)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        '$_latitude, $_longitude',
+                                  )
+                                else
+                                  Icon(Icons.check_circle, color: successColor, size: 20),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _isGeocoding
+                                            ? 'Getting Location...'
+                                            : (localizations?.property_create_location_detected ?? 'Location Detected'),
                                         style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.green.shade600,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: successColor,
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
+                                      const SizedBox(height: 2),
+                                      if (_selectedRegion != null && _selectedDistrict != null)
+                                        Text(
+                                          '$_selectedRegion, ${_selectedDistrict!.district}',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: successColor.withOpacity(0.8),
+                                          ),
+                                        ),
+                                      if (!_isGeocoding)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            '$_latitude, $_longitude',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: successColor.withOpacity(0.7),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       )
                     else if (_isGeocoding)
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.blue.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade700),
-                              ),
+                      Builder(
+                        builder: (context) {
+                          final isDark = Theme.of(context).brightness == Brightness.dark;
+                          final infoColor = isDark ? colorScheme.tertiary : const Color(0xFF1976D2);
+                          final infoBgColor = isDark ? colorScheme.tertiaryContainer.withOpacity(0.3) : const Color(0xFFE3F2FD);
+                          final infoBorderColor = isDark ? colorScheme.tertiary.withOpacity(0.5) : const Color(0xFF90CAF9);
+                          return Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: infoBgColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: infoBorderColor),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Getting location coordinates...',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.blue.shade700,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(infoColor),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Getting location coordinates...',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: infoColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                   ],
                 ),
@@ -1201,7 +1233,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: theme.colorScheme.shadow.withOpacity(0.03),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -1278,6 +1310,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
 
     return DropdownButtonFormField<String>(
       value: value,
+      isExpanded: true,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(
@@ -1290,7 +1323,10 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       items: items.map((item) {
         return DropdownMenuItem(
           value: item['value'],
-          child: Text(getLocalizedLabel(item['value']!, item['label']!)),
+          child: Text(
+            getLocalizedLabel(item['value']!, item['label']!),
+            overflow: TextOverflow.ellipsis,
+          ),
         );
       }).toList(),
       onChanged: onChanged,
@@ -1561,19 +1597,19 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: Colors.red.shade600,
+                                color: colorScheme.error,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
+                                    color: colorScheme.shadow.withOpacity(0.2),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.close,
-                                color: Colors.white,
+                                color: colorScheme.onError,
                                 size: 18,
                               ),
                             ),
@@ -1586,13 +1622,13 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
+                              color: colorScheme.surface.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '${index + 1}/${_selectedImages.length}',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),

@@ -24,11 +24,15 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ko\'chmas Mulk Qidirish'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
         elevation: 0,
       ),
       body: Column(
@@ -37,7 +41,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: colorScheme.primary,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -50,16 +54,16 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Ko\'chmas mulk qidirish...',
-                    hintStyle: TextStyle(color: Colors.grey.shade400),
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                    prefixIcon: Icon(Icons.search, color: colorScheme.onSurfaceVariant),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.grey),
+                      icon: Icon(Icons.clear, color: colorScheme.onSurfaceVariant),
                       onPressed: () {
                         _searchController.clear();
                       },
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: colorScheme.surface,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -127,20 +131,23 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
     List<String> options,
     Function(String) onChanged,
   ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: colorScheme.onPrimary.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
+        border: Border.all(color: colorScheme.onPrimary.withOpacity(0.3)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: selectedValue,
           icon:
-              const Icon(Icons.arrow_drop_down, color: Colors.white, size: 20),
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-          dropdownColor: Colors.blue.shade700,
+              Icon(Icons.arrow_drop_down, color: colorScheme.onPrimary, size: 20),
+          style: TextStyle(color: colorScheme.onPrimary, fontSize: 12),
+          dropdownColor: colorScheme.primaryContainer,
           onChanged: (String? newValue) {
             if (newValue != null) {
               onChanged(newValue);
@@ -151,7 +158,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
               value: value,
               child: Text(
                 value,
-                style: const TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 12, color: colorScheme.onPrimaryContainer),
               ),
             );
           }).toList(),
@@ -161,6 +168,9 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
   }
 
   Widget _buildEmptyState() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -168,14 +178,14 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
           Icon(
             Icons.search,
             size: 80,
-            color: Colors.grey.shade300,
+            color: colorScheme.outlineVariant,
           ),
           const SizedBox(height: 16),
           Text(
             'Ko\'chmas mulk qidiring',
             style: TextStyle(
               fontSize: 18,
-              color: Colors.grey.shade600,
+              color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -185,7 +195,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade400,
+              color: colorScheme.onSurfaceVariant.withOpacity(0.7),
             ),
           ),
         ],
@@ -206,9 +216,14 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
   }
 
   Widget _buildSearchResultCard(int index) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
+      color: colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -228,11 +243,11 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                 child: Container(
                   width: 70,
                   height: 70,
-                  color: Colors.grey.shade300,
-                  child: const Icon(
+                  color: colorScheme.surfaceContainerHighest,
+                  child: Icon(
                     Icons.apartment,
                     size: 35,
-                    color: Colors.grey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -246,9 +261,10 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                   children: [
                     Text(
                       'Search Result ${index + 1}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
+                        color: colorScheme.onSurface,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -257,7 +273,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                     Text(
                       'Property description matching search...',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                       maxLines: 2,
@@ -275,7 +291,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                         Text(
                           'Tashkent, Uzbekistan',
                           style: TextStyle(
-                            color: Colors.grey.shade500,
+                            color: colorScheme.onSurfaceVariant,
                             fontSize: 10,
                           ),
                         ),
@@ -291,10 +307,10 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                 children: [
                   Text(
                     '\$${(50 + index * 10)}k',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.green,
+                      color: isDark ? colorScheme.primary : const Color(0xFF43A047),
                     ),
                   ),
                   const SizedBox(height: 4),

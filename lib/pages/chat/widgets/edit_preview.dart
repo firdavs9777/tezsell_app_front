@@ -15,12 +15,12 @@ class EditPreview extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
+        color: Theme.of(context).colorScheme.tertiaryContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          const Icon(Icons.edit, size: 16, color: Colors.orange),
+          Icon(Icons.edit, size: 16, color: Theme.of(context).colorScheme.tertiary),
           const SizedBox(width: 8),
           Expanded(
             child: Builder(
@@ -28,10 +28,10 @@ class EditPreview extends StatelessWidget {
                 final l = AppLocalizations.of(context)!;
                 return Text(
                   l.editing_message,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 );
               },

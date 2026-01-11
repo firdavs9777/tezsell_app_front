@@ -65,10 +65,10 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.0),
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.shade200,
+                        color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
                         spreadRadius: 4,
                         blurRadius: 4,
                       ),
@@ -113,8 +113,8 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                             const SizedBox(height: 4.0),
                             Text(
                               service.description,
-                              style: const TextStyle(
-                                color: Colors.grey,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontSize: 12.0,
                               ),
                               maxLines: 2,
@@ -123,16 +123,16 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                             const SizedBox(height: 6.0),
                             Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.location_on,
                                   size: 14.0,
-                                  color: Colors.grey,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 const SizedBox(width: 4.0),
                                 Text(
                                   '${service.location.region}, ${service.location.district.substring(0, 7)}...',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontSize: 12.0,
                                   ),
                                 )
@@ -146,14 +146,14 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                                     Icon(
                                       Icons.comment,
                                       size: 16,
-                                      color: Colors.grey,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       '${service.comments.length} ',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.grey,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ],
@@ -165,15 +165,15 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                                     Icon(
                                       Icons.favorite_outline_outlined,
                                       size: 18,
-                                      color: Colors.grey,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       service.likeCount
                                           .toString(), // Replace with actual data
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        color: Colors.grey,
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ],

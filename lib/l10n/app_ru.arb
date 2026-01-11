@@ -28,6 +28,26 @@
   "@usedProductsMarket": {
     "description": "Subtitle text on home screen"
   },
+  "home_welcome_title": "Ваш местный маркетплейс",
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "home_welcome_subtitle": "Покупайте и продавайте рядом с домом.\nБезопасно, просто и локально.",
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "home_get_started": "Начать",
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "home_sign_in": "У меня уже есть аккаунт",
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "home_terms_notice": "Продолжая, вы соглашаетесь с Условиями использования и Политикой конфиденциальности",
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
   "register": "Регистрация",
   "@register": {
     "description": "Register button text"
@@ -386,6 +406,13 @@
   "@searchServicePlaceholder": {
     "description": "Service search placeholder"
   },
+  "search_products_subtitle": "Найдите выгодные предложения рядом с вами",
+  "search_services_subtitle": "Найдите специалистов рядом с вами",
+  "search_products_error": "Ошибка поиска товаров",
+  "search_services_error": "Ошибка поиска услуг",
+  "load_more_products_error": "Ошибка загрузки товаров",
+  "load_more_services_error": "Ошибка загрузки услуг",
+  "try_different_keywords": "Попробуйте другие ключевые слова",
   "searchText": "Поиск",
   "@searchText": {
     "description": "Search button text"
@@ -1126,6 +1153,10 @@
   "locationDescription": "Находите предложения рядом с вами. Наша система на основе местоположения поможет вам найти товары в вашем районе.",
   "@locationDescription": {
     "description": "Location feature description"
+  },
+  "location_subtitle": "Выберите регион и район, чтобы увидеть объявления рядом",
+  "@location_subtitle": {
+    "description": "Location page subtitle"
   },
   "categoryTitle": "Фильтрация по категориям",
   "@categoryTitle": {
@@ -2454,6 +2485,109 @@
   "retry": "Повторить",
   "@retry": {
     "description": "Текст кнопки повтора"
+  },
+  "profile_listings": "Объявления",
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "profile_followers": "Подписчики",
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "profile_following": "Подписки",
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "profile_no_products": "Нет товаров",
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "profile_no_services": "Нет услуг",
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "profile_no_properties": "Нет недвижимости",
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "profile_user_no_products": "Этот пользователь еще не разместил товары",
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "profile_user_no_services": "Этот пользователь еще не разместил услуги",
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "profile_user_no_properties": "Этот пользователь еще не разместил недвижимость",
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "profile_error_occurred": "Произошла ошибка",
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "profile_error_loading_products": "Ошибка загрузки товаров",
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "profile_error_loading_services": "Ошибка загрузки услуг",
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "profile_no_followers_yet": "Пока нет подписчиков",
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "profile_no_following_yet": "Пока нет подписок",
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "profile_follow": "Подписаться",
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "profile_following_btn": "Подписан",
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "profile_message": "Сообщение",
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "profile_member_since": "Участник с",
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "profile_loading_error": "Ошибка загрузки профиля",
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "profile_retry": "Повторить",
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "profile_share": "Поделиться",
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "profile_copy_link": "Копировать ссылку",
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "profile_report": "Пожаловаться",
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "linkCopied": "Ссылка скопирована",
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "checkOutProfile": "Посмотрите профиль",
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "onTezsell": "в TezSell",
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
   }
-
 }

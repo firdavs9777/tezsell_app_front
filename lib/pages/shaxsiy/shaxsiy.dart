@@ -17,23 +17,23 @@ import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
+import 'package:app/providers/provider_models/user_profile_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
-import 'package:app/providers/provider_root/theme_provider.dart'; // Import the proper theme provider
+import 'package:app/providers/provider_root/theme_provider.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/pages/authentication/login.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/widgets/image_viewer.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
-
-// Remove this from ShaxsiyPage and create a separate file instead
-// This is just a placeholder - you need to create the proper theme provider file
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShaxsiyPage extends ConsumerStatefulWidget {
   const ShaxsiyPage({super.key});
@@ -44,9 +44,9 @@ class ShaxsiyPage extends ConsumerStatefulWidget {
 
 class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   late Future<UserInfo> _userInfoFuture;
-  int _refreshKey = 0; // Key to force FutureBuilder rebuild
+  int _refreshKey = 0;
+  int? _currentUserId;
 
-  // Define supported languages - matching your LanguageSelectionScreen
   static const List<Map<String, String>> supportedLanguages = [
     {'code': 'en', 'name': 'English', 'nativeName': 'English', 'flag': '🇺🇸'},
     {'code': 'ru', 'name': 'Russian', 'nativeName': 'Русский', 'flag': '🇷🇺'},
@@ -57,6 +57,15 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   void initState() {
     super.initState();
     _userInfoFuture = fetchUserInfo();
+    _loadCurrentUserId();
+  }
+
+  Future<void> _loadCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      final userIdStr = prefs.getString('userId');
+      _currentUserId = userIdStr != null ? int.tryParse(userIdStr) : null;
+    });
   }
 
   Future<UserInfo> fetchUserInfo() async {
@@ -64,7 +73,6 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   }
 
   Future<List<dynamic>> _fetchAllData() async {
-    // Use ref.read() to get fresh data without invalidating during build
     return Future.wait([
       ref.read(profileServiceProvider).getUserInfo(),
       ref.read(profileServiceProvider).getUserProducts(),
@@ -74,14 +82,25 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   }
 
   void _refreshProfile() {
-    // Schedule invalidation after build to avoid setState during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.invalidate(profileServiceProvider);
+      if (_currentUserId != null) {
+        ref.invalidate(userProfileProvider(_currentUserId!));
+      }
     });
     setState(() {
       _userInfoFuture = fetchUserInfo();
-      _refreshKey++; // Increment key to force FutureBuilder rebuild
+      _refreshKey++;
     });
+  }
+
+  String _formatCount(int count) {
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M';
+    } else if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(1)}K';
+    }
+    return count.toString();
   }
 
   ImageProvider? _getProfileImage(UserInfo user) {
@@ -96,142 +115,288 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     return null;
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 32, 20, 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSurface,
-          letterSpacing: -0.2,
-        ),
-      ),
-    );
-  }
+  Widget _buildInstagramStyleHeader(
+    UserInfo user,
+    List<Products> products,
+    List<Services> services,
+    AppLocalizations? localizations,
+    ColorScheme colorScheme,
+  ) {
+    final totalListings = products.length + services.length;
 
-  Widget _buildProfileCard(UserInfo user, AppLocalizations? localizations) {
+    // Try to get follow stats from the profile provider
+    final profileAsync = _currentUserId != null
+        ? ref.watch(userProfileProvider(_currentUserId!))
+        : null;
+
+    int followersCount = 0;
+    int followingCount = 0;
+
+    if (profileAsync != null) {
+      profileAsync.whenData((profile) {
+        followersCount = profile.followersCount;
+        followingCount = profile.followingCount;
+      });
+    }
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: () async {
-          final result = await context.push<bool>('/profile/edit');
-          if (result == true) {
-            _refreshProfile();
-          }
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Row(
-          children: [
-            _getProfileImage(user) != null
-                ? GestureDetector(
-                    onTap: () {
-                      final imageUrl = user.profileImage!.image.startsWith('http://') ||
-                              user.profileImage!.image.startsWith('https://')
-                          ? user.profileImage!.image
-                          : "$baseUrl${user.profileImage!.image}";
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ImageViewer(
-                            imageUrl: imageUrl,
-                            title: user.username,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFFF6F00).withOpacity(0.1),
-                          width: 3,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Profile Header Row (Instagram style)
+          Row(
+            children: [
+              // Profile Avatar
+              GestureDetector(
+                onTap: () {
+                  if (_getProfileImage(user) != null) {
+                    final imageUrl = user.profileImage!.image.startsWith('http://') ||
+                            user.profileImage!.image.startsWith('https://')
+                        ? user.profileImage!.image
+                        : "$baseUrl${user.profileImage!.image}";
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ImageViewer(
+                          imageUrl: imageUrl,
+                          title: user.username,
                         ),
                       ),
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: const Color(0xFFF5F5F5),
-                        backgroundImage: _getProfileImage(user),
-                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: 86,
+                  height: 86,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.tertiary,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  )
-                : Container(
-                    width: 64,
-                    height: 64,
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(3),
+                  child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFFF6F00).withOpacity(0.1),
-                        width: 3,
-                      ),
+                      color: colorScheme.surface,
                     ),
+                    padding: const EdgeInsets.all(2),
                     child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: const Color(0xFFF5F5F5),
-                      child: const Icon(
-                        Icons.person_rounded,
-                        color: Color(0xFF9E9E9E),
-                        size: 32,
-                      ),
+                      radius: 38,
+                      backgroundColor: colorScheme.primaryContainer,
+                      backgroundImage: _getProfileImage(user),
+                      child: _getProfileImage(user) == null
+                          ? Text(
+                              user.username.isNotEmpty
+                                  ? user.username[0].toUpperCase()
+                                  : '?',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onPrimaryContainer,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
+              const SizedBox(width: 24),
+
+              // Stats Row
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildStatColumn(
+                      count: totalListings,
+                      label: localizations?.profile_listings ?? "E'lonlar",
+                      onTap: () => context.push('/profile/my-products'),
+                    ),
+                    _buildStatColumn(
+                      count: followersCount,
+                      label: localizations?.profile_followers ?? 'Obunachilar',
+                      onTap: () => _showFollowersSheet(),
+                    ),
+                    _buildStatColumn(
+                      count: followingCount,
+                      label: localizations?.profile_following ?? 'Obunalar',
+                      onTap: () => _showFollowingSheet(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Username and Info
+          Text(
+            user.username,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+
+          // Email
+          Row(
+            children: [
+              Icon(
+                Icons.email_outlined,
+                size: 14,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                user.email,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+
+          // Location
+          if (user.location != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Row(
                 children: [
-                  Text(
-                    user.username,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      letterSpacing: -0.3,
-                    ),
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 14,
+                    color: colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(width: 4),
                   Text(
-                    localizations?.my_name ?? 'My Profile',
+                    '${user.location!.region}, ${user.location!.district}',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
+          const SizedBox(height: 16),
+
+          // Edit Profile Button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () async {
+                final result = await context.push<bool>('/profile/edit');
+                if (result == true) {
+                  _refreshProfile();
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                side: BorderSide(color: colorScheme.outline),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-              child: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16,
+              child: Text(
+                localizations?.editProfileModalTitle ?? 'Profilni tahrirlash',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatColumn({
+    required int count,
+    required String label,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          children: [
+            Text(
+              _formatCount(count),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showFollowersSheet() {
+    if (_currentUserId == null) return;
+    final localizations = AppLocalizations.of(context);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _FollowListSheet(
+        title: localizations?.profile_followers ?? 'Obunachilar',
+        userId: _currentUserId!,
+        isFollowers: true,
+      ),
+    );
+  }
+
+  void _showFollowingSheet() {
+    if (_currentUserId == null) return;
+    final localizations = AppLocalizations.of(context);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _FollowListSheet(
+        title: localizations?.profile_following ?? 'Obunalar',
+        userId: _currentUserId!,
+        isFollowers: false,
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: Theme.of(context).colorScheme.onSurface,
+          letterSpacing: -0.2,
         ),
       ),
     );
@@ -243,6 +408,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     required String subtitle,
     required VoidCallback onTap,
     Color? iconColor,
+    Widget? trailing,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -261,24 +427,23 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           child: Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  color:
-                      (iconColor ?? const Color(0xFFFF6F00)).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: (iconColor ?? const Color(0xFFFF6F00)).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   icon,
                   color: iconColor ?? const Color(0xFFFF6F00),
-                  size: 22,
+                  size: 20,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,32 +451,27 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.onSurface,
-                        letterSpacing: -0.2,
                       ),
                     ),
-                    const SizedBox(height: 2),
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.6),
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-              ),
+              trailing ??
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                  ),
             ],
           ),
         ),
@@ -319,10 +479,9 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     );
   }
 
-  // Enhanced Language Dialog with your supported languages
-  void _showLanguageDialog(
-      BuildContext context, AppLocalizations? localizations) {
+  void _showLanguageDialog(BuildContext context, AppLocalizations? localizations) {
     final currentLocale = ref.read(localeProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     showModalBottomSheet(
       context: context,
@@ -331,11 +490,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       builder: (BuildContext context) {
         return Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+            color: colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -345,8 +501,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  color: colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -356,7 +511,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 20),
@@ -374,8 +529,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     );
   }
 
-  Widget _buildLanguageOption(
-      String language, String code, String flag, bool isSelected) {
+  Widget _buildLanguageOption(String language, String code, String flag, bool isSelected) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
         ref.read(localeProvider.notifier).setLocale(Locale(code));
@@ -387,20 +542,13 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Colors.transparent,
+          color: isSelected ? colorScheme.primaryContainer : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: isSelected
-              ? Border.all(color: Theme.of(context).colorScheme.primary)
-              : null,
+          border: isSelected ? Border.all(color: colorScheme.primary) : null,
         ),
         child: Row(
           children: [
-            Text(
-              flag,
-              style: const TextStyle(fontSize: 24),
-            ),
+            Text(flag, style: const TextStyle(fontSize: 24)),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
@@ -408,19 +556,13 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Theme.of(context).colorScheme.onSurface,
+                  color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
                 ),
               ),
             ),
             Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              color: isSelected ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.4),
               size: 20,
             ),
           ],
@@ -429,9 +571,9 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     );
   }
 
-  // Enhanced Theme Dialog
   void _showThemeDialog(BuildContext context, AppLocalizations? localizations) {
     final currentTheme = ref.read(themeProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     showModalBottomSheet(
       context: context,
@@ -439,11 +581,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       builder: (BuildContext context) {
         return Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+            color: colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -453,8 +592,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  color: colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -464,25 +602,28 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 20),
               _buildThemeOption(
-                  localizations?.light_theme ?? 'Light',
-                  Icons.light_mode,
-                  ThemeMode.light,
-                  currentTheme == ThemeMode.light),
+                localizations?.light_theme ?? 'Light',
+                Icons.light_mode,
+                ThemeMode.light,
+                currentTheme == ThemeMode.light,
+              ),
               _buildThemeOption(
-                  localizations?.dark_theme ?? 'Dark',
-                  Icons.dark_mode,
-                  ThemeMode.dark,
-                  currentTheme == ThemeMode.dark),
+                localizations?.dark_theme ?? 'Dark',
+                Icons.dark_mode,
+                ThemeMode.dark,
+                currentTheme == ThemeMode.dark,
+              ),
               _buildThemeOption(
-                  localizations?.system_theme ?? 'System Default',
-                  Icons.settings_brightness,
-                  ThemeMode.system,
-                  currentTheme == ThemeMode.system),
+                localizations?.system_theme ?? 'System Default',
+                Icons.settings_brightness,
+                ThemeMode.system,
+                currentTheme == ThemeMode.system,
+              ),
               const SizedBox(height: 20),
             ],
           ),
@@ -491,8 +632,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     );
   }
 
-  Widget _buildThemeOption(
-      String theme, IconData icon, ThemeMode themeMode, bool isSelected) {
+  Widget _buildThemeOption(String theme, IconData icon, ThemeMode themeMode, bool isSelected) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
         ref.read(themeProvider.notifier).setTheme(themeMode);
@@ -504,27 +645,19 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primaryContainer
-              : Colors.transparent,
+          color: isSelected ? colorScheme.primaryContainer : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
-          border: isSelected
-              ? Border.all(color: Theme.of(context).colorScheme.primary)
-              : null,
+          border: isSelected ? Border.all(color: colorScheme.primary) : null,
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFF607D8B).withOpacity(0.1),
+                color: colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                icon,
-                color: const Color(0xFF607D8B),
-                size: 20,
-              ),
+              child: Icon(icon, color: colorScheme.onSurfaceVariant, size: 20),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -533,19 +666,13 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Theme.of(context).colorScheme.onSurface,
+                  color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
                 ),
               ),
             ),
             Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              color: isSelected ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.4),
               size: 20,
             ),
           ],
@@ -557,7 +684,6 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   String _getCurrentLanguageName() {
     final currentLocale = ref.read(localeProvider);
     if (currentLocale == null) return 'English';
-
     final language = supportedLanguages.firstWhere(
       (lang) => lang['code'] == currentLocale.languageCode,
       orElse: () => supportedLanguages[0],
@@ -583,8 +709,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle_outline,
-                color: Colors.white, size: 20),
+            const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(child: Text(message)),
           ],
@@ -600,24 +725,19 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   Future<void> _handleLogout() async {
     final localizations = AppLocalizations.of(context);
     final authService = ref.read(authenticationServiceProvider);
-    
-    // Show confirmation dialog
+
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations?.logout ?? 'Logout'),
-        content: Text(localizations?.logout_all_devices_message ?? 
-            'Are you sure you want to logout?'),
+        content: Text(localizations?.logout_all_devices_message ?? 'Are you sure you want to logout?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text(localizations?.cancel ?? 'Cancel'),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF6F00),
-            ),
             child: Text(localizations?.logout ?? 'Logout'),
           ),
         ],
@@ -641,21 +761,29 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: Text(localizations?.profile ?? 'Profile'),
+        backgroundColor: colorScheme.surface,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(
+          localizations?.profile ?? 'Profile',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onSurface,
+          ),
+        ),
         actions: [
-          // Refresh button
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: Icon(Icons.refresh_rounded, color: colorScheme.onSurface),
             tooltip: localizations?.refresh ?? 'Refresh',
             onPressed: _refreshProfile,
           ),
-          // Logout button
           IconButton(
-            icon: const Icon(Icons.logout_rounded),
+            icon: Icon(Icons.logout_rounded, color: colorScheme.error),
             tooltip: localizations?.logout ?? 'Logout',
             onPressed: _handleLogout,
           ),
@@ -664,607 +792,631 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       body: RefreshIndicator(
         onRefresh: () async {
           _refreshProfile();
-          // Wait a bit for the refresh to complete
           await Future.delayed(const Duration(milliseconds: 500));
         },
         child: FutureBuilder<List<dynamic>>(
-          key: ValueKey(_refreshKey), // Force rebuild when key changes
+          key: ValueKey(_refreshKey),
           future: _fetchAllData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6F00)),
-                ),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              final error = snapshot.error;
-              final errorMessage = error is Exception 
-                  ? error.toString().replaceFirst('Exception: ', '')
-                  : error.toString();
-              
-              return Center(
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline_rounded,
-                          size: 64,
-                          color: Color(0xFFE57373),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          localizations?.failed_to_refresh ?? 
-                              'Error loading profile',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          errorMessage,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.6),
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        // Retry button
-                        ElevatedButton.icon(
-                          onPressed: _refreshProfile,
-                          icon: const Icon(Icons.refresh_rounded),
-                          label: Text(localizations?.retry ?? 'Retry'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6F00),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        // Logout button
-                        OutlinedButton.icon(
-                          onPressed: _handleLogout,
-                          icon: const Icon(Icons.logout_rounded),
-                          label: Text(localizations?.logout ?? 'Logout'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Theme.of(context).colorScheme.error,
-                            side: BorderSide(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                      ],
+              return _buildErrorState(snapshot.error, localizations, colorScheme);
+            } else if (!snapshot.hasData) {
+              return _buildEmptyState(localizations, colorScheme);
+            }
+
+            final user = snapshot.data![0] as UserInfo;
+            final products = snapshot.data![1] as List<Products>;
+            final services = snapshot.data![2] as List<Services>;
+            final favoriteItems = snapshot.data![3] as FavoriteItems;
+
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Instagram-style Profile Header
+                  _buildInstagramStyleHeader(user, products, services, localizations, colorScheme),
+
+                  Divider(color: colorScheme.outlineVariant, height: 1),
+
+                  // My Items Section
+                  _buildSectionTitle(localizations?.myProfile ?? 'My Items'),
+
+                  _buildMenuCard(
+                    icon: Icons.inventory_2_rounded,
+                    title: localizations?.myProductsTitle ?? 'My Products',
+                    subtitle: '${products.length} items',
+                    iconColor: const Color(0xFF4CAF50),
+                    onTap: () => context.push('/profile/my-products'),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.room_service_rounded,
+                    title: localizations?.myServicesTitle ?? 'My Services',
+                    subtitle: '${services.length} services',
+                    iconColor: const Color(0xFF2196F3),
+                    onTap: () => context.push('/profile/my-services'),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.favorite_rounded,
+                    title: localizations?.favoriteProductsTitle ?? 'Favorite Products',
+                    subtitle: '${favoriteItems.likedProducts.length} items',
+                    iconColor: const Color(0xFFE91E63),
+                    onTap: () => context.push('/profile/favorites/products'),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.star_rounded,
+                    title: localizations?.favoriteServicesTitle ?? 'Favorite Services',
+                    subtitle: '${favoriteItems.likedServices.length} services',
+                    iconColor: const Color(0xFFFF9800),
+                    onTap: () => context.push('/profile/favorites/services'),
+                  ),
+
+                  // Saved Properties
+                  _buildSavedPropertiesCard(localizations),
+
+                  // Become Agent
+                  _buildAgentCard(localizations),
+
+                  // Admin Section
+                  _buildAdminSection(user, localizations),
+
+                  // Settings Section
+                  _buildSectionTitle(localizations?.settings ?? 'Settings'),
+
+                  _buildMenuCard(
+                    icon: Icons.language_rounded,
+                    title: localizations?.language ?? 'Language',
+                    subtitle: _getCurrentLanguageName(),
+                    iconColor: const Color(0xFF2196F3),
+                    onTap: () => _showLanguageDialog(context, localizations),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.palette_rounded,
+                    title: localizations?.theme ?? 'Theme',
+                    subtitle: _getCurrentThemeName(localizations),
+                    iconColor: const Color(0xFF607D8B),
+                    onTap: () => _showThemeDialog(context, localizations),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.my_location_rounded,
+                    title: localizations?.location_settings ?? 'Location',
+                    subtitle: 'Default area and location services',
+                    iconColor: const Color(0xFF4CAF50),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomeTown()),
                     ),
                   ),
+
+                  _buildMenuCard(
+                    icon: Icons.security_rounded,
+                    title: localizations?.security ?? 'Security',
+                    subtitle: 'Password, 2FA, and login history',
+                    iconColor: const Color(0xFFE91E63),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SecuritySettingsPage()),
+                    ),
+                  ),
+
+                  // Support Section
+                  _buildSectionTitle(localizations?.customer_support ?? 'Support'),
+
+                  _buildMenuCard(
+                    icon: Icons.headset_mic_rounded,
+                    title: localizations?.customer_center ?? 'Customer Center',
+                    subtitle: 'Get help and support',
+                    iconColor: const Color(0xFF9C27B0),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CustomerCenterPage()),
+                    ),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.help_outline_rounded,
+                    title: localizations?.customer_inquiries ?? 'Inquiries',
+                    subtitle: 'Ask questions or report issues',
+                    iconColor: const Color(0xFF607D8B),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InquiriesPage()),
+                    ),
+                  ),
+
+                  _buildMenuCard(
+                    icon: Icons.article_rounded,
+                    title: localizations?.customer_terms ?? 'Terms and Conditions',
+                    subtitle: 'Privacy policy and terms',
+                    iconColor: const Color(0xFF795548),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState(Object? error, AppLocalizations? localizations, ColorScheme colorScheme) {
+    final errorMessage = error is Exception
+        ? error.toString().replaceFirst('Exception: ', '')
+        : error.toString();
+
+    return Center(
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withOpacity(0.3),
+                  shape: BoxShape.circle,
                 ),
-              );
-            } else if (!snapshot.hasData) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'No user data available.',
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _userInfoFuture = fetchUserInfo();
-                        });
-                      },
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: Text(localizations?.refresh ?? 'Refresh'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF6F00),
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
+                child: Icon(Icons.error_outline_rounded, size: 48, color: colorScheme.error),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                localizations?.failed_to_refresh ?? 'Error loading profile',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                errorMessage,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 14),
+              ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: _refreshProfile,
+                icon: const Icon(Icons.refresh_rounded),
+                label: Text(localizations?.retry ?? 'Retry'),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _handleLogout,
+                icon: Icon(Icons.logout_rounded, color: colorScheme.error),
+                label: Text(localizations?.logout ?? 'Logout', style: TextStyle(color: colorScheme.error)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(AppLocalizations? localizations, ColorScheme colorScheme) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No user data available.',
+            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 16),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: _refreshProfile,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text(localizations?.refresh ?? 'Refresh'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSavedPropertiesCard(AppLocalizations? localizations) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final tokenAsync = ref.watch(tokenProvider);
+
+        return tokenAsync.when(
+          data: (token) {
+            if (token == null) {
+              return _buildMenuCard(
+                icon: Icons.real_estate_agent_rounded,
+                title: localizations?.saved_properties_title ?? 'Saved Properties',
+                subtitle: 'Login to view saved properties',
+                iconColor: const Color(0xFF4CAF50),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
               );
             }
 
-          final user = snapshot.data![0] as UserInfo;
-          final products = snapshot.data![1] as List<Products>;
-          final services = snapshot.data![2] as List<Services>;
-          final favoriteItems = snapshot.data![3] as FavoriteItems;
+            final savedPropertiesAsync = ref.watch(savedPropertiesNotifierProvider(token));
 
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-
-                // Profile Section
-                _buildSectionTitle(localizations?.about_me ?? 'About Me'),
-                _buildProfileCard(user, localizations),
-
-                // My Items Section
-                _buildSectionTitle(localizations?.myProfile ?? 'My Items'),
-
-                _buildMenuCard(
-                  icon: Icons.inventory_2_rounded,
-                  title: localizations?.myProductsTitle ?? 'My Products',
-                  subtitle: '${products.length} items',
-                  iconColor: const Color(0xFF4CAF50),
-                  onTap: () => context.push('/profile/my-products'),
+            return savedPropertiesAsync.when(
+              data: (response) => _buildMenuCard(
+                icon: Icons.real_estate_agent_rounded,
+                title: localizations?.saved_properties_title ?? 'Saved Properties',
+                subtitle: '${response.count} items',
+                iconColor: const Color(0xFF4CAF50),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
-
-                _buildMenuCard(
-                  icon: Icons.room_service_rounded,
-                  title: localizations?.myServicesTitle ?? 'My Services',
-                  subtitle: '${services.length} services',
-                  iconColor: const Color(0xFF2196F3),
-                  onTap: () => context.push('/profile/my-services'),
+              ),
+              loading: () => _buildMenuCard(
+                icon: Icons.real_estate_agent_rounded,
+                title: localizations?.saved_properties_title ?? 'Saved Properties',
+                subtitle: 'Loading...',
+                iconColor: const Color(0xFF4CAF50),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
-
-                const SizedBox(height: 8),
-
-                _buildMenuCard(
-                  icon: Icons.favorite_rounded,
-                  title: localizations?.favoriteProductsTitle ??
-                      'Favorite Products',
-                  subtitle: '${favoriteItems.likedProducts.length} items',
-                  iconColor: const Color(0xFFE91E63),
-                  onTap: () => context.push('/profile/favorites/products'),
+              ),
+              error: (_, __) => _buildMenuCard(
+                icon: Icons.real_estate_agent_rounded,
+                title: localizations?.saved_properties_title ?? 'Saved Properties',
+                subtitle: '0 items',
+                iconColor: const Color(0xFF4CAF50),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
+              ),
+            );
+          },
+          loading: () => _buildMenuCard(
+            icon: Icons.real_estate_agent_rounded,
+            title: localizations?.saved_properties_title ?? 'Saved Properties',
+            subtitle: 'Loading...',
+            iconColor: const Color(0xFF4CAF50),
+            onTap: () {},
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        );
+      },
+    );
+  }
 
-                _buildMenuCard(
-                  icon: Icons.star_rounded,
-                  title: localizations?.favoriteServicesTitle ??
-                      'Favorite Services',
-                  subtitle: '${favoriteItems.likedServices.length} services',
-                  iconColor: const Color(0xFFFF9800),
-                  onTap: () => context.push('/profile/favorites/services'),
-                ),
-                Consumer(
-                  builder: (context, ref, _) {
-                    final tokenAsync = ref.watch(tokenProvider);
+  Widget _buildAgentCard(AppLocalizations? localizations) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final tokenAsync = ref.watch(tokenProvider);
 
-                    return tokenAsync.when(
-                      data: (token) {
-                        if (token == null) {
-                          return _buildMenuCard(
-                            icon: Icons.real_estate_agent_rounded,
-                            title: localizations?.saved_properties_title ??
-                                'Saved Properties',
-                            subtitle: 'Login to view saved properties',
-                            iconColor: const Color(0xFF4CAF50),
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SavedProperties()),
+        return tokenAsync.when(
+          data: (token) {
+            if (token == null) {
+              return _buildMenuCard(
+                icon: Icons.badge_rounded,
+                title: localizations?.becomeAgent ?? 'Become an Agent',
+                subtitle: 'Login to apply',
+                iconColor: const Color(0xFF2196F3),
+                onTap: () => Navigator.of(context).pushNamed('/login'),
+              );
+            }
+
+            return FutureBuilder<Map<String, dynamic>>(
+              future: ref
+                  .read(realEstateServiceProvider)
+                  .getAgentStatus(token: token)
+                  .catchError((e) => <String, dynamic>{'is_agent': false, 'is_verified': false}),
+              builder: (context, snapshot) {
+                final isAgent = snapshot.data?['is_agent'] ?? false;
+                final isVerified = snapshot.data?['is_verified'] ?? false;
+
+                if (isAgent && isVerified) {
+                  return _buildMenuCard(
+                    icon: Icons.verified_user_rounded,
+                    title: localizations?.general_verified_agent ?? 'Verified Agent',
+                    subtitle: localizations?.agentViewProfile ?? 'View your agent profile',
+                    iconColor: const Color(0xFF4CAF50),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AgentDashboardPage()),
+                    ),
+                  );
+                } else if (isAgent && !isVerified) {
+                  return _buildMenuCard(
+                    icon: Icons.pending_rounded,
+                    title: localizations?.general_application_under_review ?? 'Application Under Review',
+                    subtitle: localizations?.general_check_status ?? 'Check status',
+                    iconColor: const Color(0xFFFF9800),
+                    onTap: () async {
+                      try {
+                        final status = await ref.read(realEstateServiceProvider).getAgentApplicationStatus(token: token);
+                        if (mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(localizations?.agentApplicationStatus ?? 'Application Status'),
+                              content: Text(status['message'] ?? 'Your application is being reviewed.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(localizations?.close ?? 'Close'),
+                                ),
+                              ],
                             ),
                           );
                         }
-
-                        // User is logged in, get the count
-                        final savedPropertiesAsync =
-                            ref.watch(savedPropertiesNotifierProvider(token));
-
-                        return savedPropertiesAsync.when(
-                          data: (response) => _buildMenuCard(
-                            icon: Icons.real_estate_agent_rounded,
-                            title: localizations?.saved_properties_title ??
-                                'Saved Properties',
-                            subtitle: '${response.count} items',
-                            iconColor: const Color(0xFF4CAF50),
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SavedProperties()),
-                            ),
-                          ),
-                          loading: () => _buildMenuCard(
-                            icon: Icons.real_estate_agent_rounded,
-                            title: localizations?.saved_properties_title ??
-                                'Saved Properties',
-                            subtitle: 'Loading...',
-                            iconColor: const Color(0xFF4CAF50),
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SavedProperties()),
-                            ),
-                          ),
-                          error: (_, __) => _buildMenuCard(
-                            icon: Icons.real_estate_agent_rounded,
-                            title: localizations?.saved_properties_title ??
-                                'Saved Properties',
-                            subtitle: '0 items',
-                            iconColor: const Color(0xFF4CAF50),
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SavedProperties()),
-                            ),
-                          ),
-                        );
-                      },
-                      loading: () => _buildMenuCard(
-                        icon: Icons.real_estate_agent_rounded,
-                        title: localizations?.saved_properties_title ??
-                            'Saved Properties',
-                        subtitle: 'Loading...',
-                        iconColor: const Color(0xFF4CAF50),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SavedProperties()),
-                        ),
-                      ),
-                      error: (_, __) => _buildMenuCard(
-                        icon: Icons.real_estate_agent_rounded,
-                        title: localizations?.saved_properties_title ??
-                            'Saved Properties',
-                        subtitle: '0 items',
-                        iconColor: const Color(0xFF4CAF50),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SavedProperties()),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-
-                // Become Agent Option
-                Consumer(
-                  builder: (context, ref, _) {
-                    final tokenAsync = ref.watch(tokenProvider);
-
-                    return tokenAsync.when(
-                      data: (token) {
-                        if (token == null) {
-                          return _buildMenuCard(
-                            icon: Icons.badge_rounded,
-                            title: localizations?.becomeAgent ?? 'Become an Agent',
-                            subtitle: 'Login to apply',
-                            iconColor: const Color(0xFF2196F3),
-                            onTap: () {
-                              Navigator.of(context).pushNamed('/login');
-                            },
-                          );
-                        }
-
-                        // Check agent status
-                        return FutureBuilder<Map<String, dynamic>>(
-                          future: ref
-                              .read(realEstateServiceProvider)
-                              .getAgentStatus(token: token)
-                              .catchError((e) => <String, dynamic>{
-                                    'is_agent': false,
-                                    'is_verified': false
-                                  }),
-                          builder: (context, snapshot) {
-                            final isAgent = snapshot.data?['is_agent'] ?? false;
-                            final isVerified =
-                                snapshot.data?['is_verified'] ?? false;
-
-                            if (isAgent && isVerified) {
-                              return _buildMenuCard(
-                                icon: Icons.verified_user_rounded,
-                                title: localizations?.general_verified_agent ??
-                                    'Verified Agent',
-                                subtitle: localizations?.agentViewProfile ??
-                                    'View your agent profile',
-                                iconColor: const Color(0xFF4CAF50),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AgentDashboardPage(),
-                                    ),
-                                  );
-                                },
-                              );
-                            } else if (isAgent && !isVerified) {
-                              return _buildMenuCard(
-                                icon: Icons.pending_rounded,
-                                title: localizations?.general_application_under_review ??
-                                    'Application Under Review',
-                                subtitle: localizations?.general_check_status ??
-                                    'Check status →',
-                                iconColor: const Color(0xFFFF9800),
-                                onTap: () async {
-                                  try {
-                                    final status = await ref
-                                        .read(realEstateServiceProvider)
-                                        .getAgentApplicationStatus(token: token);
-                                    if (mounted) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text(localizations?.agentApplicationStatus ??
-                                              'Application Status'),
-                                          content: Text(
-                                            status['message'] ??
-                                                'Your application is being reviewed.',
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text(localizations?.close ?? 'Close'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  } catch (e) {
-                                    AppErrorHandler.showError(context, e);
-                                  }
-                                },
-                              );
-                            } else {
-                              return _buildMenuCard(
-                                icon: Icons.badge_rounded,
-                                title: localizations?.becomeAgent ?? 'Become an Agent',
-                                subtitle: localizations?.becomeAgentSubtitle ??
-                                    'List properties and help clients',
-                                iconColor: const Color(0xFF2196F3),
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const BecomeAgentPage(),
-                                  ),
-                                ).then((success) {
-                                  if (success == true) {
-                                    setState(() {});
-                                  }
-                                }),
-                              );
-                            }
-                          },
-                        );
-                      },
-                      loading: () => _buildMenuCard(
-                        icon: Icons.badge_rounded,
-                        title: localizations?.becomeAgent ?? 'Become an Agent',
-                        subtitle: 'Loading...',
-                        iconColor: const Color(0xFF2196F3),
-                        onTap: () {},
-                      ),
-                      error: (_, __) => _buildMenuCard(
-                        icon: Icons.badge_rounded,
-                        title: localizations?.becomeAgent ?? 'Become an Agent',
-                        subtitle: 'Apply to become an agent',
-                        iconColor: const Color(0xFF2196F3),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const BecomeAgentPage(),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-
-                // Admin Section (only show if user has admin access)
-                FutureBuilder<UserInfo>(
-                  future: _userInfoFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final user = snapshot.data!;
-                      // Check if user has admin access using the helper getter
-                      // This checks: isStaff, isSuperuser, canAccessAdmin, or userType contains admin/staff/superuser
-                      final hasAdminAccess = user.hasAdminAccess;
-                      
-                      // Debug: Log user info to help troubleshoot
-                      if (kDebugMode) {
-                        AppLogger.debug('User admin check: userType=${user.userType}, isStaff=${user.isStaff}, isSuperuser=${user.isSuperuser}, canAccessAdmin=${user.canAccessAdmin}, hasAdminAccess=$hasAdminAccess');
+                      } catch (e) {
+                        AppErrorHandler.showError(context, e);
                       }
-                      
-                      // Show admin section if user has admin access
-                      // TODO: Remove the || true after testing - this temporarily shows admin section for all users
-                      if (hasAdminAccess || true) {
-                        return Column(
-                          children: [
-                            _buildSectionTitle(localizations?.admin_panel ?? 'Admin Panel'),
-                            _buildMenuCard(
-                              icon: Icons.admin_panel_settings,
-                              title: localizations?.admin_dashboard_title ?? 'Admin Dashboard',
-                              subtitle: localizations?.admin_dashboard_subtitle ?? 
-                                  'Real-time overview of your platform',
-                              iconColor: const Color(0xFF9C27B0),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const AdminDashboard(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      }
-                    } else if (snapshot.hasError) {
-                      // Show error state if needed
-                      if (kDebugMode) {
-                        AppLogger.error('Error loading user info: ${snapshot.error}');
-                      }
-                    } else if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Show loading state
-                      return const SizedBox.shrink();
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-                // _buildMenuCard(
-                //   icon: Icons.star_rounded,
-                //   title: localizations?.properties ?? 'Properties',
-                //   subtitle: '${favoriteItems.likedServices.length} services',
-                //   iconColor: const Color(0xFFFF9800),
-                //   onTap: () => Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => FavoriteServices(
-                //             services: favoriteItems.likedServices)),
-                //   ),
-                // ),
-                // Settings Section
-                _buildSectionTitle(localizations?.settings ?? 'Settings'),
+                    },
+                  );
+                } else {
+                  return _buildMenuCard(
+                    icon: Icons.badge_rounded,
+                    title: localizations?.becomeAgent ?? 'Become an Agent',
+                    subtitle: localizations?.becomeAgentSubtitle ?? 'List properties and help clients',
+                    iconColor: const Color(0xFF2196F3),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const BecomeAgentPage()),
+                    ).then((success) {
+                      if (success == true) setState(() {});
+                    }),
+                  );
+                }
+              },
+            );
+          },
+          loading: () => _buildMenuCard(
+            icon: Icons.badge_rounded,
+            title: localizations?.becomeAgent ?? 'Become an Agent',
+            subtitle: 'Loading...',
+            iconColor: const Color(0xFF2196F3),
+            onTap: () {},
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        );
+      },
+    );
+  }
 
-                // Language Settings with current language display
-                _buildMenuCard(
-                  icon: Icons.language_rounded,
-                  title: localizations?.language ?? 'Language',
-                  subtitle: _getCurrentLanguageName(),
-                  iconColor: const Color(0xFF2196F3),
-                  onTap: () {
-                    _showLanguageDialog(context, localizations);
-                  },
-                ),
+  Widget _buildAdminSection(UserInfo user, AppLocalizations? localizations) {
+    final hasAdminAccess = user.hasAdminAccess;
 
-                // Theme Settings with current theme display
-                _buildMenuCard(
-                  icon: Icons.palette_rounded,
-                  title: localizations?.theme ?? 'Theme',
-                  subtitle: _getCurrentThemeName(localizations),
-                  iconColor: const Color(0xFF607D8B),
-                  onTap: () {
-                    _showThemeDialog(context, localizations);
-                  },
-                ),
+    if (kDebugMode) {
+      AppLogger.debug(
+          'User admin check: userType=${user.userType}, isStaff=${user.isStaff}, isSuperuser=${user.isSuperuser}, hasAdminAccess=$hasAdminAccess');
+    }
 
-                // Other Settings (keeping your existing ones)
-                // _buildMenuCard(
-                //   icon: Icons.notifications_rounded,
-                //   title: localizations?.notifications ?? 'Notifications',
-                //   subtitle: 'Push, email, and SMS preferences',
-                //   iconColor: const Color(0xFFFF9800),
-                //   onTap: () {
-                //     _showSuccess('Opening notification settings...');
-                //   },
-                // ),
-
-                // _buildMenuCard(
-                //   icon: Icons.privacy_tip_rounded,
-                //   title: localizations?.privacy ?? 'Privacy',
-                //   subtitle: 'Profile visibility and data control',
-                //   iconColor: const Color(0xFF9C27B0),
-                //   onTap: () {
-                //     _showSuccess('Opening privacy settings...');
-                //   },
-                // ),
-
-                _buildMenuCard(
-                  icon: Icons.my_location_rounded,
-                  title: localizations?.location_settings ?? 'Location',
-                  subtitle: 'Default area and location services',
-                  iconColor: const Color(0xFF4CAF50),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomeTown()),
-                  ),
-                ),
-
-                _buildMenuCard(
-                  icon: Icons.security_rounded,
-                  title: localizations?.security ?? 'Security',
-                  subtitle: 'Password, 2FA, and login history',
-                  iconColor: const Color(0xFFE91E63),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SecuritySettingsPage()),
-                  ),
-                ),
-
-                // _buildMenuCard(
-                //   icon: Icons.storage_rounded,
-                //   title: localizations?.data_storage ?? 'Data & Storage',
-                //   subtitle: 'Cache, downloads, and storage usage',
-                //   iconColor: const Color(0xFF795548),
-                //   onTap: () {
-                //     _showSuccess('Opening data & storage settings...');
-                //   },
-                // ),
-
-                // _buildMenuCard(
-                //   icon: Icons.accessibility_rounded,
-                //   title: localizations?.accessibility ?? 'Accessibility',
-                //   subtitle: 'Font size, contrast, and voice settings',
-                //   iconColor: const Color(0xFF00BCD4),
-                //   onTap: () {
-                //     _showSuccess('Opening accessibility settings...');
-                //   },
-                // ),
-
-                // Support Section
-                _buildSectionTitle(
-                    localizations?.customer_support ?? 'Support'),
-
-                _buildMenuCard(
-                  icon: Icons.headset_mic_rounded,
-                  title: localizations?.customer_center ?? 'Customer Center',
-                  subtitle: 'Get help and support',
-                  iconColor: const Color(0xFF9C27B0),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CustomerCenterPage()),
-                  ),
-                ),
-
-                _buildMenuCard(
-                  icon: Icons.help_outline_rounded,
-                  title: localizations?.customer_inquiries ?? 'Inquiries',
-                  subtitle: 'Ask questions or report issues',
-                  iconColor: const Color(0xFF607D8B),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InquiriesPage()),
-                  ),
-                ),
-
-                _buildMenuCard(
-                  icon: Icons.article_rounded,
-                  title:
-                      localizations?.customer_terms ?? 'Terms and Conditions',
-                  subtitle: 'Privacy policy and terms',
-                  iconColor: const Color(0xFF795548),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TermsAndConditionsPage()),
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-              ],
+    // TODO: Remove || true after testing
+    if (hasAdminAccess || true) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(localizations?.admin_panel ?? 'Admin Panel'),
+          _buildMenuCard(
+            icon: Icons.admin_panel_settings,
+            title: localizations?.admin_dashboard_title ?? 'Admin Dashboard',
+            subtitle: localizations?.admin_dashboard_subtitle ?? 'Real-time overview of your platform',
+            iconColor: const Color(0xFF9C27B0),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminDashboard()),
             ),
-          );
-        },
+          ),
+        ],
+      );
+    }
+    return const SizedBox.shrink();
+  }
+}
+
+// Follow List Bottom Sheet
+class _FollowListSheet extends ConsumerWidget {
+  final String title;
+  final int userId;
+  final bool isFollowers;
+
+  const _FollowListSheet({
+    required this.title,
+    required this.userId,
+    required this.isFollowers,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listAsync = isFollowers
+        ? ref.watch(userFollowersProvider(userId))
+        : ref.watch(userFollowingProvider(userId));
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) => Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Divider(height: 1, color: colorScheme.outlineVariant),
+            Expanded(
+              child: listAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      AppErrorHandler.getErrorMessage(error),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: colorScheme.error),
+                    ),
+                  ),
+                ),
+                data: (response) {
+                  final l = AppLocalizations.of(context);
+                  if (response.results.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: colorScheme.onSurfaceVariant.withOpacity(0.4),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            isFollowers
+                                ? (l?.profile_no_followers_yet ?? "Hali obunachilar yo'q")
+                                : (l?.profile_no_following_yet ?? "Hali obunalar yo'q"),
+                            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemCount: response.results.length,
+                    itemBuilder: (context, index) {
+                      final user = response.results[index];
+                      return _FollowUserTile(user: user);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _FollowUserTile extends ConsumerStatefulWidget {
+  final FollowUser user;
+
+  const _FollowUserTile({required this.user});
+
+  @override
+  ConsumerState<_FollowUserTile> createState() => _FollowUserTileState();
+}
+
+class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
+  bool _isLoading = false;
+  late bool _isFollowing;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFollowing = widget.user.isFollowing;
+  }
+
+  Future<void> _toggleFollow() async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final profileService = ref.read(profileServiceProvider);
+      if (_isFollowing) {
+        await profileService.unfollowUser(userId: widget.user.id);
+      } else {
+        await profileService.followUser(userId: widget.user.id);
+      }
+      setState(() => _isFollowing = !_isFollowing);
+    } catch (e) {
+      if (mounted) AppErrorHandler.showError(context, e);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ListTile(
+      onTap: () {
+        Navigator.of(context).pop();
+        context.push('/user/${widget.user.id}');
+      },
+      leading: CircleAvatar(
+        radius: 24,
+        backgroundColor: colorScheme.primaryContainer,
+        child: widget.user.profileImage.image.isNotEmpty
+            ? ClipOval(
+                child: CachedNetworkImageWidget(
+                  imageUrl: widget.user.profileImage.image,
+                  width: 48,
+                  height: 48,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Text(
+                widget.user.initials,
+                style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
+              ),
       ),
+      title: Text(widget.user.username, style: const TextStyle(fontWeight: FontWeight.w600)),
+      trailing: _isLoading
+          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+          : Builder(
+              builder: (context) {
+                final l = AppLocalizations.of(context);
+                return SizedBox(
+                  width: 100,
+                  child: _isFollowing
+                      ? OutlinedButton(
+                          onPressed: _toggleFollow,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: const Size(0, 32),
+                            side: BorderSide(color: colorScheme.outline),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: Text(l?.profile_following_btn ?? 'Obuna', style: const TextStyle(fontSize: 13)),
+                        )
+                      : FilledButton(
+                          onPressed: _toggleFollow,
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            minimumSize: const Size(0, 32),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: Text(l?.profile_follow ?? "Obuna bo'lish", style: const TextStyle(fontSize: 13)),
+                        ),
+                );
+              },
+            ),
     );
   }
 }

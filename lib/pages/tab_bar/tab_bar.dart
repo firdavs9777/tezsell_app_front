@@ -482,15 +482,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
       context.push('/product/search?region=$regionName&district=$districtName');
     } else if (_selectedPageIndex == 1) {
       context.push('/service/search?region=$regionName&district=$districtName');
-    } else if (_selectedPageIndex == 2) {
+    } else if (_selectedPageIndex == 3) {
       context.push('/real-estate/search');
     }
   }
 
   bool _shouldShowSearchFAB() {
+    // Show search icon for Products (0), Services (1), Real Estate (3)
+    // Chat (2) has its own new message button, no search needed
     return _selectedPageIndex == 0 ||
         _selectedPageIndex == 1 ||
-        _selectedPageIndex == 2;
+        _selectedPageIndex == 3;
   }
 
   bool _shouldShowNotification() {

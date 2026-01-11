@@ -5,6 +5,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -77,51 +78,38 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
 
   Widget _buildReply(Reply reply) {
     final isCurrentUserReply = currentUserId == reply.user.id.toString();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       margin: const EdgeInsets.only(left: 40, top: 8, bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Reply avatar
-          reply.user.profileImage != null
-              ? GestureDetector(
-                  onTap: () {
-                    final imageUrl = reply.user.profileImage!.image.startsWith('http://') ||
-                            reply.user.profileImage!.image.startsWith('https://')
-                        ? reply.user.profileImage!.image
-                        : '${baseUrl}${reply.user.profileImage!.image}';
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ImageViewer(
-                          imageUrl: imageUrl,
-                          title: reply.user.username ?? AppLocalizations.of(context)?.anonymous ?? 'Anonymous',
-                        ),
-                      ),
-                    );
-                  },
-                  child: CircleAvatar(
+          // Reply avatar - tap to navigate to user profile
+          GestureDetector(
+            onTap: () => context.push('/user/${reply.user.id}'),
+            child: reply.user.profileImage != null
+                ? CircleAvatar(
                     radius: 18,
                     backgroundImage: NetworkImage(
                         reply.user.profileImage!.image.startsWith('http://') ||
                                 reply.user.profileImage!.image.startsWith('https://')
                             ? reply.user.profileImage!.image
                             : '${baseUrl}${reply.user.profileImage!.image}'),
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                  )
+                : CircleAvatar(
+                    radius: 18,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    child: Icon(Icons.person, color: colorScheme.onSurfaceVariant, size: 18),
                   ),
-                )
-              : CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.grey[300],
-                  child: const Icon(Icons.person, color: Colors.grey, size: 18),
-                ),
+          ),
           const SizedBox(width: 12),
           // Reply content
           Expanded(
@@ -135,14 +123,17 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                       child: Row(
                         children: [
                           Flexible(
-                            child: Text(
-                              reply.user.username,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                color: Colors.black87,
+                            child: GestureDetector(
+                              onTap: () => context.push('/user/${reply.user.id}'),
+                              child: Text(
+                                reply.user.username,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: colorScheme.onSurface,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           if (isCurrentUserReply) ...[
@@ -174,7 +165,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                       _formatLocalTime(reply.createdAt, context),
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey[600],
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     // Three dots menu for current user's replies
@@ -183,7 +174,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                             widget.onDeleteReply != null))
                       PopupMenuButton<String>(
                         icon: Icon(Icons.more_vert,
-                            size: 18, color: Colors.grey[600]),
+                            size: 18, color: colorScheme.onSurfaceVariant),
                         padding: EdgeInsets.zero,
                         onSelected: (String value) {
                           switch (value) {
@@ -237,7 +228,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                     '${reply.user.location.region}, ${reply.user.location.district}',
                     style: TextStyle(
                       fontSize: 11,
-                      color: Colors.grey[600],
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -245,9 +236,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                 // Reply text
                 Text(
                   reply.text,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -330,7 +321,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (widget.comments.isEmpty) {
       return Card(
         color: Colors.transparent,
@@ -341,8 +333,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
           child: Center(
             child: Text(
               l10n.noComments,
-              style: const TextStyle(
-                color: Colors.grey,
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),
@@ -358,13 +350,14 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
       child: ExpansionTile(
         initiallyExpanded: true,
         expandedAlignment: Alignment.centerLeft,
-        collapsedIconColor: Colors.red,
-        iconColor: Colors.red,
+        collapsedIconColor: colorScheme.primary,
+        iconColor: colorScheme.primary,
         title: Text(
           l10n.comments_title(widget.comments.length),
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
+            color: colorScheme.onSurface,
           ),
         ),
         children: [
@@ -373,7 +366,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.comments.length,
             separatorBuilder: (context, index) => Divider(
-              color: Colors.grey[300],
+              color: colorScheme.outlineVariant,
               thickness: 1,
               height: 1,
             ),
@@ -393,40 +386,26 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Comment avatar
-                        comment.user.profileImage != null
-                            ? GestureDetector(
-                                onTap: () {
-                                  final imageUrl = comment.user.profileImage!.image.startsWith('http://') ||
-                                          comment.user.profileImage!.image.startsWith('https://')
-                                      ? comment.user.profileImage!.image
-                                      : '${baseUrl}${comment.user.profileImage!.image}';
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ImageViewer(
-                                        imageUrl: imageUrl,
-                                        title: comment.user.username ?? l10n.anonymous,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: CircleAvatar(
+                        // Comment avatar - tap to navigate to user profile
+                        GestureDetector(
+                          onTap: () => context.push('/user/${comment.user.id}'),
+                          child: comment.user.profileImage != null
+                              ? CircleAvatar(
                                   radius: 22,
                                   backgroundImage: NetworkImage(
                                       comment.user.profileImage!.image.startsWith('http://') ||
                                               comment.user.profileImage!.image.startsWith('https://')
                                           ? comment.user.profileImage!.image
                                           : '${baseUrl}${comment.user.profileImage!.image}'),
-                                  backgroundColor: Colors.grey[300],
+                                  backgroundColor: colorScheme.surfaceContainerHighest,
+                                )
+                              : CircleAvatar(
+                                  radius: 22,
+                                  backgroundColor: colorScheme.surfaceContainerHighest,
+                                  child: Icon(Icons.person,
+                                      color: colorScheme.onSurfaceVariant, size: 22),
                                 ),
-                              )
-                            : CircleAvatar(
-                                radius: 22,
-                                backgroundColor: Colors.grey[300],
-                                child: const Icon(Icons.person,
-                                    color: Colors.grey, size: 22),
-                              ),
+                        ),
                         const SizedBox(width: 12),
                         // Comment content
                         Expanded(
@@ -437,14 +416,17 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      comment.user.username ?? l10n.anonymous,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black87,
+                                    child: GestureDetector(
+                                      onTap: () => context.push('/user/${comment.user.id}'),
+                                      child: Text(
+                                        comment.user.username ?? l10n.anonymous,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: colorScheme.onSurface,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -455,13 +437,13 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                         : l10n.unknown_date,
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.grey[600],
+                                      color: colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                   if (_canModifyComment(comment))
                                     PopupMenuButton<String>(
                                       icon: Icon(Icons.more_vert,
-                                          color: Colors.grey[600], size: 20),
+                                          color: colorScheme.onSurfaceVariant, size: 20),
                                       padding: EdgeInsets.zero,
                                       onSelected: (String value) {
                                         switch (value) {
@@ -510,7 +492,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   '${comment.user.location!.region}, ${comment.user.location!.district}',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey[600],
+                                    color: colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
@@ -518,9 +500,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               // Comment text
                               Text(
                                 comment.text.toString(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.black87,
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -565,7 +547,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                     child: Text(
                                       l10n.reply_button,
                                       style: TextStyle(
-                                        color: Colors.grey[700],
+                                        color: colorScheme.onSurfaceVariant,
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -582,7 +564,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                           Text(
                                             l10n.replies_count(repliesCount),
                                             style: TextStyle(
-                                              color: Colors.grey[700],
+                                              color: colorScheme.onSurfaceVariant,
                                               fontSize: 13,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -592,7 +574,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                             isExpanded
                                                 ? Icons.expand_less
                                                 : Icons.expand_more,
-                                            color: Colors.grey[700],
+                                            color: colorScheme.onSurfaceVariant,
                                             size: 18,
                                           ),
                                         ],

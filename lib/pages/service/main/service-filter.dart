@@ -115,27 +115,28 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.categoryHeader ?? 'Categories',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 18,
-            color: Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: Colors.grey.shade200),
+          child: Divider(height: 1, color: colorScheme.outlineVariant),
         ),
       ),
       body: availableCategories.isEmpty
@@ -148,9 +149,6 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
               itemBuilder: (context, index) {
                 final category = availableCategories[index];
                 IconData? iconData = iconMap[category.icon];
-
-                final theme = Theme.of(context);
-                final colorScheme = theme.colorScheme;
 
                 return Material(
                   color: Colors.transparent,
@@ -166,7 +164,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.cardColor,
+                        color: colorScheme.surface,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: colorScheme.outline.withOpacity(0.1),

@@ -4,12 +4,29 @@ class Location {
     required this.country,
     required this.region,
     required this.district,
+    this.fullAddress,
   });
 
   final int id;
   final String country;
   final String region;
   final String district;
+  final String? fullAddress;
+
+  /// Returns the full address if available, otherwise constructs it from parts
+  String get displayAddress {
+    if (fullAddress != null && fullAddress!.isNotEmpty) {
+      return fullAddress!;
+    }
+    final parts = [district, region, country].where((p) => p.isNotEmpty).toList();
+    return parts.join(', ');
+  }
+
+  /// Returns a short display (region, district only)
+  String get shortAddress {
+    final parts = [district, region].where((p) => p.isNotEmpty).toList();
+    return parts.join(', ');
+  }
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
@@ -17,6 +34,7 @@ class Location {
       country: json["country"] ?? '',
       region: json['region'] ?? '',
       district: json['district'] ?? '',
+      fullAddress: json['full_address'],
     );
   }
 }

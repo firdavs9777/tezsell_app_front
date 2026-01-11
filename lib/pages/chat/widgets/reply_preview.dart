@@ -18,7 +18,7 @@ class ReplyPreview extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -26,7 +26,7 @@ class ReplyPreview extends StatelessWidget {
           Container(
             width: 3,
             height: 40,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -41,7 +41,7 @@ class ReplyPreview extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue[900],
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     );
                   },
@@ -59,7 +59,7 @@ class ReplyPreview extends StatelessWidget {
                               : ''),
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.blue[700],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

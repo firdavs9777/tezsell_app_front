@@ -23,6 +23,7 @@ class ServiceNew extends ConsumerStatefulWidget {
 }
 
 class _ServiceNewState extends ConsumerState<ServiceNew> {
+  final _formKey = GlobalKey<FormState>();
   final _formatter = NumberFormat('#,##0', 'en_US');
 
   @override
@@ -45,9 +46,8 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   int? selectedCategory;
   List<File> _selectedImages = [];
   final picker = ImagePicker();
-  bool _isUploading = false; // Track upload state
+  bool _isUploading = false;
 
-  // Function to get the appropriate category name based on current locale
   String getCategoryName(CategoryModel category) {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
@@ -73,61 +73,63 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
     }
   }
 
-  /// Shows a bottom sheet to choose between camera and gallery
-  Future<void> _showImageSourceDialog({bool isMulti = false}) async {
+  Future<void> _showImageSourceDialog() async {
     if (!mounted) return;
+
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
 
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
-        final localizations = AppLocalizations.of(context);
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  localizations?.selectImageSource ?? 'Select Image Source',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+      backgroundColor: colorScheme.surface,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                localizations?.selectImageSource ?? 'Select Image Source',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt, color: Colors.blue),
-                title: Text(localizations?.camera ?? 'Camera'),
-                onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt, color: colorScheme.primary),
+              title: Text(
+                localizations?.camera ?? 'Camera',
+                style: TextStyle(color: colorScheme.onSurface),
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_library, color: Colors.purple),
-                title: Text(localizations?.gallery ?? 'Gallery'),
-                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library, color: colorScheme.secondary),
+              title: Text(
+                localizations?.gallery ?? 'Gallery',
+                style: TextStyle(color: colorScheme.onSurface),
               ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
     );
 
     if (source != null) {
-      await _pickImage(source: source, isMulti: isMulti);
+      await _pickImage(source: source);
     }
   }
 
-  /// Picks image(s) from the specified source
-  Future<void> _pickImage({
-    required ImageSource source,
-    bool isMulti = false,
-  }) async {
+  Future<void> _pickImage({required ImageSource source}) async {
     try {
-      if (isMulti && source == ImageSource.gallery) {
-        // Multi-image picker only works with gallery
+      if (source == ImageSource.gallery) {
         final pickedFiles = await picker.pickMultiImage(
           maxWidth: 2560,
           maxHeight: 2560,
@@ -142,7 +144,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
           AppLogger.debug('Selected ${pickedFiles.length} images from gallery');
         }
       } else {
-        // Single image from camera or gallery
         final pickedFile = await picker.pickImage(
           source: source,
           maxWidth: 2560,
@@ -152,7 +153,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
 
-          // Check file size (max 10MB)
           final fileSize = await imageFile.length();
           const maxSize = 10 * 1024 * 1024; // 10MB
 
@@ -179,7 +179,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   }
 
   Future<void> _submitProduct() async {
-    // Prevent multiple submissions
     if (_isUploading) {
       AppLogger.debug('Service submission already in progress');
       return;
@@ -187,13 +186,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
     final localizations = AppLocalizations.of(context);
 
-    // Validation
-    if (_titleController.text.trim().isEmpty ||
-        _descriptionController.text.trim().isEmpty) {
-      AppErrorHandler.showWarning(
-        context,
-        localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -223,7 +216,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       return;
     }
 
-    // Set uploading state
     setState(() {
       _isUploading = true;
     });
@@ -231,22 +223,23 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
     try {
       AppLogger.debug('Starting service creation...');
 
-      // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
-              const Text('Uploading service...'),
+              Text(localizations?.uploading ?? 'Uploading service...'),
             ],
           ),
           duration: const Duration(seconds: 30),
@@ -263,24 +256,20 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
       if (!mounted) return;
 
-      // Hide loading indicator
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (service != null) {
         AppLogger.info('Service created successfully: ${service.id}');
 
-        // Show success message BEFORE navigation
         AppErrorHandler.showSuccess(
           context,
           'Service successfully added!',
         );
 
-        // Wait a bit for user to see the success message
         await Future.delayed(const Duration(milliseconds: 500));
 
         if (!mounted) return;
 
-        // Navigate to home
         if (context.mounted) {
           context.go('/tabs?index=1');
         }
@@ -301,7 +290,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         );
       }
     } finally {
-      // Reset uploading state
       if (mounted) {
         setState(() {
           _isUploading = false;
@@ -312,254 +300,407 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        backgroundColor: colorScheme.surface,
         appBar: AppBar(
-          title: Text(localizations?.addNewServiceBtn ?? 'Create New Service'),
+          elevation: 0,
+          title: Text(
+            localizations?.addNewServiceBtn ?? 'Create New Service',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Images Section
+                _buildImagesSection(theme, localizations),
                 const SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    localizations?.addNewServiceBtn ?? 'Create New Service',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                    localizations?.serviceName ?? 'Service Name'),
-                const SizedBox(height: 10),
-                _buildTextField(
-                    controller: _titleController,
-                    labelText: localizations?.serviceName ?? 'Service Name'),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                    localizations?.serviceDescription ?? 'Service Description'),
-                const SizedBox(height: 10),
-                _buildTextField(
-                  controller: _descriptionController,
-                  labelText: localizations?.serviceDescription ??
-                      'Service Description',
-                  maxLines: 5,
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                    localizations?.serviceCategory ?? 'Select Category'),
-                const SizedBox(height: 10),
-                DropdownButton<CategoryModel>(
-                  isExpanded: true,
-                  value: selectedCategory != null
-                      ? availableCategories.firstWhere(
-                          (cat) => cat.id == selectedCategory,
-                          orElse: () => availableCategories[0],
-                        )
-                      : null,
-                  items: availableCategories
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(getCategoryName(category)),
-                          ))
-                      .toList(),
-                  onChanged: _isUploading
-                      ? null
-                      : (CategoryModel? value) {
-                          if (value != null) {
-                            setState(() {
-                              selectedCategory = value.id;
-                            });
-                          }
-                        },
-                  hint:
-                      Text(localizations?.serviceCategory ?? 'Select Category'),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.serviceImages ??
-                    localizations?.newProductImages ??
-                    'Images'),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildImageSourceButton(
-                      icon: Icons.camera_alt,
-                      label: localizations?.camera ?? 'Camera',
-                      color: Colors.blue,
-                      onPressed: () => _showImageSourceDialog(isMulti: false),
-                    ),
-                    _buildImageSourceButton(
-                      icon: Icons.photo_library,
-                      label: localizations?.gallery ?? 'Gallery',
-                      color: Colors.purple,
-                      onPressed: () => _showImageSourceDialog(isMulti: true),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                if (_selectedImages.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        localizations?.imageUploadHelper ??
-                            'Images will appear here. Please select images using the buttons above.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.6),
-                        ),
+
+                // Basic Information Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader(
+                        localizations?.serviceName ?? 'Service Information',
+                        Icons.info_outline,
+                        theme,
                       ),
-                    ),
-                  )
-                else
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: _selectedImages.length,
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              _selectedImages[index],
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _titleController,
+                        enabled: !_isUploading,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.serviceName ?? 'Service Name'} *',
+                          hintText: localizations?.serviceName ?? 'Enter service name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          Positioned(
-                            top: 2,
-                            right: 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedImages.removeAt(index);
-                                  });
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(
-                                  minWidth: 24,
-                                  minHeight: 24,
-                                ),
-                              ),
-                            ),
+                          prefixIcon: const Icon(Icons.work),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return localizations?.pleaseFillAllRequired ?? 'Please enter service name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _descriptionController,
+                        enabled: !_isUploading,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.serviceDescription ?? 'Description'} *',
+                          hintText: localizations?.serviceDescription ?? 'Describe your service in detail...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ],
-                      );
-                    },
+                          prefixIcon: const Icon(Icons.description),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return localizations?.pleaseFillAllRequired ?? 'Please enter description';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 16),
+
+                // Category Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader(
+                        localizations?.serviceCategory ?? 'Category',
+                        Icons.category,
+                        theme,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<CategoryModel>(
+                        value: selectedCategory != null
+                            ? availableCategories.firstWhere(
+                                (cat) => cat.id == selectedCategory,
+                                orElse: () => availableCategories.first,
+                              )
+                            : null,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.serviceCategory ?? 'Select Category'} *',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon: const Icon(Icons.category),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ),
+                        hint: Text(
+                          localizations?.serviceCategory ?? 'Select a category',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        items: availableCategories
+                            .map((category) => DropdownMenuItem(
+                                  value: category,
+                                  child: Text(
+                                    getCategoryName(category),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: _isUploading
+                            ? null
+                            : (CategoryModel? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedCategory = value.id;
+                                  });
+                                }
+                              },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select a category';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isUploading ? null : _submitProduct,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: _isUploading
+                        ? SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
+                            ),
+                          )
+                        : Text(
+                            localizations?.upload ?? 'Upload Service',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 32),
               ],
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          child: Container(
-            color: Colors.orange,
-            height: 60,
-            child: AbsorbPointer(
-              absorbing: _isUploading,
-              child: Opacity(
-                opacity: _isUploading ? 0.6 : 1.0,
-                child: CommonButton(
-                  buttonText: _isUploading
-                      ? localizations?.uploading ?? 'Uploading...'
-                      : (localizations?.upload ?? 'Upload'),
-                  onPressed: _submitProduct,
+      ),
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, ThemeData theme) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 20, color: theme.colorScheme.primary),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImagesSection(ThemeData theme, AppLocalizations? localizations) {
+    final colorScheme = theme.colorScheme;
+
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            localizations?.serviceImages ?? localizations?.newProductImages ?? 'Service Images',
+            Icons.photo_library,
+            theme,
+          ),
+          const SizedBox(height: 16),
+          if (_selectedImages.isEmpty)
+            GestureDetector(
+              onTap: _isUploading ? null : _showImageSourceDialog,
+              child: Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: colorScheme.outline.withOpacity(0.3),
+                    style: BorderStyle.solid,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add_photo_alternate,
+                      size: 56,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      localizations?.imageUploadHelper ?? 'Tap to add images',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'At least 1 image required',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            )
+          else
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _selectedImages.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _selectedImages.length) {
+                    return GestureDetector(
+                      onTap: _isUploading ? null : _showImageSourceDialog,
+                      child: Container(
+                        width: 160,
+                        margin: const EdgeInsets.only(right: 12),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: colorScheme.outline.withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add, size: 36, color: colorScheme.primary),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add More',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    width: 160,
+                    margin: const EdgeInsets.only(right: 12),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.file(
+                            _selectedImages[index],
+                            fit: BoxFit.cover,
+                            height: 200,
+                            width: 160,
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: GestureDetector(
+                            onTap: _isUploading
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _selectedImages.removeAt(index);
+                                    });
+                                  },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: colorScheme.error,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: colorScheme.shadow.withOpacity(0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.close,
+                                color: colorScheme.onError,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 8,
+                          left: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surface.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${index + 1}/${_selectedImages.length}',
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return TextField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      enabled: !_isUploading, // Disable fields during upload
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-    );
-  }
-
-  /// Builds a button for selecting image source (camera or gallery)
-  Widget _buildImageSourceButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ElevatedButton.icon(
-          onPressed: _isUploading ? null : onPressed,
-          icon: Icon(icon, color: Colors.white),
-          label: Text(label),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }

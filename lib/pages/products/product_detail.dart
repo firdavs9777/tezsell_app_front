@@ -15,6 +15,9 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart';
 
 class ProductDetail extends ConsumerStatefulWidget {
   const ProductDetail({super.key, required this.product});
@@ -27,21 +30,22 @@ class ProductDetail extends ConsumerStatefulWidget {
 class _ProductDetailState extends ConsumerState<ProductDetail> {
   late PageController _pageController;
   bool _isLiking = false;
-  Products? _currentProduct; // Track current product state with updated like count
-  bool? _isLiked; // Track if product is liked
-  bool _isLoadingLikeStatus = false; // Track loading state for like status
+  Products? _currentProduct;
+  bool? _isLiked;
+  bool _isLoadingLikeStatus = false;
+  int _currentImageIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _currentProduct = widget.product; // Initialize with passed product
-    _loadLikeStatus(); // Load like status on init
+    _currentProduct = widget.product;
+    _loadLikeStatus();
   }
 
   Future<void> _loadLikeStatus({bool forceRefresh = false}) async {
     if (_isLoadingLikeStatus || (!forceRefresh && _isLiked != null)) return;
-    
+
     setState(() {
       _isLoadingLikeStatus = true;
     });
@@ -50,7 +54,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       final favoriteItems = await ref
           .read(profileServiceProvider)
           .getUserFavoriteItems();
-      
+
       if (mounted) {
         setState(() {
           _isLiked = favoriteItems.likedProducts
@@ -87,6 +91,44 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
+  String _getTimeAgo(DateTime? date) {
+    if (date == null) return '';
+    try {
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays > 30) {
+        return DateFormat('MMM d').format(date);
+      } else if (difference.inDays > 0) {
+        return '${difference.inDays}d ago';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours}h ago';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes}m ago';
+      } else {
+        return 'Just now';
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
+  void _shareProduct() {
+    HapticFeedback.selectionClick();
+    final localizations = AppLocalizations.of(context);
+    final shareText =
+        '${localizations?.checkOutProfile ?? "Check out"} ${widget.product.title} ${localizations?.onTezsell ?? "on Tezsell"}\nhttps://webtezsell.com/product/${widget.product.id}';
+
+    final box = context.findRenderObject() as RenderBox?;
+    Share.share(
+      shareText,
+      subject: widget.product.title,
+      sharePositionOrigin: box != null
+          ? box.localToGlobal(Offset.zero) & box.size
+          : const Rect.fromLTWH(0, 0, 100, 100),
+    );
+  }
+
   Future<void> _showReportDialog() async {
     final result = await showDialog<bool>(
       context: context,
@@ -96,8 +138,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         contentTitle: widget.product.title,
       ),
     );
-    
-    // Show success message if report was successful
+
     if (result == true && mounted) {
       final localizations = AppLocalizations.of(context);
       AppErrorHandler.showSuccess(
@@ -108,27 +149,23 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
-  // Add chat functionality
   Future<void> _startChat() async {
     final targetUserId = widget.product.userName.id;
-    final userName = widget.product.userName.username ?? 'Product Seller';
+    final userName = widget.product.userName.username ?? 'Seller';
     final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    // Initialize chat provider if not already initialized
     await ref.read(chatProvider.notifier).initialize();
 
-    // Check authentication after initialization
     final chatState = ref.read(chatProvider);
     if (!chatState.isAuthenticated) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(localizations?.chatLoginMessage ?? 'Please log in to start a chat'),
-            backgroundColor: Colors.orange,
+            backgroundColor: colorScheme.tertiary,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
           ),
         );
@@ -136,17 +173,14 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       return;
     }
 
-    // Prevent chatting with yourself
     if (chatState.currentUserId == targetUserId) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('You cannot chat with yourself'),
-            backgroundColor: Colors.orange,
+            content: Text(localizations?.cannot_chat_with_yourself ?? 'You cannot chat with yourself'),
+            backgroundColor: colorScheme.tertiary,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
           ),
         );
@@ -154,201 +188,110 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       return;
     }
 
-    // Show loading dialog
-    showDialog(
+    // Show Carrot-style loading bottom sheet
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => WillPopScope(
-        onWillPop: () async => false,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'Opening chat...',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(
+              width: 48,
+              height: 48,
+              child: CircularProgressIndicator(strokeWidth: 3),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              localizations?.opening_chat_with(userName) ?? 'Opening chat with $userName...',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
 
     try {
-      // Get or create chat room
       final chatRoom = await ref
           .read(chatProvider.notifier)
           .getOrCreateDirectChat(targetUserId);
 
-      // Close loading dialog
       if (mounted) Navigator.of(context).pop();
 
-      if (chatRoom != null) {
-        if (mounted) {
-          // Navigate to chat room
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatRoomScreen(chatRoom: chatRoom),
-            ),
-          );
-        }
+      if (chatRoom != null && mounted) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatRoomScreen(chatRoom: chatRoom)),
+        );
       } else {
         throw Exception('Failed to create chat room');
       }
     } catch (e) {
-      // Close loading dialog if still open
       if (mounted && Navigator.canPop(context)) {
         Navigator.of(context).pop();
       }
-
-      // Show error with retry option
       if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(localizations?.error ?? 'Chat Error'),
-            content: Text(
-              e.toString().contains('Failed to create')
-                  ? 'Failed to start chat. Please try again.'
-                  : e.toString(),
+        final snackColorScheme = Theme.of(context).colorScheme;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations?.unable_to_start_chat ?? 'Unable to start chat'),
+            backgroundColor: snackColorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: localizations?.retry ?? 'Retry',
+              textColor: snackColorScheme.onError,
+              onPressed: _startChat,
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(localizations?.cancel ?? 'Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _startChat(); // Retry
-                },
-                child: Text(localizations?.retry ?? 'Retry'),
-              ),
-            ],
           ),
         );
       }
     }
   }
 
-
-  Future<void> _likeProduct() async {
+  Future<void> _toggleLike() async {
     if (_isLiking) return;
 
+    final currentLikeStatus = _isLiked ?? false;
+
+    // Optimistic update
     setState(() {
       _isLiking = true;
+      _isLiked = !currentLikeStatus;
     });
 
     try {
-      final localizations = AppLocalizations.of(context);
-      final product = await ref
-          .read(profileServiceProvider)
-          .likeSingleProduct(productId: widget.product.id.toString());
-
-      if (product != null && mounted) {
-        setState(() {
-          _currentProduct = product; // Update product with new like count
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(milliseconds: 1000),
-            content: Text(localizations?.productLikeSuccess ??
-                'Product liked successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        ref.invalidate(profileServiceProvider);
-      }
-    } catch (e) {
-      if (mounted) {
-        final localizations = AppLocalizations.of(context);
-        final errorMessage = e.toString();
-        
-        // Don't show error if already liked (this is expected behavior)
-        if (!errorMessage.contains('already liked')) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: const Duration(milliseconds: 2000),
-              content: Text(
-                  localizations?.likeProductError ?? 'Error liking product: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
+      if (currentLikeStatus) {
+        final product = await ref
+            .read(profileServiceProvider)
+            .dislikeProductItem(productId: widget.product.id.toString());
+        if (product != null && mounted) {
+          setState(() => _currentProduct = product);
         }
+      } else {
+        final product = await ref
+            .read(profileServiceProvider)
+            .likeSingleProduct(productId: widget.product.id.toString());
+        if (product != null && mounted) {
+          setState(() => _currentProduct = product);
+        }
+      }
+      ref.invalidate(profileServiceProvider);
+    } catch (e) {
+      // Revert on error
+      if (mounted) {
+        setState(() => _isLiked = currentLikeStatus);
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isLiking = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _dislikeProduct() async {
-    if (_isLiking) return;
-
-    setState(() {
-      _isLiking = true;
-    });
-
-    try {
-      final localizations = AppLocalizations.of(context);
-      final product = await ref
-          .read(profileServiceProvider)
-          .dislikeProductItem(productId: widget.product.id.toString());
-
-      if (product != null && mounted) {
-        setState(() {
-          _currentProduct = product; // Update product with new like count
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: const Duration(milliseconds: 1000),
-            content: Text(localizations?.productDislikeSuccess ??
-                'Product disliked successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        ref.invalidate(profileServiceProvider);
-      }
-    } catch (e) {
-      if (mounted) {
-        final localizations = AppLocalizations.of(context);
-        final errorMessage = e.toString();
-        
-        // Don't show error if already disliked (this is expected behavior)
-        if (!errorMessage.contains('already disliked')) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: const Duration(milliseconds: 2000),
-              content: Text(localizations?.dislikeProductError ??
-                  'Error disliking product: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLiking = false;
-        });
+        setState(() => _isLiking = false);
       }
     }
   }
@@ -356,519 +299,442 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    // Build image URLs for cached image slider
     final List<String> imageUrls = widget.product.images.isNotEmpty
         ? widget.product.images
             .map((image) => ImageUtils.buildImageUrl(image.image))
             .toList()
         : [];
 
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Scaffold(
-      extendBodyBehindAppBar: false,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
-        foregroundColor: colorScheme.onSurface,
-        title: Text(
-          localizations?.productDetail ?? 'Detail Page',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.3,
-          ),
-        ),
-        actions: [
-          _buildLikeButton(),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: colorScheme.onSurface,
+      backgroundColor: colorScheme.surface,
+      body: CustomScrollView(
+        slivers: [
+          // Carrot-style SliverAppBar with image
+          SliverAppBar(
+            expandedHeight: 360,
+            pinned: true,
+            backgroundColor: colorScheme.surface,
+            foregroundColor: colorScheme.onSurface,
+            elevation: 0,
+            leading: _buildCircularButton(
+              icon: Icons.arrow_back_ios_new_rounded,
+              onTap: () => Navigator.of(context).pop(),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            onSelected: (value) {
-              if (value == 'report') {
-                _showReportDialog();
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem<String>(
-                value: 'report',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.flag_rounded,
-                      color: colorScheme.error,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      localizations?.reportProduct ?? 'Report Product',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+            actions: [
+              _buildCircularButton(
+                icon: Icons.share_outlined,
+                onTap: _shareProduct,
               ),
+              _buildCircularButton(
+                icon: Icons.more_horiz_rounded,
+                onTap: () => _showMoreOptions(context),
+              ),
+              const SizedBox(width: 8),
             ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildImageSlider(imageUrls),
+            ),
           ),
-          const SizedBox(width: 8),
+          // Content
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSellerSection(),
+                _buildDivider(),
+                _buildProductInfo(),
+                _buildDivider(),
+                _buildDescription(),
+                _buildDivider(),
+                _buildRecommendedProducts(),
+                const SizedBox(height: 100), // Space for bottom bar
+              ],
+            ),
+          ),
         ],
       ),
-      body: SingleChildScrollView(
+      bottomNavigationBar: _buildCarrotBottomBar(),
+    );
+  }
+
+  Widget _buildCircularButton({required IconData icon, required VoidCallback onTap}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Material(
+        color: colorScheme.scrim.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            child: Icon(icon, color: colorScheme.surface, size: 20),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showMoreOptions(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
         child: Column(
-          children: <Widget>[
-            _buildImageSlider(imageUrls),
-            _buildUserProfile(),
-            _buildProductTitle(),
-            _buildProductCategory(),
-            _buildProductDescription(),
-            _buildRecommendedProducts(),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.flag_outlined, color: colorScheme.error),
+              title: Text(
+                localizations?.reportProduct ?? 'Report',
+                style: TextStyle(color: colorScheme.error),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showReportDialog();
+              },
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
   Widget _buildImageSlider(List<String> imageUrls) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    return Container(
-      height: 380,
-      decoration: BoxDecoration(
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (imageUrls.isEmpty) {
+      return Container(
         color: colorScheme.surfaceContainerHighest,
-      ),
-      child: Stack(
-        children: [
-          CachedImageSlider(
-            imageUrls: imageUrls,
-            height: 380,
-            fit: BoxFit.contain,
-            pageController: _pageController,
-            borderRadius: BorderRadius.zero,
-            onImageTap: (index) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ImageViewer(
-                    imageUrls: imageUrls,
-                    initialIndex: index,
-                  ),
-                ),
-              );
-            },
+        child: Center(
+          child: Icon(
+            Icons.image_not_supported_outlined,
+            size: 64,
+            color: colorScheme.onSurfaceVariant,
           ),
-          // Gradient overlay at bottom for better text readability
+        ),
+      );
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Image PageView
+        PageView.builder(
+          controller: _pageController,
+          onPageChanged: (index) => setState(() => _currentImageIndex = index),
+          itemCount: imageUrls.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ImageViewer(
+                      imageUrls: imageUrls,
+                      initialIndex: index,
+                    ),
+                  ),
+                );
+              },
+              child: CachedNetworkImageWidget(
+                imageUrl: imageUrls[index],
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            );
+          },
+        ),
+        // Page indicator - Carrot style (bottom center, simple dots)
+        if (imageUrls.length > 1)
           Positioned(
-            bottom: 0,
+            bottom: 16,
             left: 0,
             right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(imageUrls.length, (index) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _currentImageIndex == index ? 20 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: _currentImageIndex == index
+                        ? colorScheme.surface
+                        : colorScheme.surface.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                );
+              }),
+            ),
+          ),
+        // Image counter badge
+        if (imageUrls.length > 1)
+          Positioned(
+            bottom: 16,
+            right: 16,
             child: Container(
-              height: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.3),
-                  ],
+                color: colorScheme.scrim.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${_currentImageIndex + 1}/${imageUrls.length}',
+                style: TextStyle(
+                  color: colorScheme.surface,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
-          if (imageUrls.length > 1) ...[
-            // Left navigation button
-            Positioned(
-              left: 16,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: Material(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(24),
-                  elevation: 2,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(24),
-                    onTap: () {
-                      if (_pageController.hasClients &&
-                          _pageController.page != null) {
-                        int currentPage = _pageController.page!.toInt();
-                        if (currentPage > 0) {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      }
-                    },
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.chevron_left_rounded,
-                        color: colorScheme.onSurface,
-                        size: 28,
-                      ),
-                    ),
-                  ),
+      ],
+    );
+  }
+
+  Widget _buildSellerSection() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
+    final seller = widget.product.userName;
+    final sellerId = seller.id;
+
+    return InkWell(
+      onTap: sellerId > 0 ? () => context.push('/user/$sellerId') : null,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            // Seller avatar
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: colorScheme.outline.withOpacity(0.2),
+                  width: 1,
                 ),
+              ),
+              child: ClipOval(
+                child: seller.profileImage?.image != null
+                    ? CachedNetworkImageWidget(
+                        imageUrl: ImageUtils.buildImageUrl(seller.profileImage!.image),
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        color: colorScheme.surfaceContainerHighest,
+                        child: Icon(
+                          Icons.person,
+                          color: colorScheme.onSurfaceVariant,
+                          size: 24,
+                        ),
+                      ),
               ),
             ),
-            // Right navigation button
-            Positioned(
-              right: 16,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: Material(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(24),
-                  elevation: 2,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(24),
-                    onTap: () {
-                      if (_pageController.hasClients &&
-                          _pageController.page != null) {
-                        int currentPage = _pageController.page!.toInt();
-                        if (currentPage < imageUrls.length - 1) {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      }
-                    },
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.chevron_right_rounded,
-                        color: colorScheme.onSurface,
-                        size: 28,
-                      ),
+            const SizedBox(width: 12),
+            // Seller info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    seller.username ?? (localizations?.username ?? 'Unknown'),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    seller.location != null
+                        ? '${seller.location!.region ?? ''}'
+                        : (localizations?.searchLocation ?? 'Location'),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ),
-            // Page indicator at bottom
-            Positioned(
-              bottom: 16,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: imageUrls.length,
-                  effect: WormEffect(
-                    dotWidth: 8.0,
-                    dotHeight: 8.0,
-                    spacing: 6.0,
-                    dotColor: Colors.white.withOpacity(0.4),
-                    activeDotColor: Colors.white,
-                    paintStyle: PaintingStyle.fill,
-                  ),
-                ),
-              ),
+            // Chevron
+            Icon(
+              Icons.chevron_right_rounded,
+              color: colorScheme.onSurfaceVariant,
+              size: 24,
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUserProfile() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context);
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outline.withOpacity(0.08),
-          width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: colorScheme.primary.withOpacity(0.2),
-                width: 2,
-              ),
-            ),
-            child: CachedNetworkImageWidget.circular(
-              imageUrl: widget.product.userName?.profileImage?.image,
-              radius: 28,
-              onTap: widget.product.userName?.profileImage?.image != null
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ImageViewer(
-                            imageUrl: widget.product.userName!.profileImage!.image,
-                            title: widget.product.userName?.username ?? 'Profile Picture',
-                          ),
-                        ),
-                      );
-                    }
-                  : null,
-              errorWidget: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colorScheme.surfaceContainerHighest,
-                ),
-                child: Icon(
-                  Icons.person_rounded,
-                  color: colorScheme.onSurface.withOpacity(0.5),
-                  size: 28,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  widget.product.userName?.username ??
-                      (localizations?.username ?? 'Unknown User'),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 17,
-                    color: colorScheme.onSurface,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_rounded,
-                      size: 16,
-                      color: colorScheme.primary,
-                    ),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        widget.product.userName?.location != null
-                            ? '${widget.product.userName!.location!.region ?? ''}, ${widget.product.userName!.location!.district ?? ''}'
-                            : (localizations?.searchLocation ??
-                                'Location not available'),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colorScheme.onSurface.withOpacity(0.7),
-                          fontWeight: FontWeight.w400,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildProductTitle() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  Widget _buildDivider() {
+    return Divider(
+      height: 1,
+      thickness: 8,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+    );
+  }
+
+  Widget _buildProductInfo() {
+    final colorScheme = Theme.of(context).colorScheme;
     final localizations = AppLocalizations.of(context);
+    final product = _currentProduct ?? widget.product;
 
     // Format price
-    final priceValue = int.tryParse(widget.product.price) ?? 0;
-    final formattedPrice = NumberFormat('#,##0', 'ko_KR').format(priceValue);
+    final priceValue = int.tryParse(product.price) ?? 0;
+    final formattedPrice = NumberFormat('#,###', 'en_US').format(priceValue);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Price display - prominent at top
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: colorScheme.primary.withOpacity(0.2),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '$formattedPrice',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.onPrimaryContainer,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  widget.product.currency,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onPrimaryContainer.withOpacity(0.8),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
           // Title
           Text(
-            widget.product.title ??
-                (localizations?.newProductTitle ?? 'No Title'),
+            product.title ?? (localizations?.newProductTitle ?? 'No Title'),
             style: TextStyle(
-              fontSize: 26,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
               height: 1.3,
-              letterSpacing: -0.5,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductCategory() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: colorScheme.primary.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.category_rounded,
-                size: 16,
-                color: colorScheme.onPrimaryContainer,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                getCategoryName().isNotEmpty
-                    ? getCategoryName()
-                    : (localizations?.newProductCategory ?? 'No Category'),
-                style: TextStyle(
-                  color: colorScheme.onPrimaryContainer,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.1,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductDescription() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context);
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outline.withOpacity(0.08),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          const SizedBox(height: 8),
+          // Category + Time ago row
           Row(
             children: [
-              Icon(
-                Icons.description_rounded,
-                size: 20,
-                color: colorScheme.primary,
+              // Category chip
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  getCategoryName().isNotEmpty
+                      ? getCategoryName()
+                      : (localizations?.newProductCategory ?? 'Category'),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ),
               const SizedBox(width: 8),
+              // Time ago
               Text(
-                localizations?.newProductDescription ?? 'Description',
+                _getTimeAgo(product.createdAt),
                 style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                  letterSpacing: -0.3,
+                  fontSize: 13,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
+          // Price - Carrot style (large, bold)
+          Text(
+            '$formattedPrice ${product.currency}',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: colorScheme.onSurface,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Stats row (likes, views)
+          Row(
+            children: [
+              Icon(
+                Icons.favorite_border,
+                size: 16,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${product.likeCount}',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.comment_outlined,
+                size: 16,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${product.commentCount}',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDescription() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            localizations?.newProductDescription ?? 'Description',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
           Text(
             widget.product.description ??
-                (localizations?.newProductDescription ?? 'No Description'),
+                (localizations?.newProductDescription ?? 'No description'),
             style: TextStyle(
               fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: colorScheme.onSurface.withOpacity(0.8),
+              color: colorScheme.onSurface.withOpacity(0.85),
               height: 1.6,
-              letterSpacing: 0.1,
             ),
           ),
         ],
@@ -877,150 +743,165 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   Widget _buildRecommendedProducts() {
+    final colorScheme = Theme.of(context).colorScheme;
     final localizations = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            localizations?.recommendedProducts ?? 'Recommended Products',
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: Text(
+            localizations?.recommendedProducts ?? 'Similar items',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 10),
-          FutureBuilder<List<Products>>(
-            future: ref
-                .read(productsServiceProvider)
-                .getSingleProduct(productId: widget.product.id.toString()),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-
-              if (snapshot.hasError) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.error, color: Colors.red),
-                        const SizedBox(height: 8),
-                        Text(
-                            '${localizations?.error ?? "Error"}: ${snapshot.error}'),
-                        const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: () => setState(() {}),
-                          child: Text(localizations?.retry ?? 'Retry'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(localizations?.productError ??
-                        'No recommended products available.'),
-                  ),
-                );
-              }
-
-              final recommendedProducts = snapshot.data!;
-
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: recommendedProducts.length,
-                itemBuilder: (context, index) {
-                  return ProductMain(product: recommendedProducts[index]);
-                },
+        ),
+        FutureBuilder<List<Products>>(
+          future: ref
+              .read(productsServiceProvider)
+              .getSingleProduct(productId: widget.product.id.toString()),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(),
+                ),
               );
-            },
-          ),
-        ],
-      ),
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Center(
+                  child: Text(
+                    localizations?.productError ?? 'No recommendations',
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  ),
+                ),
+              );
+            }
+
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ProductMain(product: snapshot.data![index]);
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  // Carrot-style bottom bar
+  Widget _buildCarrotBottomBar() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
+    final product = _currentProduct ?? widget.product;
+
+    // Format price
+    final priceValue = int.tryParse(product.price) ?? 0;
+    final formattedPrice = NumberFormat('#,###', 'en_US').format(priceValue);
+
+    final currentLikeStatus = _isLiked ?? false;
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+        color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outline.withOpacity(0.08),
+            color: colorScheme.outlineVariant.withOpacity(0.3),
             width: 1,
           ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: Row(
             children: [
-              // Chat button - expanded to take full width
-              Expanded(
+              // Heart button (Carrot style)
+              GestureDetector(
+                onTap: _isLiking ? null : _toggleLike,
                 child: Container(
-                  height: 56,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: colorScheme.primary,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    border: Border.all(
+                      color: colorScheme.outline.withOpacity(0.3),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      onTap: _startChat,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.chat_bubble_outline_rounded,
-                            color: colorScheme.onPrimary,
-                            size: 24,
+                  child: _isLiking
+                      ? const Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            localizations?.chat ?? 'Chat',
-                            style: TextStyle(
-                              color: colorScheme.onPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                        )
+                      : Icon(
+                          currentLikeStatus ? Icons.favorite : Icons.favorite_border,
+                          color: currentLikeStatus ? Colors.red : colorScheme.onSurfaceVariant,
+                          size: 24,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Divider
+              Container(
+                width: 1,
+                height: 36,
+                color: colorScheme.outline.withOpacity(0.2),
+              ),
+              const SizedBox(width: 12),
+              // Price
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$formattedPrice ${product.currency}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: colorScheme.onSurface,
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Chat button (Carrot style - orange)
+              SizedBox(
+                height: 48,
+                child: FilledButton(
+                  onPressed: _startChat,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF6F0F), // Carrot orange
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                  ),
+                  child: Text(
+                    localizations?.chat ?? 'Chat',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -1029,81 +910,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildLikeButton() {
-    final product = _currentProduct ?? widget.product;
-    final likeCount = product.likeCount;
-
-    // Show loading indicator while checking like status or during like/unlike action
-    if ((_isLiked == null && _isLoadingLikeStatus) || _isLiking) {
-      return const SizedBox(
-        width: 48,
-        height: 48,
-        child: Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      );
-    }
-
-    final currentLikeStatus = _isLiked ?? false;
-
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 300),
-      tween: Tween<double>(begin: 1.0, end: currentLikeStatus ? 1.1 : 1.0),
-      curve: Curves.elasticInOut,
-      builder: (context, scale, child) {
-        return Transform.scale(
-          scale: scale,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(
-                  currentLikeStatus ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.red,
-                  size: 28.0,
-                ),
-                onPressed: () async {
-                  // Optimistic update
-                  setState(() {
-                    _isLiked = !currentLikeStatus;
-                  });
-
-                  try {
-                    if (currentLikeStatus) {
-                      await _dislikeProduct();
-                    } else {
-                      await _likeProduct();
-                    }
-                    // Refresh like status after action to ensure sync
-                    await _loadLikeStatus(forceRefresh: true);
-                  } catch (e) {
-                    // Revert on error
-                    setState(() {
-                      _isLiked = currentLikeStatus;
-                    });
-                  }
-                },
-              ),
-              if (likeCount > 0)
-                Text(
-                  likeCount.toString(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

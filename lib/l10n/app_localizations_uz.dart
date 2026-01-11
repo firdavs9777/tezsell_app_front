@@ -42,6 +42,23 @@ class AppLocalizationsUz extends AppLocalizations {
       'Ishlatilgan mahsulotlar yohud ikkinchi qo\'l bozori';
 
   @override
+  String get home_welcome_title => 'Mahallangiz bozori';
+
+  @override
+  String get home_welcome_subtitle =>
+      'Yaqin atrofdagilar bilan sotib oling va soting.\nXavfsiz, oddiy va mahalliy.';
+
+  @override
+  String get home_get_started => 'Boshlash';
+
+  @override
+  String get home_sign_in => 'Hisobim bor';
+
+  @override
+  String get home_terms_notice =>
+      'Davom etish orqali siz Foydalanish shartlari va Maxfiylik siyosatiga rozilik bildirasiz';
+
+  @override
   String get register => 'Ro\'yxatdan o\'tish';
 
   @override
@@ -315,6 +332,30 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get searchServicePlaceholder => 'Xizmatlarni qidiring';
+
+  @override
+  String get search_products_subtitle =>
+      'Mahallangizda foydali takliflar toping';
+
+  @override
+  String get search_services_subtitle => 'Mahallangizda mutaxassislarni toping';
+
+  @override
+  String get search_products_error => 'Mahsulotlarni qidirishda xatolik';
+
+  @override
+  String get search_services_error => 'Xizmatlarni qidirishda xatolik';
+
+  @override
+  String get load_more_products_error =>
+      'Ko\'proq mahsulotlarni yuklashda xatolik';
+
+  @override
+  String get load_more_services_error =>
+      'Ko\'proq xizmatlarni yuklashda xatolik';
+
+  @override
+  String get try_different_keywords => 'Boshqa kalit so\'zlarni sinab ko\'ring';
 
   @override
   String get searchText => 'Qidiruv';
@@ -890,6 +931,10 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get locationDescription =>
       'Yaqin atrofdagi takliflarni toping. Bizning joylashuvga asoslangan tizimimiz sizga mahallangizda mahsulotlarni topishga yordam beradi.';
+
+  @override
+  String get location_subtitle =>
+      'Yaqin atrofdagi e\'lonlarni ko\'rish uchun viloyat va tumanni tanlang';
 
   @override
   String get categoryTitle => 'Kategoriyalar bo\'yicha filtrlash';
@@ -3887,4 +3932,86 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get unable_to_start_chat =>
       'Chatni boshlab bo\'lmadi. Iltimos, qayta urinib ko\'ring.';
+
+  @override
+  String get profile_listings => 'E\'lonlar';
+
+  @override
+  String get profile_followers => 'Obunachilar';
+
+  @override
+  String get profile_following => 'Obunalar';
+
+  @override
+  String get profile_no_products => 'Mahsulotlar yo\'q';
+
+  @override
+  String get profile_no_services => 'Xizmatlar yo\'q';
+
+  @override
+  String get profile_no_properties => 'Ko\'chmas mulklar yo\'q';
+
+  @override
+  String get profile_user_no_products =>
+      'Bu foydalanuvchi hali mahsulot joylamagan';
+
+  @override
+  String get profile_user_no_services =>
+      'Bu foydalanuvchi hali xizmat joylamagan';
+
+  @override
+  String get profile_user_no_properties =>
+      'Bu foydalanuvchi hali ko\'chmas mulk joylamagan';
+
+  @override
+  String get profile_error_occurred => 'Xatolik yuz berdi';
+
+  @override
+  String get profile_error_loading_products =>
+      'Mahsulotlarni yuklashda xatolik';
+
+  @override
+  String get profile_error_loading_services => 'Xizmatlarni yuklashda xatolik';
+
+  @override
+  String get profile_no_followers_yet => 'Hali obunachilar yo\'q';
+
+  @override
+  String get profile_no_following_yet => 'Hali obunalar yo\'q';
+
+  @override
+  String get profile_follow => 'Obuna bo\'lish';
+
+  @override
+  String get profile_following_btn => 'Obuna';
+
+  @override
+  String get profile_message => 'Xabar';
+
+  @override
+  String get profile_member_since => 'A\'zo';
+
+  @override
+  String get profile_loading_error => 'Profilni yuklashda xatolik';
+
+  @override
+  String get profile_retry => 'Qayta urinish';
+
+  @override
+  String get profile_share => 'Ulashish';
+
+  @override
+  String get profile_copy_link => 'Havolani nusxalash';
+
+  @override
+  String get profile_report => 'Shikoyat qilish';
+
+  @override
+  String get linkCopied => 'Havola nusxalandi';
+
+  @override
+  String get checkOutProfile => 'Ko\'ring';
+
+  @override
+  String get onTezsell => 'TezSell da';
 }

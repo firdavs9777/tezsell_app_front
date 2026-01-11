@@ -24,7 +24,9 @@ class ProductNew extends ConsumerStatefulWidget {
 }
 
 class _ProductNewState extends ConsumerState<ProductNew> {
+  final _formKey = GlobalKey<FormState>();
   final _formatter = NumberFormat('#,##0', 'en_US');
+
   @override
   void initState() {
     super.initState();
@@ -47,9 +49,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   int? selectedCategory;
   List<File> _selectedImages = [];
   final picker = ImagePicker();
-  bool _isUploading = false; // Track upload state
-
-  // Function to get the appropriate category name based on current locale
+  bool _isUploading = false;
 
   String getCategoryName(CategoryModel category) {
     final locale = Localizations.localeOf(context).languageCode;
@@ -66,9 +66,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   Future<void> _fetchCategories() async {
     try {
-      final categories = await ref
-          .read(productsServiceProvider)
-          .getCategories();
+      final categories = await ref.read(productsServiceProvider).getCategories();
       setState(() {
         availableCategories = categories;
       });
@@ -78,17 +76,18 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     }
   }
 
-  /// Shows a bottom sheet to choose between camera and gallery
-  Future<void> _showImageSourceDialog({bool isMulti = false}) async {
-    final localizations = AppLocalizations.of(context);
-
+  Future<void> _showImageSourceDialog() async {
     if (!mounted) return;
+
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
 
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      backgroundColor: colorScheme.surface,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -96,21 +95,28 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Select Image Source',
-                style: const TextStyle(
+                localizations?.selectImageSource ?? 'Select Image Source',
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt, color: Colors.blue),
-              title: const Text('Camera'),
+              leading: Icon(Icons.camera_alt, color: colorScheme.primary),
+              title: Text(
+                localizations?.camera ?? 'Camera',
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: Colors.purple),
-              title: const Text('Gallery'),
+              leading: Icon(Icons.photo_library, color: colorScheme.secondary),
+              title: Text(
+                localizations?.gallery ?? 'Gallery',
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
             const SizedBox(height: 8),
@@ -120,18 +126,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     );
 
     if (source != null) {
-      await _pickImage(source: source, isMulti: isMulti);
+      await _pickImage(source: source);
     }
   }
 
-  /// Picks image(s) from the specified source
-  Future<void> _pickImage({
-    required ImageSource source,
-    bool isMulti = false,
-  }) async {
+  Future<void> _pickImage({required ImageSource source}) async {
     try {
-      if (isMulti && source == ImageSource.gallery) {
-        // Multi-image picker only works with gallery
+      if (source == ImageSource.gallery) {
         final pickedFiles = await picker.pickMultiImage(
           maxWidth: 2560,
           maxHeight: 2560,
@@ -146,7 +147,6 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           AppLogger.debug('Selected ${pickedFiles.length} images from gallery');
         }
       } else {
-        // Single image from camera or gallery
         final pickedFile = await picker.pickImage(
           source: source,
           maxWidth: 2560,
@@ -156,7 +156,6 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         if (pickedFile != null && mounted) {
           final imageFile = File(pickedFile.path);
 
-          // Check file size (max 10MB)
           final fileSize = await imageFile.length();
           const maxSize = 10 * 1024 * 1024; // 10MB
 
@@ -183,7 +182,6 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   }
 
   Future<void> _submitProduct() async {
-    // Prevent multiple submissions
     if (_isUploading) {
       AppLogger.debug('Product submission already in progress');
       return;
@@ -191,14 +189,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
     final localizations = AppLocalizations.of(context);
 
-    // Validation
-    if (_titleController.text.trim().isEmpty ||
-        _descriptionController.text.trim().isEmpty ||
-        _amountController.text.trim().isEmpty) {
-      AppErrorHandler.showWarning(
-        context,
-        localizations?.pleaseFillAllRequired ?? 'Please fill all the fields',
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -225,8 +216,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     if (selectedCategory == null) {
       AppErrorHandler.showWarning(
         context,
-        localizations?.categoryRequiredMessage ??
-            'Please select a valid category.',
+        localizations?.categoryRequiredMessage ?? 'Please select a valid category.',
       );
       return;
     }
@@ -234,13 +224,11 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     if (_selectedImages.isEmpty) {
       AppErrorHandler.showWarning(
         context,
-        localizations?.oneImageConfirmMessage ??
-            'At least one product image is required',
+        localizations?.oneImageConfirmMessage ?? 'At least one product image is required',
       );
       return;
     }
 
-    // Set uploading state
     setState(() {
       _isUploading = true;
     });
@@ -248,22 +236,23 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     try {
       AppLogger.debug('Starting product creation...');
 
-      // Show loading indicator
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
-              const Text('Uploading product...'),
+              Text(localizations?.uploading ?? 'Uploading product...'),
             ],
           ),
           duration: const Duration(seconds: 30),
@@ -271,9 +260,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         ),
       );
 
-      final product = await ref
-          .read(productsServiceProvider)
-          .createProduct(
+      final product = await ref.read(productsServiceProvider).createProduct(
             title: _titleController.text.trim(),
             description: _descriptionController.text.trim(),
             price: price,
@@ -283,24 +270,20 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
       if (!mounted) return;
 
-      // Hide loading indicator
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (product != null) {
         AppLogger.info('Product created successfully: ${product.id}');
 
-        // Show success message BEFORE navigation
         AppErrorHandler.showSuccess(
           context,
           localizations?.productCreatedSuccess ?? 'Product successfully added!',
         );
 
-        // Wait a bit for user to see the success message
         await Future.delayed(const Duration(milliseconds: 500));
 
         if (!mounted) return;
 
-        // Navigate to home
         if (context.mounted) {
           context.go('/tabs');
         }
@@ -323,7 +306,6 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         );
       }
     } finally {
-      // Reset uploading state
       if (mounted) {
         setState(() {
           _isUploading = false;
@@ -334,268 +316,449 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
-    final categories = ref.watch(productsServiceProvider).getCategories();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        backgroundColor: colorScheme.surface,
         appBar: AppBar(
+          elevation: 0,
           title: Text(
-            localizations?.addNewProductBtn ?? 'Yangi mahsulot post yaratish',
+            localizations?.addNewProductBtn ?? 'Create New Product',
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Images Section
+                _buildImagesSection(theme, localizations),
                 const SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    localizations?.addNewProductBtn ??
-                        'Yangi mahsulot post yaratish',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                  localizations?.newProductTitle ?? 'Mahsulot Nomi',
-                ),
-                const SizedBox(height: 10),
-                _buildTextField(
-                  controller: _titleController,
-                  labelText: localizations?.newProductTitle ?? 'Mahsulot Nomi',
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                  localizations?.newProductDescription ??
-                      'Mahsulot haqida batafsil',
-                ),
-                const SizedBox(height: 10),
-                _buildTextField(
-                  controller: _descriptionController,
-                  labelText:
-                      localizations?.newProductDescription ??
-                      'Mahsulot haqida yozing',
-                  maxLines: 5,
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductPrice ?? 'Narxi'),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    ThousandsFormatter(), // Add the custom formatter
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: InputDecoration(
-                    labelText: localizations?.newProductPrice ?? 'Narxi',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(
-                  localizations?.newProductCategory ?? 'Kategoriyani tanlash',
-                ),
-                const SizedBox(height: 10),
-                DropdownButton<CategoryModel>(
-                  isExpanded: true,
-                  value: selectedCategory != null
-                      ? availableCategories.firstWhere(
-                          (cat) => cat.id == selectedCategory,
-                          orElse: () => availableCategories[0],
-                        )
-                      : null,
-                  items: availableCategories
-                      .map(
-                        (category) => DropdownMenuItem(
-                          value: category,
-                          child: Text(getCategoryName(category)),
+
+                // Basic Information Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader(
+                        localizations?.newProductTitle ?? 'Product Information',
+                        Icons.info_outline,
+                        theme,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _titleController,
+                        enabled: !_isUploading,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.newProductTitle ?? 'Product Name'} *',
+                          hintText: localizations?.newProductTitle ?? 'Enter product name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon: const Icon(Icons.shopping_bag),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                         ),
-                      )
-                      .toList(),
-                  onChanged: _isUploading
-                      ? null
-                      : (CategoryModel? value) {
-                          if (value != null) {
-                            setState(() {
-                              selectedCategory = value.id;
-                            });
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return localizations?.pleaseFillAllRequired ?? 'Please enter product name';
                           }
+                          return null;
                         },
-                  hint: Text(
-                    localizations?.selectCategory ?? 'Kategoriyani tanlang',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildSectionTitle(localizations?.newProductImages ?? 'Image'),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildImageSourceButton(
-                      icon: Icons.camera_alt,
-                      label: 'Camera',
-                      color: Colors.blue,
-                      onPressed: () => _showImageSourceDialog(isMulti: false),
-                    ),
-                    _buildImageSourceButton(
-                      icon: Icons.photo_library,
-                      label: 'Gallery',
-                      color: Colors.purple,
-                      onPressed: () => _showImageSourceDialog(isMulti: true),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                if (_selectedImages.isEmpty)
-                  Center(
-                    child: Text(
-                      localizations?.imageInstructions ??
-                          'Images will appear here. Please press the upload icon above.',
-                    ),
-                  )
-                else
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 8.0,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _descriptionController,
+                        enabled: !_isUploading,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.newProductDescription ?? 'Description'} *',
+                          hintText: localizations?.newProductDescription ?? 'Describe your product in detail...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon: const Icon(Icons.description),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                         ),
-                    itemCount: _selectedImages.length,
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              _selectedImages[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
-                          ),
-                          Positioned(
-                            top: 2,
-                            right: 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedImages.removeAt(index);
-                                  });
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(
-                                  minWidth: 24,
-                                  minHeight: 24,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return localizations?.pleaseFillAllRequired ?? 'Please enter description';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 16),
+
+                // Pricing Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader(
+                        localizations?.newProductPrice ?? 'Pricing',
+                        Icons.attach_money,
+                        theme,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _amountController,
+                        enabled: !_isUploading,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          ThousandsFormatter(),
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.newProductPrice ?? 'Price'} *',
+                          hintText: localizations?.newProductPrice ?? 'Enter price',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon: const Icon(Icons.attach_money),
+                          suffixText: 'UZS',
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return localizations?.priceRequiredMessage ?? 'Please enter price';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Category Card
+                _buildCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionHeader(
+                        localizations?.newProductCategory ?? 'Category',
+                        Icons.category,
+                        theme,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<CategoryModel>(
+                        value: selectedCategory != null
+                            ? availableCategories.firstWhere(
+                                (cat) => cat.id == selectedCategory,
+                                orElse: () => availableCategories.first,
+                              )
+                            : null,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          labelText: '${localizations?.newProductCategory ?? 'Select Category'} *',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon: const Icon(Icons.category),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ),
+                        hint: Text(
+                          localizations?.selectCategory ?? 'Select a category',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        items: availableCategories
+                            .map((category) => DropdownMenuItem(
+                                  value: category,
+                                  child: Text(
+                                    getCategoryName(category),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: _isUploading
+                            ? null
+                            : (CategoryModel? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedCategory = value.id;
+                                  });
+                                }
+                              },
+                        validator: (value) {
+                          if (value == null) {
+                            return localizations?.categoryRequiredMessage ?? 'Please select a category';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isUploading ? null : _submitProduct,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: _isUploading
+                        ? SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
+                            ),
+                          )
+                        : Text(
+                            localizations?.upload ?? 'Upload Product',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 32),
               ],
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          child: Container(
-            color: Colors.orange,
-            height: 60,
-            child: AbsorbPointer(
-              absorbing: _isUploading,
-              child: Opacity(
-                opacity: _isUploading ? 0.6 : 1.0,
-                child: CommonButton(
-                  buttonText: _isUploading
-                      ? 'Uploading...'
-                      : (localizations?.upload ?? 'Yuklash'),
-                  onPressed: _submitProduct,
+      ),
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon, ThemeData theme) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 20, color: theme.colorScheme.primary),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImagesSection(ThemeData theme, AppLocalizations? localizations) {
+    final colorScheme = theme.colorScheme;
+
+    return _buildCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader(
+            localizations?.newProductImages ?? 'Product Images',
+            Icons.photo_library,
+            theme,
+          ),
+          const SizedBox(height: 16),
+          if (_selectedImages.isEmpty)
+            GestureDetector(
+              onTap: _isUploading ? null : _showImageSourceDialog,
+              child: Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: colorScheme.outline.withOpacity(0.3),
+                    style: BorderStyle.solid,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add_photo_alternate,
+                      size: 56,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      localizations?.imageInstructions ?? 'Tap to add images',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      localizations?.oneImageConfirmMessage ?? 'At least 1 image required',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            )
+          else
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _selectedImages.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _selectedImages.length) {
+                    return GestureDetector(
+                      onTap: _isUploading ? null : _showImageSourceDialog,
+                      child: Container(
+                        width: 160,
+                        margin: const EdgeInsets.only(right: 12),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: colorScheme.outline.withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add, size: 36, color: colorScheme.primary),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add More',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    width: 160,
+                    margin: const EdgeInsets.only(right: 12),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.file(
+                            _selectedImages[index],
+                            fit: BoxFit.cover,
+                            height: 200,
+                            width: 160,
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: GestureDetector(
+                            onTap: _isUploading
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _selectedImages.removeAt(index);
+                                    });
+                                  },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: colorScheme.error,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: colorScheme.shadow.withOpacity(0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.close,
+                                color: colorScheme.onError,
+                                size: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 8,
+                          left: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surface.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${index + 1}/${_selectedImages.length}',
+                              style: TextStyle(
+                                color: colorScheme.onSurface,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return TextField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      enabled: !_isUploading, // Disable fields during upload
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
-  /// Builds a button for selecting image source (camera or gallery)
-  Widget _buildImageSourceButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ElevatedButton.icon(
-          onPressed: _isUploading ? null : onPressed,
-          icon: Icon(icon, color: Colors.white),
-          label: Text(label),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }

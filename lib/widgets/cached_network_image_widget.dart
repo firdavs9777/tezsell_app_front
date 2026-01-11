@@ -110,6 +110,16 @@ class CachedNetworkImageWidget extends StatelessWidget {
       return _buildPlaceholder(context);
     }
 
+    // Handle infinity/NaN values for cache dimensions
+    int? cacheWidth;
+    int? cacheHeight;
+    if (width != null && width!.isFinite && !width!.isNaN) {
+      cacheWidth = (width! * 2).toInt();
+    }
+    if (height != null && height!.isFinite && !height!.isNaN) {
+      cacheHeight = (height! * 2).toInt();
+    }
+
     Widget imageWidget = CachedNetworkImage(
       imageUrl: fullUrl,
       width: width,
@@ -122,8 +132,8 @@ class CachedNetworkImageWidget extends StatelessWidget {
         return _buildErrorWidget(context);
       },
       // Use 2x resolution for memory cache to improve quality on high-DPI screens
-      memCacheWidth: width != null ? (width! * 2).toInt() : null,
-      memCacheHeight: height != null ? (height! * 2).toInt() : null,
+      memCacheWidth: cacheWidth,
+      memCacheHeight: cacheHeight,
       // Increase disk cache to preserve higher quality images
       maxWidthDiskCache: 2048,
       maxHeightDiskCache: 2048,

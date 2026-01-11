@@ -117,13 +117,14 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
   @override
   Widget build(BuildContext context) {
     final hasText = commentController.text.trim().isNotEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: colorScheme.shadow.withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, -2),
           ),
@@ -184,7 +185,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                         maxHeight: _isFocused ? 120 : 44,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
+                        color: colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(
                           color: _isFocused
@@ -199,15 +200,15 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                         maxLines: _isFocused ? 5 : 1,
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => submitComment(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF212124),
+                          color: colorScheme.onSurface,
                           height: 1.4,
                         ),
                         decoration: InputDecoration(
                           hintText: AppLocalizations.of(context)?.writeComment ?? 'Write a comment...',
                           hintStyle: TextStyle(
-                            color: Colors.grey[500],
+                            color: colorScheme.onSurfaceVariant,
                             fontSize: 15,
                           ),
                           border: InputBorder.none,
@@ -292,14 +293,14 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                       Icon(
                         Icons.info_outline,
                         size: 14,
-                        color: Colors.grey[500],
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         AppLocalizations.of(context)?.press_enter_to_send ?? 'Press Enter to send',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const Spacer(),
@@ -310,7 +311,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                             fontSize: 12,
                             color: commentController.text.length > 450
                                 ? const Color(0xFFFF6F0F)
-                                : Colors.grey[500],
+                                : colorScheme.onSurfaceVariant,
                             fontWeight: commentController.text.length > 450
                                 ? FontWeight.w600
                                 : FontWeight.normal,

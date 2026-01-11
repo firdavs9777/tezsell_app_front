@@ -160,6 +160,36 @@ abstract class AppLocalizations {
   /// **'Used products or second-hand market'**
   String get usedProductsMarket;
 
+  /// Welcome title on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Your neighborhood marketplace'**
+  String get home_welcome_title;
+
+  /// Welcome subtitle on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Buy and sell with people nearby.\nSafe, simple, and local.'**
+  String get home_welcome_subtitle;
+
+  /// Get started button on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get home_get_started;
+
+  /// Sign in button on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'I already have an account'**
+  String get home_sign_in;
+
+  /// Terms notice on home screen
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our Terms of Service and Privacy Policy'**
+  String get home_terms_notice;
+
   /// Register button text
   ///
   /// In en, this message translates to:
@@ -669,6 +699,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search for services'**
   String get searchServicePlaceholder;
+
+  /// No description provided for @search_products_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find great deals in your neighborhood'**
+  String get search_products_subtitle;
+
+  /// No description provided for @search_services_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find professionals in your neighborhood'**
+  String get search_services_subtitle;
+
+  /// No description provided for @search_products_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error searching products'**
+  String get search_products_error;
+
+  /// No description provided for @search_services_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error searching services'**
+  String get search_services_error;
+
+  /// No description provided for @load_more_products_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading more products'**
+  String get load_more_products_error;
+
+  /// No description provided for @load_more_services_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading more services'**
+  String get load_more_services_error;
+
+  /// No description provided for @try_different_keywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Try different keywords'**
+  String get try_different_keywords;
 
   /// Search button text
   ///
@@ -1773,6 +1845,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find deals near you. Our location-based system helps you discover items in your neighborhood.'**
   String get locationDescription;
+
+  /// Location page subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your region and district to see nearby listings'**
+  String get location_subtitle;
 
   /// Category feature title
   ///
@@ -7389,6 +7467,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to start chat. Please try again.'**
   String get unable_to_start_chat;
+
+  /// Listings count label on profile
+  ///
+  /// In en, this message translates to:
+  /// **'Listings'**
+  String get profile_listings;
+
+  /// Followers count label on profile
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get profile_followers;
+
+  /// Following count label on profile
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get profile_following;
+
+  /// Empty state title for products
+  ///
+  /// In en, this message translates to:
+  /// **'No products'**
+  String get profile_no_products;
+
+  /// Empty state title for services
+  ///
+  /// In en, this message translates to:
+  /// **'No services'**
+  String get profile_no_services;
+
+  /// Empty state title for properties
+  ///
+  /// In en, this message translates to:
+  /// **'No properties'**
+  String get profile_no_properties;
+
+  /// Empty state subtitle for products
+  ///
+  /// In en, this message translates to:
+  /// **'This user hasn\'t posted any products yet'**
+  String get profile_user_no_products;
+
+  /// Empty state subtitle for services
+  ///
+  /// In en, this message translates to:
+  /// **'This user hasn\'t posted any services yet'**
+  String get profile_user_no_services;
+
+  /// Empty state subtitle for properties
+  ///
+  /// In en, this message translates to:
+  /// **'This user hasn\'t posted any properties yet'**
+  String get profile_user_no_properties;
+
+  /// Generic error title
+  ///
+  /// In en, this message translates to:
+  /// **'Error occurred'**
+  String get profile_error_occurred;
+
+  /// Error loading products message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading products'**
+  String get profile_error_loading_products;
+
+  /// Error loading services message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading services'**
+  String get profile_error_loading_services;
+
+  /// Empty state for followers list
+  ///
+  /// In en, this message translates to:
+  /// **'No followers yet'**
+  String get profile_no_followers_yet;
+
+  /// Empty state for following list
+  ///
+  /// In en, this message translates to:
+  /// **'Not following anyone yet'**
+  String get profile_no_following_yet;
+
+  /// Follow button text
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get profile_follow;
+
+  /// Following button text (already following)
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get profile_following_btn;
+
+  /// Message button text
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get profile_message;
+
+  /// Member since label
+  ///
+  /// In en, this message translates to:
+  /// **'Member since'**
+  String get profile_member_since;
+
+  /// Profile loading error message
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading profile'**
+  String get profile_loading_error;
+
+  /// Retry button for profile
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get profile_retry;
+
+  /// Share profile option
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get profile_share;
+
+  /// Copy profile link option
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get profile_copy_link;
+
+  /// Report user option
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get profile_report;
+
+  /// Message shown when a link is copied
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get linkCopied;
+
+  /// Share text prefix for profile
+  ///
+  /// In en, this message translates to:
+  /// **'Check out'**
+  String get checkOutProfile;
+
+  /// Share text suffix for profile
+  ///
+  /// In en, this message translates to:
+  /// **'on TezSell'**
+  String get onTezsell;
 }
 
 class _AppLocalizationsDelegate

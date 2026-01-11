@@ -51,15 +51,15 @@ class _InquiriesPageState extends State<InquiriesPage> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.inquiries ?? 'Help & Support',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
           ),
         ),
       ),
@@ -106,7 +106,7 @@ class _InquiriesPageState extends State<InquiriesPage> {
                         'We\'re here to assist you with any questions',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[700],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -305,15 +305,16 @@ class _InquiriesPageState extends State<InquiriesPage> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -349,13 +350,13 @@ class _InquiriesPageState extends State<InquiriesPage> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey[600],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
+            Icon(Icons.arrow_forward_ios, size: 16, color: theme.colorScheme.onSurfaceVariant),
           ],
         ),
       ),
@@ -367,7 +368,7 @@ class _InquiriesPageState extends State<InquiriesPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -533,9 +534,9 @@ class _InquiriesPageState extends State<InquiriesPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Theme(
         data: Theme.of(context).copyWith(
@@ -552,14 +553,14 @@ class _InquiriesPageState extends State<InquiriesPage> {
             ),
           ),
           iconColor: theme.primaryColor,
-          collapsedIconColor: Colors.grey[600],
+          collapsedIconColor: theme.colorScheme.onSurfaceVariant,
           children: [
             Text(
               answer,
               style: TextStyle(
                 fontSize: 14,
                 height: 1.5,
-                color: Colors.grey[700],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -666,7 +667,9 @@ class _InquiriesPageState extends State<InquiriesPage> {
                     ),
                   ],
                 ),
-                backgroundColor: Colors.green,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.primary
+                    : const Color(0xFF43A047),
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -718,7 +721,7 @@ class _InquiriesPageState extends State<InquiriesPage> {
               Expanded(child: Text(message)),
             ],
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),

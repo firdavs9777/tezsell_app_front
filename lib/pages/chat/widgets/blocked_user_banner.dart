@@ -16,10 +16,10 @@ class BlockedUserBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Colors.orange[50],
+      color: Theme.of(context).colorScheme.tertiaryContainer.withOpacity(0.3),
       child: Row(
         children: [
-          Icon(Icons.block, color: Colors.orange[700]),
+          Icon(Icons.block, color: Theme.of(context).colorScheme.tertiary),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -32,7 +32,7 @@ class BlockedUserBanner extends StatelessWidget {
                       isBlockedByUser ? l.you_are_blocked : l.block_user,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.orange[900],
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
                     );
                   },
@@ -46,7 +46,7 @@ class BlockedUserBanner extends StatelessWidget {
                           : l.you_blocked_user(username),
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.orange[800],
+                        color: Theme.of(context).colorScheme.onTertiaryContainer,
                       ),
                     );
                   },

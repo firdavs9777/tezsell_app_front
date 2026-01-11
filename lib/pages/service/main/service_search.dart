@@ -92,10 +92,11 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
         _isInitialLoading = false;
       });
       if (mounted) {
+        final colorScheme = Theme.of(context).colorScheme;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error searching services: $error'),
-            backgroundColor: Colors.red,
+            content: Text(AppLocalizations.of(context)?.search_services_error ?? 'Error searching services'),
+            backgroundColor: colorScheme.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -139,10 +140,11 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
         _isLoadingMore = false;
       });
       if (mounted) {
+        final colorScheme = Theme.of(context).colorScheme;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading more services: $error'),
-            backgroundColor: Colors.red,
+            content: Text(AppLocalizations.of(context)?.load_more_services_error ?? 'Error loading more services'),
+            backgroundColor: colorScheme.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -164,38 +166,42 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
-        title: _buildSearchBar(),
+        title: _buildSearchBar(colorScheme),
         titleSpacing: 0,
       ),
       body: Column(
         children: [
           // Divider under search bar
-          Divider(height: 1, color: Colors.grey.shade200),
+          Divider(height: 1, color: colorScheme.outlineVariant),
 
           // Show current location filter if active
           if (widget.regionName.isNotEmpty || widget.districtName.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              color: Colors.grey.shade50,
+              color: colorScheme.surfaceVariant.withOpacity(0.3),
               child: Row(
                 children: [
                   Icon(Icons.location_on,
-                      size: 16, color: Colors.grey.shade600),
-                  SizedBox(width: 6),
+                      size: 16, color: colorScheme.onSurfaceVariant),
+                  const SizedBox(width: 6),
                   Text(
-                    '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                    widget.districtName.isNotEmpty ? widget.districtName : widget.regionName,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade700,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -204,19 +210,19 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             ),
 
           Expanded(
-            child: _buildSearchResults(),
+            child: _buildSearchResults(colorScheme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(ColorScheme colorScheme) {
     return Container(
       height: 40,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: colorScheme.surfaceVariant.withOpacity(0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
@@ -226,20 +232,20 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
           hintText: AppLocalizations.of(context)?.searchServicePlaceholder ??
               "Search services",
           hintStyle: TextStyle(
-            color: Colors.grey.shade500,
+            color: colorScheme.onSurfaceVariant,
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Colors.grey.shade500,
+            color: colorScheme.onSurfaceVariant,
             size: 22,
           ),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
                   icon: Icon(
                     Icons.clear,
-                    color: Colors.grey.shade500,
+                    color: colorScheme.onSurfaceVariant,
                     size: 20,
                   ),
                   onPressed: _clearSearch,
@@ -252,9 +258,9 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
           ),
         ),
         textInputAction: TextInputAction.search,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
-          color: Colors.black87,
+          color: colorScheme.onSurface,
           fontWeight: FontWeight.w400,
         ),
         onSubmitted: _searchServices,
@@ -271,7 +277,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
     );
   }
 
-  Widget _buildSearchResults() {
+  Widget _buildSearchResults(ColorScheme colorScheme) {
     if (!_hasSearched) {
       return Center(
         child: Column(
@@ -280,26 +286,26 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             Icon(
               Icons.search,
               size: 80,
-              color: Colors.grey.shade300,
+              color: colorScheme.outlineVariant,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context)?.service ?? "Search for services",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                "Find professionals in your neighborhood",
+                AppLocalizations.of(context)?.search_services_subtitle ?? "Find professionals in your neighborhood",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade500,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -310,7 +316,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
     }
 
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(color: colorScheme.primary));
     }
 
     if (_allServices.isEmpty) {
@@ -321,26 +327,26 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             Icon(
               Icons.inbox_outlined,
               size: 80,
-              color: Colors.grey.shade300,
+              color: colorScheme.outlineVariant,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              "No services found",
+              AppLocalizations.of(context)?.no_services_found ?? "No services found",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                'Try different keywords',
+                AppLocalizations.of(context)?.try_different_keywords ?? 'Try different keywords',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade500,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -369,10 +375,13 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             padding: const EdgeInsets.all(20.0),
             child: Center(
               child: _isLoadingMore
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 24,
                       height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: colorScheme.primary,
+                      ),
                     )
                   : const SizedBox.shrink(),
             ),
@@ -385,7 +394,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             child: Text(
               '—',
               style: TextStyle(
-                color: Colors.grey.shade400,
+                color: colorScheme.outlineVariant,
                 fontSize: 18,
               ),
             ),

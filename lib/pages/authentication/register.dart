@@ -155,15 +155,23 @@ class _RegisterState extends State<Register> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           title: Text(
             AppLocalizations.of(context)?.appTitle ?? 'Tezsell',
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
           ),
-          foregroundColor: Theme.of(context).colorScheme.onBackground,
+          centerTitle: true,
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,

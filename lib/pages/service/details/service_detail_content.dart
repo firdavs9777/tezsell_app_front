@@ -3,6 +3,7 @@ import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
+import 'package:go_router/go_router.dart';
 
 class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
@@ -155,9 +156,8 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
           ),
           const SizedBox(height: 24),
 
-          // Service Provider Card
+          // Service Provider Card - tappable to navigate to profile
           Container(
-            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
@@ -176,129 +176,126 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  localizations?.service_provider ?? 'Service Provider',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface.withOpacity(0.7),
-                    letterSpacing: 0.1,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    // Avatar with border
-                    widget.service.userName.profileImage?.image != null
-                        ? GestureDetector(
-                            onTap: () {
-                              final imageUrl = widget.service.userName.profileImage!.image.startsWith('http://') ||
-                                      widget.service.userName.profileImage!.image.startsWith('https://')
-                                  ? widget.service.userName.profileImage!.image
-                                  : '$baseUrl${widget.service.userName.profileImage!.image}';
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ImageViewer(
-                                    imageUrl: imageUrl,
-                                    title: widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: colorScheme.primary.withOpacity(0.2),
-                            width: 2,
-                          ),
-                        ),
-                        child: Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer,
-                            shape: BoxShape.circle,
-                          ),
-                          child: ClipOval(
-                            child: Image.network(
-                              widget.service.userName.profileImage!.image.startsWith('http://') ||
-                                      widget.service.userName.profileImage!.image.startsWith('https://')
-                                  ? widget.service.userName.profileImage!.image
-                                  : '$baseUrl${widget.service.userName.profileImage!.image}',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Icon(
-                                Icons.person_rounded,
-                                color: colorScheme.primary,
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                        : Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: colorScheme.primary.withOpacity(0.2),
-                                width: 2,
-                              ),
-                            ),
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: colorScheme.primaryContainer,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.person_rounded,
-                                color: colorScheme.primary,
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                    const SizedBox(width: 16),
-
-                    // Provider Info
-                    Expanded(
+                // Tappable profile section
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    onTap: widget.service.userName.id > 0
+                        ? () => context.push('/user/${widget.service.userName.id}')
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Username
-                          Text(
-                            widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onSurface,
-                              letterSpacing: -0.3,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                localizations?.service_provider ?? 'Service Provider',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: colorScheme.onSurface.withOpacity(0.7),
+                                  letterSpacing: 0.1,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: colorScheme.onSurface.withOpacity(0.4),
+                                size: 20,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          // Location with icon
+                          const SizedBox(height: 16),
                           Row(
                             children: [
-                              Icon(
-                                Icons.location_on_rounded,
-                                size: 16,
-                                color: colorScheme.primary,
+                              // Avatar with border and hero animation
+                              Hero(
+                                tag: 'profile_image_${widget.service.userName.id}',
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: colorScheme.primary.withOpacity(0.2),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primaryContainer,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: widget.service.userName.profileImage?.image != null
+                                        ? ClipOval(
+                                            child: Image.network(
+                                              widget.service.userName.profileImage!.image.startsWith('http://') ||
+                                                      widget.service.userName.profileImage!.image.startsWith('https://')
+                                                  ? widget.service.userName.profileImage!.image
+                                                  : '$baseUrl${widget.service.userName.profileImage!.image}',
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) => Icon(
+                                                Icons.person_rounded,
+                                                color: colorScheme.primary,
+                                                size: 28,
+                                              ),
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.person_rounded,
+                                            color: colorScheme.primary,
+                                            size: 28,
+                                          ),
+                                  ),
+                                ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 16),
+
+                              // Provider Info
                               Expanded(
-                                child: Text(
-                                  _maskedLocation(
-                                    widget.service.userName.location.region,
-                                    widget.service.userName.location.district,
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: colorScheme.onSurface.withOpacity(0.7),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Username
+                                    Text(
+                                      widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.onSurface,
+                                        letterSpacing: -0.3,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Location with icon
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on_rounded,
+                                          size: 16,
+                                          color: colorScheme.primary,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            _maskedLocation(
+                                              widget.service.userName.location.region,
+                                              widget.service.userName.location.district,
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: colorScheme.onSurface.withOpacity(0.7),
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -306,46 +303,34 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                         ],
                       ),
                     ),
-
-                    const SizedBox(width: 12),
-
-                    // Chat Button
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: widget.onChatPressed ??
-                              () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(localizations?.opening_chat ?? 'Opening chat...'),
-                                    backgroundColor: colorScheme.primary,
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    margin: const EdgeInsets.all(16),
-                                    duration: const Duration(seconds: 1),
-                                  ),
-                                );
-                              },
-                          child: Icon(
-                            Icons.chat_bubble_outline_rounded,
-                            color: colorScheme.onPrimaryContainer,
-                            size: 24,
-                          ),
-                        ),
-                      ),
+                  ),
+                ),
+                // Chat Button Row
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: FilledButton.icon(
+                      onPressed: widget.onChatPressed ??
+                          () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(localizations?.opening_chat ?? 'Opening chat...'),
+                                backgroundColor: colorScheme.primary,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                margin: const EdgeInsets.all(16),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                      icon: const Icon(Icons.chat_bubble_outline_rounded, size: 20),
+                      label: Text(localizations?.chat ?? 'Chat'),
                     ),
-
-                  ],
+                  ),
                 ),
               ],
             ),

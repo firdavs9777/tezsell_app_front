@@ -41,6 +41,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usedProductsMarket => 'Used products or second-hand market';
 
   @override
+  String get home_welcome_title => 'Your neighborhood marketplace';
+
+  @override
+  String get home_welcome_subtitle =>
+      'Buy and sell with people nearby.\nSafe, simple, and local.';
+
+  @override
+  String get home_get_started => 'Get Started';
+
+  @override
+  String get home_sign_in => 'I already have an account';
+
+  @override
+  String get home_terms_notice =>
+      'By continuing, you agree to our Terms of Service and Privacy Policy';
+
+  @override
   String get register => 'Register';
 
   @override
@@ -312,6 +329,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchServicePlaceholder => 'Search for services';
+
+  @override
+  String get search_products_subtitle =>
+      'Find great deals in your neighborhood';
+
+  @override
+  String get search_services_subtitle =>
+      'Find professionals in your neighborhood';
+
+  @override
+  String get search_products_error => 'Error searching products';
+
+  @override
+  String get search_services_error => 'Error searching services';
+
+  @override
+  String get load_more_products_error => 'Error loading more products';
+
+  @override
+  String get load_more_services_error => 'Error loading more services';
+
+  @override
+  String get try_different_keywords => 'Try different keywords';
 
   @override
   String get searchText => 'Search';
@@ -881,6 +921,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get locationDescription =>
       'Find deals near you. Our location-based system helps you discover items in your neighborhood.';
+
+  @override
+  String get location_subtitle =>
+      'Choose your region and district to see nearby listings';
 
   @override
   String get categoryTitle => 'Category Filtering';
@@ -3826,4 +3870,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unable_to_start_chat => 'Unable to start chat. Please try again.';
+
+  @override
+  String get profile_listings => 'Listings';
+
+  @override
+  String get profile_followers => 'Followers';
+
+  @override
+  String get profile_following => 'Following';
+
+  @override
+  String get profile_no_products => 'No products';
+
+  @override
+  String get profile_no_services => 'No services';
+
+  @override
+  String get profile_no_properties => 'No properties';
+
+  @override
+  String get profile_user_no_products =>
+      'This user hasn\'t posted any products yet';
+
+  @override
+  String get profile_user_no_services =>
+      'This user hasn\'t posted any services yet';
+
+  @override
+  String get profile_user_no_properties =>
+      'This user hasn\'t posted any properties yet';
+
+  @override
+  String get profile_error_occurred => 'Error occurred';
+
+  @override
+  String get profile_error_loading_products => 'Error loading products';
+
+  @override
+  String get profile_error_loading_services => 'Error loading services';
+
+  @override
+  String get profile_no_followers_yet => 'No followers yet';
+
+  @override
+  String get profile_no_following_yet => 'Not following anyone yet';
+
+  @override
+  String get profile_follow => 'Follow';
+
+  @override
+  String get profile_following_btn => 'Following';
+
+  @override
+  String get profile_message => 'Message';
+
+  @override
+  String get profile_member_since => 'Member since';
+
+  @override
+  String get profile_loading_error => 'Error loading profile';
+
+  @override
+  String get profile_retry => 'Try again';
+
+  @override
+  String get profile_share => 'Share';
+
+  @override
+  String get profile_copy_link => 'Copy link';
+
+  @override
+  String get profile_report => 'Report';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
+  String get checkOutProfile => 'Check out';
+
+  @override
+  String get onTezsell => 'on TezSell';
 }

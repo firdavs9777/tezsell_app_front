@@ -21,15 +21,17 @@ class PropertyLocationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: colorScheme.outlineVariant),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +53,7 @@ class PropertyLocationSection extends StatelessWidget {
                 SizedBox(height: 8),
                 Text(
                   '${localizations?.property_details_floor ?? "Floor"}: $floor ${localizations?.property_details_of ?? "of"} $totalFloors',
-                  style: TextStyle(color: Colors.grey[600]),
+                  style: TextStyle(color: colorScheme.onSurfaceVariant),
                 ),
               ],
             ],
@@ -61,12 +63,12 @@ class PropertyLocationSection extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: colorScheme.outlineVariant),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: colorScheme.shadow.withOpacity(0.05),
                   blurRadius: 10,
                   offset: Offset(0, 2)),
             ],
@@ -103,7 +105,7 @@ class PropertyLocationSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[50],
+                  color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -116,10 +118,10 @@ class PropertyLocationSection extends StatelessWidget {
                         children: [
                           Text(property.address,
                               style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14)),
+                                  fontWeight: FontWeight.w500, fontSize: 14, color: colorScheme.onSurface)),
                           Text('${property.district}, ${property.city}',
                               style: TextStyle(
-                                  color: Colors.grey[600], fontSize: 12)),
+                                  color: colorScheme.onSurfaceVariant, fontSize: 12)),
                         ],
                       ),
                     ),

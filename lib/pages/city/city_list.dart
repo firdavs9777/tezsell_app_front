@@ -47,7 +47,7 @@ class CityList extends StatelessWidget {
             ),
             trailing: Icon(
               Icons.chevron_right,
-              color: Colors.grey.shade400,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -89,7 +89,7 @@ class CityList extends StatelessWidget {
                           child: Text(
                             AppLocalizations.of(context)?.no ?? 'Yo\'q',
                             style: TextStyle(
-                              color: Colors.grey,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 16,
                             ),
                           ),

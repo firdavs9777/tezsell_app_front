@@ -19,6 +19,7 @@ class PropertyAmenitiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final amenities = <String, int?>{};
 
     if (metroDistance != null) {
@@ -47,15 +48,15 @@ class PropertyAmenitiesSection extends StatelessWidget {
       children: [
         Text(
           localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
         SizedBox(height: 12),
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: colorScheme.outlineVariant),
           ),
           child: Column(
             children: availableAmenities.map((amenity) {
@@ -101,7 +102,7 @@ class PropertyAmenitiesSection extends StatelessWidget {
                     ),
                     Text(
                       '${amenity.value}m ${localizations?.amenities_away ?? "away"}',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
                     ),
                   ],
                 ),

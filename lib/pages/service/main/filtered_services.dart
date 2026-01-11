@@ -84,7 +84,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading services: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -127,7 +127,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading more services: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -140,6 +140,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -171,26 +172,26 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
           if (widget.categoryName.isNotEmpty || widget.districtName.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(8.0),
-              color: Colors.blue.withOpacity(0.1),
+              color: colorScheme.primary.withOpacity(0.1),
               child: Row(
                 children: [
-                  Icon(Icons.filter_alt, size: 16, color: Colors.blue),
+                  Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
                   SizedBox(width: 8),
                   if (widget.categoryName.isNotEmpty)
                     Text(
                       'Category: ${widget.categoryName}',
-                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                      style: TextStyle(fontSize: 12, color: colorScheme.primary),
                     ),
                   if (widget.categoryName.isNotEmpty &&
                       widget.districtName.isNotEmpty) ...[
                     SizedBox(width: 8),
-                    Text('|', style: TextStyle(color: Colors.blue)),
+                    Text('|', style: TextStyle(color: colorScheme.primary)),
                     SizedBox(width: 8),
                   ],
                   if (widget.districtName.isNotEmpty)
                     Text(
-                      '📍 ${widget.districtName} ',
-                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                      '${widget.districtName} ',
+                      style: TextStyle(fontSize: 12, color: colorScheme.primary),
                     ),
                 ],
               ),
@@ -212,6 +213,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
     }
 
     if (_allServices.isEmpty) {
+      final colorScheme = Theme.of(context).colorScheme;
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Container(
@@ -223,23 +225,23 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
                 Icon(
                   Icons.post_add_outlined,
                   size: 64,
-                  color: Colors.grey,
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No services available.',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try changing your filters',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -283,7 +285,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
             child: Text(
               'No more services to load',
               style: TextStyle(
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

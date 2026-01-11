@@ -44,21 +44,21 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.customer_terms ?? 'Terms and Conditions',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
           ),
         ),
         actions: [
           // Language selector
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language, color: Colors.white),
+            icon: Icon(Icons.language, color: theme.colorScheme.onPrimary),
             onSelected: (String language) {
               setState(() {
                 _selectedLanguage = language;
@@ -147,7 +147,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                             : 'Foydalanish shartlari',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey[700],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -155,7 +155,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                     'Last Updated: October 4, 2025',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: theme.colorScheme.onSurfaceVariant,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -176,7 +176,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -215,17 +215,18 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
   }
 
   Widget _buildContactRow(IconData icon, String text) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.grey[600]),
+          Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: 8),
           Text(
             text,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey[700],
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -248,20 +249,22 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
   }
 
   Widget _buildSubsectionTitle(String title) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 16, bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: Colors.black87,
+          color: theme.colorScheme.onSurface,
         ),
       ),
     );
   }
 
   Widget _buildParagraph(String text) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
@@ -269,7 +272,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
         style: TextStyle(
           fontSize: 14,
           height: 1.6,
-          color: Colors.grey[800],
+          color: theme.colorScheme.onSurfaceVariant,
         ),
         textAlign: TextAlign.justify,
       ),
@@ -277,6 +280,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
   }
 
   Widget _buildBulletPoint(String text) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 16, bottom: 8),
       child: Row(
@@ -286,7 +290,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
             '• ',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey[800],
+              color: theme.colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -296,7 +300,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
               style: TextStyle(
                 fontSize: 14,
                 height: 1.5,
-                color: Colors.grey[800],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),

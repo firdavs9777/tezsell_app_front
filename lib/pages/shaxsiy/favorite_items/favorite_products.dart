@@ -57,10 +57,10 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.shade200,
+                      color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
                       spreadRadius: 4,
                       blurRadius: 4,
                     ),
@@ -107,8 +107,8 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                           const SizedBox(height: 4.0),
                           Text(
                             product.description,
-                            style: const TextStyle(
-                              color: Colors.grey,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 12.0,
                             ),
                             maxLines: 2,
@@ -117,16 +117,16 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                           const SizedBox(height: 6.0),
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.location_on,
                                 size: 14.0,
-                                color: Colors.grey,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4.0),
                               Text(
                                 '${product.location.region}, ${product.location.district.substring(0, 7)}...',
-                                style: const TextStyle(
-                                  color: Colors.grey,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 12.0,
                                 ),
                               )
@@ -140,13 +140,18 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          '$formattedPrice ${product.currency}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10.0,
-                            color: Colors.green,
-                          ),
+                        Builder(
+                          builder: (context) {
+                            final isDark = Theme.of(context).brightness == Brightness.dark;
+                            return Text(
+                              '$formattedPrice ${product.currency}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0,
+                                color: isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
+                              ),
+                            );
+                          }
                         ),
                         const SizedBox(height: 8.0),
                       ],

@@ -662,6 +662,7 @@ class ChatApiService {
       final body = <String, dynamic>{
         'content': content,
         'message_type': 'text',
+        'delivery_status': 'sent',  // Backend requires this field (NOT NULL constraint)
       };
 
       if (replyToMessageId != null) {

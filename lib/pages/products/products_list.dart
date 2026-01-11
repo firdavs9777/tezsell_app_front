@@ -130,7 +130,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading more products: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -190,19 +190,19 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               bottom: false,
               child: Row(
                 children: [
-                  // Filter Button
+                  // Category Filter Button
                   Material(
                     color: colorScheme.surfaceVariant.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(12),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
-                        context.push('/products?region=${widget.regionName}&district=${widget.districtName}');
+                        context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10.0),
                         child: Icon(
-                          Icons.tune_rounded,
+                          Icons.category_rounded,
                           size: 22,
                           color: colorScheme.primary,
                         ),

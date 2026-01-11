@@ -175,7 +175,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                                 'List properties and help clients find their dream homes',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[600],
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -192,7 +192,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[800],
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 12),
@@ -359,21 +359,21 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _submitApplication,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: _isSubmitting
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                                AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
                           ),
                         )
                       : Text(

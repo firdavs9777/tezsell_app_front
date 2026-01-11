@@ -28,6 +28,26 @@
   "@usedProductsMarket": {
     "description": "Subtitle text on home screen"
   },
+  "home_welcome_title": "Mahallangiz bozori",
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "home_welcome_subtitle": "Yaqin atrofdagilar bilan sotib oling va soting.\nXavfsiz, oddiy va mahalliy.",
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "home_get_started": "Boshlash",
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "home_sign_in": "Hisobim bor",
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "home_terms_notice": "Davom etish orqali siz Foydalanish shartlari va Maxfiylik siyosatiga rozilik bildirasiz",
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
   "register": "Ro'yxatdan o'tish",
   "@register": {
     "description": "Register button text"
@@ -386,6 +406,13 @@
   "@searchServicePlaceholder": {
     "description": "Service search placeholder"
   },
+  "search_products_subtitle": "Mahallangizda foydali takliflar toping",
+  "search_services_subtitle": "Mahallangizda mutaxassislarni toping",
+  "search_products_error": "Mahsulotlarni qidirishda xatolik",
+  "search_services_error": "Xizmatlarni qidirishda xatolik",
+  "load_more_products_error": "Ko'proq mahsulotlarni yuklashda xatolik",
+  "load_more_services_error": "Ko'proq xizmatlarni yuklashda xatolik",
+  "try_different_keywords": "Boshqa kalit so'zlarni sinab ko'ring",
   "searchText": "Qidiruv",
   "@searchText": {
     "description": "Search button text"
@@ -1126,6 +1153,10 @@
   "locationDescription": "Yaqin atrofdagi takliflarni toping. Bizning joylashuvga asoslangan tizimimiz sizga mahallangizda mahsulotlarni topishga yordam beradi.",
   "@locationDescription": {
     "description": "Location feature description"
+  },
+  "location_subtitle": "Yaqin atrofdagi e'lonlarni ko'rish uchun viloyat va tumanni tanlang",
+  "@location_subtitle": {
+    "description": "Location page subtitle"
   },
   "categoryTitle": "Kategoriyalar bo'yicha filtrlash",
   "@categoryTitle": {
@@ -2451,5 +2482,109 @@
   "retry": "Qayta urinish",
   "@retry": {
     "description": "Qayta urinish tugmasi matni"
+  },
+  "profile_listings": "E'lonlar",
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "profile_followers": "Obunachilar",
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "profile_following": "Obunalar",
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "profile_no_products": "Mahsulotlar yo'q",
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "profile_no_services": "Xizmatlar yo'q",
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "profile_no_properties": "Ko'chmas mulklar yo'q",
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "profile_user_no_products": "Bu foydalanuvchi hali mahsulot joylamagan",
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "profile_user_no_services": "Bu foydalanuvchi hali xizmat joylamagan",
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "profile_user_no_properties": "Bu foydalanuvchi hali ko'chmas mulk joylamagan",
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "profile_error_occurred": "Xatolik yuz berdi",
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "profile_error_loading_products": "Mahsulotlarni yuklashda xatolik",
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "profile_error_loading_services": "Xizmatlarni yuklashda xatolik",
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "profile_no_followers_yet": "Hali obunachilar yo'q",
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "profile_no_following_yet": "Hali obunalar yo'q",
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "profile_follow": "Obuna bo'lish",
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "profile_following_btn": "Obuna",
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "profile_message": "Xabar",
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "profile_member_since": "A'zo",
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "profile_loading_error": "Profilni yuklashda xatolik",
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "profile_retry": "Qayta urinish",
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "profile_share": "Ulashish",
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "profile_copy_link": "Havolani nusxalash",
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "profile_report": "Shikoyat qilish",
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "linkCopied": "Havola nusxalandi",
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "checkOutProfile": "Ko'ring",
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "onTezsell": "TezSell da",
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
   }
 }

@@ -37,13 +37,14 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: colorScheme.shadow.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, -3),
@@ -56,13 +57,14 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
           children: [
             Row(
               children: [
-                const Icon(Icons.edit, color: Colors.blue),
+                Icon(Icons.edit, color: colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
                   l10n.editComment,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),
@@ -89,13 +91,11 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
               child: ElevatedButton(
                 onPressed: widget.onSave,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: Text(
-                  l10n.saveChanges,
-                  style: const TextStyle(color: Colors.white),
-                ),
+                child: Text(l10n.saveChanges),
               ),
             ),
           ],

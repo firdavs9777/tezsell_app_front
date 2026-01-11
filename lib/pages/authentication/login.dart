@@ -274,7 +274,9 @@ class _LoginState extends ConsumerState<Login> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.1)
+                            : Colors.black.withOpacity(0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -430,8 +432,8 @@ class _LoginState extends ConsumerState<Login> {
                           'Forgot password?',
                       style: TextStyle(
                         color: _isLoading
-                            ? Colors.grey.shade400
-                            : const Color(0xFF6C757D),
+                            ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -515,7 +517,7 @@ class _LoginState extends ConsumerState<Login> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outlineVariant,
                         thickness: 1,
                       ),
                     ),
@@ -530,7 +532,7 @@ class _LoginState extends ConsumerState<Login> {
                     ),
                     Expanded(
                       child: Divider(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outlineVariant,
                         thickness: 1,
                       ),
                     ),

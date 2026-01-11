@@ -19,7 +19,7 @@ class EmptyMessageState extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+          Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(height: 16),
           Builder(
             builder: (context) {
@@ -29,12 +29,12 @@ class EmptyMessageState extends ConsumerWidget {
                 children: [
                   Text(
                     l.no_messages_yet,
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Say hi! 👋',
-                    style: TextStyle(fontSize: 24, color: Colors.grey),
+                    style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   if (error != null) ...[
                     const SizedBox(height: 16),

@@ -47,7 +47,7 @@ class SavedProperties extends ConsumerWidget {
             Icon(
               Icons.favorite_border,
               size: 80,
-              color: Colors.grey[400],
+              color: theme.colorScheme.onSurfaceVariant,
             ),
             SizedBox(height: 24),
             Text(
@@ -62,7 +62,7 @@ class SavedProperties extends ConsumerWidget {
               l10n.authLoginToViewSaved,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
@@ -169,7 +169,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.successPropertyUnsaved),
-            backgroundColor: Colors.orange,
+            backgroundColor: const Color(0xFFFF9800),
             duration: Duration(seconds: 2),
           ),
         );
@@ -180,7 +180,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.alertsUnsavePropertyFailed),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             duration: Duration(seconds: 2),
           ),
         );
@@ -246,7 +246,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                   SizedBox(height: 16),
                   Text(
                     l10n.loadingSavedProperties,
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -257,7 +257,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
                   SizedBox(height: 16),
                   Text(
                     l10n.errorsFailedToLoadSaved,
@@ -269,7 +269,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                   SizedBox(height: 8),
                   Text(
                     error.toString(),
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 24),
@@ -321,7 +321,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
             Icon(
               Icons.favorite_border,
               size: 80,
-              color: Colors.grey[400],
+              color: theme.colorScheme.onSurfaceVariant,
             ),
             SizedBox(height: 24),
             Text(
@@ -336,7 +336,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               l10n.savedPropertiesStartSaving,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
@@ -432,7 +432,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
       child: Center(
         child: Text(
           l10n.resultsNoMoreProperties,
-          style: TextStyle(color: Colors.grey[600]),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       ),
     );
@@ -474,7 +474,7 @@ class _PropertyCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildImage(theme, l10n),
-            _buildContent(l10n),
+            _buildContent(context, l10n),
           ],
         ),
       ),
@@ -493,11 +493,11 @@ class _PropertyCard extends ConsumerWidget {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stack) => Container(
               height: 200,
-              color: Colors.grey[300],
+              color: theme.colorScheme.outlineVariant,
               child: Icon(
                 Icons.apartment,
                 size: 60,
-                color: Colors.grey[500],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -546,7 +546,7 @@ class _PropertyCard extends ConsumerWidget {
           right: 12,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.colorScheme.surface,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -558,7 +558,7 @@ class _PropertyCard extends ConsumerWidget {
             ),
             child: IconButton(
               onPressed: onUnsave,
-              icon: Icon(Icons.favorite, color: Colors.red),
+              icon: Icon(Icons.favorite, color: theme.colorScheme.error),
               iconSize: 24,
             ),
           ),
@@ -567,7 +567,10 @@ class _PropertyCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(AppLocalizations l10n) {
+  Widget _buildContent(BuildContext context, AppLocalizations l10n) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -578,7 +581,7 @@ class _PropertyCard extends ConsumerWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[900],
+              color: colorScheme.onSurface,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -586,14 +589,14 @@ class _PropertyCard extends ConsumerWidget {
           SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+              Icon(Icons.location_on, size: 16, color: colorScheme.onSurfaceVariant),
               SizedBox(width: 4),
               Expanded(
                 child: Text(
                   '${property.district}, ${property.city}',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -607,44 +610,46 @@ class _PropertyCard extends ConsumerWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.green[600],
+              color: isDark ? colorScheme.primary : const Color(0xFF43A047),
             ),
           ),
           SizedBox(height: 12),
           Row(
             children: [
-              _buildStatChip(
+              _buildStatChip(context,
                   Icons.bed, '${property.bedrooms}', l10n.propertyCardBed),
               SizedBox(width: 12),
-              _buildStatChip(Icons.bathroom, '${property.bathrooms}',
+              _buildStatChip(context, Icons.bathroom, '${property.bathrooms}',
                   l10n.propertyCardBath),
               SizedBox(width: 12),
-              _buildStatChip(
+              _buildStatChip(context,
                   Icons.square_foot, '${property.squareMeters}m²', ''),
             ],
           ),
           SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.calendar_today, size: 14, color: Colors.grey[500]),
+              Icon(Icons.calendar_today, size: 14, color: colorScheme.onSurfaceVariant.withOpacity(0.7)),
               SizedBox(width: 4),
               Text(
                 '${l10n.savedPropertiesSavedOn} ${formatDate(savedAt)}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[500],
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                 ),
               ),
             ],
           ),
           SizedBox(height: 16),
-          _buildActionButtons(l10n),
+          _buildActionButtons(context, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildActionButtons(AppLocalizations l10n) {
+  Widget _buildActionButtons(BuildContext context, AppLocalizations l10n) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         Expanded(
@@ -666,7 +671,7 @@ class _PropertyCard extends ConsumerWidget {
         OutlinedButton(
           onPressed: onUnsave,
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: Colors.red),
+            side: BorderSide(color: colorScheme.error),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -675,23 +680,25 @@ class _PropertyCard extends ConsumerWidget {
               vertical: 12,
             ),
           ),
-          child: Icon(Icons.delete, color: Colors.red),
+          child: Icon(Icons.delete, color: colorScheme.error),
         ),
       ],
     );
   }
 
-  Widget _buildStatChip(IconData icon, String value, String label) {
+  Widget _buildStatChip(BuildContext context, IconData icon, String value, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: Colors.grey[600]),
+        Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
         SizedBox(width: 4),
         Text(
           '$value${label.isNotEmpty ? " $label" : ""}',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[700],
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
       ],

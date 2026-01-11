@@ -130,7 +130,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                       SnackBar(
                         content: Text('Error deleting product: $e'),
                         duration: const Duration(seconds: 3),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                     );
                   }
@@ -199,27 +199,27 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.inventory_2_outlined,
                           size: 80,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           localizations?.no_products_found ??
                               'No products found',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           localizations?.add_first_product ??
                               'Start by adding your first product',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -245,10 +245,10 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12.0),
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.surface,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.shade200,
+                                    color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
                                     spreadRadius: 4,
                                     blurRadius: 4,
                                   ),
@@ -305,8 +305,8 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                           product.description ??
                                               (localizations?.no_description ??
                                                   'No description'),
-                                          style: const TextStyle(
-                                            color: Colors.grey,
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                             fontSize: 12.0,
                                           ),
                                           maxLines: 2,
@@ -316,17 +316,17 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                         if (product.location != null) ...[
                                           Row(
                                             children: [
-                                              const Icon(
+                                              Icon(
                                                 Icons.location_on,
                                                 size: 14.0,
-                                                color: Colors.grey,
+                                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                               ),
                                               const SizedBox(width: 4.0),
                                               Expanded(
                                                 child: Text(
                                                   '${product.location!.region ?? ''}, ${(product.location!.district ?? '').length > 7 ? '${product.location!.district!.substring(0, 7)}...' : product.location!.district ?? ''}',
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                                     fontSize: 12.0,
                                                   ),
                                                   overflow:
@@ -405,21 +405,26 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        '$formattedPrice ${product.currency ?? (localizations?.sum_currency ?? "So'm")}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.0,
-                                          color: Colors.green,
-                                        ),
+                                      Builder(
+                                        builder: (context) {
+                                          final isDark = Theme.of(context).brightness == Brightness.dark;
+                                          return Text(
+                                            '$formattedPrice ${product.currency ?? (localizations?.sum_currency ?? "So'm")}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.0,
+                                              color: isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
+                                            ),
+                                          );
+                                        }
                                       ),
                                       const SizedBox(height: 8.0),
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.blue, size: 20),
+                                            icon: Icon(Icons.edit,
+                                                color: Theme.of(context).colorScheme.primary, size: 20),
                                             onPressed: () =>
                                                 _editProduct(product.id!),
                                             tooltip:
@@ -432,8 +437,8 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                                             ),
                                           ),
                                           IconButton(
-                                            icon: const Icon(Icons.delete,
-                                                color: Colors.red, size: 20),
+                                            icon: Icon(Icons.delete,
+                                                color: Theme.of(context).colorScheme.error, size: 20),
                                             onPressed: () =>
                                                 _deleteProduct(product.id!),
                                             tooltip: localizations

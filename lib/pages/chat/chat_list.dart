@@ -1,6 +1,7 @@
-import 'package:app/pages/chat//chat_room.dart';
+import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/chat/user_list.dart';
 import 'package:app/pages/chat/blocked_users_screen.dart';
+import 'package:app/pages/chat/widgets/chat_shimmer.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/widgets/notification_bell.dart';
@@ -101,11 +102,11 @@ class _MessagesListState extends ConsumerState<MessagesList>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+              Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(height: 16),
               Text(
                     l.please_log_in,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
+                style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -175,7 +176,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
         ],
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const ChatListShimmer()
           : chatRooms.isEmpty
           ? _buildEmptyState(context)
           : RefreshIndicator(
@@ -192,7 +193,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
                   height: 0.5,
                   thickness: 0.5,
                   indent: 80, // Align with content (avatar + padding)
-                  color: Colors.grey[200],
+                  color: Theme.of(context).colorScheme.outlineVariant,
                 ),
                 itemBuilder: (context, index) {
                   final chatRoom = chatRooms[index];
@@ -226,7 +227,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
       background: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.error,
           borderRadius: BorderRadius.circular(12),
         ),
         alignment: Alignment.centerRight,
@@ -267,7 +268,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
                   onPressed: () => Navigator.pop(context, true),
                   child: Text(
                     l.delete,
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                 ),
               ],
@@ -288,7 +289,9 @@ class _MessagesListState extends ConsumerState<MessagesList>
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(l.chat_deleted(chatRoom.name)),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.primary
+                      : const Color(0xFF43A047),
                   action: SnackBarAction(
                     label: 'Undo',
                     textColor: Colors.white,
@@ -303,7 +306,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(l.delete_failed),
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                 ),
               );
             }
@@ -324,20 +327,20 @@ class _MessagesListState extends ConsumerState<MessagesList>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey),
+          Icon(Icons.chat_bubble_outline, size: 80, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(height: 16),
           Text(
             l.no_conversations,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             l.start_conversation_hint,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -410,13 +413,13 @@ class ChatListTile extends StatelessWidget {
 
     // KakaoTalk-style clean chat list tile
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          splashColor: Colors.grey[200],
-          highlightColor: Colors.grey[100],
+          splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+          highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
@@ -431,13 +434,13 @@ class ChatListTile extends StatelessWidget {
                       height: 52,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.grey[300],
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       ),
                       child: Center(
                         child: Text(
                           avatarLetter,
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
                             fontSize: 20,
                           ),
@@ -480,7 +483,7 @@ class ChatListTile extends StatelessWidget {
                                     ? FontWeight.w700
                                     : FontWeight.w500,
                                 fontSize: 16,
-                                color: Colors.black87,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 letterSpacing: -0.2,
                               ),
                               maxLines: 1,
@@ -492,7 +495,7 @@ class ChatListTile extends StatelessWidget {
                             _formatTimestamp(chatRoom.lastMessageTimestamp, context),
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey[500],
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -509,8 +512,8 @@ class ChatListTile extends StatelessWidget {
                                   : chatRoom.lastMessagePreview!,
                               style: TextStyle(
                                 color: hasUnread
-                                    ? Colors.black87
-                                    : Colors.grey[600],
+                                    ? Theme.of(context).colorScheme.onSurface
+                                    : Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontWeight: hasUnread
                                     ? FontWeight.w500
                                     : FontWeight.w400,

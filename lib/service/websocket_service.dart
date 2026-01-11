@@ -103,23 +103,30 @@ class ChatRoomWebSocketService {
   Timer? _reconnectTimer;
   int _reconnectAttempts = 0;
   static const int maxReconnectAttempts = 3;
-  final Completer<void> _connectionCompleter = Completer<void>();
+  // Fixed: Completer is now recreated for each connection attempt
+  Completer<void>? _connectionCompleter;
 
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
   bool get isConnected => _isConnected;
   bool get isConnecting => _isConnecting;
-  Future<void> get ready => _connectionCompleter.future;
+  Future<void> get ready => _connectionCompleter?.future ?? Future.value();
 
   static const String wsBaseUrl = 'wss://api.webtezsell.com';
 
   Future<void> connectToChatRoom(int roomId) async {
-    if (_isConnecting) {
+    print('🔌 connectToChatRoom called for room $roomId');
+    print('🔌 _isConnecting: $_isConnecting, _isConnected: $_isConnected');
 
+    if (_isConnecting) {
+      print('🔌 Already connecting, waiting for ready...');
       return ready;
     }
 
     try {
       _isConnecting = true;
+
+      // Create a new completer for this connection attempt
+      _connectionCompleter = Completer<void>();
 
       // Close existing connection if any
       await disconnect();
@@ -128,10 +135,12 @@ class ChatRoomWebSocketService {
       final token = prefs.getString('token');
 
       if (token == null) {
+        print('❌ No authentication token found');
         throw Exception('No authentication token found');
       }
 
       final wsUrl = 'wss://api.webtezsell.com/ws/chat/$roomId/?token=$token';
+      print('🔌 Connecting to WebSocket: $wsUrl');
       final uri = Uri.parse(wsUrl);
 
       _channel = WebSocketChannel.connect(uri);
@@ -141,36 +150,37 @@ class ChatRoomWebSocketService {
       _channel!.stream.listen(
         (data) {
           try {
+            print('📨 WebSocket received data: $data');
             final message = json.decode(data);
 
             // Mark as connected when we get connection_established
             if (message['type'] == 'connection_established') {
+              print('✅ Connection established message received!');
               _isConnected = true;
               _isConnecting = false;
-              if (!_connectionCompleter.isCompleted) {
-                _connectionCompleter.complete();
+              if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
+                _connectionCompleter!.complete();
               }
-
             }
 
             if (!_messageController.isClosed) {
               _messageController.add(message);
             }
           } catch (e) {
-
+            print('❌ Error parsing WebSocket data: $e');
           }
         },
         onError: (error) {
-
+          print('❌ WebSocket error: $error');
           _isConnected = false;
           _isConnecting = false;
-          if (!_connectionCompleter.isCompleted) {
-            _connectionCompleter.completeError(error);
+          if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
+            _connectionCompleter!.completeError(error);
           }
           _attemptReconnect(roomId);
         },
         onDone: () {
-
+          print('🔌 WebSocket stream done (closed)');
           _isConnected = false;
           _isConnecting = false;
         },
@@ -178,21 +188,24 @@ class ChatRoomWebSocketService {
       );
 
       // Wait for connection or timeout
+      print('🔌 Waiting for connection_established or timeout...');
       await ready.timeout(
         const Duration(seconds: 5),
         onTimeout: () {
-
+          print('⏱️ Connection timeout - setting _isConnected = true anyway');
           _isConnected = true;
           _isConnecting = false;
         },
       );
 
-    } catch (e) {
+      print('🔌 Connection complete. _isConnected: $_isConnected');
 
+    } catch (e) {
+      print('❌ Connection error: $e');
       _isConnected = false;
       _isConnecting = false;
-      if (!_connectionCompleter.isCompleted) {
-        _connectionCompleter.completeError(e);
+      if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
+        _connectionCompleter!.completeError(e);
       }
       _attemptReconnect(roomId);
       rethrow;
@@ -216,23 +229,31 @@ class ChatRoomWebSocketService {
   }
 
   void sendChatMessage(String content) {
+    print('📤 sendChatMessage called with: "$content"');
+    print('📤 _isConnected: $_isConnected, _channel: ${_channel != null ? "exists" : "null"}');
+
     if (!_isConnected || _channel == null) {
+      print('❌ Cannot send message: not connected or channel is null');
       return;
     }
 
     try {
       // 🔥 FIX: Backend expects "type": "message" field according to documentation
       // Format: {"type": "message", "message": "content"}
+      // Also include delivery_status as backend requires it (NOT NULL constraint)
       final message = json.encode({
         'type': 'message',
         'message': content,
+        'delivery_status': 'sent',  // Backend requires this field
       });
 
+      print('📤 Sending WebSocket message: $message');
       // 🔥 Ensure UTF-8 encoding when sending
       _channel!.sink.add(message);
+      print('✅ Message sent to WebSocket');
 
     } catch (e) {
-
+      print('❌ Error sending message: $e');
       _isConnected = false;
     }
   }

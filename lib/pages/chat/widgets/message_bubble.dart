@@ -17,6 +17,10 @@ class MessageBubble extends StatelessWidget {
   final Function(int)?
   onReplyTap; // Callback when reply preview is tapped, receives message ID
 
+  // Memoization cache for emoji detection (LRU-style with max size)
+  static final Map<String, bool> _emojiCache = {};
+  static const int _maxCacheSize = 100;
+
   const MessageBubble({
     super.key,
     required this.message,
@@ -42,13 +46,13 @@ class MessageBubble extends StatelessWidget {
             maxWidth: MediaQuery.of(context).size.width * 0.7,
           ),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.delete_outline, size: 16, color: Colors.grey[600]),
+              Icon(Icons.delete_outline, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Builder(
                 builder: (context) {
@@ -58,7 +62,7 @@ class MessageBubble extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   );
                 },
@@ -102,8 +106,8 @@ class MessageBubble extends StatelessWidget {
                       decoration: BoxDecoration(
                         // Telegram-style reply background
                         color: isOwnMessage
-                            ? Colors.white.withOpacity(0.9) // Light background for dark text
-                            : Colors.grey[200]!, // Light grey for received messages
+                            ? Theme.of(context).colorScheme.surfaceContainerHighest // Light background for dark text
+                            : Theme.of(context).colorScheme.surfaceContainerHighest, // Light grey for received messages
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8),
                           topRight: Radius.circular(8),
@@ -154,9 +158,7 @@ class MessageBubble extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
-                                  color: isOwnMessage
-                                      ? Colors.grey[900]! // Dark text for own messages
-                                      : Colors.grey[900]!, // Very dark for maximum contrast
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -175,10 +177,10 @@ class MessageBubble extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    // Telegram green for own messages, white for others
+                    // Telegram green for own messages, surface for others
                     color: isOwnMessage
                         ? const Color(0xFF3390EC) // Telegram blue-green
-                        : Colors.white,
+                        : Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(12),
                       topRight: const Radius.circular(12),
@@ -226,7 +228,7 @@ class MessageBubble extends StatelessWidget {
                               fontSize: 12,
                               color: isOwnMessage
                                   ? Colors.white.withOpacity(0.7)
-                                  : Colors.grey[600],
+                                  : Theme.of(context).colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -239,7 +241,7 @@ class MessageBubble extends StatelessWidget {
                                 fontStyle: FontStyle.italic,
                                 color: isOwnMessage
                                     ? Colors.white.withOpacity(0.6)
-                                    : Colors.grey[500],
+                                    : Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -290,14 +292,14 @@ class MessageBubble extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: hasMyReaction ? Colors.blue[100] : Colors.grey[200],
+              color: hasMyReaction ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
               border: hasMyReaction
-                  ? Border.all(color: Colors.blue, width: 1.5)
+                  ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5)
                   : null,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Theme.of(context).shadowColor.withOpacity(0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -315,8 +317,8 @@ class MessageBubble extends StatelessWidget {
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: hasMyReaction
-                          ? Colors.blue[900]
-                          : Colors.grey[700],
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -352,21 +354,23 @@ class MessageBubble extends StatelessWidget {
     }
   }
 
-  // Check if message contains only emojis
+  // Check if message contains only emojis (with memoization for performance)
   bool _isEmojiOnly(String text) {
     if (text.trim().isEmpty) return false;
 
+    // Check cache first
+    if (_emojiCache.containsKey(text)) {
+      return _emojiCache[text]!;
+    }
+
     // Remove whitespace and check if all characters are emojis
     final cleanText = text.replaceAll(RegExp(r'\s+'), '');
-    if (cleanText.isEmpty) return false;
+    if (cleanText.isEmpty) {
+      _cacheResult(text, false);
+      return false;
+    }
 
     // Check if all characters are emojis (Unicode ranges for emojis)
-    final emojiRegex = RegExp(
-      r'^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]+$',
-      unicode: true,
-    );
-
-    // Also check for common emoji patterns
     final hasOnlyEmojis = cleanText.runes.every((rune) {
       return (rune >= 0x1F600 && rune <= 0x1F64F) || // Emoticons
           (rune >= 0x1F300 && rune <= 0x1F5FF) || // Misc Symbols
@@ -374,11 +378,37 @@ class MessageBubble extends StatelessWidget {
           (rune >= 0x2600 && rune <= 0x26FF) || // Misc symbols
           (rune >= 0x2700 && rune <= 0x27BF) || // Dingbats
           (rune >= 0x1F900 && rune <= 0x1F9FF) || // Supplemental Symbols
-          (rune >= 0x1FA00 && rune <= 0x1FA6F); // Chess Symbols
+          (rune >= 0x1FA00 && rune <= 0x1FA6F) || // Extended symbols
+          (rune >= 0xFE00 && rune <= 0xFE0F) || // Variation selectors
+          (rune >= 0x200D && rune <= 0x200D); // Zero-width joiner
     });
 
-    return hasOnlyEmojis &&
-        cleanText.length <= 10; // Only if 10 or fewer emojis
+    // Only if 6 or fewer emoji characters (excluding variation selectors)
+    final emojiCount = cleanText.runes.where((rune) =>
+      (rune >= 0x1F600 && rune <= 0x1F64F) ||
+      (rune >= 0x1F300 && rune <= 0x1F5FF) ||
+      (rune >= 0x1F680 && rune <= 0x1F6FF) ||
+      (rune >= 0x2600 && rune <= 0x26FF) ||
+      (rune >= 0x2700 && rune <= 0x27BF) ||
+      (rune >= 0x1F900 && rune <= 0x1F9FF) ||
+      (rune >= 0x1FA00 && rune <= 0x1FA6F)
+    ).length;
+
+    final result = hasOnlyEmojis && emojiCount <= 6;
+    _cacheResult(text, result);
+    return result;
+  }
+
+  // Helper to cache results with LRU eviction
+  static void _cacheResult(String text, bool result) {
+    if (_emojiCache.length >= _maxCacheSize) {
+      // Remove oldest entries (first 20%)
+      final keysToRemove = _emojiCache.keys.take(_maxCacheSize ~/ 5).toList();
+      for (final key in keysToRemove) {
+        _emojiCache.remove(key);
+      }
+    }
+    _emojiCache[text] = result;
   }
 
   Widget _buildMessageContent(BuildContext context) {
@@ -391,7 +421,7 @@ class MessageBubble extends StatelessWidget {
         return Text(
           content,
           style: TextStyle(
-            color: isOwnMessage ? Colors.white : Colors.black87,
+            color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.onSurface,
             fontSize: isEmojiMessage
                 ? 48
                 : 16, // Large emoji for emoji-only messages
@@ -419,20 +449,20 @@ class MessageBubble extends StatelessWidget {
         width: 200,
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
+            Icon(Icons.image_not_supported, size: 50, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(height: 8),
             Builder(
               builder: (context) {
                 final l = AppLocalizations.of(context)!;
                 return Text(
                   l.image_unavailable,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 );
               },
             ),
@@ -527,7 +557,7 @@ class MessageBubble extends StatelessWidget {
                     style: TextStyle(
                       color: isOwnMessage
                           ? Colors.white.withOpacity(0.8)
-                          : Colors.black87,
+                          : Theme.of(context).colorScheme.onSurface,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -540,7 +570,7 @@ class MessageBubble extends StatelessWidget {
               Icons.mic,
               color: isOwnMessage
                   ? Colors.white.withOpacity(0.7)
-                  : Colors.grey[600],
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 20,
             ),
           ],

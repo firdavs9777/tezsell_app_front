@@ -97,6 +97,13 @@ class AppConfig {
   static const String adminContentRemovePath = '/api/admin/content/{id}/remove/';
   static const String adminReportUpdatePath = '/api/admin/reports/{id}/update/';
 
+  // Profile & Follow Endpoints
+  static const String userProfilePath = '/accounts/profile/'; // GET /accounts/profile/{user_id}/
+  static const String userProfileContentPath = '/accounts/profile/'; // GET /accounts/profile/{user_id}/content/
+  static const String followUserPath = '/accounts/profile/'; // POST/DELETE /accounts/profile/{user_id}/follow/
+  static const String myFollowersPath = '/accounts/me/followers/'; // GET /accounts/me/followers/
+  static const String myFollowingPath = '/accounts/me/following/'; // GET /accounts/me/following/
+
   // Chat Endpoints (using v1 API)
   static const String chatListPath = '/api/chats/';
   static const String userListPath = '/api/users/';
@@ -164,5 +171,17 @@ class AppConfig {
   static String getChatListWsUrl() => '$wsBaseUrl$chatListWsPath';
   static String getChatRoomWsUrl(String roomId) => '$wsBaseUrl$chatRoomWsPath$roomId';
   static String getNotificationsWsUrl() => '$wsBaseUrl$notificationsWsPath';
+
+  // Profile URLs
+  static String getUserProfileUrl(int userId) => '$baseUrl$userProfilePath$userId/';
+  static String getUserProfileContentUrl(int userId) => '$baseUrl$userProfilePath$userId/content/';
+  static String getFollowUserUrl(int userId) => '$baseUrl$userProfilePath$userId/follow/'; // POST to follow, DELETE to unfollow
+  static String getFollowersUrl(int userId) => '$baseUrl$userProfilePath$userId/followers/';
+  static String getFollowingUrl(int userId) => '$baseUrl$userProfilePath$userId/following/';
+  static String getUserProductsUrl(int userId) => '$baseUrl$userProfilePath$userId/products/';
+  static String getUserServicesUrl(int userId) => '$baseUrl$userProfilePath$userId/services/';
+  static String getUserPropertiesUrl(int userId) => '$baseUrl$userProfilePath$userId/properties/';
+  static String getMyFollowersUrl() => '$baseUrl$myFollowersPath';
+  static String getMyFollowingUrl() => '$baseUrl$myFollowingPath';
 }
 

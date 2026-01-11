@@ -34,15 +34,15 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.customer_center ?? 'Customer Center',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
           ),
         ),
       ),
@@ -97,7 +97,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                         'We\'re here to help you 24/7',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[700],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -296,7 +296,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -327,7 +327,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                         'Rate your customer service experience',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -375,15 +375,16 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -417,7 +418,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
               subtitle,
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.grey[600],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
@@ -435,15 +436,16 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -479,7 +481,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[700],
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -487,13 +489,13 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                     description,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[500],
+                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
+            Icon(Icons.arrow_forward_ios, size: 16, color: theme.colorScheme.onSurfaceVariant),
           ],
         ),
       ),
@@ -508,9 +510,9 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Theme(
         data: Theme.of(context).copyWith(
@@ -535,7 +537,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
             ),
           ),
           iconColor: theme.primaryColor,
-          collapsedIconColor: Colors.grey[600],
+          collapsedIconColor: theme.colorScheme.onSurfaceVariant,
           children: topics
               .map(
                 (topic) => InkWell(
@@ -546,7 +548,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                       children: [
                         Icon(
                           Icons.arrow_right,
-                          color: Colors.grey[400],
+                          color: theme.colorScheme.onSurfaceVariant,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -555,7 +557,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                             topic,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[700],
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -571,13 +573,16 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
   }
 
   Widget _buildSupportHourRow(String service, String hours, bool isActive) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final activeColor = isDark ? theme.colorScheme.primary : const Color(0xFF43A047);
     return Row(
       children: [
         Container(
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: isActive ? Colors.green : Colors.grey,
+            color: isActive ? activeColor : theme.colorScheme.onSurfaceVariant,
             shape: BoxShape.circle,
           ),
         ),
@@ -598,7 +603,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
                 hours,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey[600],
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -608,14 +613,14 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.1),
+              color: activeColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Text(
+            child: Text(
               'Online',
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.green,
+                color: activeColor,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -753,6 +758,8 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
   }
 
   void _submitRating(String rating) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -764,7 +771,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
             ),
           ],
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: isDark ? theme.colorScheme.primary : const Color(0xFF43A047),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -806,7 +813,7 @@ class _CustomerCenterPageState extends State<CustomerCenterPage> {
               Expanded(child: Text(message)),
             ],
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),

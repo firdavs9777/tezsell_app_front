@@ -1,5 +1,3 @@
-import 'package:app/pages/language/language_selection.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
@@ -15,11 +13,38 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+    // Setup animations
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutBack),
+      ),
+    );
+
+    _animationController.forward();
     _initializeApp();
   }
 
@@ -40,13 +65,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final isLoggedIn = await authService.isLoggedIn();
 
     if (isLoggedIn) {
-      // User is logged in - go to main app
       AppLogger.info('User is logged in, navigating to main app');
       if (context.mounted) {
         context.go('/tabs');
       }
     } else {
-      // User is not logged in - go to language selection
       AppLogger.info('User is not logged in, navigating to language selection');
       if (context.mounted) {
         context.go('/language');
@@ -54,42 +77,33 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
   }
 
-  /// Check authentication and refresh token if needed
   Future<void> _checkAuthentication() async {
     try {
       final authService = ref.read(authenticationServiceProvider);
-      
-      // Check if user has tokens
+
       final hasAccessToken = await authService.getStoredToken() != null;
       final hasRefreshToken = await authService.getStoredRefreshToken() != null;
 
       if (hasAccessToken || hasRefreshToken) {
         AppLogger.info('Found stored tokens, verifying/refreshing...');
 
-        // First, try to verify the current access token
         final isValid = await authService.verifyToken();
 
         if (!isValid && hasRefreshToken) {
-          // Access token is invalid, try to refresh
           AppLogger.info('Access token invalid, attempting refresh...');
           final newToken = await authService.refreshToken();
-          
+
           if (newToken != null) {
             AppLogger.info('Token refreshed successfully');
-            // Start automatic token refresh service
             _startTokenRefreshService(authService);
           } else {
             AppLogger.warning('Token refresh failed, user will need to login');
-            // Clear invalid tokens
             await authService.logout();
           }
         } else if (isValid) {
           AppLogger.info('Access token is valid');
-          // Only start token refresh service if refresh token exists
           if (hasRefreshToken) {
             _startTokenRefreshService(authService);
-          } else {
-            AppLogger.info('No refresh token found - user has old token. Will get refresh token on next login.');
           }
         }
       } else {
@@ -97,11 +111,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       }
     } catch (e) {
       AppLogger.error('Error checking authentication: $e');
-      // On error, assume user is not logged in
     }
   }
 
-  /// Start the automatic token refresh service
   void _startTokenRefreshService(AuthenticationService authService) {
     try {
       final tokenRefreshService = TokenRefreshService(authService);
@@ -114,6 +126,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   void dispose() {
+    _animationController.dispose();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
@@ -123,38 +136,151 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFfdf8e4),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ClipRRect(
-              borderRadius:
-                  BorderRadius.circular(50), // Adjust radius as needed
-              child: Image.asset(
-                'assets/logo/logo.png',
-                width: 160,
-                height: 160,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.apps,
-                    size: 150,
-                    color: Theme.of(context).colorScheme.primary,
+      backgroundColor: colorScheme.surface,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: isDark
+                ? [colorScheme.surface, colorScheme.surface]
+                : [colorScheme.surface, colorScheme.surfaceVariant.withOpacity(0.3)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const Spacer(flex: 2),
+
+              // Animated Logo Section
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _fadeAnimation.value,
+                    child: Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: Column(
+                        children: [
+                          // Logo with glow effect
+                          Container(
+                            width: 140,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: colorScheme.primary.withOpacity(isDark ? 0.3 : 0.25),
+                                  blurRadius: 40,
+                                  spreadRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(70),
+                              child: Image.asset(
+                                'assets/logo/logo.png',
+                                width: 140,
+                                height: 140,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 140,
+                                    height: 140,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.storefront_rounded,
+                                      size: 64,
+                                      color: colorScheme.onPrimary,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          // App Name
+                          Text(
+                            'Tezsell',
+                            style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.w800,
+                              color: colorScheme.onSurface,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+
+                          // Tagline
+                          Text(
+                            'Your neighborhood marketplace',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: colorScheme.onSurfaceVariant,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               ),
-            ),
-            const SizedBox(height: 20),
 
-            // Optional: Add loading indicator
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).colorScheme.primary,
+              const Spacer(flex: 2),
+
+              // Loading indicator
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _fadeAnimation.value,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Loading...',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 60),
+            ],
+          ),
         ),
       ),
     );

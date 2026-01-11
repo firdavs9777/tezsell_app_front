@@ -325,7 +325,7 @@ class _TownsListState extends State<TownsList> {
         children: <Widget>[
           // Header section
           Container(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,7 +350,7 @@ class _TownsListState extends State<TownsList> {
 
           // Search bar
           Container(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: TextField(
               controller: searchController,
@@ -458,7 +458,7 @@ class _TownsListState extends State<TownsList> {
                     },
                   )
                 : Container(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     child: Center(
                       child: Padding(
                         padding: const EdgeInsets.all(40.0),

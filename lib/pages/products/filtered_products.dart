@@ -88,7 +88,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading products: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -131,7 +131,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error loading more products: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -179,28 +179,33 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         children: [
           // Optional: Show current filters
           if (widget.categoryName.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              color: Colors.blue.withOpacity(0.1),
-              child: Row(
-                children: [
-                  Icon(Icons.filter_alt, size: 16, color: Colors.blue),
-                  SizedBox(width: 8),
-                  Text(
-                    'Category: ${widget.categoryName}',
-                    style: TextStyle(fontSize: 12, color: Colors.blue),
+            Builder(
+              builder: (context) {
+                final colorScheme = Theme.of(context).colorScheme;
+                return Container(
+                  padding: const EdgeInsets.all(8.0),
+                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  child: Row(
+                    children: [
+                      Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
+                      SizedBox(width: 8),
+                      Text(
+                        'Category: ${widget.categoryName}',
+                        style: TextStyle(fontSize: 12, color: colorScheme.primary),
+                      ),
+                      if (widget.districtName.isNotEmpty) ...[
+                        SizedBox(width: 8),
+                        Text('|', style: TextStyle(color: colorScheme.primary)),
+                        SizedBox(width: 8),
+                        Text(
+                          '${widget.districtName}',
+                          style: TextStyle(fontSize: 12, color: colorScheme.primary),
+                        ),
+                      ],
+                    ],
                   ),
-                  if (widget.districtName.isNotEmpty) ...[
-                    SizedBox(width: 8),
-                    Text('|', style: TextStyle(color: Colors.blue)),
-                    SizedBox(width: 8),
-                    Text(
-                      '📍 ${widget.districtName}',
-                      style: TextStyle(fontSize: 12, color: Colors.blue),
-                    ),
-                  ],
-                ],
-              ),
+                );
+              },
             ),
           Expanded(
             child: RefreshIndicator(
@@ -219,6 +224,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
     }
 
     if (_allProducts.isEmpty) {
+      final colorScheme = Theme.of(context).colorScheme;
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Container(
@@ -230,24 +236,24 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                 Icon(
                   Icons.inventory_2_outlined,
                   size: 64,
-                  color: Colors.grey,
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context)?.productError ??
                       'No products available.',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try changing your filters',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -288,7 +294,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
             child: Text(
               'No more products to load',
               style: TextStyle(
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

@@ -43,7 +43,7 @@ class MessageOptionsSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -54,16 +54,16 @@ class MessageOptionsSheet extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isOwnMessage ? theme.primaryColor.withOpacity(0.1) : Colors.grey[100],
+                  color: isOwnMessage ? theme.primaryColor.withOpacity(0.1) : Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  message.content!.length > 100 
+                  message.content!.length > 100
                     ? '${message.content!.substring(0, 100)}...'
                     : message.content!,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -172,7 +172,7 @@ class MessageOptionsSheet extends StatelessWidget {
               Icon(
                 icon,
                 size: 24,
-                color: iconColor ?? Colors.grey[700],
+                color: iconColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 16),
               Text(
@@ -180,7 +180,7 @@ class MessageOptionsSheet extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: textColor ?? Colors.black87,
+                  color: textColor ?? Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],

@@ -109,12 +109,15 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
         Navigator.of(context).pop(true); // Return true to indicate success
 
         final l10n = AppLocalizations.of(context);
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
                   l10n?.inquiry_inquiry_sent_success ?? 'Inquiry submitted successfully!',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: isDark
+                ? Theme.of(context).colorScheme.primary
+                : const Color(0xFF43A047),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -135,6 +138,8 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
     return Dialog(
@@ -157,7 +162,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.message, color: Colors.white),
+                  Icon(Icons.message, color: colorScheme.onPrimary),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -165,8 +170,8 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                       children: [
                         Text(
                           l10n?.inquiry_title ?? 'Contact Property Owner',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: colorScheme.onPrimary,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -175,7 +180,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                         Text(
                           widget.propertyTitle,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: colorScheme.onPrimary.withOpacity(0.9),
                             fontSize: 14,
                           ),
                           maxLines: 1,
@@ -185,7 +190,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: colorScheme.onPrimary),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -207,7 +212,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey[800],
+                          color: colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -241,7 +246,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           filled: true,
-                          fillColor: Colors.grey[50],
+                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                         ),
                         maxLines: 4,
                         textInputAction: TextInputAction.newline,
@@ -264,7 +269,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             filled: true,
-                            fillColor: Colors.grey[50],
+                            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                           ),
                         ),
 
@@ -281,7 +286,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             filled: true,
-                            fillColor: Colors.grey[50],
+                            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -299,7 +304,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(20),
                 ),
@@ -309,20 +314,20 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _submitInquiry,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    foregroundColor: Colors.white,
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: _isSubmitting
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
                           ),
                         )
                       : Text(

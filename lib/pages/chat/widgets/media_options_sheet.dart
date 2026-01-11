@@ -18,6 +18,7 @@ class MediaOptionsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: double.infinity,
@@ -27,33 +28,37 @@ class MediaOptionsSheet extends StatelessWidget {
         children: [
           Expanded(
             child: _buildMediaOption(
+              context: context,
               icon: Icons.photo_library,
               label: l.gallery,
-              color: Colors.purple,
+              color: colorScheme.secondary,
               onTap: onGalleryTap,
             ),
           ),
           Expanded(
             child: _buildMediaOption(
+              context: context,
               icon: Icons.camera_alt,
               label: l.camera,
-              color: Colors.blue,
+              color: colorScheme.primary,
               onTap: onCameraTap,
             ),
           ),
           Expanded(
             child: _buildMediaOption(
+              context: context,
               icon: Icons.mic,
               label: l.voice,
-              color: Colors.red,
+              color: colorScheme.error,
               onTap: onVoiceTap,
             ),
           ),
           Expanded(
             child: _buildMediaOption(
+              context: context,
               icon: Icons.emoji_emotions,
               label: l.emoji,
-              color: Colors.orange,
+              color: colorScheme.tertiary,
               onTap: onEmojiTap,
             ),
           ),
@@ -63,6 +68,7 @@ class MediaOptionsSheet extends StatelessWidget {
   }
 
   Widget _buildMediaOption({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required Color color,
@@ -90,7 +96,7 @@ class MediaOptionsSheet extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey[700],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,

@@ -64,15 +64,15 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.security ?? 'Security',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
           ),
         ),
       ),
@@ -99,7 +99,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                   Icon(
                     _securityScore >= 70 ? Icons.verified_user : Icons.warning,
                     size: 48,
-                    color: _securityScore >= 70 ? Colors.green : Colors.orange,
+                    color: _securityScore >= 70 ? theme.colorScheme.primary : const Color(0xFFFF9800),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -111,7 +111,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color:
-                          _securityScore >= 70 ? Colors.green : Colors.orange,
+                          _securityScore >= 70 ? theme.colorScheme.primary : const Color(0xFFFF9800),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -121,9 +121,9 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                   LinearProgressIndicator(
                     value: _securityScore / 100,
                     minHeight: 8,
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: theme.colorScheme.outlineVariant,
                     valueColor: AlwaysStoppedAnimation(
-                      _securityScore >= 70 ? Colors.green : Colors.orange,
+                      _securityScore >= 70 ? theme.colorScheme.primary : const Color(0xFFFF9800),
                     ),
                   ),
                 ],
@@ -152,22 +152,22 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.05),
+                color: theme.colorScheme.error.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
               ),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.warning, color: Colors.red[700]),
+                      Icon(Icons.warning, color: theme.colorScheme.error),
                       const SizedBox(width: 8),
                       Text(
                         localizations?.danger_zone ?? 'Danger Zone',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red[700],
+                          color: theme.colorScheme.error,
                         ),
                       ),
                     ],
@@ -223,15 +223,16 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
 
   Widget _buildOption(IconData icon, String title, String subtitle,
       Widget trailing, VoidCallback onTap) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[200]!),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.05),
@@ -259,7 +260,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                           fontSize: 15, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   Text(subtitle,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600])),
+                      style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
@@ -272,11 +273,12 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
 
   Widget _buildDangerOption(
       IconData icon, String title, String subtitle, VoidCallback onTap) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon, color: Colors.red[700], size: 24),
+          Icon(icon, color: theme.colorScheme.error, size: 24),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -286,13 +288,13 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Colors.red[700])),
+                        color: theme.colorScheme.error)),
                 Text(subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[600])),
+                    style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red[400]),
+          Icon(Icons.arrow_forward_ios, size: 16, color: theme.colorScheme.error.withOpacity(0.7)),
         ],
       ),
     );
@@ -536,6 +538,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
 
                   if (result['success']) {
                     if (mounted) {
+                      final isDark = Theme.of(context).brightness == Brightness.dark;
                       scaffoldMessenger.showSnackBar(
                         SnackBar(
                           content: Row(
@@ -546,7 +549,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                               Expanded(child: Text(result['message'])),
                             ],
                           ),
-                          backgroundColor: Colors.green,
+                          backgroundColor: isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -571,7 +574,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                               Expanded(child: Text(result['error'])),
                             ],
                           ),
-                          backgroundColor: Colors.red,
+                          backgroundColor: Theme.of(context).colorScheme.error,
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -649,7 +652,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
-            Icon(Icons.warning, color: Colors.red[700]),
+            Icon(Icons.warning, color: Theme.of(context).colorScheme.error),
             const SizedBox(width: 8),
             Text(localizations?.delete_account_confirm ?? 'Delete Account?'),
           ],
@@ -704,7 +707,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               Navigator.pop(context);
               await _requestAccountDeletion(pwdCtrl.text);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             child: Text(localizations?.continue_val ?? 'Continue'),
           ),
         ],
@@ -794,10 +797,10 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               }
               await _confirmAccountDeletion(otpController.text);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             child: Text(
               localizations?.delete_account ?? 'Delete Account',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -823,11 +826,12 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
 
     if (result['success']) {
       if (mounted) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(localizations?.account_deleted ??
                 'Your account has been deleted'),
-            backgroundColor: Colors.green,
+            backgroundColor: isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
           ),
         );
 
@@ -858,6 +862,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
   }
 
   void _showSuccess(String message) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -867,7 +872,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: isDark ? Theme.of(context).colorScheme.primary : const Color(0xFF43A047),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -885,7 +890,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               Expanded(child: Text(message)),
             ],
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

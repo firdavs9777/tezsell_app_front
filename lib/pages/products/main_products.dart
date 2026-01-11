@@ -3,6 +3,7 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/config/app_router.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/utils/currency_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,57 +20,94 @@ class ProductMain extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    // Cache the formatted price to avoid recalculating
-    final formattedPrice = _getFormattedPrice();
+    // Use the model's formatted price (now uses proper UZS spacing)
+    final formattedPrice = product.formattedPrice;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        color: theme.cardColor,
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.08),
-            spreadRadius: 0,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    return Opacity(
+      // Dim the card if product is sold or inactive
+      opacity: (product.isSold || !product.isActive) ? 0.7 : 1.0,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
-          onTap: () {
-            // Navigate to ProductDetail page using router from provider
-            final router = ref.read(routerProvider);
-            router.push('/product/${product.id}').then((_) => ref.invalidate(productsProvider));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Product Image - Left side
-                Hero(
-                  tag: 'product_image_${product.id}',
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: SizedBox(
-                      width: 110,
-                      height: 110,
-                      child: CachedNetworkImageWidget(
-                        imageUrl: product.images.isNotEmpty
-                            ? product.images[0].image
-                            : null,
-                        width: 110,
-                        height: 110,
-                        fit: BoxFit.cover,
-                        borderRadius: BorderRadius.circular(12.0),
+          color: theme.cardColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.08),
+              spreadRadius: 0,
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16.0),
+            onTap: () {
+              // Navigate to ProductDetail page using router from provider
+              final router = ref.read(routerProvider);
+              router.push('/product/${product.id}').then((_) => ref.invalidate(productsProvider));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Product Image - Left side with sold badge overlay
+                  Stack(
+                    children: [
+                      Hero(
+                        tag: 'product_image_${product.id}',
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: SizedBox(
+                            width: 110,
+                            height: 110,
+                            child: CachedNetworkImageWidget(
+                              imageUrl: product.images.isNotEmpty
+                                  ? product.images[0].image
+                                  : null,
+                              width: 110,
+                              height: 110,
+                              fit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      // Sold badge overlay
+                      if (product.isSold)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: colorScheme.scrim.withOpacity(0.5),
+                            ),
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.error,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'SOTILGAN',
+                                  style: TextStyle(
+                                    color: colorScheme.onError,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
                 const SizedBox(width: 14.0),
                 Expanded(
                   child: SizedBox(
@@ -179,6 +217,7 @@ class ProductMain extends ConsumerWidget {
                 ),
               ],
             ),
+            ),
           ),
         ),
       ),
@@ -186,24 +225,20 @@ class ProductMain extends ConsumerWidget {
   }
 
   String _getFormattedPrice() {
-    try {
-      final priceValue = int.tryParse(product.price) ?? 0;
-      final formattedPrice = _priceFormatter.format(priceValue);
-      return '$formattedPrice${product.currency}';
-    } catch (e) {
-      return '${product.price}${product.currency}';
-    }
+    // Now using CurrencyUtils for proper formatting
+    return CurrencyUtils.formatPrice(product.price, currency: product.currency);
   }
 
   String _getLocationText() {
-    final region = product.location.region ?? '';
-    final district = product.location.district ?? '';
-    final fullLocation = '$region $district';
-    final maxLength = 20;
-    if (fullLocation.length <= maxLength) {
-      return fullLocation;
+    // Use the new shortAddress getter from Location model
+    final shortAddr = product.location.shortAddress;
+    if (shortAddr.isEmpty) {
+      return product.location.region;
     }
-
-    return '${fullLocation.substring(0, maxLength)}...';
+    const maxLength = 25;
+    if (shortAddr.length <= maxLength) {
+      return shortAddr;
+    }
+    return '${shortAddr.substring(0, maxLength)}...';
   }
 }

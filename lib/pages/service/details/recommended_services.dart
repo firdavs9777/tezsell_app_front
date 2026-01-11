@@ -14,6 +14,7 @@ class RecommendedServicesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -22,9 +23,10 @@ class RecommendedServicesSection extends StatelessWidget {
         children: [
           Text(
             localizations?.recommendedServices ?? 'Recommended Services',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 10),
@@ -46,14 +48,15 @@ class RecommendedServicesSection extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       children: [
-                        const Icon(Icons.error, color: Colors.red, size: 48),
+                        Icon(Icons.error, color: colorScheme.error, size: 48),
                         const SizedBox(height: 8),
                         Text(
                           localizations?.errorLoadingServices ??
                               'Error loading services',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -61,7 +64,7 @@ class RecommendedServicesSection extends StatelessWidget {
                           '${snapshot.error}',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[600],
+                            color: colorScheme.onSurfaceVariant,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -93,7 +96,7 @@ class RecommendedServicesSection extends StatelessWidget {
                       Icon(
                         Icons.search_off,
                         size: 64,
-                        color: Colors.grey[400],
+                        color: colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -101,7 +104,7 @@ class RecommendedServicesSection extends StatelessWidget {
                             'No recommended services found.',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[600],
+                          color: colorScheme.onSurfaceVariant,
                         ),
                         textAlign: TextAlign.center,
                       ),

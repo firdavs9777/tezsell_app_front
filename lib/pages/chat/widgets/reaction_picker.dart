@@ -42,7 +42,7 @@ class ReactionPicker extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: hasReaction ? Colors.blue[100] : Colors.grey[200],
+                    color: hasReaction ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(emoji, style: const TextStyle(fontSize: 32)),

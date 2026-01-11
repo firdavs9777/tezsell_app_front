@@ -265,9 +265,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _sendMessage() {
+    print('📤 _sendMessage() called in chat_room.dart');
     final content = _messageController.text.trim();
+    print('📤 Content: "$content", mounted: $mounted');
     if (content.isNotEmpty && mounted) {
       if (_replyingToMessageId != null) {
+        print('📤 Sending reply to message $_replyingToMessageId');
         ref
             .read(chatProvider.notifier)
             .sendMessageWithReply(content, _replyingToMessageId);
@@ -278,10 +281,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           });
         }
       } else {
+        print('📤 Calling chatProvider.sendMessage');
         ref.read(chatProvider.notifier).sendMessage(content);
       }
       _messageController.clear();
       _scrollToBottom();
+    } else {
+      print('❌ Message not sent: content empty or not mounted');
     }
   }
 
@@ -357,23 +363,25 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _deleteMessage(ChatMessage message) {
-    final l = AppLocalizations.of(context)!;
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.delete_message),
-        content: Text(l.delete_message_confirm),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l?.delete_message ?? 'Delete Message'),
+        content: Text(l?.delete_message_confirm ?? 'Are you sure you want to delete this message?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l.cancel),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l?.cancel ?? 'Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
-              await ref.read(chatProvider.notifier).deleteMessage(message.id!);
+              Navigator.pop(dialogContext);
+              if (message.id != null) {
+                await ref.read(chatProvider.notifier).deleteMessage(message.id!);
+              }
             },
-            child: Text(l.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(l?.delete ?? 'Delete', style: TextStyle(color: Theme.of(dialogContext).colorScheme.error)),
           ),
         ],
       ),
@@ -460,39 +468,79 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   Widget _buildScrollToBottomButton() {
-    if (!_showScrollToBottom) return const SizedBox.shrink();
-
     return Positioned(
       bottom: 80,
       right: 16,
-      child: FloatingActionButton(
-        mini: true,
-        backgroundColor: Colors.blue,
-        onPressed: _scrollToBottom,
-        child: const Icon(Icons.arrow_downward, color: Colors.white, size: 20),
+      child: AnimatedScale(
+        scale: _showScrollToBottom ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutBack,
+        child: AnimatedOpacity(
+          opacity: _showScrollToBottom ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 150),
+          child: Material(
+            elevation: 4,
+            shadowColor: Theme.of(context).shadowColor.withOpacity(0.3),
+            shape: const CircleBorder(),
+            child: InkWell(
+              onTap: _scrollToBottom,
+              customBorder: const CircleBorder(),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF42A5F5), Color(0xFF1E88E5)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
+  // Debounced typing indicator - prevents excessive WebSocket messages
   void _onTypingChanged(String text) {
-    if (!mounted) return;
+    if (!mounted || _isDisposed) return;
 
     final isCurrentlyTyping = text.trim().isNotEmpty;
+
+    // Cancel any pending stop-typing timer
     _typingTimer?.cancel();
 
     if (isCurrentlyTyping) {
+      // Only send "typing" status if we haven't already
       if (!_hasSentTypingStatus) {
         _hasSentTypingStatus = true;
         ref.read(chatProvider.notifier).sendTypingStatus(true);
       }
 
+      // Auto-stop typing after 3 seconds of inactivity
       _typingTimer = Timer(const Duration(seconds: 3), () {
-        if (mounted && _hasSentTypingStatus) {
+        if (mounted && !_isDisposed && _hasSentTypingStatus) {
           _hasSentTypingStatus = false;
           ref.read(chatProvider.notifier).sendTypingStatus(false);
         }
       });
     } else {
+      // User cleared the input - stop typing immediately
       if (_hasSentTypingStatus) {
         _hasSentTypingStatus = false;
         ref.read(chatProvider.notifier).sendTypingStatus(false);
@@ -691,42 +739,37 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _showChatInfo() {
-    final l = AppLocalizations.of(context)!;
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.chat_info),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l?.chat_info ?? 'Chat Info'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Builder(
-                builder: (context) {
-                  final l = AppLocalizations.of(context)!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l.chat_room_label(widget.chatRoom.name),
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l.id_label(widget.chatRoom.id),
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l.participants_label,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  );
-                },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l?.chat_room_label(widget.chatRoom.name) ?? 'Chat: ${widget.chatRoom.name}',
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l?.id_label(widget.chatRoom.id) ?? 'ID: ${widget.chatRoom.id}',
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l?.participants_label ?? 'Participants',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               ...widget.chatRoom.participants.map(
@@ -738,7 +781,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         radius: 16,
                         backgroundColor: Colors.blue,
                         child: Text(
-                          participant.username[0].toUpperCase(),
+                          participant.username.isNotEmpty
+                              ? participant.username[0].toUpperCase()
+                              : '?',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -751,16 +796,20 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              participant.displayName,
+                              participant.displayName.isNotEmpty
+                                  ? participant.displayName
+                                  : 'Unknown',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             Text(
-                              '@${participant.username}',
+                              participant.username.isNotEmpty
+                                  ? '@${participant.username}'
+                                  : '',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey[600],
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -775,8 +824,8 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l.cancel),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l?.cancel ?? 'Cancel'),
           ),
         ],
       ),
@@ -784,20 +833,20 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _showDeleteConfirmation() {
-    final l = AppLocalizations.of(context)!;
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l.delete_chat),
-        content: Text(l.delete_chat_confirm(widget.chatRoom.name)),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l?.delete_chat ?? 'Delete Chat'),
+        content: Text(l?.delete_chat_confirm(widget.chatRoom.name) ?? 'Are you sure you want to delete this chat?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l.cancel),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l?.cancel ?? 'Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               if (mounted) {
                 final success = await ref
                     .read(chatProvider.notifier)
@@ -807,7 +856,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 }
               }
             },
-            child: Text(l.delete, style: const TextStyle(color: Colors.red)),
+            child: Text(l?.delete ?? 'Delete', style: TextStyle(color: Theme.of(dialogContext).colorScheme.error)),
           ),
         ],
       ),
@@ -864,13 +913,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           )
         : null;
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (!_isDisconnecting) {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop && !_isDisconnecting) {
           _isDisconnecting = true;
           ref.read(chatProvider.notifier).disconnectFromChatRoom();
         }
-        return true;
       },
       child: GestureDetector(
         onHorizontalDragEnd: (details) {
@@ -887,9 +936,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             onBlockTap: _handleBlockUser,
             onDeleteTap: _showDeleteConfirmation,
           ),
-          backgroundColor: const Color(
-            0xFFE5F3FF,
-          ), // Telegram light blue background
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : const Color(0xFFE5F3FF), // Telegram light blue background
           body: _buildChatBody(
             chatState: chatState,
             messages: messages,
@@ -927,10 +976,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(8),
-            color: Colors.red[100],
+            color: Theme.of(context).colorScheme.errorContainer,
             child: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error, size: 20),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Builder(
@@ -938,13 +987,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       final l = AppLocalizations.of(context)!;
                       return Text(
                         l.error_label(error.toString()),
-                        style: const TextStyle(color: Colors.red),
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
                       );
                     },
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, color: Colors.red, size: 20),
+                  icon: Icon(Icons.close, color: Theme.of(context).colorScheme.error, size: 20),
                   onPressed: () {
                     ref.read(chatProvider.notifier).refresh();
                   },
@@ -1039,10 +1088,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (isBlocked) {
       return Container(
         padding: const EdgeInsets.all(16),
-        color: Colors.grey[200],
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: Row(
           children: [
-            Icon(Icons.block, color: Colors.grey[600]),
+            Icon(Icons.block, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 12),
             Expanded(
               child: Builder(
@@ -1051,7 +1100,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                   return Text(
                     l.cannot_send_messages_blocked,
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontStyle: FontStyle.italic,
                     ),
                   );
@@ -1066,10 +1115,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 3,
           ),
@@ -1128,7 +1177,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 IconButton(
                   icon: Icon(
                     _showMediaOptions ? Icons.close : Icons.add_circle,
-                    color: _showMediaOptions ? Colors.red : Colors.grey,
+                    color: _showMediaOptions ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () {
                     setState(() => _showMediaOptions = !_showMediaOptions);
@@ -1137,7 +1186,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 IconButton(
                   icon: Icon(
                     _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions,
-                    color: _showEmojiPicker ? Colors.blue : Colors.grey[600],
+                    color: _showEmojiPicker ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () {
                     if (!_isDisposed) {
@@ -1181,12 +1230,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         )
                       : TextField(
                           controller: _messageController,
-                          onChanged: (text) {
-                            _onTypingChanged(text);
-                            if (!_isDisposed) {
-                              setState(() {});
-                            }
-                          },
+                          onChanged: _onTypingChanged,
                           decoration: InputDecoration(
                             hintText:
                                 AppLocalizations.of(context)?.type_a_message ??
@@ -1196,13 +1240,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               borderSide: BorderSide.none,
                             ),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
                             ),
                           ),
-                          maxLines: 6, // Limit to 6 lines max - automatically scrollable when exceeded
+                          maxLines: 6,
                           minLines: 1,
                           keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.send,
@@ -1221,6 +1265,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         ),
                 ),
                 const SizedBox(width: 8),
+                // Send button with ValueListenableBuilder for efficient updates
                 if (_isRecording)
                   Container(
                     width: 48,
@@ -1232,32 +1277,90 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     child: const Icon(Icons.mic, color: Colors.white),
                   )
                 else if (_editingMessageId != null)
-                  CircleAvatar(
-                    backgroundColor: _editController.text.trim().isEmpty
-                        ? Colors.grey[400]
-                        : Colors.orange,
-                    child: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.white),
-                      onPressed: _editController.text.trim().isEmpty
-                          ? null
-                          : _saveEditedMessage,
-                    ),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _editController,
+                    builder: (context, value, child) {
+                      final hasText = value.text.trim().isNotEmpty;
+                      return _AnimatedSendButton(
+                        isEnabled: hasText,
+                        color: Colors.orange,
+                        icon: Icons.check,
+                        onPressed: hasText ? _saveEditedMessage : null,
+                      );
+                    },
                   )
                 else
-                  CircleAvatar(
-                    backgroundColor: _messageController.text.trim().isEmpty
-                        ? Colors.grey[400]
-                        : Colors.blue,
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: _messageController.text.trim().isEmpty
-                          ? null
-                          : _sendMessage,
-                    ),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _messageController,
+                    builder: (context, value, child) {
+                      final hasText = value.text.trim().isNotEmpty;
+                      return _AnimatedSendButton(
+                        isEnabled: hasText,
+                        color: Colors.blue,
+                        icon: Icons.send,
+                        onPressed: hasText ? _sendMessage : null,
+                      );
+                    },
                   ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Animated send button with scale and color transition
+class _AnimatedSendButton extends StatelessWidget {
+  final bool isEnabled;
+  final Color color;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  const _AnimatedSendButton({
+    required this.isEnabled,
+    required this.color,
+    required this.icon,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedScale(
+      scale: isEnabled ? 1.0 : 0.9,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOutCubic,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isEnabled ? color : Colors.grey[400],
+          boxShadow: isEnabled
+              ? [
+                  BoxShadow(
+                    color: color.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            customBorder: const CircleBorder(),
+            child: Center(
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -29,6 +29,26 @@
   "@usedProductsMarket": {
     "description": "Subtitle text on home screen"
   },
+  "home_welcome_title": "Your neighborhood marketplace",
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "home_welcome_subtitle": "Buy and sell with people nearby.\nSafe, simple, and local.",
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "home_get_started": "Get Started",
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "home_sign_in": "I already have an account",
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "home_terms_notice": "By continuing, you agree to our Terms of Service and Privacy Policy",
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
   "register": "Register",
   "@register": {
     "description": "Register button text"
@@ -387,6 +407,13 @@
   "@searchServicePlaceholder": {
     "description": "Service search placeholder"
   },
+  "search_products_subtitle": "Find great deals in your neighborhood",
+  "search_services_subtitle": "Find professionals in your neighborhood",
+  "search_products_error": "Error searching products",
+  "search_services_error": "Error searching services",
+  "load_more_products_error": "Error loading more products",
+  "load_more_services_error": "Error loading more services",
+  "try_different_keywords": "Try different keywords",
   "searchText": "Search",
   "@searchText": {
     "description": "Search button text"
@@ -1127,6 +1154,10 @@
   "locationDescription": "Find deals near you. Our location-based system helps you discover items in your neighborhood.",
   "@locationDescription": {
     "description": "Location feature description"
+  },
+  "location_subtitle": "Choose your region and district to see nearby listings",
+  "@location_subtitle": {
+    "description": "Location page subtitle"
   },
   "categoryTitle": "Category Filtering",
   "@categoryTitle": {
@@ -2739,5 +2770,109 @@
   "retry": "Retry",
   "@retry": {
     "description": "Retry button text"
+  },
+  "profile_listings": "Listings",
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "profile_followers": "Followers",
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "profile_following": "Following",
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "profile_no_products": "No products",
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "profile_no_services": "No services",
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "profile_no_properties": "No properties",
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "profile_user_no_products": "This user hasn't posted any products yet",
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "profile_user_no_services": "This user hasn't posted any services yet",
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "profile_user_no_properties": "This user hasn't posted any properties yet",
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "profile_error_occurred": "Error occurred",
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "profile_error_loading_products": "Error loading products",
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "profile_error_loading_services": "Error loading services",
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "profile_no_followers_yet": "No followers yet",
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "profile_no_following_yet": "Not following anyone yet",
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "profile_follow": "Follow",
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "profile_following_btn": "Following",
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "profile_message": "Message",
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "profile_member_since": "Member since",
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "profile_loading_error": "Error loading profile",
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "profile_retry": "Try again",
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "profile_share": "Share",
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "profile_copy_link": "Copy link",
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "profile_report": "Report",
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "linkCopied": "Link copied to clipboard",
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "checkOutProfile": "Check out",
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "onTezsell": "on TezSell",
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
   }
 }

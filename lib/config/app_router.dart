@@ -13,6 +13,7 @@ import '../pages/products/product_detail.dart';
 import '../pages/products/product_new.dart';
 import '../pages/products/product_search.dart';
 import '../pages/products/products_list.dart';
+import '../pages/products/product_category.dart';
 import '../pages/service/details/service_detail.dart';
 import '../pages/service/new/service_new.dart';
 import '../pages/service/main/service_search.dart';
@@ -33,6 +34,7 @@ import '../pages/shaxsiy/my-services/my_services.dart';
 import '../pages/shaxsiy/properties/saved_properties.dart';
 import '../pages/change_city/change_city.dart';
 import '../pages/admin/admin_dashboard.dart';
+import '../pages/profile/user_profile_screen.dart';
 
 // Providers
 import '../service/authentication_service.dart';
@@ -126,14 +128,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ProductsList(regionName: regionName, districtName: districtName);
         },
       ),
-      GoRoute(
-        path: '/product/:id',
-        name: 'product-detail',
-        builder: (context, state) {
-          final productId = state.pathParameters['id']!;
-          return _ProductDetailWrapper(productId: productId);
-        },
-      ),
+      // Specific routes MUST come before parameterized routes
       GoRoute(
         path: '/product/new',
         name: 'product-new',
@@ -148,6 +143,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ProductSearch(regionName: regionName, districtName: districtName);
         },
       ),
+      GoRoute(
+        path: '/product/categories',
+        name: 'product-categories',
+        builder: (context, state) {
+          final regionName = state.uri.queryParameters['region'] ?? '';
+          final districtName = state.uri.queryParameters['district'] ?? '';
+          return ProductFilter(regionName: regionName, districtName: districtName);
+        },
+      ),
+      // Parameterized route MUST come last
+      GoRoute(
+        path: '/product/:id',
+        name: 'product-detail',
+        builder: (context, state) {
+          final productId = state.pathParameters['id']!;
+          return _ProductDetailWrapper(productId: productId);
+        },
+      ),
       // Service routes
       GoRoute(
         path: '/services',
@@ -158,14 +171,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ServiceMain(regionName: regionName, districtName: districtName);
         },
       ),
-      GoRoute(
-        path: '/service/:id',
-        name: 'service-detail',
-        builder: (context, state) {
-          final serviceId = state.pathParameters['id']!;
-          return _ServiceDetailWrapper(serviceId: serviceId);
-        },
-      ),
+      // Specific routes MUST come before parameterized routes
       GoRoute(
         path: '/service/new',
         name: 'service-new',
@@ -180,6 +186,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ServiceSearch(regionName: regionName, districtName: districtName);
         },
       ),
+      // Parameterized route MUST come last
+      GoRoute(
+        path: '/service/:id',
+        name: 'service-detail',
+        builder: (context, state) {
+          final serviceId = state.pathParameters['id']!;
+          return _ServiceDetailWrapper(serviceId: serviceId);
+        },
+      ),
       // Real Estate routes
       GoRoute(
         path: '/real-estate',
@@ -190,14 +205,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return RealEstateMain(regionName: regionName, districtName: districtName);
         },
       ),
-      GoRoute(
-        path: '/real-estate/:id',
-        name: 'real-estate-detail',
-        builder: (context, state) {
-          final propertyId = state.pathParameters['id']!;
-          return PropertyDetail(propertyId: propertyId);
-        },
-      ),
+      // Specific routes MUST come before parameterized routes
       GoRoute(
         path: '/real-estate/new',
         name: 'real-estate-new',
@@ -207,6 +215,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/real-estate/search',
         name: 'real-estate-search',
         builder: (context, state) => const RealEstateSearch(),
+      ),
+      // Parameterized route MUST come last
+      GoRoute(
+        path: '/real-estate/:id',
+        name: 'real-estate-detail',
+        builder: (context, state) {
+          final propertyId = state.pathParameters['id']!;
+          return PropertyDetail(propertyId: propertyId);
+        },
       ),
       // Chat routes
       GoRoute(
@@ -258,6 +275,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'saved-properties',
         builder: (context, state) => const SavedProperties(),
       ),
+      // User profile route (for viewing other users)
+      GoRoute(
+        path: '/user/:id',
+        name: 'user-profile',
+        builder: (context, state) {
+          final userId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+          return UserProfileScreen(userId: userId);
+        },
+      ),
       // Other routes
       GoRoute(
         path: '/change-city',
@@ -297,7 +323,7 @@ class _ProductDetailWrapperState extends ConsumerState<_ProductDetailWrapper> {
   Future<void> _loadProduct() async {
     try {
       final dio = Dio(BaseOptions(baseUrl: baseUrl));
-      final response = await dio.get('$PRODUCTS_URL/${widget.productId}/');
+      final response = await dio.get('$PRODUCTS_URL${widget.productId}/');
       
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data;

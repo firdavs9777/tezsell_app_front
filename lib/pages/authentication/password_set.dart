@@ -240,13 +240,13 @@ class _PasswordResetState extends State<PasswordReset> {
               'Password Verification',
           style: TextStyle(
             fontWeight: FontWeight.w700,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
             letterSpacing: -0.3,
           ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Theme.of(context).colorScheme.onBackground,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
       ),
       body: Form(
         key: _formKey,
@@ -383,8 +383,8 @@ class _PasswordResetState extends State<PasswordReset> {
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: _isLoading
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
+                          ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 22,
                     ),
                     onPressed: _isLoading
@@ -459,8 +459,8 @@ class _PasswordResetState extends State<PasswordReset> {
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: _isLoading
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
+                          ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 22,
                     ),
                     onPressed: _isLoading
@@ -534,7 +534,7 @@ class _PasswordResetState extends State<PasswordReset> {
                           'Tap above to select profile image (optional)',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 13,
                       ),
                     ),

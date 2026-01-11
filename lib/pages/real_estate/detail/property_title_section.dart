@@ -14,14 +14,17 @@ class PropertyTitleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: colorScheme.shadow.withOpacity(0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -38,7 +41,7 @@ class PropertyTitleSection extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[900],
+                      color: colorScheme.onSurface,
                       height: 1.2),
                 ),
               ),
@@ -56,14 +59,14 @@ class PropertyTitleSection extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green[600]),
+                          color: isDark ? colorScheme.primary : const Color(0xFF43A047)),
                     ),
                     if (property.pricePerSqm != null &&
                         property.pricePerSqm.isNotEmpty) ...[
                       SizedBox(height: 4),
                       Text(
                         '${property.pricePerSqm} ${property.currency}${localizations?.property_info_price_per_sqm ?? "/m²"}',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ],

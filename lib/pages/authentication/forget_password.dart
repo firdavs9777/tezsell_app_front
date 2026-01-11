@@ -34,16 +34,17 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF212124)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           localizations?.forgotPassword ?? 'Forgot Password',
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 20,
-            color: Color(0xFF212124),
+            color: theme.colorScheme.onSurface,
             letterSpacing: -0.3,
           ),
         ),
@@ -64,11 +65,13 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: theme.colorScheme.surface,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.1)
+                            : Colors.black.withOpacity(0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -96,10 +99,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 // Title
                 Text(
                   localizations?.resetYourPassword ?? 'Reset Your Password',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF212124),
+                    color: theme.colorScheme.onSurface,
                     letterSpacing: -0.5,
                   ),
                   textAlign: TextAlign.center,
@@ -333,7 +336,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       labelText: localizations?.enterVerificationCode ?? 'Verification Code',
                       border: const OutlineInputBorder(),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surface,
                       prefixIcon: Icon(Icons.pin, color: Theme.of(context).primaryColor),
                       counterText: '',
                       hintText: localizations?.verificationCodeHint ?? '000000',
@@ -356,7 +359,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       labelText: 'New Password',
                       border: const OutlineInputBorder(),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surface,
                       prefixIcon: Icon(Icons.lock, color: Theme.of(context).primaryColor),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
@@ -384,7 +387,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       labelText: localizations?.confirmPassword ?? 'Confirm Password',
                       border: const OutlineInputBorder(),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surface,
                       prefixIcon:
                           Icon(Icons.lock_open_sharp, color: Theme.of(context).primaryColor),
                       focusedBorder: OutlineInputBorder(
@@ -520,16 +523,18 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   }
 
   void _showSuccess(String message) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            Icon(Icons.check_circle, color: colorScheme.onPrimary),
             const SizedBox(width: 12),
-            Expanded(child: Text(message)),
+            Expanded(child: Text(message, style: TextStyle(color: colorScheme.onPrimary))),
           ],
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: isDark ? colorScheme.primary : const Color(0xFF43A047),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -538,16 +543,17 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
 
   void _showError(String message) {
     if (mounted) {
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
-              const Icon(Icons.error_outline, color: Colors.white),
+              Icon(Icons.error_outline, color: colorScheme.onError),
               const SizedBox(width: 12),
-              Expanded(child: Text(message)),
+              Expanded(child: Text(message, style: TextStyle(color: colorScheme.onError))),
             ],
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

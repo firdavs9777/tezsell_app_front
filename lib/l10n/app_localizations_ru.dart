@@ -41,6 +41,23 @@ class AppLocalizationsRu extends AppLocalizations {
   String get usedProductsMarket => 'Рынок подержанных товаров';
 
   @override
+  String get home_welcome_title => 'Ваш местный маркетплейс';
+
+  @override
+  String get home_welcome_subtitle =>
+      'Покупайте и продавайте рядом с домом.\nБезопасно, просто и локально.';
+
+  @override
+  String get home_get_started => 'Начать';
+
+  @override
+  String get home_sign_in => 'У меня уже есть аккаунт';
+
+  @override
+  String get home_terms_notice =>
+      'Продолжая, вы соглашаетесь с Условиями использования и Политикой конфиденциальности';
+
+  @override
   String get register => 'Регистрация';
 
   @override
@@ -314,6 +331,28 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get searchServicePlaceholder => 'Поиск услуг';
+
+  @override
+  String get search_products_subtitle =>
+      'Найдите выгодные предложения рядом с вами';
+
+  @override
+  String get search_services_subtitle => 'Найдите специалистов рядом с вами';
+
+  @override
+  String get search_products_error => 'Ошибка поиска товаров';
+
+  @override
+  String get search_services_error => 'Ошибка поиска услуг';
+
+  @override
+  String get load_more_products_error => 'Ошибка загрузки товаров';
+
+  @override
+  String get load_more_services_error => 'Ошибка загрузки услуг';
+
+  @override
+  String get try_different_keywords => 'Попробуйте другие ключевые слова';
 
   @override
   String get searchText => 'Поиск';
@@ -887,6 +926,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get locationDescription =>
       'Находите предложения рядом с вами. Наша система на основе местоположения поможет вам найти товары в вашем районе.';
+
+  @override
+  String get location_subtitle =>
+      'Выберите регион и район, чтобы увидеть объявления рядом';
 
   @override
   String get categoryTitle => 'Фильтрация по категориям';
@@ -3869,4 +3912,85 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get unable_to_start_chat =>
       'Не удалось начать чат. Пожалуйста, попробуйте снова.';
+
+  @override
+  String get profile_listings => 'Объявления';
+
+  @override
+  String get profile_followers => 'Подписчики';
+
+  @override
+  String get profile_following => 'Подписки';
+
+  @override
+  String get profile_no_products => 'Нет товаров';
+
+  @override
+  String get profile_no_services => 'Нет услуг';
+
+  @override
+  String get profile_no_properties => 'Нет недвижимости';
+
+  @override
+  String get profile_user_no_products =>
+      'Этот пользователь еще не разместил товары';
+
+  @override
+  String get profile_user_no_services =>
+      'Этот пользователь еще не разместил услуги';
+
+  @override
+  String get profile_user_no_properties =>
+      'Этот пользователь еще не разместил недвижимость';
+
+  @override
+  String get profile_error_occurred => 'Произошла ошибка';
+
+  @override
+  String get profile_error_loading_products => 'Ошибка загрузки товаров';
+
+  @override
+  String get profile_error_loading_services => 'Ошибка загрузки услуг';
+
+  @override
+  String get profile_no_followers_yet => 'Пока нет подписчиков';
+
+  @override
+  String get profile_no_following_yet => 'Пока нет подписок';
+
+  @override
+  String get profile_follow => 'Подписаться';
+
+  @override
+  String get profile_following_btn => 'Подписан';
+
+  @override
+  String get profile_message => 'Сообщение';
+
+  @override
+  String get profile_member_since => 'Участник с';
+
+  @override
+  String get profile_loading_error => 'Ошибка загрузки профиля';
+
+  @override
+  String get profile_retry => 'Повторить';
+
+  @override
+  String get profile_share => 'Поделиться';
+
+  @override
+  String get profile_copy_link => 'Копировать ссылку';
+
+  @override
+  String get profile_report => 'Пожаловаться';
+
+  @override
+  String get linkCopied => 'Ссылка скопирована';
+
+  @override
+  String get checkOutProfile => 'Посмотрите профиль';
+
+  @override
+  String get onTezsell => 'в TezSell';
 }

@@ -71,11 +71,13 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -103,7 +105,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                               SizedBox(height: 16),
                               Text(
                                 'Loading map...',
-                                style: TextStyle(color: Colors.grey[600]),
+                                style: TextStyle(color: colorScheme.onSurfaceVariant),
                               ),
                             ],
                           ),
@@ -196,13 +198,15 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   }
 
   Widget _buildFallbackMap() {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      color: Colors.grey[200],
+      color: colorScheme.surfaceContainerHighest,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.map, size: 64, color: Colors.grey[400]),
+            Icon(Icons.map, size: 64, color: colorScheme.onSurfaceVariant),
             SizedBox(height: 16),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
@@ -211,7 +215,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey[700],
+                  color: colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -221,7 +225,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
               '${widget.property.district}, ${widget.property.city}',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[600],
+                color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
@@ -242,19 +246,21 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   }
 
   Widget _buildNoLocationView() {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
-      color: Colors.grey[100],
+      color: colorScheme.surfaceContainerHighest,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.location_off, size: 64, color: Colors.grey[400]),
+            Icon(Icons.location_off, size: 64, color: colorScheme.onSurfaceVariant),
             SizedBox(height: 16),
             Text(
               'Location not available',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             SizedBox(height: 8),
@@ -264,7 +270,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                 widget.property.address,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey[500],
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),

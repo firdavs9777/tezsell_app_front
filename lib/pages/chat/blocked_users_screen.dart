@@ -55,7 +55,9 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               l.unblock_user,
-              style: const TextStyle(color: Colors.green),
+              style: TextStyle(color: Theme.of(context).brightness == Brightness.dark
+                  ? Theme.of(context).colorScheme.primary
+                  : const Color(0xFF43A047)),
             ),
           ),
         ],
@@ -70,7 +72,9 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l.user_unblocked(user.username)),
-                backgroundColor: Colors.green,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.primary
+                    : const Color(0xFF43A047),
               ),
             );
             // Reload blocked users list
@@ -79,7 +83,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l.failed_to_unblock),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
           }
@@ -89,7 +93,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Error: $e'),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
@@ -125,24 +129,24 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.block,
                         size: 64,
-                        color: Colors.grey,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(height: 16),
                       Text(
                         l.no_blocked_users,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         l.blocked_users_hint,
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -157,11 +161,11 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                       return Container(
                         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
+                              color: Theme.of(context).shadowColor.withOpacity(0.1),
                               spreadRadius: 1,
                               blurRadius: 3,
                               offset: const Offset(0, 1),
@@ -188,7 +192,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                           subtitle: Text(
                             '@${user.username}',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 13,
                             ),
                           ),
@@ -197,7 +201,9 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                             icon: const Icon(Icons.lock_open, size: 18),
                             label: Text(l.unblock_user),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                                  ? Theme.of(context).colorScheme.primary
+                                  : const Color(0xFF43A047),
                               foregroundColor: Colors.white,
                             ),
                           ),

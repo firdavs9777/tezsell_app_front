@@ -65,7 +65,7 @@ class ServiceImageSlider extends StatelessWidget {
                     );
                   },
                 ),
-          // Gradient overlay at bottom
+          // Gradient overlay at bottom - intentionally dark for visibility on images
           Positioned(
             bottom: 0,
             left: 0,
@@ -92,7 +92,7 @@ class ServiceImageSlider extends StatelessWidget {
               bottom: 0,
               child: Center(
                 child: Material(
-                  color: Colors.white.withOpacity(0.9),
+                  color: colorScheme.surface.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(24),
                   elevation: 2,
                   child: InkWell(
@@ -130,7 +130,7 @@ class ServiceImageSlider extends StatelessWidget {
               bottom: 0,
               child: Center(
                 child: Material(
-                  color: Colors.white.withOpacity(0.9),
+                  color: colorScheme.surface.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(24),
                   elevation: 2,
                   child: InkWell(

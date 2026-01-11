@@ -649,31 +649,36 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   void sendMessage(String content) {
+    print('📤 ChatProvider.sendMessage called with: "$content"');
     final trimmedContent = content.trim();
 
     if (trimmedContent.isEmpty) {
-
+      print('❌ Message is empty, returning');
       return;
     }
 
     if (!state.isAuthenticated) {
-
+      print('❌ Not authenticated');
       _safeUpdateState((s) => s.copyWith(error: 'Not authenticated'));
       return;
     }
 
-    if (_chatRoomWS == null || !_chatRoomWS!.isConnected) {
+    print('📤 _chatRoomWS: ${_chatRoomWS != null ? "exists" : "null"}');
+    print('📤 _chatRoomWS.isConnected: ${_chatRoomWS?.isConnected}');
 
+    if (_chatRoomWS == null || !_chatRoomWS!.isConnected) {
+      print('❌ Not connected to WebSocket');
       _safeUpdateState((s) => s.copyWith(error: 'Not connected. Please wait...'));
 
       // Try to reconnect
       if (state.currentChatRoomId != null) {
-
+        print('🔄 Attempting to reconnect to room ${state.currentChatRoomId}');
         connectToChatRoom(state.currentChatRoomId!);
       }
       return;
     }
 
+    print('📤 Calling _chatRoomWS.sendChatMessage');
     _chatRoomWS!.sendChatMessage(trimmedContent);
   }
 
