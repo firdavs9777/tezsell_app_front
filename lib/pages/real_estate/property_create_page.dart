@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:io';
@@ -544,6 +545,11 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       _isUploading = true;
     });
 
+    // Store router reference BEFORE async operation
+    final router = GoRouter.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final successMessage = localizations?.success_property_created_success ?? 'Property created successfully!';
+
     try {
       final realEstateService = ref.read(realEstateServiceProvider);
       final prefs = await SharedPreferences.getInstance();
@@ -585,30 +591,21 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         token: token,
       );
 
-      if (mounted) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations?.success_property_created_success ??
-                  'Property created successfully!',
-            ),
-            backgroundColor: isDark
-                ? Theme.of(context).colorScheme.primary
-                : const Color(0xFF43A047),
-          ),
-        );
+      // Trigger refresh in real estate list
+      ref.read(realEstateRefreshProvider.notifier).state++;
 
-        // Navigate back or to property detail
+      // Show success message
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(successMessage),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      // Pop this page to go back to real estate list (was opened with Navigator.push)
+      if (mounted) {
         Navigator.of(context).pop();
-        
-        // Optionally navigate to the property detail page
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => RealEstateDetailPage(propertyId: result['id']),
-        //   ),
-        // );
       }
     } catch (error) {
       AppLogger.error('Error creating property: $error');
@@ -678,6 +675,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                           return localizations?.property_create_property_title_required ??
                               'Please enter property title';
                         }
+                        if (value.trim().length < 3) {
+                          return 'Property title must be at least 3 characters';
+                        }
                         return null;
                       },
                     ),
@@ -701,6 +701,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         if (value == null || value.trim().isEmpty) {
                           return localizations?.property_create_description_required ??
                               'Please enter description';
+                        }
+                        if (value.trim().length < 10) {
+                          return 'Description must be at least 10 characters';
                         }
                         return null;
                       },

@@ -33,6 +33,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   @override
   void initState() {
     super.initState();
+    print('📦 ProductsList: initState called, loading initial products...');
     _scrollController.addListener(_onScroll);
     _loadInitialProducts();
   }
@@ -163,6 +164,14 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
+
+    // Listen for refresh trigger from product creation
+    ref.listen<int>(productsRefreshProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        print('🔄 ProductsList: Refresh triggered! $previous -> $next, reloading products...');
+        _loadInitialProducts();
+      }
+    });
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,

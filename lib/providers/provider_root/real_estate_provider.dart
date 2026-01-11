@@ -367,9 +367,27 @@ class RealEstateService {
         }
         return responseData;
       } else {
-        final errorMessage = response.data is Map
-            ? (response.data['error'] ?? response.data.toString())
-            : 'Failed to create property';
+        String errorMessage = 'Failed to create property';
+        if (response.data is Map) {
+          final data = response.data as Map;
+          // Extract validation errors if present
+          if (data['errors'] is Map) {
+            final errors = data['errors'] as Map;
+            final errorMessages = <String>[];
+            errors.forEach((field, messages) {
+              if (messages is List && messages.isNotEmpty) {
+                errorMessages.add(messages.first.toString());
+              }
+            });
+            if (errorMessages.isNotEmpty) {
+              errorMessage = errorMessages.join('. ');
+            }
+          } else if (data['error'] != null) {
+            errorMessage = data['error'].toString();
+          } else if (data['message'] != null) {
+            errorMessage = data['message'].toString();
+          }
+        }
         throw DioException(
           requestOptions: response.requestOptions,
           response: response,
@@ -995,3 +1013,6 @@ final savedPropertiesNotifierProvider = StateNotifierProvider.family<
     return SavedPropertiesNotifier(service, token);
   },
 );
+
+// Refresh trigger provider - increment to trigger reload in RealEstateMain
+final realEstateRefreshProvider = StateProvider<int>((ref) => 0);

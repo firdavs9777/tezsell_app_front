@@ -217,6 +217,13 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
     final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context);
 
+    // Listen for refresh trigger from property creation
+    ref.listen<int>(realEstateRefreshProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        _loadInitialProperties();
+      }
+    });
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: Column(

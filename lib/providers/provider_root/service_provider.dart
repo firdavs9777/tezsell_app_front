@@ -99,15 +99,42 @@ class ServiceProvider {
     });
     final response = await dio.post(url,
         data: formData,
-        options: Options(headers: {
-          'Authorization': 'Token $token',
-          'Content-Type': 'application/json'
-        }));
+        options: Options(
+          headers: {
+            'Authorization': 'Token $token',
+            'Content-Type': 'application/json'
+          },
+          validateStatus: (status) => status! < 500,
+        ));
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Services.fromJson(response.data);
-// Assuming 'data' is a map representing the new moment
     } else {
-      throw Exception('Failed to create moment');
+      String errorMessage = 'Failed to create service';
+      if (response.data is Map) {
+        final data = response.data as Map;
+        // Extract validation errors if present
+        if (data['errors'] is Map) {
+          final errors = data['errors'] as Map;
+          final errorMessages = <String>[];
+          errors.forEach((field, messages) {
+            if (messages is List && messages.isNotEmpty) {
+              errorMessages.add(messages.first.toString());
+            }
+          });
+          if (errorMessages.isNotEmpty) {
+            errorMessage = errorMessages.join('. ');
+          }
+        } else if (data['error'] != null) {
+          errorMessage = data['error'].toString();
+        } else if (data['message'] != null) {
+          errorMessage = data['message'].toString();
+        }
+      }
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        message: errorMessage,
+      );
     }
   }
 
@@ -294,3 +321,6 @@ final servicesProvider = FutureProvider<List<Services>>((ref) async {
 });
 
 final serviceMainProvider = Provider((ref) => ServiceProvider());
+
+// Refresh trigger provider - increment to trigger reload in ServiceList
+final servicesRefreshProvider = StateProvider<int>((ref) => 0);

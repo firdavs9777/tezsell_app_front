@@ -5,6 +5,7 @@ import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:dio/dio.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -233,11 +234,15 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       _isUploading = true;
     });
 
+    // Store router reference BEFORE async operation
+    final router = GoRouter.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     try {
       AppLogger.debug('Starting product creation...');
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -270,22 +275,26 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      scaffoldMessenger.hideCurrentSnackBar();
 
       if (product != null) {
         AppLogger.info('Product created successfully: ${product.id}');
 
-        AppErrorHandler.showSuccess(
-          context,
-          localizations?.productCreatedSuccess ?? 'Product successfully added!',
+        // Trigger refresh in products list
+        ref.read(productsRefreshProvider.notifier).state++;
+
+        // Show success message
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text(localizations?.productCreatedSuccess ?? 'Product successfully added!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
         );
 
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        if (!mounted) return;
-
-        if (context.mounted) {
-          context.go('/tabs');
+        // Pop this page to go back to products list (was opened with Navigator.push)
+        if (mounted) {
+          Navigator.of(context).pop();
         }
       } else {
         AppLogger.error('Product creation returned null');
@@ -299,11 +308,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
       AppErrorHandler.logError('ProductNew._submitProduct', e);
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        AppErrorHandler.showError(
-          context,
-          localizations?.errorCreatingProduct ??
-              'Error while creating product. Please try again.',
-        );
+        // Extract actual error message from DioException
+        String errorMessage = localizations?.errorCreatingProduct ??
+            'Error while creating product. Please try again.';
+        if (e is DioException && e.message != null && e.message!.isNotEmpty) {
+          errorMessage = e.message!;
+        }
+        AppErrorHandler.showError(context, errorMessage);
       }
     } finally {
       if (mounted) {
@@ -370,6 +381,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                           if (value == null || value.trim().isEmpty) {
                             return localizations?.pleaseFillAllRequired ?? 'Please enter product name';
                           }
+                          if (value.trim().length < 3) {
+                            return 'Product name must be at least 3 characters';
+                          }
                           return null;
                         },
                       ),
@@ -391,6 +405,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return localizations?.pleaseFillAllRequired ?? 'Please enter description';
+                          }
+                          if (value.trim().length < 10) {
+                            return 'Description must be at least 10 characters';
                           }
                           return null;
                         },
@@ -416,8 +433,8 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                         enabled: !_isUploading,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                           ThousandsFormatter(),
-                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         decoration: InputDecoration(
                           labelText: '${localizations?.newProductPrice ?? 'Price'} *',

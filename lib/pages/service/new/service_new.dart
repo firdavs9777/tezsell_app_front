@@ -5,6 +5,7 @@ import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
+import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -220,11 +221,15 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       _isUploading = true;
     });
 
+    // Store router reference BEFORE async operation
+    final router = GoRouter.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     try {
       AppLogger.debug('Starting service creation...');
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -256,22 +261,26 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      scaffoldMessenger.hideCurrentSnackBar();
 
       if (service != null) {
         AppLogger.info('Service created successfully: ${service.id}');
 
-        AppErrorHandler.showSuccess(
-          context,
-          'Service successfully added!',
+        // Trigger refresh in services list
+        ref.read(servicesRefreshProvider.notifier).state++;
+
+        // Show success message
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Service successfully added!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
         );
 
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        if (!mounted) return;
-
-        if (context.mounted) {
-          context.go('/tabs?index=1');
+        // Pop this page to go back to services list (was opened with Navigator.push)
+        if (mounted) {
+          Navigator.of(context).pop();
         }
       } else {
         AppLogger.error('Service creation returned null');
@@ -284,10 +293,12 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       AppErrorHandler.logError('ServiceNew._submitProduct', e);
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        AppErrorHandler.showError(
-          context,
-          'Error while creating service. Please try again.',
-        );
+        // Extract actual error message from DioException
+        String errorMessage = 'Error while creating service. Please try again.';
+        if (e is DioException && e.message != null && e.message!.isNotEmpty) {
+          errorMessage = e.message!;
+        }
+        AppErrorHandler.showError(context, errorMessage);
       }
     } finally {
       if (mounted) {
@@ -354,6 +365,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                           if (value == null || value.trim().isEmpty) {
                             return localizations?.pleaseFillAllRequired ?? 'Please enter service name';
                           }
+                          if (value.trim().length < 3) {
+                            return localizations?.service_name_min_length ?? 'Service name must be at least 3 characters';
+                          }
                           return null;
                         },
                       ),
@@ -375,6 +389,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return localizations?.pleaseFillAllRequired ?? 'Please enter description';
+                          }
+                          if (value.trim().length < 10) {
+                            return localizations?.service_description_min_length ?? 'Description must be at least 10 characters';
                           }
                           return null;
                         },

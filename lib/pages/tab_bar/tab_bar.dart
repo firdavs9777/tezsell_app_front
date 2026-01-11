@@ -91,6 +91,18 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(TabsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update selected page when navigating back with a different index
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      print('📱 TabsScreen: initialIndex changed from ${oldWidget.initialIndex} to ${widget.initialIndex}');
+      setState(() {
+        _selectedPageIndex = widget.initialIndex;
+      });
+    }
+  }
+
   void _selectPage(int index) {
     setState(() {
       if (index != _selectedPageIndex) {

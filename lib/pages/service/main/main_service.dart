@@ -160,6 +160,13 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
+    // Listen for refresh trigger from service creation
+    ref.listen<int>(servicesRefreshProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        _loadInitialServices();
+      }
+    });
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(

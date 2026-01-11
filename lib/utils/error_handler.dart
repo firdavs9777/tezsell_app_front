@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'app_logger.dart';
 
 /// Custom API exception for handling HTTP errors with status codes
@@ -92,6 +93,24 @@ class AppErrorHandler {
     // Handle our custom API exception
     if (error is ApiException) {
       return error.message;
+    }
+
+    // Handle Dio exceptions with custom messages
+    if (error is DioException) {
+      if (error.message != null && error.message!.isNotEmpty) {
+        return error.message!;
+      }
+      // Handle specific Dio error types
+      switch (error.type) {
+        case DioExceptionType.connectionTimeout:
+        case DioExceptionType.sendTimeout:
+        case DioExceptionType.receiveTimeout:
+          return "So'rov vaqti tugadi. Qayta urinib ko'ring.";
+        case DioExceptionType.connectionError:
+          return "Internet aloqasi yo'q. Tarmoqni tekshiring.";
+        default:
+          return "Server xatosi. Keyinroq urinib ko'ring.";
+      }
     }
 
     if (error is SocketException) {
