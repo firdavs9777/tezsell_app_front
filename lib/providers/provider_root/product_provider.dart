@@ -374,7 +374,7 @@ class ProductsService {
       final token = prefs.getString('token');
 
       final response = await dio.get(
-        '/$CATEGORY_URL/', // Fixed with leading slash
+        '$CATEGORY_URL',
         options: Options(
           headers: token != null ? {'Authorization': 'Token $token'} : null,
         ),
@@ -384,10 +384,24 @@ class ProductsService {
         final data = response.data;
 
         if (kDebugMode) {
+          print('📦 Categories API response type: ${data.runtimeType}');
+          print('📦 Categories API response: $data');
         }
 
-        return (data as List)
-            .map((categoryJson) => CategoryModel.fromJson(categoryJson))
+        // Handle both List and Map responses
+        List<dynamic> categoriesList;
+        if (data is List) {
+          categoriesList = data;
+        } else if (data is Map && data.containsKey('results')) {
+          categoriesList = data['results'] as List;
+        } else if (data is Map && data.containsKey('data')) {
+          categoriesList = data['data'] as List;
+        } else {
+          throw Exception('Unexpected categories response format: ${data.runtimeType}');
+        }
+
+        return categoriesList
+            .map((categoryJson) => CategoryModel.fromJson(categoryJson as Map<String, dynamic>))
             .toList();
       } else {
         throw DioException(
@@ -398,6 +412,7 @@ class ProductsService {
       }
     } catch (e) {
       if (kDebugMode) {
+        print('❌ Error fetching categories: $e');
       }
       rethrow;
     }

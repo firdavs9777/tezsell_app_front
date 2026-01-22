@@ -35,7 +35,6 @@ class ChatListWebSocketService {
             // Mark as connected when we get connection_established
             if (message['type'] == 'connection_established') {
               _isConnected = true;
-
             }
             
             _messageController.add(message);

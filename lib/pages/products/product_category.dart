@@ -89,7 +89,10 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
   }
 
   void _applyFilter(String categoryName) {
-    context.push('/products?category=$categoryName&region=${widget.regionName}&district=${widget.districtName}');
+    final encodedCategory = Uri.encodeComponent(categoryName);
+    final encodedRegion = Uri.encodeComponent(widget.regionName);
+    final encodedDistrict = Uri.encodeComponent(widget.districtName);
+    context.push('/products?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict');
   }
 
   String getCategoryName(CategoryModel category) {

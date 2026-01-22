@@ -1,10 +1,12 @@
 import 'package:app/pages/service/main/service_search.dart';
 import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
+import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 class FilteredServices extends ConsumerStatefulWidget {
   final String categoryName;
@@ -138,13 +140,83 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
     await _loadInitialServices();
   }
 
+  /// Get the translated category name based on the current locale
+  String _getTranslatedCategoryName(List<CategoryModel> categories) {
+    if (categories.isEmpty) return widget.categoryName;
+
+    // Find the category that matches the filter
+    CategoryModel? matchedCategory;
+    for (final cat in categories) {
+      if (cat.nameUz == widget.categoryName ||
+          cat.nameEn == widget.categoryName ||
+          cat.nameRu == widget.categoryName) {
+        matchedCategory = cat;
+        break;
+      }
+    }
+
+    if (matchedCategory == null) return widget.categoryName;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return matchedCategory.nameUz;
+      case 'ru':
+        return matchedCategory.nameRu;
+      case 'en':
+      default:
+        return matchedCategory.nameEn;
+    }
+  }
+
+  Widget _buildFilterBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final categoriesAsync = ref.watch(serviceCategoriesProvider);
+
+    String displayName = widget.categoryName;
+
+    // Try to get translated name if categories are loaded
+    if (categoriesAsync.hasValue) {
+      displayName = _getTranslatedCategoryName(categoriesAsync.value!);
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      color: colorScheme.primary.withOpacity(0.1),
+      child: Row(
+        children: [
+          Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
+          const SizedBox(width: 8),
+          if (widget.categoryName.isNotEmpty)
+            Expanded(
+              child: Text(
+                displayName,
+                style: TextStyle(fontSize: 12, color: colorScheme.primary),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          if (widget.categoryName.isNotEmpty && widget.districtName.isNotEmpty) ...[
+            const SizedBox(width: 8),
+            Text('|', style: TextStyle(color: colorScheme.primary)),
+            const SizedBox(width: 8),
+          ],
+          if (widget.districtName.isNotEmpty)
+            Text(
+              widget.districtName,
+              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -154,7 +226,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               Navigator.push(
                 context,
@@ -165,37 +237,14 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
             },
           ),
         ],
-        title: Text("Filtered Services"),
+        title: Text(
+          AppLocalizations.of(context)?.filtered_services ?? "Filtered Services",
+        ),
       ),
       body: Column(
         children: [
           if (widget.categoryName.isNotEmpty || widget.districtName.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              color: colorScheme.primary.withOpacity(0.1),
-              child: Row(
-                children: [
-                  Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
-                  SizedBox(width: 8),
-                  if (widget.categoryName.isNotEmpty)
-                    Text(
-                      'Category: ${widget.categoryName}',
-                      style: TextStyle(fontSize: 12, color: colorScheme.primary),
-                    ),
-                  if (widget.categoryName.isNotEmpty &&
-                      widget.districtName.isNotEmpty) ...[
-                    SizedBox(width: 8),
-                    Text('|', style: TextStyle(color: colorScheme.primary)),
-                    SizedBox(width: 8),
-                  ],
-                  if (widget.districtName.isNotEmpty)
-                    Text(
-                      '${widget.districtName} ',
-                      style: TextStyle(fontSize: 12, color: colorScheme.primary),
-                    ),
-                ],
-              ),
-            ),
+            _buildFilterBar(context),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,

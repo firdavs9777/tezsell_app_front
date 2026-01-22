@@ -13,6 +13,7 @@ import '../pages/products/product_detail.dart';
 import '../pages/products/product_new.dart';
 import '../pages/products/product_search.dart';
 import '../pages/products/products_list.dart';
+import '../pages/products/filtered_products.dart';
 import '../pages/products/product_category.dart';
 import '../pages/service/details/service_detail.dart';
 import '../pages/service/new/service_new.dart';
@@ -123,8 +124,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/products',
         name: 'products',
         builder: (context, state) {
+          final categoryName = state.uri.queryParameters['category'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
+
+          // If category is specified, show filtered products
+          if (categoryName.isNotEmpty) {
+            return FilteredProducts(
+              categoryName: categoryName,
+              regionName: regionName,
+              districtName: districtName,
+            );
+          }
+
           return ProductsList(regionName: regionName, districtName: districtName);
         },
       ),

@@ -1278,6 +1278,10 @@
   "@filtered_products": {
     "description": "Title for filtered products"
   },
+  "filtered_services": "Filtrlangan xizmatlar",
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
   "productDetail": "Mahsulot tafsilotlari",
   "unknownUser": "Noma'lum foydalanuvchi",
   "locationNotAvailable": "Joylashuv mavjud emas",

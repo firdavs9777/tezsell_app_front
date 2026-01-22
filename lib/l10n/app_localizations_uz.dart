@@ -1031,6 +1031,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get filtered_products => 'Filtrlangan mahsulotlar';
 
   @override
+  String get filtered_services => 'Filtrlangan xizmatlar';
+
+  @override
   String get productDetail => 'Mahsulot tafsilotlari';
 
   @override

@@ -1278,6 +1278,10 @@
   "@filtered_products": {
     "description": "Title for filtered products"
   },
+  "filtered_services": "Отфильтрованные услуги",
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
   "productDetail": "Детали товара",
   "unknownUser": "Неизвестный пользователь",
   "locationNotAvailable": "Местоположение недоступно",

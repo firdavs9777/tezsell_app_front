@@ -1027,6 +1027,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filtered_products => 'Отфильтрованные товары';
 
   @override
+  String get filtered_services => 'Отфильтрованные услуги';
+
+  @override
   String get productDetail => 'Детали товара';
 
   @override

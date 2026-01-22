@@ -2032,6 +2032,12 @@ abstract class AppLocalizations {
   /// **'Filtered Products'**
   String get filtered_products;
 
+  /// Title for filtered services
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered Services'**
+  String get filtered_services;
+
   /// No description provided for @productDetail.
   ///
   /// In en, this message translates to:

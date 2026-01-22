@@ -2,6 +2,7 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_search.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
+import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -142,6 +143,74 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
     await _loadInitialProducts();
   }
 
+  /// Get the translated category name based on the current locale
+  String _getTranslatedCategoryName(List<CategoryModel> categories) {
+    if (categories.isEmpty) return widget.categoryName;
+
+    // Find the category that matches the filter (categoryName is stored in Uzbek)
+    CategoryModel? matchedCategory;
+    for (final cat in categories) {
+      if (cat.nameUz == widget.categoryName ||
+          cat.nameEn == widget.categoryName ||
+          cat.nameRu == widget.categoryName) {
+        matchedCategory = cat;
+        break;
+      }
+    }
+
+    if (matchedCategory == null) return widget.categoryName;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return matchedCategory.nameUz;
+      case 'ru':
+        return matchedCategory.nameRu;
+      case 'en':
+      default:
+        return matchedCategory.nameEn;
+    }
+  }
+
+  Widget _buildFilterBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final categoriesAsync = ref.watch(categoriesProvider);
+
+    String displayName = widget.categoryName;
+
+    // Try to get translated name if categories are loaded
+    if (categoriesAsync.hasValue) {
+      displayName = _getTranslatedCategoryName(categoriesAsync.value!);
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      color: colorScheme.primaryContainer.withOpacity(0.3),
+      child: Row(
+        children: [
+          Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              displayName,
+              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (widget.districtName.isNotEmpty) ...[
+            const SizedBox(width: 8),
+            Text('|', style: TextStyle(color: colorScheme.primary)),
+            const SizedBox(width: 8),
+            Text(
+              widget.districtName,
+              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,36 +246,9 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
       ),
       body: Column(
         children: [
-          // Optional: Show current filters
+          // Show current filters with translated category name
           if (widget.categoryName.isNotEmpty)
-            Builder(
-              builder: (context) {
-                final colorScheme = Theme.of(context).colorScheme;
-                return Container(
-                  padding: const EdgeInsets.all(8.0),
-                  color: colorScheme.primaryContainer.withOpacity(0.3),
-                  child: Row(
-                    children: [
-                      Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
-                      SizedBox(width: 8),
-                      Text(
-                        'Category: ${widget.categoryName}',
-                        style: TextStyle(fontSize: 12, color: colorScheme.primary),
-                      ),
-                      if (widget.districtName.isNotEmpty) ...[
-                        SizedBox(width: 8),
-                        Text('|', style: TextStyle(color: colorScheme.primary)),
-                        SizedBox(width: 8),
-                        Text(
-                          '${widget.districtName}',
-                          style: TextStyle(fontSize: 12, color: colorScheme.primary),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+            _buildFilterBar(context),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,

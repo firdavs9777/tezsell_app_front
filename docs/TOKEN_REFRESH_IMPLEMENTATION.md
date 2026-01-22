@@ -125,7 +125,7 @@ final response = await http.get(
 
 **After (Option 1 - Use HttpClientService):**
 ```dart
-import 'package:app/service/http_client_service.dart';
+import 'package:app/servichttp_client_service.dart';
 
 final httpClient = HttpClientService(authService);
 final response = await httpClient.get(

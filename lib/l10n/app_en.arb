@@ -1279,6 +1279,10 @@
   "@filtered_products": {
     "description": "Title for filtered products"
   },
+  "filtered_services": "Filtered Services",
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
   "productDetail": "Product Detail",
   "unknownUser": "Unknown User",
   "locationNotAvailable": "Location not available",

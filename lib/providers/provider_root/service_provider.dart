@@ -59,15 +59,38 @@ class ServiceProvider {
   }
 
   Future<List<CategoryModel>> getCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY/'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    try {
+      final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY/'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-      return (data as List)
-          .map((postJson) => CategoryModel.fromJson(postJson))
-          .toList();
-    } else {
-      throw Exception('Failed to load posts');
+        if (kDebugMode) {
+          print('📦 Service Categories API response type: ${data.runtimeType}');
+        }
+
+        // Handle both List and Map responses
+        List<dynamic> categoriesList;
+        if (data is List) {
+          categoriesList = data;
+        } else if (data is Map && data.containsKey('results')) {
+          categoriesList = data['results'] as List;
+        } else if (data is Map && data.containsKey('data')) {
+          categoriesList = data['data'] as List;
+        } else {
+          throw Exception('Unexpected service categories response format: ${data.runtimeType}');
+        }
+
+        return categoriesList
+            .map((categoryJson) => CategoryModel.fromJson(categoryJson as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception('Failed to load service categories: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error fetching service categories: $e');
+      }
+      rethrow;
     }
   }
 
@@ -321,6 +344,12 @@ final servicesProvider = FutureProvider<List<Services>>((ref) async {
 });
 
 final serviceMainProvider = Provider((ref) => ServiceProvider());
+
+// Service categories provider
+final serviceCategoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
+  final service = ref.watch(serviceMainProvider);
+  return service.getCategories();
+});
 
 // Refresh trigger provider - increment to trigger reload in ServiceList
 final servicesRefreshProvider = StateProvider<int>((ref) => 0);

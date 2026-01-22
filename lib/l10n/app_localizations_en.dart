@@ -1022,6 +1022,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filtered_products => 'Filtered Products';
 
   @override
+  String get filtered_services => 'Filtered Services';
+
+  @override
   String get productDetail => 'Product Detail';
 
   @override
