@@ -1,7 +1,9 @@
-import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_app_badge/flutter_app_badge.dart';
 
 /// Service for managing app badge count on the home screen icon
-/// Works on iOS and Android (where supported)
+/// Works on iOS (Android not supported by this package)
 class BadgeService {
   static final BadgeService _instance = BadgeService._internal();
   factory BadgeService() => _instance;
@@ -15,12 +17,12 @@ class BadgeService {
     if (_initialized) return;
 
     try {
-      // Check if badge is supported on this device
-      _isSupported = await FlutterAppBadger.isAppBadgeSupported();
+      // Badge only supported on iOS (not web)
+      _isSupported = !kIsWeb && Platform.isIOS;
       _initialized = true;
-      print('🔢 Badge service initialized. Supported: $_isSupported');
+      print('Badge service initialized. Supported: $_isSupported');
     } catch (e) {
-      print('⚠️ Badge service initialization error: $e');
+      print('Badge service initialization error: $e');
       _isSupported = false;
       _initialized = true;
     }
@@ -34,20 +36,15 @@ class BadgeService {
     }
 
     if (!_isSupported) {
-      print('🔢 Badge not supported on this device');
+      print('Badge not supported on this device');
       return;
     }
 
     try {
-      if (count > 0) {
-        await FlutterAppBadger.updateBadgeCount(count);
-        print('🔢 Badge count updated to: $count');
-      } else {
-        await FlutterAppBadger.removeBadge();
-        print('🔢 Badge removed');
-      }
+      await FlutterAppBadge.count(count);
+      print('Badge count updated to: $count');
     } catch (e) {
-      print('❌ Error updating badge count: $e');
+      print('Error updating badge count: $e');
     }
   }
 
