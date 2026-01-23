@@ -12,7 +12,20 @@
           "package_name": "uz.tezsell.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "523279655368-r31l2e6c7hhpv8lgkd30oo8ioq5enlms.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.tezsell.app",
+            "certificate_hash": "b2209327bf20fc05dd6c20fb9bcea8737b67012d"
+          }
+        },
+        {
+          "client_id": "523279655368-uk4gjtc06j4q5g602k7ourdspbl7q85b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDrPL4932rQGJZrXSx_NdVVSK6MDvhRB-Y"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523279655368-uk4gjtc06j4q5g602k7ourdspbl7q85b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "523279655368-bjgtgvpg2ssp0m3bsvjramgkpheqsi00.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tezsell.com.app"
+              }
+            }
+          ]
         }
       }
     }

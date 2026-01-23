@@ -19,6 +19,8 @@ import '../pages/service/details/service_detail.dart';
 import '../pages/service/new/service_new.dart';
 import '../pages/service/main/service_search.dart';
 import '../pages/service/main/main_service.dart';
+import '../pages/service/main/service-filter.dart';
+import '../pages/service/main/filtered_services.dart';
 import '../pages/real_estate/real_estate_detail.dart';
 import '../pages/real_estate/real_estate_main.dart';
 import '../pages/real_estate/real_estate_search.dart';
@@ -36,16 +38,18 @@ import '../pages/shaxsiy/properties/saved_properties.dart';
 import '../pages/change_city/change_city.dart';
 import '../pages/admin/admin_dashboard.dart';
 import '../pages/profile/user_profile_screen.dart';
+import '../pages/offers/offers_screen.dart';
+import '../pages/analytics/seller_analytics_screen.dart';
+import '../pages/onboarding/location_setup.dart';
+import '../pages/onboarding/welcome_screen.dart';
 
 // Providers
 import '../service/authentication_service.dart';
-import '../providers/provider_root/product_provider.dart';
 import '../providers/provider_root/service_provider.dart';
 import '../providers/provider_root/chat_provider.dart';
 import '../providers/provider_root/profile_provider.dart';
 import '../providers/provider_models/product_model.dart';
 import '../providers/provider_models/service_model.dart';
-import '../providers/provider_models/message_model.dart';
 import '../constants/constants.dart';
 
 // Router provider
@@ -60,9 +64,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLanguageSelection = state.matchedLocation == '/language';
       final isSplash = state.matchedLocation == '/';
       final isHome = state.matchedLocation == '/home';
+      final isLocationSetup = state.matchedLocation == '/location-setup';
+      final isWelcome = state.matchedLocation == '/welcome';
 
-      // Allow splash, language selection, and login without auth
-      if (isSplash || isLanguageSelection || isLoggingIn) {
+      // Allow splash, language selection, login, welcome, and location setup without redirect
+      if (isSplash || isLanguageSelection || isLoggingIn || isLocationSetup || isWelcome) {
         return null;
       }
 
@@ -105,6 +111,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/login',
         name: 'login',
         builder: (context, state) => const Login(),
+      ),
+      GoRoute(
+        path: '/welcome',
+        name: 'welcome',
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: '/location-setup',
+        name: 'location-setup',
+        builder: (context, state) => const LocationSetupScreen(),
       ),
       GoRoute(
         path: '/home',
@@ -178,8 +194,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/services',
         name: 'services',
         builder: (context, state) {
+          final categoryName = state.uri.queryParameters['category'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
+
+          // If category is specified, show filtered services
+          if (categoryName.isNotEmpty) {
+            return FilteredServices(
+              categoryName: categoryName,
+              regionName: regionName,
+              districtName: districtName,
+            );
+          }
+
           return ServiceMain(regionName: regionName, districtName: districtName);
         },
       ),
@@ -196,6 +223,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
           return ServiceSearch(regionName: regionName, districtName: districtName);
+        },
+      ),
+      GoRoute(
+        path: '/service/categories',
+        name: 'service-categories',
+        builder: (context, state) {
+          final regionName = state.uri.queryParameters['region'] ?? '';
+          final districtName = state.uri.queryParameters['district'] ?? '';
+          return ServiceFilter(regionName: regionName, districtName: districtName);
         },
       ),
       // Parameterized route MUST come last
@@ -307,6 +343,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'admin-dashboard',
         builder: (context, state) => const AdminDashboard(),
       ),
+      // Offers routes
+      GoRoute(
+        path: '/offers',
+        name: 'offers',
+        builder: (context, state) => const OffersScreen(),
+      ),
+      // Analytics routes
+      GoRoute(
+        path: '/analytics',
+        name: 'analytics',
+        builder: (context, state) => const SellerAnalyticsScreen(),
+      ),
     ],
   );
 });
@@ -336,16 +384,46 @@ class _ProductDetailWrapperState extends ConsumerState<_ProductDetailWrapper> {
     try {
       final dio = Dio(BaseOptions(baseUrl: baseUrl));
       final response = await dio.get('$PRODUCTS_URL${widget.productId}/');
-      
+
       if (response.statusCode == 200 && response.data != null) {
-        final data = response.data;
-        Products product;
-        if (data['product'] != null) {
-          product = Products.fromJson(data['product']);
+        final responseData = response.data;
+
+        // Debug logging
+        debugPrint('🔍 Product Detail API Response keys: ${responseData.keys}');
+
+        // Handle {success: true, data: {...}} format
+        Map<String, dynamic> productData;
+        if (responseData['success'] == true && responseData['data'] != null) {
+          final data = responseData['data'];
+          debugPrint('🔍 Using success/data wrapper, data keys: ${data.keys}');
+
+          // Check if product is nested inside data
+          if (data['product'] != null) {
+            productData = data['product'] as Map<String, dynamic>;
+          } else if (data['id'] != null) {
+            // Product data is directly in data
+            productData = data as Map<String, dynamic>;
+          } else {
+            throw Exception('Invalid product data format');
+          }
+        } else if (responseData['product'] != null) {
+          debugPrint('🔍 Using product wrapper');
+          productData = responseData['product'] as Map<String, dynamic>;
+        } else if (responseData['id'] != null) {
+          debugPrint('🔍 Using data directly');
+          productData = responseData as Map<String, dynamic>;
         } else {
-          product = Products.fromJson(data);
+          throw Exception('Invalid API response format: ${responseData.keys}');
         }
-        
+
+        debugPrint('🔍 Product data images: ${productData['images']}');
+        final product = Products.fromJson(productData);
+
+        debugPrint('🔍 Parsed product images count: ${product.images.length}');
+        for (var img in product.images) {
+          debugPrint('🔍 Image URL: ${img.image}');
+        }
+
         if (mounted) {
           setState(() {
             _product = product;
@@ -356,6 +434,7 @@ class _ProductDetailWrapperState extends ConsumerState<_ProductDetailWrapper> {
         throw Exception('Failed to load product: ${response.statusCode}');
       }
     } catch (e) {
+      debugPrint('❌ Product load error: $e');
       if (mounted) {
         setState(() {
           _error = e.toString();

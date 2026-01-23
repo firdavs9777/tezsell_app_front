@@ -1195,8 +1195,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
           'User admin check: userType=${user.userType}, isStaff=${user.isStaff}, isSuperuser=${user.isSuperuser}, hasAdminAccess=$hasAdminAccess');
     }
 
-    // TODO: Remove || true after testing
-    if (hasAdminAccess || true) {
+    if (hasAdminAccess) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

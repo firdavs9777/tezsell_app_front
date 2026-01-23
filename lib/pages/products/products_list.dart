@@ -1,12 +1,13 @@
-import 'package:app/pages/change_city/change_city.dart';
 import 'package:app/pages/products/main_products.dart';
-import 'package:app/pages/products/product_category.dart';
 import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
+import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/widgets/skeleton_loader.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
 
@@ -24,18 +25,75 @@ class ProductsList extends ConsumerStatefulWidget {
 class _ProductsListState extends ConsumerState<ProductsList> {
   final ScrollController _scrollController = ScrollController();
   List<Products> _allProducts = [];
+  List<CategoryModel> _categories = [];
+  String? _selectedCategory;
   int _currentPage = 1;
   bool _isLoadingMore = false;
   bool _hasMoreData = true;
   bool _isInitialLoading = true;
   bool _isDisposed = false;
+  bool _isCategoriesLoading = true;
 
   @override
   void initState() {
     super.initState();
     print('📦 ProductsList: initState called, loading initial products...');
     _scrollController.addListener(_onScroll);
+    _loadCategories();
     _loadInitialProducts();
+  }
+
+  Future<void> _loadCategories() async {
+    if (!mounted || _isDisposed) return;
+
+    setState(() => _isCategoriesLoading = true);
+    try {
+      final categories = await ref.read(productsServiceProvider).getCategories();
+      if (mounted && !_isDisposed) {
+        setState(() {
+          _categories = categories;
+          _isCategoriesLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted && !_isDisposed) {
+        setState(() => _isCategoriesLoading = false);
+      }
+    }
+  }
+
+  String _getCategoryName(CategoryModel category) {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'uz':
+        return category.nameUz;
+      case 'ru':
+        return category.nameRu;
+      case 'en':
+      default:
+        return category.nameEn;
+    }
+  }
+
+  void _onCategorySelected(String? categoryName) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _selectedCategory = categoryName;
+    });
+
+    if (categoryName != null) {
+      // Navigate to filtered products
+      final encodedCategory = Uri.encodeComponent(categoryName);
+      final encodedRegion = Uri.encodeComponent(widget.regionName);
+      final encodedDistrict = Uri.encodeComponent(widget.districtName);
+      context.push('/products?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict');
+      // Reset selection after navigation
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          setState(() => _selectedCategory = null);
+        }
+      });
+    }
   }
 
   @override
@@ -139,12 +197,14 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   }
 
   Future<void> refresh() async {
-    await _loadInitialProducts();
+    await Future.wait([
+      _loadInitialProducts(),
+      _loadCategories(),
+    ]);
   }
 
   Future<void> _navigateToLocationChange() async {
-    final result = await context.push<bool>('/change-city');
-
+    await context.push<bool>('/change-city');
     ref.invalidate(productsServiceProvider);
     ref.invalidate(profileServiceProvider);
   }
@@ -183,7 +243,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               left: 12.0,
               right: 12.0,
               top: 8.0,
-              bottom: 12.0,
+              bottom: 8.0,
             ),
             decoration: BoxDecoration(
               color: theme.cardColor,
@@ -197,77 +257,84 @@ class _ProductsListState extends ConsumerState<ProductsList> {
             ),
             child: SafeArea(
               bottom: false,
-              child: Row(
+              child: Column(
                 children: [
-                  // Category Filter Button
-                  Material(
-                    color: colorScheme.surfaceVariant.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () {
-                        context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.category_rounded,
-                          size: 22,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  // Location Badge
-                  if (widget.regionName.isNotEmpty ||
-                      widget.districtName.isNotEmpty)
-                    Expanded(
-                      child: Material(
-                        color: colorScheme.primaryContainer.withOpacity(0.3),
+                  Row(
+                    children: [
+                      // Category Filter Button
+                      Material(
+                        color: colorScheme.surfaceVariant.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
-                          onTap: _navigateToLocationChange,
+                          onTap: () {
+                            context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
+                          },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.location_on_rounded,
-                                  size: 16,
-                                  color: colorScheme.primary,
-                                ),
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    widget.districtName.isNotEmpty
-                                        ? widget.districtName
-                                        : widget.regionName,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.primary,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                  Icons.arrow_drop_down_rounded,
-                                  size: 18,
-                                  color: colorScheme.primary,
-                                ),
-                              ],
+                            padding: const EdgeInsets.all(10.0),
+                            child: Icon(
+                              Icons.category_rounded,
+                              size: 22,
+                              color: colorScheme.primary,
                             ),
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      // Location Badge
+                      if (widget.regionName.isNotEmpty ||
+                          widget.districtName.isNotEmpty)
+                        Expanded(
+                          child: Material(
+                            color: colorScheme.primaryContainer.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: _navigateToLocationChange,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_rounded,
+                                      size: 16,
+                                      color: colorScheme.primary,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        widget.districtName.isNotEmpty
+                                            ? widget.districtName
+                                            : widget.regionName,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: colorScheme.primary,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      size: 18,
+                                      color: colorScheme.primary,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Quick Category Chips
+                  _buildCategoryChips(colorScheme),
                 ],
               ),
             ),
@@ -303,17 +370,116 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     );
   }
 
+  Widget _buildCategoryChips(ColorScheme colorScheme) {
+    final Map<String, IconData> iconMap = {
+      'phone_android': Icons.phone_android,
+      'directions_car': Icons.directions_car,
+      'home': Icons.home,
+      'checkroom': Icons.checkroom,
+      'kitchen': Icons.kitchen,
+      'laptop_mac': Icons.laptop_mac,
+      'weekend': Icons.weekend,
+      'build': Icons.build,
+      'sports_baseball': Icons.sports_baseball,
+      'pets': Icons.pets,
+    };
+
+    if (_isCategoriesLoading) {
+      return const CategoryChipsSkeleton(itemCount: 5);
+    }
+
+    if (_categories.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Show first 8 categories as quick chips
+    final displayCategories = _categories.take(8).toList();
+
+    return SizedBox(
+      height: 36,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: displayCategories.length + 1, // +1 for "All" chip
+        itemBuilder: (context, index) {
+          if (index == displayCategories.length) {
+            // "More" chip at the end
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ActionChip(
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.more_horiz,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'More',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: colorScheme.surfaceVariant.withOpacity(0.5),
+                side: BorderSide.none,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
+                },
+              ),
+            );
+          }
+
+          final category = displayCategories[index];
+          final isSelected = _selectedCategory == category.nameUz;
+          final IconData? iconData = iconMap[category.icon];
+
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ActionChip(
+              avatar: Icon(
+                iconData ?? Icons.category_rounded,
+                size: 16,
+                color: isSelected ? colorScheme.onPrimary : colorScheme.primary,
+              ),
+              label: Text(
+                _getCategoryName(category),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+                ),
+              ),
+              backgroundColor: isSelected
+                  ? colorScheme.primary
+                  : colorScheme.surfaceVariant.withOpacity(0.5),
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              onPressed: () => _onCategorySelected(category.nameUz),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildProductsList() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
     if (_isInitialLoading) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: colorScheme.primary,
-        ),
-      );
+      return const ProductListSkeleton(itemCount: 5);
     }
 
     if (_allProducts.isEmpty) {

@@ -1,14 +1,20 @@
+import 'dart:io';
 import 'package:app/pages/authentication/forget_password.dart';
 import 'package:app/pages/authentication/register.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
+import 'package:app/providers/provider_root/social_auth_provider.dart';
+import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer' as developer;
 
 class Login extends ConsumerStatefulWidget {
@@ -25,6 +31,17 @@ class _LoginState extends ConsumerState<Login> {
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
+
+  // Google Sign-In instance
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+  );
+
+  // Apple credential cache keys
+  static const String _appleEmailKey = 'apple_cached_email';
+  static const String _appleNameKey = 'apple_cached_name';
 
   // Performance tracking variables
   final Stopwatch _totalLoginTime = Stopwatch();
@@ -247,6 +264,248 @@ class _LoginState extends ConsumerState<Login> {
       AppLogger.info('Token refresh service started after login');
     } catch (e) {
       AppLogger.error('Error starting token refresh service: $e');
+    }
+  }
+
+  /// Cache Apple credentials for subsequent logins
+  Future<void> _cacheAppleCredentials(String? email, String? name) async {
+    if (email == null && name == null) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (email != null && email.isNotEmpty) {
+        await prefs.setString(_appleEmailKey, email);
+        if (kDebugMode) {
+          print('🍎 Cached Apple email: $email');
+        }
+      }
+      if (name != null && name.isNotEmpty) {
+        await prefs.setString(_appleNameKey, name);
+        if (kDebugMode) {
+          print('🍎 Cached Apple name: $name');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error caching Apple credentials: $e');
+      }
+    }
+  }
+
+  /// Get cached Apple credentials for subsequent logins
+  Future<Map<String, String?>> _getCachedAppleCredentials() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return {
+        'email': prefs.getString(_appleEmailKey),
+        'name': prefs.getString(_appleNameKey),
+      };
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error getting cached Apple credentials: $e');
+      }
+      return {'email': null, 'name': null};
+    }
+  }
+
+  /// Navigate after successful social auth, checking if location setup is needed
+  void _handleSocialAuthSuccess(SocialAuthResponse response) {
+    // Start token refresh service
+    _startTokenRefreshService();
+
+    // Check if user needs to set up location
+    final needsLocationSetup = response.isNewUser ||
+        response.userInfo?.needsLocationSetup == true;
+
+    if (kDebugMode) {
+      print('📍 Social auth navigation check:');
+      print('   isNewUser: ${response.isNewUser}');
+      print('   needsLocationSetup: ${response.userInfo?.needsLocationSetup}');
+      print('   navigating to: ${needsLocationSetup ? "/location-setup" : "/tabs"}');
+    }
+
+    if (context.mounted) {
+      if (needsLocationSetup) {
+        // Navigate to location setup for new users or users without location
+        context.go('/location-setup');
+      } else {
+        // Navigate to home for existing users with location
+        context.go('/tabs');
+      }
+    }
+  }
+
+  /// Handle Google Sign-In
+  Future<void> _handleGoogleSignIn() async {
+    if (_isGoogleLoading || _isLoading) return;
+
+    setState(() {
+      _isGoogleLoading = true;
+    });
+
+    try {
+      // Sign out first to ensure fresh login
+      await _googleSignIn.signOut();
+
+      // Trigger Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        if (mounted) {
+          setState(() {
+            _isGoogleLoading = false;
+          });
+        }
+        return;
+      }
+
+      // Get authentication tokens
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final String? idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        _showError('Failed to get Google authentication token');
+        if (mounted) {
+          setState(() {
+            _isGoogleLoading = false;
+          });
+        }
+        return;
+      }
+
+      if (kDebugMode) {
+        print('🔐 Google Sign-In successful');
+        print('   Email: ${googleUser.email}');
+        print('   Name: ${googleUser.displayName}');
+      }
+
+      // Send idToken to backend via social auth provider
+      final socialAuthNotifier = ref.read(socialAuthProvider.notifier);
+      final response = await socialAuthNotifier.loginWithGoogle(idToken);
+
+      if (!mounted) return;
+
+      if (response.success) {
+        _handleSocialAuthSuccess(response);
+      } else {
+        _showError(response.error ?? 'Google sign-in failed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Google Sign-In error: $e');
+      }
+      if (mounted) {
+        _showError('Google sign-in failed. Please try again.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isGoogleLoading = false;
+        });
+      }
+    }
+  }
+
+  /// Handle Apple Sign-In
+  Future<void> _handleAppleSignIn() async {
+    if (_isAppleLoading || _isLoading) return;
+
+    setState(() {
+      _isAppleLoading = true;
+    });
+
+    try {
+      // Request Apple ID credential
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final String? idToken = credential.identityToken;
+
+      if (idToken == null) {
+        _showError('Failed to get Apple authentication token');
+        if (mounted) {
+          setState(() {
+            _isAppleLoading = false;
+          });
+        }
+        return;
+      }
+
+      // Get user info (only available on first sign-in)
+      String? userEmail = credential.email;
+      String? userName;
+      if (credential.givenName != null || credential.familyName != null) {
+        userName = '${credential.givenName ?? ''} ${credential.familyName ?? ''}'.trim();
+        if (userName.isEmpty) userName = null;
+      }
+
+      // Apple only provides email/name on FIRST sign-in
+      // Cache them for subsequent logins
+      if (userEmail != null || userName != null) {
+        await _cacheAppleCredentials(userEmail, userName);
+      } else {
+        // Try to get cached credentials for subsequent logins
+        final cached = await _getCachedAppleCredentials();
+        userEmail = cached['email'];
+        userName = cached['name'];
+        if (kDebugMode) {
+          print('🍎 Using cached Apple credentials:');
+          print('   Cached email: $userEmail');
+          print('   Cached name: $userName');
+        }
+      }
+
+      if (kDebugMode) {
+        print('🍎 Apple Sign-In successful');
+        print('   Email: $userEmail');
+        print('   Name: $userName');
+      }
+
+      // Send idToken to backend via social auth provider
+      final socialAuthNotifier = ref.read(socialAuthProvider.notifier);
+      final response = await socialAuthNotifier.loginWithApple(
+        idToken: idToken,
+        userEmail: userEmail,
+        userName: userName,
+      );
+
+      if (!mounted) return;
+
+      if (response.success) {
+        _handleSocialAuthSuccess(response);
+      } else {
+        _showError(response.error ?? 'Apple sign-in failed');
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (kDebugMode) {
+        print('🍎 Apple Sign-In cancelled or failed: ${e.code}');
+      }
+      // Don't show error for user cancellation
+      if (e.code != AuthorizationErrorCode.canceled) {
+        if (mounted) {
+          _showError('Apple sign-in failed. Please try again.');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Apple Sign-In error: $e');
+      }
+      if (mounted) {
+        _showError('Apple sign-in failed. Please try again.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAppleLoading = false;
+        });
+      }
     }
   }
 
@@ -539,7 +798,51 @@ class _LoginState extends ConsumerState<Login> {
                   ],
                 ),
 
-                const SizedBox(height: 32.0),
+                const SizedBox(height: 24.0),
+
+                // Google Sign-In Button
+                _buildSocialButton(
+                  onPressed: _isLoading || _isGoogleLoading || _isAppleLoading
+                      ? null
+                      : _handleGoogleSignIn,
+                  isLoading: _isGoogleLoading,
+                  icon: Image.asset(
+                    'assets/icons/google.png',
+                    width: 24,
+                    height: 24,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.g_mobiledata,
+                      size: 24,
+                      color: Colors.red,
+                    ),
+                  ),
+                  label: 'Continue with Google',
+                ),
+
+                const SizedBox(height: 12.0),
+
+                // Apple Sign-In Button (iOS only)
+                if (Platform.isIOS) ...[
+                  _buildSocialButton(
+                    onPressed: _isLoading || _isGoogleLoading || _isAppleLoading
+                        ? null
+                        : _handleAppleSignIn,
+                    isLoading: _isAppleLoading,
+                    icon: Icon(
+                      Icons.apple,
+                      size: 24,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                    label: 'Continue with Apple',
+                    isApple: true,
+                  ),
+                  const SizedBox(height: 24.0),
+                ] else ...[
+                  const SizedBox(height: 12.0),
+                ],
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -551,7 +854,7 @@ class _LoginState extends ConsumerState<Login> {
                       ),
                     ),
                     TextButton(
-                      onPressed: _isLoading
+                      onPressed: _isLoading || _isGoogleLoading || _isAppleLoading
                           ? null
                           : () {
                               Navigator.of(context).push(
@@ -568,7 +871,7 @@ class _LoginState extends ConsumerState<Login> {
                       child: Text(
                         AppLocalizations.of(context)?.registerNow ?? 'Sign up',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: _isLoading
+                          color: _isLoading || _isGoogleLoading || _isAppleLoading
                               ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
                               : Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w700,
@@ -594,5 +897,73 @@ class _LoginState extends ConsumerState<Login> {
     }
 
     return widget;
+  }
+
+  /// Build social sign-in button
+  Widget _buildSocialButton({
+    required VoidCallback? onPressed,
+    required bool isLoading,
+    required Widget icon,
+    required String label,
+    bool isApple = false,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isApple
+              ? (isDark ? Colors.white : Colors.black)
+              : Theme.of(context).colorScheme.surface,
+          foregroundColor: isApple
+              ? (isDark ? Colors.black : Colors.white)
+              : Theme.of(context).colorScheme.onSurface,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: isLoading
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isApple
+                        ? (isDark ? Colors.black : Colors.white)
+                        : Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  icon,
+                  const SizedBox(width: 12),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: isApple
+                          ? (isDark ? Colors.black : Colors.white)
+                          : Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
   }
 }

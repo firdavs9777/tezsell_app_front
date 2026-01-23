@@ -4,6 +4,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/config/app_router.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/utils/currency_utils.dart';
+import 'package:app/utils/image_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,7 +67,7 @@ class ProductMain extends ConsumerWidget {
                             height: 110,
                             child: CachedNetworkImageWidget(
                               imageUrl: product.images.isNotEmpty
-                                  ? product.images[0].image
+                                  ? ImageUtils.buildImageUrl(product.images[0].image)
                                   : null,
                               width: 110,
                               height: 110,

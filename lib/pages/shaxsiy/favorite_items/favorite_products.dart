@@ -1,6 +1,6 @@
 import 'package:app/constants/constants.dart';
-
 import 'package:app/providers/provider_models/product_model.dart';
+import 'package:app/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -75,13 +75,17 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                       borderRadius: BorderRadius.circular(8.0),
                       child: product.images.isNotEmpty
                           ? Image.network(
-                              product.images[0].image.startsWith('http://') ||
-                                      product.images[0].image.startsWith('https://')
-                                  ? product.images[0].image
-                                  : '$baseUrl/products${product.images[0].image}',
+                              ImageUtils.buildImageUrl(product.images[0].image),
                               width: 80,
                               height: 80,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                'assets/logo/logo_no_background.png',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
                             )
                           : Image.asset(
                               'assets/logo/logo_no_background.png',

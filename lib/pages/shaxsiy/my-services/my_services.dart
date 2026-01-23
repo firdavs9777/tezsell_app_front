@@ -1,10 +1,10 @@
 import 'package:app/pages/shaxsiy/my-services/service_edit.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
-// Import your ServiceEdit screen
 
 class MyServices extends ConsumerStatefulWidget {
   const MyServices({super.key});
@@ -275,7 +275,7 @@ class _MyServicesState extends ConsumerState<MyServices> {
                                         ),
                                         child: service.images.isNotEmpty
                                             ? Image.network(
-                                                service.images[0].image,
+                                                ImageUtils.buildImageUrl(service.images[0].image),
                                                 width: 80,
                                                 height: 80,
                                                 fit: BoxFit.cover,

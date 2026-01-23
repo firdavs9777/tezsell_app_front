@@ -8,6 +8,7 @@ import '../config/app_config.dart';
 import '../models/notification_model.dart';
 import '../providers/provider_root/notification_provider.dart';
 import 'notification_websocket_service.dart';
+import 'badge_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -35,10 +36,27 @@ class PushNotificationService {
   Function(RemoteMessage)? onNotificationTap;
   GoRouter? _router;
   NotificationWebSocketService? _notificationWebSocketService;
-  
+
+  /// Pending notification for deep linking when router is not yet available
+  RemoteMessage? _pendingNotification;
+
   /// Set the router instance for navigation
+  /// Also handles any pending notification that arrived before router was set
   void setRouter(GoRouter router) {
     _router = router;
+    print('🔔 Router set in PushNotificationService');
+
+    // Handle pending notification if exists
+    if (_pendingNotification != null) {
+      print('🔔 Processing pending notification...');
+      // Use Future.delayed to ensure the app is fully ready
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (_pendingNotification != null) {
+          _navigateFromNotification(_pendingNotification!);
+          _pendingNotification = null;
+        }
+      });
+    }
   }
 
   /// Set the notification WebSocket service for injecting push notifications
@@ -140,36 +158,61 @@ class PushNotificationService {
   }
   
   /// Navigate based on notification data
+  /// Stores notification for later if router is not yet available
   void _navigateFromNotification(RemoteMessage message) {
     final data = message.data;
     final type = data['type'] as String?;
     final objectId = data['object_id'] as String?;
-    
-    if (objectId == null || type == null || _router == null) {
+
+    // If router is not yet set, store the notification for later
+    if (_router == null) {
+      print('🔔 Router not set yet, storing notification for later navigation');
+      _pendingNotification = message;
       return;
     }
-    
-    switch (type) {
-      case 'product_like':
-      case 'recommended_product':
-        _router!.go('/product/$objectId');
-        break;
-      case 'service_like':
-      case 'service_comment':
-      case 'recommended_service':
-        _router!.go('/service/$objectId');
-        break;
-      case 'real_estate':
-        _router!.go('/real-estate/$objectId');
-        break;
-      case 'chat':
-        _router!.go('/chat/$objectId');
-        break;
-      default:
-        // Navigate to tabs for other types
-        _router!.go('/tabs');
-        break;
+
+    if (objectId == null && type == null) {
+      print('🔔 No navigation data in notification');
+      return;
     }
+
+    print('🔔 Navigating from notification: type=$type, objectId=$objectId');
+
+    // Give the app a moment to settle before navigating
+    Future.delayed(const Duration(milliseconds: 300), () {
+      try {
+        switch (type) {
+          case 'product_like':
+          case 'recommended_product':
+            _router!.go('/product/$objectId');
+            break;
+          case 'service_like':
+          case 'service_comment':
+          case 'recommended_service':
+            _router!.go('/service/$objectId');
+            break;
+          case 'real_estate':
+            _router!.go('/real-estate/$objectId');
+            break;
+          case 'chat':
+            _router!.go('/chat/$objectId');
+            break;
+          case 'offer':
+          case 'offer_accepted':
+          case 'offer_declined':
+          case 'offer_countered':
+            _router!.go('/offers');
+            break;
+          default:
+            // Navigate to notifications tab for other types
+            _router!.go('/tabs');
+            break;
+        }
+        print('✅ Navigation completed');
+      } catch (e) {
+        print('❌ Navigation error: $e');
+      }
+    });
   }
 
   Future<void> initialize() async {
@@ -214,6 +257,9 @@ class PushNotificationService {
 
         // Setup message handlers
         _setupMessageHandlers();
+
+        // Initialize badge service
+        await _initializeBadge();
 
         _initialized = true;
         print('✅ Firebase Push Notifications initialized');
@@ -317,6 +363,8 @@ class PushNotificationService {
       print('   Body: ${message.notification?.body}');
       print('   Data: ${message.data}');
       _handleForegroundMessage(message);
+      // Update badge count when new notification arrives
+      _incrementBadgeCount();
     });
 
     // Handle background tap (app is in background)
@@ -688,6 +736,48 @@ class PushNotificationService {
       print('❌ Error showing test notification: $e');
     }
   }
+
+  /// Badge count management
+  int _badgeCount = 0;
+
+  /// Initialize badge service and load saved count
+  Future<void> _initializeBadge() async {
+    await badgeService.initialize();
+    final prefs = await SharedPreferences.getInstance();
+    _badgeCount = prefs.getInt('badge_count') ?? 0;
+    await badgeService.updateBadgeCount(_badgeCount);
+    print('🔢 Badge count loaded: $_badgeCount');
+  }
+
+  /// Increment badge count
+  Future<void> _incrementBadgeCount() async {
+    _badgeCount++;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('badge_count', _badgeCount);
+    await badgeService.updateBadgeCount(_badgeCount);
+    print('🔢 Badge count incremented to: $_badgeCount');
+  }
+
+  /// Update badge count to specific value (called from notification provider)
+  Future<void> updateBadgeCount(int count) async {
+    _badgeCount = count;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('badge_count', _badgeCount);
+    await badgeService.updateBadgeCount(_badgeCount);
+    print('🔢 Badge count updated to: $_badgeCount');
+  }
+
+  /// Clear badge count (called when user views notifications)
+  Future<void> clearBadgeCount() async {
+    _badgeCount = 0;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('badge_count', 0);
+    await badgeService.removeBadge();
+    print('🔢 Badge count cleared');
+  }
+
+  /// Get current badge count
+  int get currentBadgeCount => _badgeCount;
 
   void dispose() {
     // Cleanup if needed

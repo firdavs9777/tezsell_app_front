@@ -12,6 +12,7 @@ import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/utils/error_handler.dart';
+import 'package:app/utils/image_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -705,9 +706,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                 color: colorScheme.surfaceContainerHighest,
                 child: product.images.isNotEmpty
                     ? Image.network(
-                        product.images[0].image.startsWith('http')
-                            ? product.images[0].image
-                            : 'https://api.webtezsell.com${product.images[0].image}',
+                        ImageUtils.buildImageUrl(product.images[0].image),
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Icon(
                           Icons.image_not_supported_outlined,
@@ -764,9 +763,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                 color: colorScheme.surfaceContainerHighest,
                 child: service.images.isNotEmpty
                     ? Image.network(
-                        service.images[0].image.startsWith('http')
-                            ? service.images[0].image
-                            : 'https://api.webtezsell.com${service.images[0].image}',
+                        ImageUtils.buildImageUrl(service.images[0].image),
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Icon(
                           Icons.image_not_supported_outlined,

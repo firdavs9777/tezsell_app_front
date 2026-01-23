@@ -6,6 +6,7 @@ import '../../service/notification_api_service.dart';
 import '../../service/notification_websocket_service.dart';
 import '../../service/authentication_service.dart';
 import '../../service/notification_service.dart';
+import '../../service/push_notification_service.dart';
 import 'chat_provider.dart';
 
 // Notification State
@@ -121,14 +122,19 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
             final newUnreadCount = notification.isRead
                 ? state.unreadCount
                 : state.unreadCount + 1;
-            
+
             state = state.copyWith(
               notifications: [notification, ...state.notifications],
               unreadCount: newUnreadCount,
             );
-            
+
             print('✅ [$_notificationType] State updated: unreadCount=${state.unreadCount}, total=${state.notifications.length}');
-            
+
+            // Update OS badge count for unread notifications (only for global provider)
+            if (_notificationType == null && !notification.isRead) {
+              PushNotificationService().updateBadgeCount(newUnreadCount);
+            }
+
             // Show local notification for chat messages when app is in foreground
             if (notification.type == 'chat' && !notification.isRead) {
               _showLocalNotification(notification);
@@ -202,13 +208,15 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
   /// Fetch unread count
   Future<void> fetchUnreadCount() async {
     try {
+      int newUnreadCount = 0;
+
       if (_notificationType != null) {
         // For typed providers, calculate unread count from notifications
         // But also fetch from API to ensure accuracy
         final localUnreadCount = state.notifications
             .where((n) => !n.isRead && n.type == _notificationType)
             .length;
-        
+
         // Try to get accurate count from API
         try {
           final response = await _apiService.getNotifications(
@@ -217,19 +225,23 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           );
           final apiUnreadCount = response.results.length;
           // Use the higher of the two counts to ensure we don't miss any
-          state = state.copyWith(
-            unreadCount: apiUnreadCount > localUnreadCount 
-                ? apiUnreadCount 
-                : localUnreadCount,
-          );
+          newUnreadCount = apiUnreadCount > localUnreadCount
+              ? apiUnreadCount
+              : localUnreadCount;
+          state = state.copyWith(unreadCount: newUnreadCount);
         } catch (e) {
           // Fallback to local count if API fails
+          newUnreadCount = localUnreadCount;
           state = state.copyWith(unreadCount: localUnreadCount);
         }
       } else {
-        // For global provider, use API
+        // For global provider, use API and update badge
         final count = await _apiService.getUnreadCount();
+        newUnreadCount = count;
         state = state.copyWith(unreadCount: count);
+
+        // Update OS badge count (only for global provider)
+        await PushNotificationService().updateBadgeCount(count);
       }
     } catch (e) {
       // Silently fail - don't update state on error
@@ -254,10 +266,17 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
         return n;
       }).toList();
 
+      final newUnreadCount = state.unreadCount > 0 ? state.unreadCount - 1 : 0;
+
       state = state.copyWith(
         notifications: updatedNotifications,
-        unreadCount: state.unreadCount > 0 ? state.unreadCount - 1 : 0,
+        unreadCount: newUnreadCount,
       );
+
+      // Update OS badge count (only for global provider)
+      if (_notificationType == null) {
+        await PushNotificationService().updateBadgeCount(newUnreadCount);
+      }
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -275,6 +294,11 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
         notifications: updatedNotifications,
         unreadCount: 0,
       );
+
+      // Clear OS badge count (only for global provider)
+      if (_notificationType == null) {
+        await PushNotificationService().clearBadgeCount();
+      }
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }

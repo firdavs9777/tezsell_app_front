@@ -435,7 +435,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     final service = _serviceData ?? widget.service;
 
     final List<String> imageUrls = service.images.isNotEmpty
-        ? service.images.map((image) => image.image).toList()
+        ? service.images.map((image) => ImageUtils.buildImageUrl(image.image)).toList()
         : [];
 
     return Scaffold(

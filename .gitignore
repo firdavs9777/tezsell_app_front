@@ -44,3 +44,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase/Google config files (uncomment if you want to protect these)
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+
+# Environment files
+*.env
+.env.*
+secrets.dart

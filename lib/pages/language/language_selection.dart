@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
-import 'package:app/pages/home.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends ConsumerWidget {
@@ -97,7 +96,6 @@ class LanguageSelectionScreen extends ConsumerWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () {
-                            // Set the locale - this will trigger a rebuild and update the UI live
                             ref.read(localeProvider.notifier).setLocale(
                                   Locale(language['code']!),
                                 );
@@ -123,14 +121,11 @@ class LanguageSelectionScreen extends ConsumerWidget {
                             ),
                             child: Row(
                               children: [
-                                // Flag (keeping regular Text for emoji)
                                 Text(
                                   language['flag']!,
                                   style: const TextStyle(fontSize: 24),
                                 ),
                                 const SizedBox(width: 16),
-
-                                // Language names
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -168,8 +163,6 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                     ],
                                   ),
                                 ),
-
-                                // Selection indicator
                                 if (isSelected)
                                   Container(
                                     width: 24,
@@ -205,7 +198,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                 child: ElevatedButton(
                   onPressed: selectedLocale != null
                       ? () {
-                          context.go('/home');
+                          context.go('/welcome');
                         }
                       : null,
                   style: ElevatedButton.styleFrom(

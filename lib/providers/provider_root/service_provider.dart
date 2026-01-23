@@ -37,10 +37,46 @@ class ServiceProvider {
     final response =
         await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Services.fromJson(data['service']);
+      final responseData = json.decode(response.body);
+
+      if (kDebugMode) {
+        print('🔍 Service Detail API Response keys: ${responseData.keys}');
+      }
+
+      // Handle different API response formats
+      Map<String, dynamic> serviceData;
+
+      // Handle {success: true, data: {service: {...}}} format
+      if (responseData['success'] == true && responseData['data'] != null) {
+        final data = responseData['data'];
+        if (kDebugMode) {
+          print('🔍 Using success/data wrapper, data keys: ${data.keys}');
+        }
+
+        if (data['service'] != null) {
+          serviceData = data['service'] as Map<String, dynamic>;
+        } else if (data['id'] != null) {
+          // Service data is directly in data
+          serviceData = data as Map<String, dynamic>;
+        } else {
+          throw Exception('Invalid service data format in data wrapper');
+        }
+      } else if (responseData['service'] != null) {
+        serviceData = responseData['service'] as Map<String, dynamic>;
+      } else if (responseData['id'] != null) {
+        // API returns service data directly without 'service' wrapper
+        serviceData = responseData as Map<String, dynamic>;
+      } else {
+        throw Exception('Invalid service response format: ${responseData.keys}');
+      }
+
+      if (kDebugMode) {
+        print('🔍 Service data images: ${serviceData['images']}');
+      }
+
+      return Services.fromJson(serviceData);
     } else {
-      throw Exception('Failed to load posts');
+      throw Exception('Failed to load service: ${response.statusCode}');
     }
   }
 
@@ -49,12 +85,20 @@ class ServiceProvider {
     final response =
         await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return (data['recommended_services'] as List)
-          .map((postJson) => Services.fromJson(postJson))
+      final responseData = json.decode(response.body);
+
+      // Handle {success: true, data: {...}} format
+      dynamic data = responseData;
+      if (responseData['success'] == true && responseData['data'] != null) {
+        data = responseData['data'];
+      }
+
+      final recommendedList = data['recommended_services'] as List? ?? [];
+      return recommendedList
+          .map((serviceJson) => Services.fromJson(serviceJson))
           .toList();
     } else {
-      throw Exception('Failed to load posts');
+      throw Exception('Failed to load recommended services');
     }
   }
 
