@@ -754,20 +754,17 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 children: [
                   Text(
                     l?.chat_room_label(widget.chatRoom.name) ?? 'Chat: ${widget.chatRoom.name}',
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     l?.id_label(widget.chatRoom.id) ?? 'ID: ${widget.chatRoom.id}',
-                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     l?.participants_label ?? 'Participants',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -784,10 +781,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           participant.username.isNotEmpty
                               ? participant.username[0].toUpperCase()
                               : '?',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -799,18 +793,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               participant.displayName.isNotEmpty
                                   ? participant.displayName
                                   : 'Unknown',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                             ),
                             Text(
                               participant.username.isNotEmpty
                                   ? '@${participant.username}'
                                   : '',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                             ),
                           ],
                         ),

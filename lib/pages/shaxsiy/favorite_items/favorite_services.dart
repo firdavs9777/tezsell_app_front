@@ -134,13 +134,16 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 const SizedBox(width: 4.0),
-                                Text(
-                                  '${service.location.region}, ${service.location.district.substring(0, 7)}...',
+                                Flexible(
+                                child: Text(
+                                  '${service.location.region}, ${service.location.district}',
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontSize: 12.0,
                                   ),
-                                )
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
                               ],
                             ),
                             const SizedBox(height: 8),

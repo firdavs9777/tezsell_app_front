@@ -1,18 +1,23 @@
+import 'dart:async';
+import 'dart:developer' as developer;
+
 import 'package:app/pages/authentication/password_set.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/service/mobile_authentication.dart';
-import 'dart:async';
 
 class MobileAuthentication extends StatefulWidget {
+  final String countryCode;
   final String regionName;
   final String districtId;
   final String districtName;
-  const MobileAuthentication(
-      {super.key,
-      required this.regionName,
-      required this.districtId,
-      required this.districtName});
+  const MobileAuthentication({
+    super.key,
+    this.countryCode = '',
+    required this.regionName,
+    required this.districtId,
+    required this.districtName,
+  });
 
   @override
   State<MobileAuthentication> createState() => _MobileAuthenticationState();
@@ -73,16 +78,20 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
       // Store verified email
       _verifiedEmail = email;
       // Verification successful, proceed to password setup
+      developer.log('[MobileAuth] Email verified successfully: $email', name: 'MobileAuth');
+      developer.log('[MobileAuth] Proceeding to password setup with Country=${widget.countryCode}, Region=${widget.regionName}, District=${widget.districtName}', name: 'MobileAuth');
       if (mounted) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => PasswordReset(
-                regionName: widget.regionName,
-                districtId: widget.districtId,
-                districtName: widget.districtName,
-                email: email,
-                verificationCode: code), // Pass verification code to registration
+              countryCode: widget.countryCode,
+              regionName: widget.regionName,
+              districtId: widget.districtId,
+              districtName: widget.districtName,
+              email: email,
+              verificationCode: code,
+            ),
           ),
         );
       }

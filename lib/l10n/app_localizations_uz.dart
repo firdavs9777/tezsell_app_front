@@ -34,6 +34,15 @@ class AppLocalizationsUz extends AppLocalizations {
   String get continueButton => 'Davom etish';
 
   @override
+  String get continueWithGoogle => 'Google orqali davom etish';
+
+  @override
+  String get continueWithApple => 'Apple orqali davom etish';
+
+  @override
+  String get continueWithEmail => 'Email orqali davom etish';
+
+  @override
   String get sellAndBuyProducts =>
       'Mahsulotlaringizni faqat bizda soting  va sotib oling';
 
@@ -203,6 +212,60 @@ class AppLocalizationsUz extends AppLocalizations {
   String selectedCountry(String countryName, String countryCode) {
     return 'Tanlandi: $countryName ($countryCode)';
   }
+
+  @override
+  String get selectCountry => 'Davlatingizni tanlang';
+
+  @override
+  String get changeCountry => 'Davlatni o\'zgartirish';
+
+  @override
+  String get country => 'Davlat';
+
+  @override
+  String get allCountries => 'Barcha davlatlar';
+
+  @override
+  String get currencyRUB => 'Rossiya rubli';
+
+  @override
+  String get currencyUAH => 'Ukraina grivnasi';
+
+  @override
+  String get currencyBYN => 'Belarus rubli';
+
+  @override
+  String get currencyMDL => 'Moldova leyi';
+
+  @override
+  String get currencyGEL => 'Gruziya larisi';
+
+  @override
+  String get currencyAMD => 'Armaniston drami';
+
+  @override
+  String get currencyAZN => 'Ozarbayjon manati';
+
+  @override
+  String get currencyKZT => 'Qozog\'iston tengesi';
+
+  @override
+  String get currencyTMT => 'Turkmaniston manati';
+
+  @override
+  String get currencyKGS => 'Qirg\'iziston somi';
+
+  @override
+  String get currencyTJS => 'Tojikiston somonisi';
+
+  @override
+  String get currencyUZS => 'O\'zbek so\'mi';
+
+  @override
+  String get currencyUSD => 'AQSH dollari';
+
+  @override
+  String get currencyEUR => 'Yevro';
 
   @override
   String fullNumber(String phoneNumber) {
@@ -4017,4 +4080,10 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get onTezsell => 'TezSell da';
+
+  @override
+  String get selectCountryFirst => 'Avval davlatni tanlang';
+
+  @override
+  String get countrySelectionHint => 'Keyin viloyatni tanlashingiz mumkin';
 }

@@ -133,8 +133,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                     children: [
                                       TezSellText(
                                         language['nativeName']!,
-                                        tezSellStyles: TextStyle(
-                                          fontSize: 16,
+                                        tezSellStyles: Theme.of(context).textTheme.titleMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
                                           color: isSelected
                                               ? Theme.of(context)
@@ -147,8 +146,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                       ),
                                       TezSellText(
                                         language['name']!,
-                                        tezSellStyles: TextStyle(
-                                          fontSize: 14,
+                                        tezSellStyles: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                           color: isSelected
                                               ? Theme.of(context)
                                                   .colorScheme
@@ -217,9 +215,8 @@ class LanguageSelectionScreen extends ConsumerWidget {
                   ),
                   child: TezSellText(
                     localizations?.continueButton ?? 'Continue',
-                    tezSellStyles: const TextStyle(
+                    tezSellStyles: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),

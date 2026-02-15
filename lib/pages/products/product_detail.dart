@@ -211,7 +211,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             const SizedBox(height: 20),
             Text(
               localizations?.opening_chat_with(userName) ?? 'Opening chat with $userName...',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
           ],
@@ -519,6 +519,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   Widget _buildSellerSection() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final localizations = AppLocalizations.of(context);
     final seller = widget.product.userName;
     final sellerId = seller.id;
@@ -566,21 +567,14 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 children: [
                   Text(
                     seller.username ?? (localizations?.username ?? 'Unknown'),
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
+                    style: textTheme.titleSmall,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     seller.location != null
                         ? '${seller.location!.region ?? ''}'
                         : (localizations?.searchLocation ?? 'Location'),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    style: textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -607,11 +601,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   Widget _buildProductInfo() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final localizations = AppLocalizations.of(context);
     final product = _currentProduct ?? widget.product;
 
     // Format price
-    final priceValue = int.tryParse(product.price) ?? 0;
+    final priceValue = (double.tryParse(product.price) ?? 0).toInt();
     final formattedPrice = NumberFormat('#,###', 'en_US').format(priceValue);
 
     return Padding(
@@ -622,12 +617,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           // Title
           Text(
             product.title ?? (localizations?.newProductTitle ?? 'No Title'),
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: colorScheme.onSurface,
-              height: 1.3,
-            ),
+            style: textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           // Category + Time ago row
@@ -638,38 +628,29 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   getCategoryName().isNotEmpty
                       ? getCategoryName()
                       : (localizations?.newProductCategory ?? 'Category'),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                  style: textTheme.labelSmall,
                 ),
               ),
               const SizedBox(width: 8),
               // Time ago
               Text(
                 _getTimeAgo(product.createdAt),
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: textTheme.bodySmall,
               ),
             ],
           ),
           const SizedBox(height: 16),
-          // Price - Carrot style (large, bold)
+          // Price - Large, bold
           Text(
             '$formattedPrice ${product.currency}',
-            style: TextStyle(
-              fontSize: 24,
+            style: textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w800,
-              color: colorScheme.onSurface,
-              letterSpacing: -0.5,
             ),
           ),
           const SizedBox(height: 16),
@@ -684,10 +665,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               const SizedBox(width: 4),
               Text(
                 '${product.likeCount}',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: textTheme.bodySmall,
               ),
               const SizedBox(width: 16),
               Icon(
@@ -698,10 +676,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               const SizedBox(width: 4),
               Text(
                 '${product.commentCount}',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: textTheme.bodySmall,
               ),
             ],
           ),
@@ -712,6 +687,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   Widget _buildDescription() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final localizations = AppLocalizations.of(context);
 
     return Padding(
@@ -721,20 +697,14 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         children: [
           Text(
             localizations?.newProductDescription ?? 'Description',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
+            style: textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
           Text(
             widget.product.description ??
                 (localizations?.newProductDescription ?? 'No description'),
-            style: TextStyle(
-              fontSize: 15,
+            style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withOpacity(0.85),
-              height: 1.6,
             ),
           ),
         ],
@@ -744,6 +714,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   Widget _buildRecommendedProducts() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final localizations = AppLocalizations.of(context);
 
     return Column(
@@ -753,11 +724,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
           child: Text(
             localizations?.recommendedProducts ?? 'Similar items',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
+            style: textTheme.titleMedium,
           ),
         ),
         FutureBuilder<List<Products>>(
@@ -809,7 +776,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     final product = _currentProduct ?? widget.product;
 
     // Format price
-    final priceValue = int.tryParse(product.price) ?? 0;
+    final priceValue = (double.tryParse(product.price) ?? 0).toInt();
     final formattedPrice = NumberFormat('#,###', 'en_US').format(priceValue);
 
     final currentLikeStatus = _isLiked ?? false;
@@ -874,10 +841,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   children: [
                     Text(
                       '$formattedPrice ${product.currency}',
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -899,9 +864,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   ),
                   child: Text(
                     localizations?.chat ?? 'Chat',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: Colors.white,
                     ),
                   ),
                 ),

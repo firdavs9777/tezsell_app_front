@@ -373,7 +373,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             const SizedBox(height: 20),
             Text(
               l10n.opening_chat_with(ownerName),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
           ],
@@ -594,9 +594,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             ),
                             child: Text(
                               '${currentImageIndex + 1}/${imageUrls.length}',
-                              style: TextStyle(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: Colors.white,
-                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -617,9 +616,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             ),
                             child: Text(
                               property!.listingTypeDisplay,
-                              style: TextStyle(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: Colors.white,
-                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -644,9 +642,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                                   SizedBox(width: 4),
                                   Text(
                                     l10n.propertyCardFeatured,
-                                    style: TextStyle(
+                                    style: theme.textTheme.bodySmall?.copyWith(
                                       color: Colors.white,
-                                      fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -746,6 +743,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildContent(BuildContext context, AppLocalizations l10n) {
+    final theme = Theme.of(context);
+
     if (isLoading) {
       return Container(
         height: 400,
@@ -767,17 +766,16 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               SizedBox(height: 16),
               Text(
                 l10n.loading_property_not_found ?? 'Property not found',
-                style: TextStyle(
-                  fontSize: 18,
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 8),
               Text(
                 l10n.loading_property_not_found_message ??
                     'The property you are looking for does not exist or has been removed.',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 24),
@@ -785,7 +783,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   l10n.loading_back_to_properties ?? 'Back to Properties',
-                  style: TextStyle(color: carrotOrange),
+                  style: theme.textTheme.labelLarge?.copyWith(color: carrotOrange),
                 ),
               ),
             ],
@@ -849,7 +847,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildOwnerSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isAgent = property!.agent != null;
     final ownerId = isAgent ? property!.agent!.id : property!.owner.id;
     final ownerName = isAgent ? property!.agent!.username : property!.owner.username;
@@ -884,8 +883,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   children: [
                     Text(
                       ownerName,
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: colorScheme.onSurface,
                       ),
@@ -895,8 +893,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                       isAgent
                           ? (l10n.contact_modal_agent ?? 'Agent')
                           : (l10n.contact_property_owner ?? 'Property Owner'),
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -917,8 +914,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
   Widget _buildPropertyInfoSection(
       BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       color: colorScheme.surface,
@@ -937,8 +935,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 ),
                 child: Text(
                   property!.propertyTypeDisplay,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
@@ -947,8 +944,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               SizedBox(width: 8),
               Text(
                 _getTimeAgo(),
-                style: TextStyle(
-                  fontSize: 13,
+                style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -959,8 +955,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           // Title
           Text(
             property!.title,
-            style: TextStyle(
-              fontSize: 20,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
               height: 1.3,
@@ -971,8 +966,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           // Price
           Text(
             '${_formatPrice(property!.price)} ${property!.currency}',
-            style: TextStyle(
-              fontSize: 24,
+            style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -984,8 +978,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             SizedBox(height: 4),
             Text(
               '${property!.pricePerSqm} ${property!.currency}${l10n.property_info_price_per_sqm ?? "/m²"}',
-              style: TextStyle(
-                fontSize: 14,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -1001,8 +994,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               SizedBox(width: 4),
               Text(
                 '${property!.viewsCount} ${l10n.property_info_views}',
-                style: TextStyle(
-                  fontSize: 13,
+                style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -1014,7 +1006,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildStatsSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       color: colorScheme.surface,
@@ -1057,7 +1050,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     required String value,
     required String label,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Column(
       children: [
@@ -1065,8 +1059,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         SizedBox(height: 8),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 18,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: colorScheme.onSurface,
           ),
@@ -1074,8 +1067,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         SizedBox(height: 2),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
+          style: theme.textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),
@@ -1093,7 +1085,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildLocationSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     // Build location string from available fields
     final locationParts = <String>[];
     if (property!.address.isNotEmpty) locationParts.add(property!.address);
@@ -1111,8 +1104,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             l10n.property_create_location,
-            style: TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -1125,8 +1117,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               Expanded(
                 child: Text(
                   locationString,
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
                   ),
                 ),
@@ -1145,8 +1136,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                       : floor != null
                           ? '${l10n.property_details_floor} $floor'
                           : '${l10n.property_details_total_floors}: $totalFloors',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
                   ),
                 ),
@@ -1160,7 +1150,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
   Widget _buildDescriptionSection(
       BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       color: colorScheme.surface,
@@ -1170,8 +1161,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             l10n.sections_description,
-            style: TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -1179,8 +1169,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           SizedBox(height: 12),
           Text(
             description!,
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface,
               height: 1.5,
             ),
@@ -1191,7 +1180,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildFeaturesSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final features = <Map<String, dynamic>>[
       if (hasBalcony)
         {'icon': Icons.balcony, 'label': l10n.property_card_balcony},
@@ -1216,8 +1206,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           children: [
             Text(
               l10n.property_create_features,
-              style: TextStyle(
-                fontSize: 16,
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
               ),
@@ -1225,8 +1214,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             SizedBox(height: 12),
             Text(
               l10n.no_description,
-              style: TextStyle(
-                fontSize: 14,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -1243,8 +1231,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             l10n.property_create_features,
-            style: TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -1268,8 +1255,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                     SizedBox(width: 6),
                     Text(
                       feature['label'] as String,
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface,
                       ),
                     ),
@@ -1291,7 +1277,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildAmenitiesSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       color: colorScheme.surface,
@@ -1301,8 +1288,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             l10n.sections_nearby_amenities,
-            style: TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -1322,7 +1308,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildAmenityRow(IconData icon, String label, String distance) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 8),
@@ -1333,16 +1320,14 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface,
               ),
             ),
           ),
           Text(
             distance,
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
@@ -1352,7 +1337,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildDetailsSection(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       color: colorScheme.surface,
@@ -1362,8 +1348,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             l10n.property_details_title,
-            style: TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -1383,7 +1368,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildDetailRow(String label, String value) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 8),
@@ -1392,15 +1378,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: colorScheme.onSurface,
             ),
@@ -1411,8 +1395,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   }
 
   Widget _buildCarrotBottomBar(BuildContext context, AppLocalizations l10n) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
@@ -1479,16 +1464,14 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               children: [
                 Text(
                   '${_formatPrice(property!.price)} ${property!.currency}',
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
                 ),
                 Text(
                   property!.listingTypeDisplay,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -1507,9 +1490,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ),
               child: Text(
                 l10n.contact_send_inquiry ?? 'Contact',
-                style: TextStyle(
+                style: theme.textTheme.labelLarge?.copyWith(
                   color: colorScheme.onPrimary,
-                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),

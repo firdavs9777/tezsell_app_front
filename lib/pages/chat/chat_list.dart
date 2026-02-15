@@ -105,8 +105,10 @@ class _MessagesListState extends ConsumerState<MessagesList>
               Icon(Icons.chat_bubble_outline, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(height: 16),
               Text(
-                    l.please_log_in,
-                style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                l.please_log_in,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -239,10 +241,9 @@ class _MessagesListState extends ConsumerState<MessagesList>
             const SizedBox(height: 4),
             Text(
               l.delete,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
               ),
             ),
           ],
@@ -331,16 +332,16 @@ class _MessagesListState extends ConsumerState<MessagesList>
           const SizedBox(height: 16),
           Text(
             l.no_conversations,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             l.start_conversation_hint,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -439,10 +440,8 @@ class ChatListTile extends StatelessWidget {
                       child: Center(
                         child: Text(
                           avatarLetter,
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
                           ),
                         ),
                       ),

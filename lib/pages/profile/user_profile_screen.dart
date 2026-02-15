@@ -98,10 +98,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
         title: profileAsync.whenOrNull(
           data: (profile) => Text(
             profile.username,
-            style: TextStyle(
+            style: theme.textTheme.titleLarge?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
             ),
           ),
         ),
@@ -145,8 +144,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             const SizedBox(height: 24),
             Text(
               AppLocalizations.of(context)?.profile_loading_error ?? 'Error loading profile',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -155,9 +153,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             Text(
               AppErrorHandler.getErrorMessage(error),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
-                fontSize: 14,
               ),
             ),
             const SizedBox(height: 24),
@@ -226,8 +223,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                   // Username and Info
                   Text(
                     profile.username,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -245,8 +241,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                         const SizedBox(width: 4),
                         Text(
                           profile.location.shortAddress,
-                          style: TextStyle(
-                            fontSize: 14,
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -264,8 +259,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                       const SizedBox(width: 4),
                       Text(
                         "${AppLocalizations.of(context)?.profile_member_since ?? 'Member since'}: ${profile.memberSinceFormatted}",
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
                       ),
@@ -303,7 +297,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                         ),
                         child: Text(
                           AppLocalizations.of(context)?.editProfileModalTitle ?? 'Edit Profile',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -407,8 +401,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                       child: Center(
                         child: Text(
                           profile.initials,
-                          style: TextStyle(
-                            fontSize: 28,
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onPrimaryContainer,
                           ),
@@ -436,16 +429,14 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
           children: [
             Text(
               _formatCount(count),
-              style: const TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 13,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
@@ -500,7 +491,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                   ),
                   child: Text(
                     localizations?.profile_following_btn ?? 'Following',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 )
               : FilledButton(
@@ -513,7 +504,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                   ),
                   child: Text(
                     localizations?.profile_follow ?? 'Follow',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ),
     );
@@ -532,7 +523,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       ),
       child: Text(
         localizations?.profile_message ?? 'Message',
-        style: const TextStyle(fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -610,8 +601,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             const SizedBox(height: 20),
             Text(
               localizations?.opening_chat_with(userName) ?? 'Opening chat with $userName...',
-              style: const TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
@@ -619,8 +609,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             const SizedBox(height: 8),
             Text(
               localizations?.this_will_only_take_a_moment ?? 'This will only take a moment',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
@@ -820,8 +809,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             const SizedBox(height: 16),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -830,8 +818,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -1058,8 +1045,7 @@ class _FollowListSheet extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1096,9 +1082,8 @@ class _FollowListSheet extends ConsumerWidget {
                             isFollowers
                                 ? (localizations?.profile_no_followers_yet ?? "No followers yet")
                                 : (localizations?.profile_no_following_yet ?? "Not following anyone yet"),
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: colorScheme.onSurfaceVariant,
-                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -1198,7 +1183,7 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
               )
             : Text(
                 widget.user.initials,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onPrimaryContainer,
                 ),
@@ -1206,7 +1191,7 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
       ),
       title: Text(
         widget.user.username,
-        style: const TextStyle(fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
       trailing: _isLoading
           ? const SizedBox(
@@ -1229,7 +1214,7 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
                       ),
                       child: Text(
                         localizations?.profile_following_btn ?? 'Following',
-                        style: const TextStyle(fontSize: 13),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     )
                   : FilledButton(
@@ -1243,7 +1228,7 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
                       ),
                       child: Text(
                         localizations?.profile_follow ?? 'Follow',
-                        style: const TextStyle(fontSize: 13),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
             ),

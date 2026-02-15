@@ -47,8 +47,9 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
           itemCount: _products.length,
           itemBuilder: (context, index) {
             final product = _products[index];
+            final priceValue = double.tryParse(product.price) ?? 0;
             final formattedPrice =
-                NumberFormat('#,##0', 'en_US').format(int.parse(product.price));
+                NumberFormat('#,##0', 'en_US').format(priceValue.toInt());
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -127,11 +128,14 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
                                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4.0),
-                              Text(
-                                '${product.location.region}, ${product.location.district.substring(0, 7)}...',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  fontSize: 12.0,
+                              Flexible(
+                                child: Text(
+                                  '${product.location.region}, ${product.location.district}',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    fontSize: 12.0,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               )
                             ],

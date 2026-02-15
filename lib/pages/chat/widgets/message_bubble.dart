@@ -59,8 +59,7 @@ class MessageBubble extends StatelessWidget {
                   final l = AppLocalizations.of(context)!;
                   return Text(
                     l.this_message_was_deleted,
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontStyle: FontStyle.italic,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),

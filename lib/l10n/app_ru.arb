@@ -20,6 +20,18 @@
   "@continueButton": {
     "description": "Text for continue button"
   },
+  "continueWithGoogle": "Продолжить с Google",
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "continueWithApple": "Продолжить с Apple",
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "continueWithEmail": "Продолжить с Email",
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
   "sellAndBuyProducts": "Продавайте и покупайте любые товары только у нас",
   "@sellAndBuyProducts": {
     "description": "Main heading text on home screen"
@@ -242,6 +254,36 @@
       }
     }
   },
+  "selectCountry": "Выберите страну",
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "changeCountry": "Изменить страну",
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "country": "Страна",
+  "@country": {
+    "description": "Country label"
+  },
+  "allCountries": "Все страны",
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "currencyRUB": "Российский рубль",
+  "currencyUAH": "Украинская гривна",
+  "currencyBYN": "Белорусский рубль",
+  "currencyMDL": "Молдавский лей",
+  "currencyGEL": "Грузинский лари",
+  "currencyAMD": "Армянский драм",
+  "currencyAZN": "Азербайджанский манат",
+  "currencyKZT": "Казахстанский тенге",
+  "currencyTMT": "Туркменский манат",
+  "currencyKGS": "Киргизский сом",
+  "currencyTJS": "Таджикский сомони",
+  "currencyUZS": "Узбекский сум",
+  "currencyUSD": "Доллар США",
+  "currencyEUR": "Евро",
   "fullNumber": "Полный номер: {phoneNumber}",
   "@fullNumber": {
     "description": "Shows complete phone number",
@@ -2593,5 +2635,13 @@
   "onTezsell": "в TezSell",
   "@onTezsell": {
     "description": "Share text suffix for profile"
+  },
+  "selectCountryFirst": "Сначала выберите страну",
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "countrySelectionHint": "Затем вы сможете выбрать регион",
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
   }
 }

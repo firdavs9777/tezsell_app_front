@@ -151,15 +151,63 @@ class ServiceProvider {
     String? userId = prefs.getString('userId');
     Dio dio = Dio();
 
+    // Always fetch fresh location from backend to ensure we have the latest
+    int? locationId;
+    final userIdInt = userId != null ? int.tryParse(userId) : null;
+
+    if (kDebugMode) {
+      print('[ServiceProvider] Fetching fresh user location from backend...');
+    }
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/accounts/user/info/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Token $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final userInfo = data['user_info'] ?? data['data'] ?? data;
+        final location = userInfo['location'];
+        if (location != null && location['id'] != null) {
+          locationId = location['id'] is int ? location['id'] : int.tryParse(location['id'].toString());
+          // Update SharedPreferences with latest value
+          if (locationId != null) {
+            await prefs.setString('userLocation', locationId.toString());
+            if (kDebugMode) {
+              print('[ServiceProvider] Using location_id: $locationId (from backend)');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[ServiceProvider] Error fetching user location: $e, falling back to cached');
+      }
+      // Fallback to cached value if backend fails
+      locationId = userLocation != null ? int.tryParse(userLocation) : null;
+    }
+
+    if (locationId == null) {
+      throw DioException(
+        requestOptions: RequestOptions(path: url),
+        message: 'User location not set. Please update your location in settings.',
+      );
+    }
+
+    if (kDebugMode) {
+      print('[ServiceProvider] Creating service with location_id: $locationId');
+    }
+
     FormData formData = FormData.fromMap({
       'name': name,
       'description': description,
       'category_id': categoryId,
-      'location_id':
-          int.tryParse(userLocation.toString()), // Ensure it's an integer
-      'userAddress_id':
-          int.tryParse(userLocation.toString()), // Ensure it's an integer
-      'userName_id': int.tryParse(userId.toString()),
+      'location_id': locationId,
+      'userAddress_id': locationId,
+      'userName_id': userIdInt,
       'images': imageFiles
           .map((file) => MultipartFile.fromFileSync(file.path))
           .toList(),

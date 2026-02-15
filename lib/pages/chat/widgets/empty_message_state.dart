@@ -29,12 +29,12 @@ class EmptyMessageState extends ConsumerWidget {
                 children: [
                   Text(
                     l.no_messages_yet,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Say hi! 👋',
-                    style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    'Say hi!',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   if (error != null) ...[
                     const SizedBox(height: 16),

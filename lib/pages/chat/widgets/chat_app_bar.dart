@@ -94,7 +94,7 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                 .isNotEmpty
                             ? l.typing
                             : l.online,
-                    style: const TextStyle(fontSize: 12),
+                    style: Theme.of(context).textTheme.bodySmall,
                   );
                 },
               ),

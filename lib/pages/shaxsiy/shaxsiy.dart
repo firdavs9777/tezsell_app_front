@@ -246,10 +246,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
           // Username and Info
           Text(
             user.username,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 4),
 
@@ -264,8 +261,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               const SizedBox(width: 4),
               Text(
                 user.email,
-                style: TextStyle(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -286,8 +282,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   const SizedBox(width: 4),
                   Text(
                     '${user.location!.region}, ${user.location!.district}',
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -315,7 +310,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               ),
               child: Text(
                 localizations?.editProfileModalTitle ?? 'Profilni tahrirlash',
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.labelLarge,
               ),
             ),
           ),
@@ -329,6 +324,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     required String label,
     VoidCallback? onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -338,18 +334,14 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
           children: [
             Text(
               _formatCount(count),
-              style: const TextStyle(
-                fontSize: 18,
+              style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 13,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              style: textTheme.bodySmall,
             ),
           ],
         ),
@@ -392,12 +384,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSurface,
-          letterSpacing: -0.2,
-        ),
+        style: Theme.of(context).textTheme.titleMedium,
       ),
     );
   }
@@ -450,18 +437,11 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -508,11 +488,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               const SizedBox(height: 20),
               Text(
                 localizations?.selectLanguage ?? 'Select Language',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 20),
               ...supportedLanguages.map((language) => _buildLanguageOption(
@@ -553,8 +529,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
             Expanded(
               child: Text(
                 language,
-                style: TextStyle(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: isSelected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
                 ),
@@ -599,11 +574,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               const SizedBox(height: 20),
               Text(
                 localizations?.select_theme ?? 'Select Theme',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 20),
               _buildThemeOption(
@@ -771,10 +742,6 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         scrolledUnderElevation: 0,
         title: Text(
           localizations?.profile ?? 'Profile',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
         ),
         actions: [
           IconButton(

@@ -1,16 +1,215 @@
-/// Currency formatting utilities for Uzbekistan
-/// Handles UZS (Uzbek Som) and USD formatting
+/// Currency formatting utilities for 15 ex-Soviet countries
+/// Handles UZS, USD, EUR, RUB, UAH, BYN, MDL, GEL, AMD, AZN, KZT, TMT, KGS, TJS
+
+/// Symbol position for currency formatting
+enum SymbolPosition { before, after }
+
+/// Configuration for a currency
+class CurrencyConfig {
+  final String code;
+  final String symbol;
+  final SymbolPosition symbolPosition;
+  final String thousandsSeparator;
+  final String decimalSeparator;
+  final int decimals;
+  final num minPrice;
+  final num maxPrice;
+
+  const CurrencyConfig({
+    required this.code,
+    required this.symbol,
+    required this.symbolPosition,
+    required this.thousandsSeparator,
+    required this.decimalSeparator,
+    required this.decimals,
+    required this.minPrice,
+    required this.maxPrice,
+  });
+}
 
 class CurrencyUtils {
   CurrencyUtils._();
 
-  /// Available currencies
-  static const String uzs = 'UZS';
-  static const String usd = 'USD';
+  /// All supported currencies with formatting rules
+  static const Map<String, CurrencyConfig> currencies = {
+    'UZS': CurrencyConfig(
+      code: 'UZS',
+      symbol: "so'm",
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 1000,
+      maxPrice: 10000000000000,
+    ),
+    'USD': CurrencyConfig(
+      code: 'USD',
+      symbol: '\$',
+      symbolPosition: SymbolPosition.before,
+      thousandsSeparator: ',',
+      decimalSeparator: '.',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 10000000,
+    ),
+    'EUR': CurrencyConfig(
+      code: 'EUR',
+      symbol: '\u20AC',
+      symbolPosition: SymbolPosition.before,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 10000000,
+    ),
+    'RUB': CurrencyConfig(
+      code: 'RUB',
+      symbol: '\u20BD',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 100,
+      maxPrice: 100000000000,
+    ),
+    'UAH': CurrencyConfig(
+      code: 'UAH',
+      symbol: '\u20B4',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 100,
+      maxPrice: 10000000000,
+    ),
+    'BYN': CurrencyConfig(
+      code: 'BYN',
+      symbol: 'Br',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 100000000,
+    ),
+    'MDL': CurrencyConfig(
+      code: 'MDL',
+      symbol: 'L',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 10,
+      maxPrice: 1000000000,
+    ),
+    'GEL': CurrencyConfig(
+      code: 'GEL',
+      symbol: '\u20BE',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 100000000,
+    ),
+    'AMD': CurrencyConfig(
+      code: 'AMD',
+      symbol: '\u058F',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 100,
+      maxPrice: 10000000000,
+    ),
+    'AZN': CurrencyConfig(
+      code: 'AZN',
+      symbol: '\u20BC',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 100000000,
+    ),
+    'KZT': CurrencyConfig(
+      code: 'KZT',
+      symbol: '\u20B8',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 100,
+      maxPrice: 10000000000,
+    ),
+    'TMT': CurrencyConfig(
+      code: 'TMT',
+      symbol: 'm',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 100000000,
+    ),
+    'KGS': CurrencyConfig(
+      code: 'KGS',
+      symbol: '\u0441',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 0,
+      minPrice: 10,
+      maxPrice: 10000000000,
+    ),
+    'TJS': CurrencyConfig(
+      code: 'TJS',
+      symbol: 'SM',
+      symbolPosition: SymbolPosition.after,
+      thousandsSeparator: ' ',
+      decimalSeparator: ',',
+      decimals: 2,
+      minPrice: 1,
+      maxPrice: 1000000000,
+    ),
+  };
+
+  /// Map country codes to default currencies
+  static const Map<String, String> countryDefaultCurrency = {
+    'RU': 'RUB',
+    'UA': 'UAH',
+    'BY': 'BYN',
+    'MD': 'MDL',
+    'EE': 'EUR',
+    'LV': 'EUR',
+    'LT': 'EUR',
+    'GE': 'GEL',
+    'AM': 'AMD',
+    'AZ': 'AZN',
+    'KZ': 'KZT',
+    'UZ': 'UZS',
+    'TM': 'TMT',
+    'KG': 'KGS',
+    'TJ': 'TJS',
+  };
+
+  /// Get available currencies for a country (limited set: country default + USD + EUR)
+  static List<String> getCurrenciesForCountry(String countryCode) {
+    final defaultCurrency = countryDefaultCurrency[countryCode] ?? 'USD';
+    return [defaultCurrency, 'USD', 'EUR'].toSet().toList();
+  }
+
+  /// Get all available currencies
+  static List<String> getAllCurrencies() {
+    return currencies.keys.toList();
+  }
+
+  /// Get default currency for a country
+  static String? getCurrencyForCountry(String countryCode) {
+    return countryDefaultCurrency[countryCode];
+  }
 
   /// Format price with proper currency symbol and separators
-  /// UZS uses space as thousands separator: 1 500 000 so'm
-  /// USD uses comma as thousands separator: $1,500,000
   static String formatPrice(dynamic price, {String currency = 'UZS'}) {
     double priceNum;
     if (price is String) {
@@ -21,32 +220,47 @@ class CurrencyUtils {
       priceNum = 0;
     }
 
-    if (currency == 'UZS') {
-      return formatUZS(priceNum);
+    final config = currencies[currency] ?? currencies['USD']!;
+    final formattedNumber = _formatNumber(
+      priceNum,
+      thousandsSeparator: config.thousandsSeparator,
+      decimalSeparator: config.decimalSeparator,
+      decimals: config.decimals,
+    );
+
+    if (config.symbolPosition == SymbolPosition.before) {
+      return '${config.symbol}$formattedNumber';
     } else {
-      return formatUSD(priceNum);
+      return '$formattedNumber ${config.symbol}';
     }
   }
 
-  /// Format UZS with space as thousands separator
-  /// Example: 15000000 → "15 000 000 so'm"
-  static String formatUZS(num price) {
-    final intPrice = price.toInt();
-    final formatted = intPrice.toString().replaceAllMapped(
+  static String _formatNumber(
+    num number, {
+    required String thousandsSeparator,
+    required String decimalSeparator,
+    required int decimals,
+  }) {
+    final parts = number.toStringAsFixed(decimals).split('.');
+    final integerPart = parts[0].replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (m) => '${m[1]} ',
+      (Match m) => '${m[1]}$thousandsSeparator',
     );
-    return "$formatted so'm";
+
+    if (decimals > 0 && parts.length > 1) {
+      return '$integerPart$decimalSeparator${parts[1]}';
+    }
+    return integerPart;
   }
 
-  /// Format USD with comma separator
-  /// Example: 15000 → "$15,000"
+  /// Format UZS with space as thousands separator (legacy support)
+  static String formatUZS(num price) {
+    return formatPrice(price, currency: 'UZS');
+  }
+
+  /// Format USD with comma separator (legacy support)
   static String formatUSD(num price) {
-    final formatted = price.toInt().toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (m) => '${m[1]},',
-    );
-    return '\$$formatted';
+    return formatPrice(price, currency: 'USD');
   }
 
   /// Format price without currency symbol (just number formatting)
@@ -59,10 +273,22 @@ class CurrencyUtils {
 
   /// Parse formatted price back to number
   static double parsePrice(String formatted) {
-    // Remove currency symbols, spaces, commas, and "so'm"
+    // Remove all currency symbols, spaces, commas
     final cleaned = formatted
         .replaceAll("so'm", '')
         .replaceAll('\$', '')
+        .replaceAll('\u20AC', '') // EUR
+        .replaceAll('\u20BD', '') // RUB
+        .replaceAll('\u20B4', '') // UAH
+        .replaceAll('Br', '') // BYN
+        .replaceAll('L', '') // MDL
+        .replaceAll('\u20BE', '') // GEL
+        .replaceAll('\u058F', '') // AMD
+        .replaceAll('\u20BC', '') // AZN
+        .replaceAll('\u20B8', '') // KZT
+        .replaceAll('m', '') // TMT
+        .replaceAll('\u0441', '') // KGS
+        .replaceAll('SM', '') // TJS
         .replaceAll(' ', '')
         .replaceAll(',', '')
         .trim();
@@ -71,24 +297,48 @@ class CurrencyUtils {
 
   /// Get currency symbol
   static String getSymbol(String currency) {
-    switch (currency.toUpperCase()) {
-      case 'USD':
-        return '\$';
-      case 'UZS':
-      default:
-        return "so'm";
-    }
+    return currencies[currency.toUpperCase()]?.symbol ?? currency;
   }
 
   /// Get currency display name
   static String getDisplayName(String currency) {
     switch (currency.toUpperCase()) {
       case 'USD':
-        return 'Dollar';
+        return 'US Dollar';
+      case 'EUR':
+        return 'Euro';
       case 'UZS':
-      default:
         return "So'm";
+      case 'RUB':
+        return 'Russian Ruble';
+      case 'UAH':
+        return 'Ukrainian Hryvnia';
+      case 'BYN':
+        return 'Belarusian Ruble';
+      case 'MDL':
+        return 'Moldovan Leu';
+      case 'GEL':
+        return 'Georgian Lari';
+      case 'AMD':
+        return 'Armenian Dram';
+      case 'AZN':
+        return 'Azerbaijani Manat';
+      case 'KZT':
+        return 'Kazakhstani Tenge';
+      case 'TMT':
+        return 'Turkmen Manat';
+      case 'KGS':
+        return 'Kyrgyzstani Som';
+      case 'TJS':
+        return 'Tajikistani Somoni';
+      default:
+        return currency;
     }
+  }
+
+  /// Get currency config
+  static CurrencyConfig? getConfig(String currency) {
+    return currencies[currency.toUpperCase()];
   }
 }
 
@@ -108,14 +358,6 @@ class ValidationRules {
     '.webp'
   ];
 
-  /// Price validation rules (UZS)
-  static const int minPriceUZS = 1000;
-  static const int maxPriceUZS = 10000000000000; // 10 trillion
-
-  /// Price validation rules (USD)
-  static const int minPriceUSD = 1;
-  static const int maxPriceUSD = 10000000; // 10 million
-
   /// Text field validation
   static const int minTitleLength = 3;
   static const int maxTitleLength = 255;
@@ -124,31 +366,25 @@ class ValidationRules {
 
   /// Validate price based on currency
   static String? validatePrice(num price, String currency) {
-    if (currency == 'UZS') {
-      if (price < minPriceUZS) {
-        return "Minimal narx: ${CurrencyUtils.formatUZS(minPriceUZS)}";
-      }
-      if (price > maxPriceUZS) {
-        return "Maksimal narx: ${CurrencyUtils.formatUZS(maxPriceUZS)}";
-      }
-    } else if (currency == 'USD') {
-      if (price < minPriceUSD) {
-        return "Minimum price: ${CurrencyUtils.formatUSD(minPriceUSD)}";
-      }
-      if (price > maxPriceUSD) {
-        return "Maximum price: ${CurrencyUtils.formatUSD(maxPriceUSD)}";
-      }
+    final config = CurrencyUtils.currencies[currency];
+    if (config == null) return null;
+
+    if (price < config.minPrice) {
+      return "Minimum price: ${CurrencyUtils.formatPrice(config.minPrice, currency: currency)}";
     }
-    return null; // Valid
+    if (price > config.maxPrice) {
+      return "Maximum price: ${CurrencyUtils.formatPrice(config.maxPrice, currency: currency)}";
+    }
+    return null;
   }
 
   /// Validate title length
   static String? validateTitle(String title) {
     if (title.length < minTitleLength) {
-      return "Sarlavha kamida $minTitleLength belgi bo'lishi kerak";
+      return "Title must be at least $minTitleLength characters";
     }
     if (title.length > maxTitleLength) {
-      return "Sarlavha $maxTitleLength belgidan oshmasligi kerak";
+      return "Title must not exceed $maxTitleLength characters";
     }
     return null;
   }
@@ -156,10 +392,10 @@ class ValidationRules {
   /// Validate description length
   static String? validateDescription(String description) {
     if (description.length < minDescriptionLength) {
-      return "Tavsif kamida $minDescriptionLength belgi bo'lishi kerak";
+      return "Description must be at least $minDescriptionLength characters";
     }
     if (description.length > maxDescriptionLength) {
-      return "Tavsif $maxDescriptionLength belgidan oshmasligi kerak";
+      return "Description must not exceed $maxDescriptionLength characters";
     }
     return null;
   }
@@ -167,7 +403,7 @@ class ValidationRules {
   /// Validate image count
   static String? validateImageCount(int count) {
     if (count > maxImagesPerListing) {
-      return "Maksimal $maxImagesPerListing rasm ruxsat etiladi";
+      return "Maximum $maxImagesPerListing images allowed";
     }
     return null;
   }
@@ -175,7 +411,7 @@ class ValidationRules {
   /// Validate image size
   static String? validateImageSize(int sizeBytes) {
     if (sizeBytes > maxImageSizeBytes) {
-      return "Rasm hajmi ${maxImageSizeMB}MB dan oshmasligi kerak";
+      return "Image size must not exceed ${maxImageSizeMB}MB";
     }
     return null;
   }

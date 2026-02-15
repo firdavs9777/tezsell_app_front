@@ -1,6 +1,7 @@
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -228,7 +229,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
                           // Tagline
                           Text(
-                            'Your neighborhood marketplace',
+                            AppLocalizations.of(context)?.home_welcome_title ?? 'Your neighborhood marketplace',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,

@@ -52,16 +52,14 @@ class SavedProperties extends ConsumerWidget {
             SizedBox(height: 24),
             Text(
               l10n.authLoginRequired,
-              style: TextStyle(
-                fontSize: 24,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 12),
             Text(
               l10n.authLoginToViewSaved,
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -80,8 +78,7 @@ class SavedProperties extends ConsumerWidget {
               ),
               child: Text(
                 l10n.authLogin,
-                style: TextStyle(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -228,7 +225,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
               l10n.savedPropertiesTitle,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -246,7 +243,9 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                   SizedBox(height: 16),
                   Text(
                     l10n.loadingSavedProperties,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -261,15 +260,16 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                   SizedBox(height: 16),
                   Text(
                     l10n.errorsFailedToLoadSaved,
-                    style: TextStyle(
-                      fontSize: 18,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: 8),
                   Text(
                     error.toString(),
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 24),
@@ -326,16 +326,14 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
             SizedBox(height: 24),
             Text(
               l10n.savedPropertiesNoSaved,
-              style: TextStyle(
-                fontSize: 24,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 12),
             Text(
               l10n.savedPropertiesStartSaving,
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -357,8 +355,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               ),
               child: Text(
                 l10n.savedPropertiesBrowse,
-                style: TextStyle(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -377,8 +374,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
         children: [
           Text(
             '$count ${l10n.resultsSavedProperties}',
-            style: TextStyle(
-              fontSize: 16,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -432,7 +428,9 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
       child: Center(
         child: Text(
           l10n.resultsNoMoreProperties,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );
@@ -514,9 +512,8 @@ class _PropertyCard extends ConsumerWidget {
               ),
               child: Text(
                 l10n.propertyCardFeatured,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: Colors.white,
-                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -533,9 +530,8 @@ class _PropertyCard extends ConsumerWidget {
             ),
             child: Text(
               property.listingTypeDisplay,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: Colors.white,
-                fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -578,8 +574,7 @@ class _PropertyCard extends ConsumerWidget {
         children: [
           Text(
             property.title,
-            style: TextStyle(
-              fontSize: 18,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
@@ -594,8 +589,7 @@ class _PropertyCard extends ConsumerWidget {
               Expanded(
                 child: Text(
                   '${property.district}, ${property.city}',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                   maxLines: 1,
@@ -607,8 +601,7 @@ class _PropertyCard extends ConsumerWidget {
           SizedBox(height: 12),
           Text(
             formatPrice(property.price, property.currency),
-            style: TextStyle(
-              fontSize: 22,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: isDark ? colorScheme.primary : const Color(0xFF43A047),
             ),
@@ -663,7 +656,9 @@ class _PropertyCard extends ConsumerWidget {
             ),
             child: Text(
               l10n.propertyCardViewDetails,
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -696,8 +691,7 @@ class _PropertyCard extends ConsumerWidget {
         SizedBox(width: 4),
         Text(
           '$value${label.isNotEmpty ? " $label" : ""}',
-          style: TextStyle(
-            fontSize: 14,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
         ),

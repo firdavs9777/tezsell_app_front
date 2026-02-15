@@ -20,6 +20,18 @@
   "@continueButton": {
     "description": "Text for continue button"
   },
+  "continueWithGoogle": "Google orqali davom etish",
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "continueWithApple": "Apple orqali davom etish",
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "continueWithEmail": "Email orqali davom etish",
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
   "sellAndBuyProducts": "Mahsulotlaringizni faqat bizda soting  va sotib oling",
   "@sellAndBuyProducts": {
     "description": "Main heading text on home screen"
@@ -242,6 +254,36 @@
       }
     }
   },
+  "selectCountry": "Davlatingizni tanlang",
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "changeCountry": "Davlatni o'zgartirish",
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "country": "Davlat",
+  "@country": {
+    "description": "Country label"
+  },
+  "allCountries": "Barcha davlatlar",
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "currencyRUB": "Rossiya rubli",
+  "currencyUAH": "Ukraina grivnasi",
+  "currencyBYN": "Belarus rubli",
+  "currencyMDL": "Moldova leyi",
+  "currencyGEL": "Gruziya larisi",
+  "currencyAMD": "Armaniston drami",
+  "currencyAZN": "Ozarbayjon manati",
+  "currencyKZT": "Qozog'iston tengesi",
+  "currencyTMT": "Turkmaniston manati",
+  "currencyKGS": "Qirg'iziston somi",
+  "currencyTJS": "Tojikiston somonisi",
+  "currencyUZS": "O'zbek so'mi",
+  "currencyUSD": "AQSH dollari",
+  "currencyEUR": "Yevro",
   "fullNumber": "To'liq raqam: {phoneNumber}",
   "@fullNumber": {
     "description": "Shows complete phone number",
@@ -2590,5 +2632,13 @@
   "onTezsell": "TezSell da",
   "@onTezsell": {
     "description": "Share text suffix for profile"
+  },
+  "selectCountryFirst": "Avval davlatni tanlang",
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "countrySelectionHint": "Keyin viloyatni tanlashingiz mumkin",
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
   }
 }

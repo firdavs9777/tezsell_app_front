@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
+import 'package:app/providers/provider_models/country_model.dart';
+import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,12 +11,14 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class Region {
+  final int id;
   final String name;
 
-  Region({required this.name});
+  Region({required this.id, required this.name});
 
   factory Region.fromJson(Map<String, dynamic> json) {
     return Region(
+      id: json['id'] ?? 0,
       name: json['region'] ?? json['name'] ?? '',
     );
   }
@@ -42,30 +46,42 @@ class LocationSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
+  CountryModel? selectedCountry;
   Region? selectedRegion;
   District? selectedDistrict;
 
   List<Region> regions = [];
   List<District> districts = [];
-  bool isLoadingRegions = true;
+  bool isLoadingRegions = false;
   bool isLoadingDistricts = false;
   bool _isSaving = false;
-
-  final String regionsUrl = '$baseUrl/accounts/regions/';
-  final String districtsUrl = '$baseUrl/accounts/districts';
 
   @override
   void initState() {
     super.initState();
-    _fetchRegions();
+    // Set default country
+    selectedCountry = CountryModel.getByCode(AppConfig.defaultCountry);
+    if (selectedCountry != null) {
+      _fetchRegions(selectedCountry!.code);
+    }
   }
 
-  Future<void> _fetchRegions() async {
+  Future<void> _fetchRegions(String countryCode) async {
+    setState(() {
+      isLoadingRegions = true;
+      regions = [];
+      selectedRegion = null;
+      districts = [];
+      selectedDistrict = null;
+    });
+
     try {
-      final response = await http.get(Uri.parse(regionsUrl));
+      final response = await http.get(
+        Uri.parse('${AppConfig.baseUrl}${AppConfig.regionsPath}?country=$countryCode'),
+      );
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> regionData = responseData['regions'] ?? [];
+        final List<dynamic> regionData = responseData['regions'] ?? responseData['results'] ?? [];
 
         setState(() {
           regions = regionData
@@ -95,10 +111,12 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     });
 
     try {
-      final response = await http.get(Uri.parse('$districtsUrl/$regionName/'));
+      final response = await http.get(
+        Uri.parse('${AppConfig.baseUrl}${AppConfig.districtsPath}$regionName/'),
+      );
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> districtData = responseData['districts'] ?? [];
+        final List<dynamic> districtData = responseData['districts'] ?? responseData['results'] ?? [];
 
         setState(() {
           districts = districtData
@@ -135,11 +153,17 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
   }
 
   Future<void> _saveLocationAndContinue() async {
-    if (selectedRegion == null || selectedDistrict == null) return;
+    if (selectedCountry == null || selectedRegion == null || selectedDistrict == null) return;
 
     setState(() => _isSaving = true);
 
     try {
+      // Save selected country
+      await ref
+          .read(selectedCountryProvider.notifier)
+          .setCountry(selectedCountry!);
+
+      // Save location
       await ref
           .read(profileServiceProvider)
           .updateUserInfo(locationId: selectedDistrict!.id);
@@ -147,7 +171,6 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       HapticFeedback.mediumImpact();
 
       if (mounted && context.mounted) {
-        // Navigate to main app
         context.go('/tabs');
       }
     } catch (e) {
@@ -157,11 +180,102 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     }
   }
 
+  void _showCountryPicker() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).languageCode;
+    // Use static list of 15 supported countries
+    final countries = CountryModel.supportedCountries;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)?.selectCountry ?? 'Select Country',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: countries.length,
+                itemBuilder: (context, index) {
+                  final country = countries[index];
+                  final isSelected = selectedCountry?.code == country.code;
+                  return ListTile(
+                    leading: Text(
+                      country.flagEmoji,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    title: Text(
+                      country.getLocalizedName(locale),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${country.currency.code} (${country.currency.symbol})',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle, color: colorScheme.primary)
+                        : null,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      Navigator.pop(context);
+                      setState(() {
+                        selectedCountry = country;
+                        selectedRegion = null;
+                        selectedDistrict = null;
+                        regions = [];
+                        districts = [];
+                      });
+                      _fetchRegions(country.code);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final locale = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -195,8 +309,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
               Center(
                 child: Text(
                   localizations?.locationTitle ?? 'Set Your Location',
-                  style: TextStyle(
-                    fontSize: 26,
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
@@ -208,9 +321,8 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     localizations?.location_subtitle ??
-                        'Choose your region and district to discover nearby products and services',
-                    style: TextStyle(
-                      fontSize: 15,
+                        'Choose your country, region and district to discover nearby products and services',
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                       height: 1.4,
                     ),
@@ -219,6 +331,15 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                 ),
               ),
               const SizedBox(height: 48),
+
+              // Country Selection
+              _buildSectionLabel(
+                localizations?.country ?? 'Country',
+                colorScheme,
+              ),
+              const SizedBox(height: 10),
+              _buildCountrySelector(colorScheme, locale),
+              const SizedBox(height: 24),
 
               // Region Selection
               _buildSectionLabel(
@@ -231,6 +352,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                 hint: localizations?.selectRegion ?? 'Select your region',
                 items: regions,
                 isLoading: isLoadingRegions,
+                enabled: selectedCountry != null,
                 itemBuilder: (region) => region.name,
                 onChanged: (region) {
                   HapticFeedback.selectionClick();
@@ -271,7 +393,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
               const SizedBox(height: 32),
 
               // Selected Location Preview
-              if (selectedRegion != null && selectedDistrict != null)
+              if (selectedCountry != null && selectedRegion != null && selectedDistrict != null)
                 Builder(
                   builder: (context) {
                     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -301,8 +423,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                               children: [
                                 Text(
                                   localizations?.selectedLocation ?? 'Your Location',
-                                  style: TextStyle(
-                                    fontSize: 12,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontWeight: FontWeight.w500,
                                     color: isDark
                                         ? colorScheme.onSurface.withOpacity(0.7)
@@ -312,12 +433,19 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                                 const SizedBox(height: 2),
                                 Text(
                                   '${selectedDistrict!.name}, ${selectedRegion!.name}',
-                                  style: TextStyle(
-                                    fontSize: 15,
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: isDark
                                         ? colorScheme.onSurface
                                         : const Color(0xFF2E7D32),
+                                  ),
+                                ),
+                                Text(
+                                  '${selectedCountry!.flagEmoji} ${selectedCountry!.getLocalizedName(locale)}',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: isDark
+                                        ? colorScheme.onSurface.withOpacity(0.7)
+                                        : const Color(0xFF388E3C),
                                   ),
                                 ),
                               ],
@@ -336,7 +464,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                 width: double.infinity,
                 height: 56,
                 child: FilledButton(
-                  onPressed: (selectedRegion != null && selectedDistrict != null && !_isSaving)
+                  onPressed: (selectedCountry != null && selectedRegion != null && selectedDistrict != null && !_isSaving)
                       ? _saveLocationAndContinue
                       : null,
                   style: FilledButton.styleFrom(
@@ -357,8 +485,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                         )
                       : Text(
                           localizations?.continueButton ?? 'Continue',
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: theme.textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -372,11 +499,58 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
     );
   }
 
+  Widget _buildCountrySelector(ColorScheme colorScheme, String locale) {
+    return GestureDetector(
+      onTap: _showCountryPicker,
+      child: Container(
+        height: 56,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: colorScheme.outline.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            if (selectedCountry != null) ...[
+              Text(
+                selectedCountry!.flagEmoji,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  selectedCountry!.getLocalizedName(locale),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ] else
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)?.selectCountry ?? 'Select country',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                  ),
+                ),
+              ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSectionLabel(String label, ColorScheme colorScheme) {
     return Text(
       label,
-      style: TextStyle(
-        fontSize: 14,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(
         fontWeight: FontWeight.w600,
         color: colorScheme.onSurface,
       ),
@@ -430,9 +604,8 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: TextStyle(
+          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-            fontSize: 15,
           ),
         ),
         icon: Icon(
@@ -446,8 +619,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
             value: item,
             child: Text(
               itemBuilder(item),
-              style: TextStyle(
-                fontSize: 15,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface,
               ),
             ),

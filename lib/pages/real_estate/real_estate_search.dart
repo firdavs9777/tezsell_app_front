@@ -146,7 +146,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
           value: selectedValue,
           icon:
               Icon(Icons.arrow_drop_down, color: colorScheme.onPrimary, size: 20),
-          style: TextStyle(color: colorScheme.onPrimary, fontSize: 12),
+          style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onPrimary),
           dropdownColor: colorScheme.primaryContainer,
           onChanged: (String? newValue) {
             if (newValue != null) {
@@ -158,7 +158,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
               value: value,
               child: Text(
                 value,
-                style: TextStyle(fontSize: 12, color: colorScheme.onPrimaryContainer),
+                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onPrimaryContainer),
               ),
             );
           }).toList(),
@@ -183,8 +183,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
           const SizedBox(height: 16),
           Text(
             'Ko\'chmas mulk qidiring',
-            style: TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
@@ -193,8 +192,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
           Text(
             'Yuqoridagi qidiruv maydoniga\nkalit so\'zlarni kiriting',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant.withOpacity(0.7),
             ),
           ),
@@ -261,9 +259,8 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                   children: [
                     Text(
                       'Search Result ${index + 1}',
-                      style: TextStyle(
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 15,
                         color: colorScheme.onSurface,
                       ),
                       maxLines: 1,
@@ -272,9 +269,8 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                     const SizedBox(height: 4),
                     Text(
                       'Property description matching search...',
-                      style: TextStyle(
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
-                        fontSize: 12,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -290,7 +286,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                         const SizedBox(width: 2),
                         Text(
                           'Tashkent, Uzbekistan',
-                          style: TextStyle(
+                          style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                             fontSize: 10,
                           ),
@@ -307,9 +303,8 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                 children: [
                   Text(
                     '\$${(50 + index * 10)}k',
-                    style: TextStyle(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
                       color: isDark ? colorScheme.primary : const Color(0xFF43A047),
                     ),
                   ),
@@ -325,7 +320,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                     ),
                     child: Text(
                       'Ijara',
-                      style: TextStyle(
+                      style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 9,
                         color: Colors.orange.shade700,
                         fontWeight: FontWeight.w500,

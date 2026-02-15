@@ -20,6 +20,7 @@ class PropertyAmenitiesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final amenities = <String, int?>{};
 
     if (metroDistance != null) {
@@ -48,7 +49,7 @@ class PropertyAmenitiesSection extends StatelessWidget {
       children: [
         Text(
           localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
         SizedBox(height: 12),
         Container(
@@ -96,13 +97,13 @@ class PropertyAmenitiesSection extends StatelessWidget {
                     Expanded(
                       child: Text(
                         amenity.key,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 14),
+                        style: textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
                     Text(
                       '${amenity.value}m ${localizations?.amenities_away ?? "away"}',
-                      style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 12),
+                      style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),

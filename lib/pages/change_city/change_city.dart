@@ -1,5 +1,10 @@
 import 'dart:convert';
-import 'package:app/constants/constants.dart';
+import 'dart:developer' as developer;
+import 'package:app/config/app_config.dart';
+import 'package:app/providers/provider_models/country_model.dart';
+import 'package:app/providers/provider_root/country_provider.dart';
+import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,12 +15,14 @@ import 'package:http/http.dart' as http;
 
 // Model classes for API data
 class Region {
+  final int? id;
   final String name;
 
-  Region({required this.name});
+  Region({this.id, required this.name});
 
   factory Region.fromJson(Map<String, dynamic> json) {
     return Region(
+      id: json['id'],
       name: json['region'] ?? json['name'] ?? '',
     );
   }
@@ -43,32 +50,50 @@ class MyHomeTown extends ConsumerStatefulWidget {
 }
 
 class _MyHomeTownState extends ConsumerState<MyHomeTown> {
+  CountryModel? selectedCountry;
   Region? selectedRegion;
   District? selectedDistrict;
   late Future<UserInfo> _userInfoFuture;
 
   List<Region> regions = [];
   List<District> districts = [];
-  bool isLoadingRegions = true;
+  bool isLoadingRegions = false;
   bool isLoadingDistricts = false;
   bool _isSaving = false;
-
-  final String regionsUrl = '$baseUrl/accounts/regions/';
-  final String districtsUrl = '$baseUrl/accounts/districts';
 
   @override
   void initState() {
     super.initState();
     _userInfoFuture = ref.read(profileServiceProvider).getUserInfo();
-    _fetchRegions();
+    // Load saved country or default to UZ
+    final savedCountry = ref.read(selectedCountryProvider);
+    selectedCountry = savedCountry ?? CountryModel.getByCode(AppConfig.defaultCountry);
+    if (selectedCountry != null) {
+      _fetchRegions(selectedCountry!.code);
+    }
   }
 
-  Future<void> _fetchRegions() async {
+  Future<void> _fetchRegions(String countryCode) async {
+    print('[ChangeCity] Fetching regions for country: $countryCode');
+    setState(() {
+      isLoadingRegions = true;
+      regions = [];
+      selectedRegion = null;
+      districts = [];
+      selectedDistrict = null;
+    });
+
     try {
-      final response = await http.get(Uri.parse(regionsUrl));
+      final url = '${AppConfig.baseUrl}${AppConfig.regionsPath}?country=$countryCode';
+      print('[ChangeCity] Regions URL: $url');
+      final response = await http.get(Uri.parse(url));
+      print('[ChangeCity] Regions response status: ${response.statusCode}');
+      print('[ChangeCity] Regions response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> regionData = responseData['regions'] ?? [];
+        final List<dynamic> regionData = responseData['regions'] ?? responseData['results'] ?? [];
+        print('[ChangeCity] Loaded ${regionData.length} regions');
 
         setState(() {
           regions = regionData
@@ -85,6 +110,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
         _showError('Failed to load regions');
       }
     } catch (error) {
+      print('[ChangeCity] Error fetching regions: $error');
       setState(() {
         isLoadingRegions = false;
       });
@@ -92,7 +118,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
     }
   }
 
-  Future<void> _fetchDistricts(String regionName) async {
+  Future<void> _fetchDistricts(String regionName, {int? regionId}) async {
+    print('[ChangeCity] Fetching districts for region: $regionName (ID: $regionId)');
     setState(() {
       isLoadingDistricts = true;
       districts = [];
@@ -100,10 +127,19 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
     });
 
     try {
-      final response = await http.get(Uri.parse('$districtsUrl/$regionName/'));
+      // Use region ID if available, otherwise use region name
+      final regionParam = regionId?.toString() ?? regionName;
+      final url = '${AppConfig.baseUrl}${AppConfig.districtsPath}$regionParam/';
+      print('[ChangeCity] Districts URL: $url');
+
+      final response = await http.get(Uri.parse(url));
+      print('[ChangeCity] Districts response status: ${response.statusCode}');
+      print('[ChangeCity] Districts response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> districtData = responseData['districts'] ?? [];
+        final List<dynamic> districtData = responseData['districts'] ?? responseData['results'] ?? [];
+        print('[ChangeCity] Loaded ${districtData.length} districts');
 
         setState(() {
           districts = districtData
@@ -112,12 +148,14 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
           isLoadingDistricts = false;
         });
       } else {
+        print('[ChangeCity] Failed to load districts: ${response.statusCode}');
         setState(() {
           isLoadingDistricts = false;
         });
         _showError('Failed to load districts');
       }
     } catch (error) {
+      print('[ChangeCity] Error fetching districts: $error');
       setState(() {
         isLoadingDistricts = false;
       });
@@ -144,7 +182,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
               selectedRegion = matchingRegion;
             });
 
-            await _fetchDistricts(matchingRegion.name);
+            await _fetchDistricts(matchingRegion.name, regionId: matchingRegion.id);
 
             if (userDistrictName != null && districts.isNotEmpty) {
               final matchingDistrict = districts.firstWhere(
@@ -183,14 +221,36 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
   }
 
   Future<void> _saveLocation() async {
-    if (selectedRegion == null || selectedDistrict == null) return;
+    print('[ChangeCity] _saveLocation called');
+    print('[ChangeCity] Country: ${selectedCountry?.code}, Region: ${selectedRegion?.name}, District: ${selectedDistrict?.name} (ID: ${selectedDistrict?.id})');
+
+    if (selectedCountry == null || selectedRegion == null || selectedDistrict == null) {
+      print('[ChangeCity] Cannot save - missing selection: country=${selectedCountry != null}, region=${selectedRegion != null}, district=${selectedDistrict != null}');
+      return;
+    }
 
     setState(() => _isSaving = true);
 
     try {
-      await ref
+      // Save country selection
+      print('[ChangeCity] Saving country: ${selectedCountry!.code}');
+      await ref.read(selectedCountryProvider.notifier).setCountry(selectedCountry!);
+
+      // Save location - pass country_code to help backend disambiguate districts
+      print('[ChangeCity] Saving location with district ID: ${selectedDistrict!.id}, country: ${selectedCountry!.code}');
+      final result = await ref
           .read(profileServiceProvider)
-          .updateUserInfo(locationId: selectedDistrict!.id);
+          .updateUserInfo(
+            locationId: selectedDistrict!.id,
+            countryCode: selectedCountry!.code,
+          );
+      print('[ChangeCity] Save result: $result');
+
+      // Clear all caches so new location data is used
+      ref.read(productsServiceProvider).clearCache();
+      ref.invalidate(servicesProvider);
+      ref.invalidate(myProfileProvider);
+      print('[ChangeCity] Cleared all caches after location update');
 
       HapticFeedback.mediumImpact();
 
@@ -206,7 +266,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                 Expanded(
                   child: Text(
                     'Location updated to ${selectedDistrict!.name}',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: colorScheme.onPrimary,
                     ),
@@ -221,8 +281,10 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
           ),
         );
         Navigator.pop(context, true);
+        print('[ChangeCity] Location saved successfully!');
       }
     } catch (e) {
+      print('[ChangeCity] ERROR saving location: $e');
       _showError('Failed to update location');
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -247,9 +309,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
         ),
         title: Text(
           localizations?.locationTitle ?? 'Change Location',
-          style: TextStyle(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 18,
             color: colorScheme.onSurface,
           ),
         ),
@@ -290,8 +351,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                 Center(
                   child: Text(
                     localizations?.locationTitle ?? 'Set Your Location',
-                    style: TextStyle(
-                      fontSize: 22,
+                    style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
                     ),
@@ -301,8 +361,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                 Center(
                   child: Text(
                     localizations?.location_subtitle ?? 'Choose your region and district to see nearby listings',
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.center,
@@ -343,8 +402,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                             children: [
                               Text(
                                 localizations?.locationLabel ?? 'Current Location',
-                                style: TextStyle(
-                                  fontSize: 12,
+                                style: theme.textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.w500,
                                   color: colorScheme.onSurfaceVariant,
                                 ),
@@ -352,8 +410,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                               const SizedBox(height: 4),
                               Text(
                                 '${snapshot.data!.location!.district ?? ''}, ${snapshot.data!.location!.region ?? ''}',
-                                style: TextStyle(
-                                  fontSize: 15,
+                                style: theme.textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: colorScheme.onSurface,
                                 ),
@@ -364,6 +421,15 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                       ],
                     ),
                   ),
+
+                // Country Selection
+                _buildSectionLabel(
+                  localizations?.country ?? 'Country',
+                  colorScheme,
+                ),
+                const SizedBox(height: 10),
+                _buildCountrySelector(colorScheme),
+                const SizedBox(height: 24),
 
                 // Region Selection
                 _buildSectionLabel(
@@ -376,6 +442,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                   hint: localizations?.selectRegion ?? 'Select Region',
                   items: regions,
                   isLoading: isLoadingRegions,
+                  enabled: selectedCountry != null,
                   itemBuilder: (region) => region.name,
                   onChanged: (region) {
                     HapticFeedback.selectionClick();
@@ -385,7 +452,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                       districts = [];
                     });
                     if (region != null) {
-                      _fetchDistricts(region.name);
+                      _fetchDistricts(region.name, regionId: region.id);
                     }
                   },
                   colorScheme: colorScheme,
@@ -446,8 +513,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                                 children: [
                                   Text(
                                     localizations?.selectedLocation ?? 'New Location',
-                                    style: TextStyle(
-                                      fontSize: 12,
+                                    style: theme.textTheme.bodySmall?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: isDark
                                           ? colorScheme.onSurface.withOpacity(0.7)
@@ -457,8 +523,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                                   const SizedBox(height: 2),
                                   Text(
                                     '${selectedDistrict!.name}, ${selectedRegion!.name}',
-                                    style: TextStyle(
-                                      fontSize: 15,
+                                    style: theme.textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: isDark
                                           ? colorScheme.onSurface
@@ -502,8 +567,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
                           )
                         : Text(
                             localizations?.saveLabel ?? 'Save Location',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: theme.textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -518,11 +582,148 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
     );
   }
 
+  Widget _buildCountrySelector(ColorScheme colorScheme) {
+    final locale = Localizations.localeOf(context).languageCode;
+    return GestureDetector(
+      onTap: _showCountryPicker,
+      child: Container(
+        height: 56,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: colorScheme.outline.withOpacity(0.3),
+          ),
+        ),
+        child: Row(
+          children: [
+            if (selectedCountry != null) ...[
+              Text(
+                selectedCountry!.flagEmoji,
+                style: const TextStyle(fontSize: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  selectedCountry!.getLocalizedName(locale),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ] else
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)?.selectCountry ?? 'Select country',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                  ),
+                ),
+              ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCountryPicker() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).languageCode;
+    final countries = CountryModel.supportedCountries;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)?.selectCountry ?? 'Select Country',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: countries.length,
+                itemBuilder: (context, index) {
+                  final country = countries[index];
+                  final isSelected = selectedCountry?.code == country.code;
+                  return ListTile(
+                    leading: Text(
+                      country.flagEmoji,
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                    title: Text(
+                      country.getLocalizedName(locale),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${country.currency.code} (${country.currency.symbol})',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle, color: colorScheme.primary)
+                        : null,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      Navigator.pop(context);
+                      setState(() {
+                        selectedCountry = country;
+                        selectedRegion = null;
+                        selectedDistrict = null;
+                        regions = [];
+                        districts = [];
+                      });
+                      _fetchRegions(country.code);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSectionLabel(String label, ColorScheme colorScheme) {
     return Text(
       label,
-      style: TextStyle(
-        fontSize: 14,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w600,
         color: colorScheme.onSurface,
       ),
@@ -576,9 +777,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: TextStyle(
+          hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-            fontSize: 15,
           ),
         ),
         icon: Icon(
@@ -592,8 +792,7 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
             value: item,
             child: Text(
               itemBuilder(item),
-              style: TextStyle(
-                fontSize: 15,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface,
               ),
             ),

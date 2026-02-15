@@ -23,9 +23,9 @@ class ReactionPicker extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             'Add Reaction',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -45,7 +45,7 @@ class ReactionPicker extends ConsumerWidget {
                     color: hasReaction ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(emoji, style: const TextStyle(fontSize: 32)),
+                  child: Text(emoji, style: Theme.of(context).textTheme.headlineMedium),
                 ),
               );
             }).toList(),

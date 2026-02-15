@@ -34,6 +34,7 @@ class PropertyContactSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -48,7 +49,7 @@ class PropertyContactSection extends StatelessWidget {
         children: [
           Text(
             localizations?.contact_title ?? 'Contact Information',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
           ),
           SizedBox(height: 16),
           if (property.agent != null) ...[
@@ -71,11 +72,11 @@ class PropertyContactSection extends StatelessWidget {
                         children: [
                           Text(
                             localizations?.contact_modal_agent ?? 'Agent',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
+                            style: textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600),
                           ),
                           Text(property.agent!.username,
-                              style: TextStyle(color: colorScheme.onSurfaceVariant)),
+                              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                         ],
                       ),
                     ),
@@ -113,11 +114,11 @@ class PropertyContactSection extends StatelessWidget {
                           Text(
                             localizations?.contact_property_owner ??
                                 'Property Owner',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
+                            style: textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600),
                           ),
                           Text(property.owner.username,
-                              style: TextStyle(color: colorScheme.onSurfaceVariant)),
+                              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                         ],
                       ),
                     ),

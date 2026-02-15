@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class CityList extends StatelessWidget {
-  const CityList({super.key, required this.cityList, required this.cityId});
+  const CityList({
+    super.key,
+    required this.cityList,
+    required this.cityId,
+    this.countryCode = '',
+  });
 
   final List<String> cityList;
   final List<String> cityId;
+  final String countryCode;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +24,8 @@ class CityList extends StatelessWidget {
           child: Text(
             AppLocalizations.of(context)?.noResultsFound ??
                 'No results found.',
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodySmall?.color,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
           ),
@@ -67,11 +71,13 @@ class CityList extends StatelessWidget {
                       title: Row(
                         children: [
                           Icon(Icons.info_outline, color: Colors.orange),
-                          SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context)?.confirm ??
-                                'Tasdiqlash',
-                            style: TextStyle(fontSize: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)?.confirm ??
+                                  'Tasdiqlash',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ),
                         ],
                       ),
@@ -79,7 +85,7 @@ class CityList extends StatelessWidget {
                         AppLocalizations.of(context)
                                 ?.confirmRegionSelection(cityList[index]) ??
                             '${cityList[index]} viloyatini tanlamoqchimisiz?',
-                        style: TextStyle(fontSize: 16),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       actions: <Widget>[
                         TextButton(
@@ -88,9 +94,8 @@ class CityList extends StatelessWidget {
                           },
                           child: Text(
                             AppLocalizations.of(context)?.no ?? 'Yo\'q',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -107,7 +112,9 @@ class CityList extends StatelessWidget {
                           ),
                           child: Text(
                             AppLocalizations.of(context)?.yes ?? 'Ha',
-                            style: TextStyle(fontSize: 16),
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -123,6 +130,7 @@ class CityList extends StatelessWidget {
                     builder: (context) => TownsList(
                       city_id: cityId[index],
                       city_name: cityList[index],
+                      countryCode: countryCode,
                     ),
                   ),
                 );

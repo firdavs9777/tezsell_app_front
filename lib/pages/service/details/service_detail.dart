@@ -229,7 +229,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
             const SizedBox(height: 20),
             Text(
               localizations?.opening_chat_with(userName) ?? 'Opening chat with $userName...',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
           ],
@@ -645,9 +645,8 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               ),
               child: Text(
                 '${_currentImageIndex + 1}/${imageUrls.length}',
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.white,
-                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -700,8 +699,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                 children: [
                   Text(
                     provider.username ?? (localizations?.service_provider ?? 'Provider'),
-                    style: TextStyle(
-                      fontSize: 15,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
                     ),
@@ -709,7 +707,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                   const SizedBox(height: 2),
                   Text(
                     provider.location?.region ?? (localizations?.searchLocation ?? 'Location'),
-                    style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -741,8 +739,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           // Title
           Text(
             service.name ?? (localizations?.newProductTitle ?? 'No Title'),
-            style: TextStyle(
-              fontSize: 20,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
               height: 1.3,
@@ -762,13 +759,13 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                   getCategoryName().isNotEmpty
                       ? getCategoryName()
                       : (localizations?.newProductCategory ?? 'Category'),
-                  style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
               ),
               const SizedBox(width: 8),
               Text(
                 _getTimeAgo(service.createdAt),
-                style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -788,10 +785,9 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                 const SizedBox(width: 6),
                 Text(
                   localizations?.service_provider ?? 'Service',
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFFF6F0F),
+                    color: const Color(0xFFFF6F0F),
                   ),
                 ),
               ],
@@ -813,8 +809,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         children: [
           Text(
             localizations?.newProductDescription ?? 'Description',
-            style: TextStyle(
-              fontSize: 16,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
             ),
@@ -822,8 +817,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           const SizedBox(height: 12),
           Text(
             service.description ?? (localizations?.newProductDescription ?? 'No description'),
-            style: TextStyle(
-              fontSize: 15,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withOpacity(0.85),
               height: 1.6,
             ),
@@ -844,14 +838,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           const SizedBox(width: 4),
           Text(
             '${service.likeCount ?? 0}',
-            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 16),
           Icon(Icons.chat_bubble_outline, size: 16, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 4),
           Text(
             '${service.comments?.length ?? 0}',
-            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -929,8 +923,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               Expanded(
                 child: Text(
                   localizations?.service_provider ?? 'Service',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.onSurface,
                   ),
@@ -950,7 +943,10 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                   ),
                   child: Text(
                     localizations?.chat ?? 'Chat',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

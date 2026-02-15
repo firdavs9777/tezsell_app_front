@@ -6,11 +6,13 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class ProductSearch extends ConsumerStatefulWidget {
+  final String countryCode;
   final String regionName;
   final String districtName;
 
   const ProductSearch({
     super.key,
+    this.countryCode = '',
     this.regionName = '',
     this.districtName = '',
   });

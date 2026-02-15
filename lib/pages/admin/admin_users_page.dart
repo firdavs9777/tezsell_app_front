@@ -231,7 +231,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('User Management', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text('User Management', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -343,8 +343,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
               isBackendNotReady
                   ? 'Backend API Not Implemented Yet'
                   : 'Error loading users',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -357,8 +356,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                       'Please implement: GET /api/admin/users/\n\n'
                       'This endpoint should support filtering by search query and active status.'
                   : _error ?? '',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -388,7 +386,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
           children: [
             Icon(Icons.people_outline, size: 64, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
-            Text('No users found', style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant)),
+            Text('No users found', style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
           ],
         ),
       );
@@ -402,7 +400,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: $count users', style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
+              Text('Total: $count users', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
             ],
           ),
         ),
@@ -438,7 +436,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                   icon: const Icon(Icons.chevron_left),
                   label: const Text('Previous'),
                 ),
-                Text('Page $_currentPage', style: TextStyle(color: colorScheme.onSurface)),
+                Text('Page $_currentPage', style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface)),
                 ElevatedButton.icon(
                   onPressed: next != null
                       ? () {
@@ -486,7 +484,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                           children: [
                             Text(
                               username,
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                             ),
                             if (isSuperuser) ...[
                               const SizedBox(width: 8),
@@ -496,7 +494,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                                   color: Colors.red.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: const Text('SUPER', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.red)),
+                                child: Text('SUPER', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.red)),
                               ),
                             ] else if (isStaff) ...[
                               const SizedBox(width: 8),
@@ -506,7 +504,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                                   color: Colors.blue.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: const Text('STAFF', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.blue)),
+                                child: Text('STAFF', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue)),
                               ),
                             ],
                           ],
@@ -514,7 +512,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                         const SizedBox(height: 4),
                         Text(
                           phoneNumber,
-                          style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -528,9 +526,8 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                     ),
                     child: Text(
                       isActive ? 'ACTIVE' : 'INACTIVE',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isActive ? Colors.green : Colors.red,
-                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -543,11 +540,11 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                 children: [
                   Text(
                     'Type: ${userType.toUpperCase()}',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                   Text(
                     dateJoined.isNotEmpty ? dateJoined.split('T')[0] : '',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),

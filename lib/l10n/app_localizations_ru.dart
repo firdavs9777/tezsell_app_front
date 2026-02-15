@@ -34,6 +34,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get continueButton => 'Продолжить';
 
   @override
+  String get continueWithGoogle => 'Продолжить с Google';
+
+  @override
+  String get continueWithApple => 'Продолжить с Apple';
+
+  @override
+  String get continueWithEmail => 'Продолжить с Email';
+
+  @override
   String get sellAndBuyProducts =>
       'Продавайте и покупайте любые товары только у нас';
 
@@ -203,6 +212,60 @@ class AppLocalizationsRu extends AppLocalizations {
   String selectedCountry(String countryName, String countryCode) {
     return 'Выбрано: $countryName ($countryCode)';
   }
+
+  @override
+  String get selectCountry => 'Выберите страну';
+
+  @override
+  String get changeCountry => 'Изменить страну';
+
+  @override
+  String get country => 'Страна';
+
+  @override
+  String get allCountries => 'Все страны';
+
+  @override
+  String get currencyRUB => 'Российский рубль';
+
+  @override
+  String get currencyUAH => 'Украинская гривна';
+
+  @override
+  String get currencyBYN => 'Белорусский рубль';
+
+  @override
+  String get currencyMDL => 'Молдавский лей';
+
+  @override
+  String get currencyGEL => 'Грузинский лари';
+
+  @override
+  String get currencyAMD => 'Армянский драм';
+
+  @override
+  String get currencyAZN => 'Азербайджанский манат';
+
+  @override
+  String get currencyKZT => 'Казахстанский тенге';
+
+  @override
+  String get currencyTMT => 'Туркменский манат';
+
+  @override
+  String get currencyKGS => 'Киргизский сом';
+
+  @override
+  String get currencyTJS => 'Таджикский сомони';
+
+  @override
+  String get currencyUZS => 'Узбекский сум';
+
+  @override
+  String get currencyUSD => 'Доллар США';
+
+  @override
+  String get currencyEUR => 'Евро';
 
   @override
   String fullNumber(String phoneNumber) {
@@ -3996,4 +4059,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onTezsell => 'в TezSell';
+
+  @override
+  String get selectCountryFirst => 'Сначала выберите страну';
+
+  @override
+  String get countrySelectionHint => 'Затем вы сможете выбрать регион';
 }

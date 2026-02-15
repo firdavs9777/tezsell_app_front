@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:ui';
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/authentication/mobile_authentication.dart';
@@ -19,9 +20,15 @@ class District {
 }
 
 class TownsList extends StatefulWidget {
-  const TownsList({super.key, required this.city_id, required this.city_name});
+  const TownsList({
+    super.key,
+    required this.city_id,
+    required this.city_name,
+    this.countryCode = '',
+  });
   final String city_id;
   final String city_name;
+  final String countryCode;
 
   @override
   State<TownsList> createState() => _TownsListState();
@@ -51,11 +58,23 @@ class _TownsListState extends State<TownsList> {
       isLoading = true;
     });
 
+    final url = '$URL/${widget.city_id}/';
+    print('[TownsList] Fetching districts from: $url');
+    print('[TownsList] Country: ${widget.countryCode}, Region: ${widget.city_name}, ID: ${widget.city_id}');
+    developer.log('[TownsList] Fetching districts from: $url', name: 'TownsList');
+    developer.log('[TownsList] Country: ${widget.countryCode}, Region: ${widget.city_name}', name: 'TownsList');
+
     try {
-      final response = await http.get(Uri.parse('$URL/${widget.city_id}/'));
+      final response = await http.get(Uri.parse(url));
+      print('[TownsList] Response status: ${response.statusCode}');
+      print('[TownsList] Response body: ${response.body}');
+      developer.log('[TownsList] Response status: ${response.statusCode}', name: 'TownsList');
+
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
-        List<dynamic> districtData = responseData['districts'];
+        List<dynamic> districtData = responseData['districts'] ?? [];
+        print('[TownsList] Loaded ${districtData.length} districts');
+        developer.log('[TownsList] Loaded ${districtData.length} districts', name: 'TownsList');
 
         setState(() {
           districts = districtData
@@ -65,6 +84,7 @@ class _TownsListState extends State<TownsList> {
           isLoading = false;
         });
       } else {
+        developer.log('[TownsList] Error response: ${response.body}', name: 'TownsList');
         setState(() {
           isLoading = false;
         });
@@ -76,6 +96,7 @@ class _TownsListState extends State<TownsList> {
         );
       }
     } catch (error) {
+      developer.log('[TownsList] Error fetching districts: $error', name: 'TownsList');
       setState(() {
         isLoading = false;
       });
@@ -172,12 +193,23 @@ class _TownsListState extends State<TownsList> {
   }
 
   Future<void> _showConfirmationDialog(District district) async {
+    // Capture localizations before showing dialog
+    final localizations = AppLocalizations.of(context);
+    final confirmText = localizations?.confirm ?? 'Confirm';
+    final yesText = localizations?.yes ?? 'Confirm';
+    final noText = localizations?.no ?? 'Cancel';
+    final confirmMessage = localizations?.confirmDistrictSelection(
+          widget.city_name,
+          district.name,
+        ) ??
+        '${widget.city_name} - ${district.name}';
+
     bool? confirm = await showDialog(
       context: context,
       barrierColor: Theme.of(context).brightness == Brightness.dark
           ? Colors.white.withOpacity(0.1)
           : Colors.black.withOpacity(0.5),
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
           child: Dialog(
@@ -193,29 +225,25 @@ class _TownsListState extends State<TownsList> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      color: Theme.of(dialogContext).primaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.location_on_rounded,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(dialogContext).primaryColor,
                       size: 28,
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    AppLocalizations.of(context)?.confirm ?? 'Confirm',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    confirmText,
+                    style: Theme.of(dialogContext).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    AppLocalizations.of(context)?.confirmDistrictSelection(
-                          widget.city_name,
-                          district.name,
-                        ) ??
-                        '${widget.city_name} - ${district.name}',
+                    confirmMessage,
                     style: Theme.of(
-                      context,
+                      dialogContext,
                     ).textTheme.bodyMedium?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
@@ -225,14 +253,14 @@ class _TownsListState extends State<TownsList> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.of(context).pop(false);
+                            Navigator.of(dialogContext).pop(false);
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Theme.of(
-                              context,
+                              dialogContext,
                             ).textTheme.bodySmall?.color,
                             side: BorderSide(
-                              color: Theme.of(context).dividerColor,
+                              color: Theme.of(dialogContext).dividerColor,
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
@@ -240,7 +268,7 @@ class _TownsListState extends State<TownsList> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)?.no ?? 'Cancel',
+                            noText,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -252,12 +280,12 @@ class _TownsListState extends State<TownsList> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop(true);
+                            Navigator.of(dialogContext).pop(true);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: Theme.of(dialogContext).primaryColor,
                             foregroundColor: Theme.of(
-                              context,
+                              dialogContext,
                             ).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
@@ -266,7 +294,7 @@ class _TownsListState extends State<TownsList> {
                             elevation: 0,
                           ),
                           child: Text(
-                            AppLocalizations.of(context)?.yes ?? 'Confirm',
+                            yesText,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -285,10 +313,12 @@ class _TownsListState extends State<TownsList> {
     );
 
     if (confirm ?? false) {
+      developer.log('[TownsList] User confirmed: Country=${widget.countryCode}, Region=${widget.city_name}, District=${district.name}', name: 'TownsList');
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MobileAuthentication(
+            countryCode: widget.countryCode,
             regionName: widget.city_name,
             districtName: district.name,
             districtId: district.id.toString(),

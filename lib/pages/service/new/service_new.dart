@@ -94,10 +94,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 localizations?.selectImageSource ?? 'Select Image Source',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: colorScheme.onSurface,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -105,7 +104,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
               leading: Icon(Icons.camera_alt, color: colorScheme.primary),
               title: Text(
                 localizations?.camera ?? 'Camera',
-                style: TextStyle(color: colorScheme.onSurface),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
@@ -113,7 +114,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
               leading: Icon(Icons.photo_library, color: colorScheme.secondary),
               title: Text(
                 localizations?.gallery ?? 'Gallery',
-                style: TextStyle(color: colorScheme.onSurface),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
@@ -323,7 +326,9 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
           elevation: 0,
           title: Text(
             localizations?.addNewServiceBtn ?? 'Create New Service',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         body: Form(
@@ -488,8 +493,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                           )
                         : Text(
                             localizations?.upload ?? 'Upload Service',
-                            style: const TextStyle(
-                              fontSize: 17,
+                            style: theme.textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                               letterSpacing: 0.5,
                             ),
@@ -541,8 +545,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         const SizedBox(width: 12),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 18,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colorScheme.onSurface,
           ),
@@ -589,8 +592,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                     const SizedBox(height: 12),
                     Text(
                       localizations?.imageUploadHelper ?? 'Tap to add images',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -598,8 +600,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                     const SizedBox(height: 4),
                     Text(
                       'At least 1 image required',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                       ),
                     ),
@@ -635,8 +636,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                             const SizedBox(height: 8),
                             Text(
                               'Add More',
-                              style: TextStyle(
-                                fontSize: 13,
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w500,
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -703,9 +703,8 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                             ),
                             child: Text(
                               '${index + 1}/${_selectedImages.length}',
-                              style: TextStyle(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurface,
-                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

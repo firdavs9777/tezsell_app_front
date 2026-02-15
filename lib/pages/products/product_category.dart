@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class ProductFilter extends ConsumerStatefulWidget {
+  final String countryCode;
   final String regionName;
   final String districtName;
   const ProductFilter({
     super.key,
+    this.countryCode = '',
     required this.regionName,
     required this.districtName,
   });
@@ -125,9 +127,10 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
 
   void _applyFilter(String categoryName) {
     final encodedCategory = Uri.encodeComponent(categoryName);
+    final encodedCountry = Uri.encodeComponent(widget.countryCode);
     final encodedRegion = Uri.encodeComponent(widget.regionName);
     final encodedDistrict = Uri.encodeComponent(widget.districtName);
-    context.push('/products?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict');
+    context.push('/products?category=$encodedCategory&country=$encodedCountry&region=$encodedRegion&district=$encodedDistrict');
   }
 
   String getCategoryName(CategoryModel category) {

@@ -137,8 +137,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                       const SizedBox(height: 16),
                       Text(
                         l.no_blocked_users,
-                        style: TextStyle(
-                          fontSize: 20,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -146,7 +145,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                       const SizedBox(height: 8),
                       Text(
                         l.blocked_users_hint,
-                        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -184,16 +183,14 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                           ),
                           title: Text(
                             user.displayName,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
-                              fontSize: 16,
                             ),
                           ),
                           subtitle: Text(
                             '@${user.username}',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontSize: 13,
                             ),
                           ),
                           trailing: ElevatedButton.icon(

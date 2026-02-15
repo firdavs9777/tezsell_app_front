@@ -144,6 +144,8 @@ class Home extends ConsumerWidget {
   }
 
   Widget _buildLogo(BuildContext context, ColorScheme colorScheme) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: [
         // Logo with subtle shadow
@@ -193,11 +195,9 @@ class Home extends ConsumerWidget {
         // App name
         Text(
           'Tezsell',
-          style: TextStyle(
-            fontSize: 32,
+          style: textTheme.headlineLarge?.copyWith(
             fontWeight: FontWeight.w800,
             color: colorScheme.onSurface,
-            letterSpacing: -0.5,
           ),
         ),
       ],
@@ -206,13 +206,13 @@ class Home extends ConsumerWidget {
 
   Widget _buildWelcomeText(BuildContext context, ColorScheme colorScheme) {
     final l = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
     return Text(
       l?.home_welcome_title ?? 'Your neighborhood marketplace',
-      style: TextStyle(
-        fontSize: 22,
+      style: textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.w700,
         color: colorScheme.onSurface,
-        height: 1.3,
       ),
       textAlign: TextAlign.center,
     );
@@ -220,13 +220,12 @@ class Home extends ConsumerWidget {
 
   Widget _buildSubtitle(BuildContext context, ColorScheme colorScheme) {
     final l = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
     return Text(
       l?.home_welcome_subtitle ?? 'Buy and sell with people nearby.\nSafe, simple, and local.',
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
+      style: textTheme.bodyMedium?.copyWith(
         color: colorScheme.onSurfaceVariant,
-        height: 1.5,
       ),
       textAlign: TextAlign.center,
     );
@@ -234,6 +233,7 @@ class Home extends ConsumerWidget {
 
   Widget _buildButtons(BuildContext context, ColorScheme colorScheme, bool isDark) {
     final l = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       children: [
@@ -259,10 +259,9 @@ class Home extends ConsumerWidget {
             ),
             child: Text(
               l?.home_get_started ?? 'Get Started',
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.2,
+              style: textTheme.labelLarge?.copyWith(
+                color: colorScheme.onPrimary,
+                fontSize: 16,
               ),
             ),
           ),
@@ -290,10 +289,9 @@ class Home extends ConsumerWidget {
             ),
             child: Text(
               l?.home_sign_in ?? 'I already have an account',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+              style: textTheme.labelLarge?.copyWith(
                 color: colorScheme.onSurface,
+                fontSize: 15,
               ),
             ),
           ),
@@ -304,14 +302,14 @@ class Home extends ConsumerWidget {
 
   Widget _buildTermsText(BuildContext context, ColorScheme colorScheme) {
     final l = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         l?.home_terms_notice ?? 'By continuing, you agree to our Terms of Service and Privacy Policy',
-        style: TextStyle(
-          fontSize: 12,
+        style: textTheme.bodySmall?.copyWith(
           color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-          height: 1.4,
         ),
         textAlign: TextAlign.center,
       ),

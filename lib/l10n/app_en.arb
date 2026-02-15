@@ -21,6 +21,18 @@
   "@continueButton": {
     "description": "Text for continue button"
   },
+  "continueWithGoogle": "Continue with Google",
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "continueWithApple": "Continue with Apple",
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "continueWithEmail": "Continue with Email",
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
   "sellAndBuyProducts": "Sell and buy any of your products only with us",
   "@sellAndBuyProducts": {
     "description": "Main heading text on home screen"
@@ -243,6 +255,36 @@
       }
     }
   },
+  "selectCountry": "Select your country",
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "changeCountry": "Change country",
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "country": "Country",
+  "@country": {
+    "description": "Country label"
+  },
+  "allCountries": "All countries",
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "currencyRUB": "Russian Ruble",
+  "currencyUAH": "Ukrainian Hryvnia",
+  "currencyBYN": "Belarusian Ruble",
+  "currencyMDL": "Moldovan Leu",
+  "currencyGEL": "Georgian Lari",
+  "currencyAMD": "Armenian Dram",
+  "currencyAZN": "Azerbaijani Manat",
+  "currencyKZT": "Kazakhstani Tenge",
+  "currencyTMT": "Turkmen Manat",
+  "currencyKGS": "Kyrgyzstani Som",
+  "currencyTJS": "Tajikistani Somoni",
+  "currencyUZS": "Uzbek Som",
+  "currencyUSD": "US Dollar",
+  "currencyEUR": "Euro",
   "fullNumber": "Full number: {phoneNumber}",
   "@fullNumber": {
     "description": "Shows complete phone number",
@@ -2878,5 +2920,13 @@
   "onTezsell": "on TezSell",
   "@onTezsell": {
     "description": "Share text suffix for profile"
+  },
+  "selectCountryFirst": "Select country first",
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "countrySelectionHint": "Then you can choose your region",
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
   }
 }

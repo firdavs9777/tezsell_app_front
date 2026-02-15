@@ -72,6 +72,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       height: widget.height,
@@ -105,7 +106,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                               SizedBox(height: 16),
                               Text(
                                 'Loading map...',
-                                style: TextStyle(color: colorScheme.onSurfaceVariant),
+                                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                               ),
                             ],
                           ),
@@ -145,9 +146,8 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                               Expanded(
                                 child: Text(
                                   widget.property.address,
-                                  style: TextStyle(
+                                  style: textTheme.bodyMedium?.copyWith(
                                     color: Colors.white,
-                                    fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   maxLines: 2,
@@ -199,6 +199,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
 
   Widget _buildFallbackMap() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       color: colorScheme.surfaceContainerHighest,
@@ -212,8 +213,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 widget.property.address,
-                style: TextStyle(
-                  fontSize: 16,
+                style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: colorScheme.onSurface,
                 ),
@@ -223,8 +223,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
             SizedBox(height: 8),
             Text(
               '${widget.property.district}, ${widget.property.city}',
-              style: TextStyle(
-                fontSize: 14,
+              style: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -247,6 +246,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
 
   Widget _buildNoLocationView() {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       color: colorScheme.surfaceContainerHighest,
@@ -258,8 +258,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
             SizedBox(height: 16),
             Text(
               'Location not available',
-              style: TextStyle(
-                fontSize: 16,
+              style: textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -268,8 +267,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 widget.property.address,
-                style: TextStyle(
-                  fontSize: 14,
+                style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                 ),
                 textAlign: TextAlign.center,
@@ -335,7 +333,7 @@ class FullscreenMapModal extends StatelessWidget {
         ),
         title: Text(
           property.address,
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -375,7 +373,7 @@ class FullscreenMapModal extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 32),
                           child: Text(
                             property.address,
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -401,7 +399,7 @@ class FullscreenMapModal extends StatelessWidget {
                   SizedBox(height: 16),
                   Text(
                     'Location coordinates not available',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                   ),
                 ],
               ),

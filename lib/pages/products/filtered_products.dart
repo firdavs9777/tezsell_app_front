@@ -193,17 +193,17 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
           Expanded(
             child: Text(
               displayName,
-              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.primary),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           if (widget.districtName.isNotEmpty) ...[
             const SizedBox(width: 8),
-            Text('|', style: TextStyle(color: colorScheme.primary)),
+            Text('|', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.primary)),
             const SizedBox(width: 8),
             Text(
               widget.districtName,
-              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.primary),
             ),
           ],
         ],
@@ -284,8 +284,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                 Text(
                   AppLocalizations.of(context)?.productError ??
                       'No products available.',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
@@ -293,8 +292,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                 const SizedBox(height: 8),
                 Text(
                   'Try changing your filters',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
@@ -335,9 +333,8 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
           child: Center(
             child: Text(
               'No more products to load',
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 14,
               ),
             ),
           ),

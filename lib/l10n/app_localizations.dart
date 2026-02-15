@@ -148,6 +148,24 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueButton;
 
+  /// Google sign-in button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// Apple sign-in button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get continueWithApple;
+
+  /// Email sign-in button text
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Email'**
+  String get continueWithEmail;
+
   /// Main heading text on home screen
   ///
   /// In en, this message translates to:
@@ -459,6 +477,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected: {countryName} ({countryCode})'**
   String selectedCountry(String countryName, String countryCode);
+
+  /// Instruction to select country
+  ///
+  /// In en, this message translates to:
+  /// **'Select your country'**
+  String get selectCountry;
+
+  /// Button to change selected country
+  ///
+  /// In en, this message translates to:
+  /// **'Change country'**
+  String get changeCountry;
+
+  /// Country label
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// Label for all countries option
+  ///
+  /// In en, this message translates to:
+  /// **'All countries'**
+  String get allCountries;
+
+  /// No description provided for @currencyRUB.
+  ///
+  /// In en, this message translates to:
+  /// **'Russian Ruble'**
+  String get currencyRUB;
+
+  /// No description provided for @currencyUAH.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian Hryvnia'**
+  String get currencyUAH;
+
+  /// No description provided for @currencyBYN.
+  ///
+  /// In en, this message translates to:
+  /// **'Belarusian Ruble'**
+  String get currencyBYN;
+
+  /// No description provided for @currencyMDL.
+  ///
+  /// In en, this message translates to:
+  /// **'Moldovan Leu'**
+  String get currencyMDL;
+
+  /// No description provided for @currencyGEL.
+  ///
+  /// In en, this message translates to:
+  /// **'Georgian Lari'**
+  String get currencyGEL;
+
+  /// No description provided for @currencyAMD.
+  ///
+  /// In en, this message translates to:
+  /// **'Armenian Dram'**
+  String get currencyAMD;
+
+  /// No description provided for @currencyAZN.
+  ///
+  /// In en, this message translates to:
+  /// **'Azerbaijani Manat'**
+  String get currencyAZN;
+
+  /// No description provided for @currencyKZT.
+  ///
+  /// In en, this message translates to:
+  /// **'Kazakhstani Tenge'**
+  String get currencyKZT;
+
+  /// No description provided for @currencyTMT.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkmen Manat'**
+  String get currencyTMT;
+
+  /// No description provided for @currencyKGS.
+  ///
+  /// In en, this message translates to:
+  /// **'Kyrgyzstani Som'**
+  String get currencyKGS;
+
+  /// No description provided for @currencyTJS.
+  ///
+  /// In en, this message translates to:
+  /// **'Tajikistani Somoni'**
+  String get currencyTJS;
+
+  /// No description provided for @currencyUZS.
+  ///
+  /// In en, this message translates to:
+  /// **'Uzbek Som'**
+  String get currencyUZS;
+
+  /// No description provided for @currencyUSD.
+  ///
+  /// In en, this message translates to:
+  /// **'US Dollar'**
+  String get currencyUSD;
+
+  /// No description provided for @currencyEUR.
+  ///
+  /// In en, this message translates to:
+  /// **'Euro'**
+  String get currencyEUR;
 
   /// Shows complete phone number
   ///
@@ -7629,6 +7755,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'on TezSell'**
   String get onTezsell;
+
+  /// Placeholder when country not selected
+  ///
+  /// In en, this message translates to:
+  /// **'Select country first'**
+  String get selectCountryFirst;
+
+  /// Hint text for country selection
+  ///
+  /// In en, this message translates to:
+  /// **'Then you can choose your region'**
+  String get countrySelectionHint;
 }
 
 class _AppLocalizationsDelegate

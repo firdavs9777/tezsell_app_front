@@ -166,18 +166,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/product/search',
         name: 'product-search',
         builder: (context, state) {
+          final countryCode = state.uri.queryParameters['country'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
-          return ProductSearch(regionName: regionName, districtName: districtName);
+          return ProductSearch(countryCode: countryCode, regionName: regionName, districtName: districtName);
         },
       ),
       GoRoute(
         path: '/product/categories',
         name: 'product-categories',
         builder: (context, state) {
+          final countryCode = state.uri.queryParameters['country'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
-          return ProductFilter(regionName: regionName, districtName: districtName);
+          return ProductFilter(countryCode: countryCode, regionName: regionName, districtName: districtName);
         },
       ),
       // Parameterized route MUST come last

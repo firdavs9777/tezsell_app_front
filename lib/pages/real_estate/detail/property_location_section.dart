@@ -22,6 +22,7 @@ class PropertyLocationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,8 +44,7 @@ class PropertyLocationSection extends StatelessWidget {
                   Expanded(
                     child: Text(
                       '${property.address}, ${property.city}, ${property.district}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -53,7 +53,7 @@ class PropertyLocationSection extends StatelessWidget {
                 SizedBox(height: 8),
                 Text(
                   '${localizations?.property_details_floor ?? "Floor"}: $floor ${localizations?.property_details_of ?? "of"} $totalFloors',
-                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
               ],
             ],
@@ -80,13 +80,12 @@ class PropertyLocationSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Location',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                      style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                   TextButton.icon(
                     onPressed: onFullscreenMap,
                     icon: Icon(Icons.fullscreen, size: 16),
                     label:
-                        Text('View Fullscreen', style: TextStyle(fontSize: 12)),
+                        Text('View Fullscreen', style: textTheme.bodySmall),
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).primaryColor,
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -117,11 +116,11 @@ class PropertyLocationSection extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(property.address,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14, color: colorScheme.onSurface)),
+                              style: textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500, color: colorScheme.onSurface)),
                           Text('${property.district}, ${property.city}',
-                              style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant, fontSize: 12)),
+                              style: textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant)),
                         ],
                       ),
                     ),

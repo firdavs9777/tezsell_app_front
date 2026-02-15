@@ -51,6 +51,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
     ColorScheme colorScheme,
     AppLocalizations? localizations,
   ) {
+    final textTheme = Theme.of(context).textTheme;
     if (state.isLoading && state.analytics == null) {
       return const _AnalyticsSkeleton();
     }
@@ -70,7 +71,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
               const SizedBox(height: 16),
               Text(
                 state.error!,
-                style: TextStyle(color: colorScheme.error),
+                style: textTheme.bodyMedium?.copyWith(color: colorScheme.error),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
@@ -98,16 +99,14 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
             const SizedBox(height: 16),
             Text(
               'No analytics data available',
-              style: TextStyle(
-                fontSize: 16,
+              style: textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Start listing products and services to see your analytics',
-              style: TextStyle(
-                fontSize: 14,
+              style: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
@@ -124,7 +123,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
         child: Column(
           children: [
             // Quick Stats Header
-            _buildQuickStatsHeader(state.analytics!, colorScheme),
+            _buildQuickStatsHeader(state.analytics!, colorScheme, textTheme),
             // Full Analytics Dashboard
             AnalyticsDashboard(
               analytics: state.analytics!,
@@ -142,6 +141,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
   Widget _buildQuickStatsHeader(
     SellerAnalytics analytics,
     ColorScheme colorScheme,
+    TextTheme textTheme,
   ) {
     return Container(
       margin: const EdgeInsets.all(16),
@@ -169,8 +169,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
               const SizedBox(width: 12),
               Text(
                 'Performance Overview',
-                style: TextStyle(
-                  fontSize: 18,
+                style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onPrimaryContainer,
                 ),
@@ -186,6 +185,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
                   value: _formatNumber(analytics.totalViews),
                   label: 'Total Views',
                   colorScheme: colorScheme,
+                  textTheme: textTheme,
                 ),
               ),
               Container(
@@ -199,6 +199,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
                   value: _formatNumber(analytics.totalLikes),
                   label: 'Total Likes',
                   colorScheme: colorScheme,
+                  textTheme: textTheme,
                 ),
               ),
               Container(
@@ -212,6 +213,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
                   value: '${analytics.products.total + analytics.services.total}',
                   label: 'Listings',
                   colorScheme: colorScheme,
+                  textTheme: textTheme,
                 ),
               ),
             ],
@@ -226,6 +228,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
     required String value,
     required String label,
     required ColorScheme colorScheme,
+    required TextTheme textTheme,
   }) {
     return Column(
       children: [
@@ -233,8 +236,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
         const SizedBox(height: 8),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 20,
+          style: textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: colorScheme.onPrimaryContainer,
           ),
@@ -242,8 +244,7 @@ class _SellerAnalyticsScreenState extends ConsumerState<SellerAnalyticsScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
+          style: textTheme.bodySmall?.copyWith(
             color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
           ),
         ),

@@ -147,7 +147,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Content Management', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text('Content Management', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -285,8 +285,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
               isBackendNotReady
                   ? 'Backend API Not Implemented Yet'
                   : 'Error loading content',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -299,8 +298,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                       'Please implement: GET /api/admin/content/\n\n'
                       'This endpoint should support filtering by content type, search, and status.'
                   : _error ?? '',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -468,7 +466,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
           children: [
             Icon(Icons.content_copy_outlined, size: 64, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
-            Text('No content found', style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant)),
+            Text('No content found', style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
           ],
         ),
       );
@@ -482,7 +480,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: $count items', style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
+              Text('Total: $count items', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
             ],
           ),
         ),
@@ -518,7 +516,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                   icon: const Icon(Icons.chevron_left),
                   label: const Text('Previous'),
                 ),
-                Text('Page $_currentPage', style: TextStyle(color: colorScheme.onSurface)),
+                Text('Page $_currentPage', style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface)),
                 ElevatedButton.icon(
                   onPressed: next != null
                       ? () {
@@ -599,14 +597,14 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                             children: [
                               Text(
                                 title,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'By: $ownerName',
-                                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                               ),
                             ],
                           ),
@@ -623,9 +621,8 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                     ),
                     child: Text(
                       isActive ? 'ACTIVE' : 'INACTIVE',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isActive ? Colors.green : Colors.red,
-                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -640,18 +637,18 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                     children: [
                       Icon(Icons.visibility, size: 16, color: colorScheme.onSurfaceVariant),
                       const SizedBox(width: 4),
-                      Text('$views', style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant)),
+                      Text('$views', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                       if (price.toString().isNotEmpty) ...[
                         const SizedBox(width: 16),
                         Icon(Icons.attach_money, size: 16, color: colorScheme.onSurfaceVariant),
                         const SizedBox(width: 4),
-                        Text(price.toString(), style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant)),
+                        Text(price.toString(), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
                       ],
                     ],
                   ),
                   Text(
                     createdAt.isNotEmpty ? createdAt.split('T')[0] : '',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),

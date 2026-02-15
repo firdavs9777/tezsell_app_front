@@ -131,7 +131,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         elevation: 0,
         title: Text(
           localizations?.admin_dashboard_title ?? 'Admin Dashboard',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -171,8 +171,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                   ? 'Backend API Not Implemented Yet'
                   : localizations?.admin_error_loading_dashboard ??
                       'Error loading dashboard',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -186,8 +185,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                       'For now, you can use the other admin pages (Reports, Users, Content, Statistics) '
                       'which will also need their respective backend endpoints.'
                   : _error ?? '',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -315,8 +313,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                     const SizedBox(width: 8),
                     Text(
                       '${localizations?.admin_last_update ?? 'Last update'}: $formattedUpdate',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -478,8 +475,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                 children: [
                   Text(
                     value,
-                    style: TextStyle(
-                      fontSize: 22,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
                     ),
@@ -487,8 +483,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
                   const SizedBox(height: 2),
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 12,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 2,
@@ -600,8 +595,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
                 ),
@@ -662,15 +656,13 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontSize: 14,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 14,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
             ),
@@ -683,8 +675,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
   Widget _buildSectionTitle(String title, ThemeData theme) {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 18,
+      style: theme.textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: theme.colorScheme.onSurface,
       ),

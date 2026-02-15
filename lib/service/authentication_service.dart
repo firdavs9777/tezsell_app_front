@@ -663,8 +663,9 @@ class AuthenticationService {
     String districtId,
     File? profileImage,
     String? phoneNumber,
-    String verificationCode,
-  ) async {
+    String verificationCode, {
+    String? countryCode,
+  }) async {
     // Prevent duplicate registration requests
     final requestKey = '$email:register';
     if (_pendingRequests.containsKey(requestKey)) {
@@ -685,6 +686,7 @@ class AuthenticationService {
         phoneNumber,
         verificationCode,
         totalTimer,
+        countryCode: countryCode,
       );
 
     _pendingRequests[requestKey] = registrationFuture;
@@ -707,8 +709,9 @@ class AuthenticationService {
     File? profileImage,
     String? phoneNumber,
     String verificationCode,
-    Stopwatch totalTimer,
-  ) async {
+    Stopwatch totalTimer, {
+    String? countryCode,
+  }) async {
     try {
       // Registration endpoint: /accounts/register/
       final url = Uri.parse('$baseUrl$REGISTER_URL');
@@ -724,8 +727,13 @@ class AuthenticationService {
         'verification_code': verificationCode,
         'user_type': 'regular',
         'username': userName,
-        'location_id': districtId,
+        'district_id': districtId,
       };
+
+      // Add country_code to help backend disambiguate districts with same IDs
+      if (countryCode != null && countryCode.isNotEmpty) {
+        fields['country_code'] = countryCode;
+      }
 
       // Add phone_number only if provided
       if (phoneNumber != null && phoneNumber.isNotEmpty) {

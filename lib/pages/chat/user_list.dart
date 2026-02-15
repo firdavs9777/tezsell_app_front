@@ -403,9 +403,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       autofocus: false,
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)?.search_by_username_or_phone ?? 'Search by username or phone number',
-                        hintStyle: TextStyle(
+                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 14,
                         ),
                         prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -469,16 +468,14 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                       children: [
                                         Text(
                                           l.no_users_found,
-                                          style: TextStyle(
-                                            fontSize: 16,
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
                                         Text(
                                           l.try_different_search_term,
-                                          style: TextStyle(
-                                            fontSize: 14,
+                                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                             color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
@@ -524,8 +521,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                               children: [
                                                 Text(
                                                   l.no_users_available,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
+                                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                                                   ),
                                                 ),
@@ -660,10 +656,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                             errorBuilder: (context, error, stackTrace) => Center(
                               child: Text(
                                 avatarLetter,
-                                style: const TextStyle(
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 22,
                                 ),
                               ),
                             ),
@@ -703,10 +698,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                             child: Center(
                               child: Text(
                                 avatarLetter,
-                                style: const TextStyle(
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 22,
                                 ),
                               ),
                             ),
@@ -741,10 +735,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                           Expanded(
                             child: Text(
                               displayName,
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 17,
-                                color: Colors.black87,
                                 letterSpacing: -0.3,
                               ),
                               maxLines: 1,
@@ -764,9 +756,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                   final l = AppLocalizations.of(context)!;
                                   return Text(
                                     l.chat_exists,
-                                    style: TextStyle(
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                       color: Colors.blue[700],
-                                      fontSize: 11,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   );
@@ -779,9 +770,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       const SizedBox(height: 4),
                       Text(
                         '@$username',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 14,
                           letterSpacing: -0.2,
                         ),
                       ),
@@ -831,10 +821,9 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                       child: Center(
                         child: Text(
                           user.username[0].toUpperCase(),
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 22,
                           ),
                         ),
                       ),
@@ -867,10 +856,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                     children: [
                       Text(
                         user.displayName,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                          color: Theme.of(context).colorScheme.onSurface,
                           letterSpacing: -0.3,
                         ),
                         maxLines: 1,
@@ -881,9 +868,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                         children: [
                           Text(
                             '@${user.username}',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontSize: 14,
                               letterSpacing: -0.2,
                             ),
                           ),
@@ -900,9 +886,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                   final l = AppLocalizations.of(context)!;
                                   return Text(
                                     l.online,
-                                    style: TextStyle(
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                       color: Colors.green[700],
-                                      fontSize: 11,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   );

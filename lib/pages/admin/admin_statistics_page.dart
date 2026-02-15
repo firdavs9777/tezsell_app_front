@@ -61,7 +61,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Statistics & Analytics', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text('Statistics & Analytics', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -89,10 +89,10 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
             const SizedBox(height: 16),
             Text(
               'Error loading statistics',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
             ),
             const SizedBox(height: 8),
-            Text(_error ?? '', style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant)),
+            Text(_error ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: _loadStatistics,
@@ -255,17 +255,17 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
               children: [
                 Text(
                   value,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 1),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 9, color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -305,11 +305,11 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
                   children: [
                     Text(
                       entry.key.toUpperCase(),
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
                     ),
                     Text(
                       '${percentage.toStringAsFixed(1)}%',
-                      style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -357,7 +357,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
                 Expanded(
                   child: Text(
                     entry.key,
-                    style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
                   ),
                 ),
                 Container(
@@ -368,7 +368,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
                   ),
                   child: Text(
                     entry.value.toString(),
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.primary),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.primary),
                   ),
                 ),
               ],
@@ -404,7 +404,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
               children: [
                 Text(
                   entry.key.replaceAll('_', ' ').toUpperCase(),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -414,7 +414,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
                   ),
                   child: Text(
                     count.toString(),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.blue),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: Colors.blue),
                   ),
                 ),
               ],
@@ -474,19 +474,19 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                 ),
               ],
             ),
           ),
           Text(
             value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.primary),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
           ),
         ],
       ),
@@ -539,7 +539,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -549,7 +549,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
             ),
             child: Text(
               value,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ),
         ],
@@ -568,7 +568,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
       child: Center(
         child: Text(
           message,
-          style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
       ),
     );
@@ -577,8 +577,7 @@ class _AdminStatisticsPageState extends ConsumerState<AdminStatisticsPage> {
   Widget _buildSectionTitle(String title, ThemeData theme) {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 18,
+      style: theme.textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w700,
         color: theme.colorScheme.onSurface,
       ),

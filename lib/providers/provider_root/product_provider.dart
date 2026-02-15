@@ -473,6 +473,7 @@ class ProductsService {
     required int price,
     required int categoryId,
     required List<File> imageFiles,
+    String currency = 'UZS',
   }) async {
     final timer = Stopwatch()..start();
 
@@ -485,15 +486,65 @@ class ProductsService {
       if (token == null) {
         throw Exception('User not authenticated');
       }
+
+      // Always fetch fresh location from backend to ensure we have the latest
+      int? locationId;
+      final userIdInt = userId != null ? int.tryParse(userId) : null;
+
+      if (kDebugMode) {
+        print('[ProductProvider] Fetching fresh user location from backend...');
+      }
+      try {
+        final response = await dio.get(
+          '/accounts/user/info/',
+          options: Options(
+            headers: {
+              'Authorization': 'Token $token',
+              'Content-Type': 'application/json',
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          final data = response.data;
+          final userInfo = data['user_info'] ?? data['data'] ?? data;
+          final location = userInfo['location'];
+          if (location != null && location['id'] != null) {
+            locationId = location['id'] is int ? location['id'] : int.tryParse(location['id'].toString());
+            // Update SharedPreferences with latest value
+            if (locationId != null) {
+              await prefs.setString('userLocation', locationId.toString());
+              if (kDebugMode) {
+                print('[ProductProvider] Using location_id: $locationId (from backend)');
+              }
+            }
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('[ProductProvider] Error fetching user location: $e, falling back to cached');
+        }
+        // Fallback to cached value if backend fails
+        locationId = userLocation != null ? int.tryParse(userLocation) : null;
+      }
+
+      if (locationId == null || locationId == 0) {
+        throw Exception('User location not set. Please update your location in settings.');
+      }
+
+      if (kDebugMode) {
+        print('[ProductProvider] Creating product with location_id: $locationId');
+      }
+
       final formData = FormData.fromMap({
         'title': title,
         'condition': 'new',
         'in_stock': true,
         'category_id': categoryId,
         'price': price,
-        'location_id': int.tryParse(userLocation ?? '0'),
-        'userAddress_id': int.tryParse(userLocation ?? '0'),
-        'userName_id': int.tryParse(userId ?? '0'),
+        'currency': currency,
+        'location_id': locationId,
+        'userAddress_id': locationId,
+        'userName_id': userIdInt,
         'description': description,
       });
 
@@ -587,6 +638,14 @@ class ProductsService {
         throw Exception('User not authenticated');
       }
 
+      // Parse location ID with proper null handling
+      final locationId = userLocation != null ? int.tryParse(userLocation) : null;
+      final userIdInt = userId != null ? int.tryParse(userId) : null;
+
+      if (locationId == null || locationId == 0) {
+        throw Exception('User location not set. Please update your location in settings.');
+      }
+
       final formData = FormData.fromMap({
         'title': title,
         'description': description,
@@ -595,9 +654,9 @@ class ProductsService {
         'in_stock': inStock,
         'price': price,
         'category_id': categoryId,
-        'location_id': int.tryParse(userLocation ?? '0'),
-        'userName_id': int.tryParse(userId ?? '0'),
-        'userAddress_id': int.tryParse(userLocation ?? '0'),
+        'location_id': locationId,
+        'userName_id': userIdInt,
+        'userAddress_id': locationId,
       });
 
       // FIXED: Add existing image IDs - this matches your Django serializer expectation

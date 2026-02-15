@@ -54,14 +54,24 @@ class ProfileService {
     String? username,
     required int locationId,
     File? profileImage,
+    String? countryCode,
   }) async {
+    print('[ProfileService] updateUserInfo called with district_id: $locationId, country_code: $countryCode');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+    print('[ProfileService] Token: ${token != null ? "present" : "missing"}');
 
-    // Build form data conditionally
+    // Build form data conditionally - use district_id as per backend API
     final Map<String, dynamic> formDataMap = {
-      'location_id': locationId,
+      'district_id': locationId,
     };
+
+    // Add country_code if provided - helps backend disambiguate districts with same IDs across countries
+    if (countryCode != null && countryCode.isNotEmpty) {
+      formDataMap['country_code'] = countryCode;
+    }
+
+    print('[ProfileService] Form data: $formDataMap');
 
     // Only add username if it's provided and not empty
     if (username != null && username.isNotEmpty) {
@@ -85,6 +95,7 @@ class ProfileService {
 
     final dio = Dio();
 
+    print('[ProfileService] Sending PUT to: $baseUrl$USER_INFO');
     final response = await dio.put(
       '$baseUrl$USER_INFO',
       data: formData,
@@ -98,10 +109,21 @@ class ProfileService {
       ),
     );
 
+    print('[ProfileService] Response status: ${response.statusCode}');
+    print('[ProfileService] Response data: ${response.data}');
+
     if (response.statusCode == 200 || response.statusCode == 201) {
+      // Update the userLocation in SharedPreferences for future use
+      await prefs.setString('userLocation', locationId.toString());
+      print('[ProfileService] Updated userLocation in SharedPreferences: $locationId');
+
       // Handle different response structures
       try {
         if (response.data != null) {
+          // Check if response.data has 'user_info' key (new format)
+          if (response.data is Map && response.data['user_info'] != null) {
+            return UserInfo.fromJson(response.data['user_info']);
+          }
           // Check if response.data has 'data' key
           if (response.data is Map && response.data['data'] != null) {
             return UserInfo.fromJson(response.data['data']);
@@ -117,6 +139,7 @@ class ProfileService {
         return await getUserInfo();
       }
     } else {
+      print('[ProfileService] ERROR: Status ${response.statusCode}, Data: ${response.data}');
       final errorMessage = response.data is Map
           ? response.data.toString()
           : 'Failed to update user info';

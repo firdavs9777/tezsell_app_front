@@ -1,10 +1,12 @@
 import 'package:app/common_widgets/common_button.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/utils/currency_utils.dart';
 import 'package:dio/dio.dart';
 
 import 'package:go_router/go_router.dart';
@@ -32,6 +34,20 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   void initState() {
     super.initState();
     _fetchCategories();
+    _loadCurrencies();
+  }
+
+  void _loadCurrencies() {
+    final selectedCountry = ref.read(selectedCountryProvider);
+    final countryCode = selectedCountry?.code ?? 'UZ';
+
+    setState(() {
+      // Show all available currencies since backend now supports them
+      _availableCurrencies = CurrencyUtils.getAllCurrencies();
+      // Set default currency based on user's country
+      final countryCurrency = CurrencyUtils.getCurrencyForCountry(countryCode);
+      _selectedCurrency = countryCurrency ?? 'UZS';
+    });
   }
 
   @override
@@ -51,6 +67,10 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   List<File> _selectedImages = [];
   final picker = ImagePicker();
   bool _isUploading = false;
+
+  // Currency selection
+  String _selectedCurrency = 'UZS';
+  List<String> _availableCurrencies = ['UZS', 'USD', 'EUR'];
 
   String getCategoryName(CategoryModel category) {
     final locale = Localizations.localeOf(context).languageCode;
@@ -97,9 +117,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 localizations?.selectImageSource ?? 'Select Image Source',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: colorScheme.onSurface,
                 ),
               ),
@@ -108,7 +126,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
               leading: Icon(Icons.camera_alt, color: colorScheme.primary),
               title: Text(
                 localizations?.camera ?? 'Camera',
-                style: TextStyle(color: colorScheme.onSurface),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
               ),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
@@ -116,7 +134,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
               leading: Icon(Icons.photo_library, color: colorScheme.secondary),
               title: Text(
                 localizations?.gallery ?? 'Gallery',
-                style: TextStyle(color: colorScheme.onSurface),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
               ),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
@@ -271,6 +289,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             price: price,
             categoryId: selectedCategory!,
             imageFiles: _selectedImages,
+            currency: _selectedCurrency,
           );
 
       if (!mounted) return;
@@ -339,7 +358,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           elevation: 0,
           title: Text(
             localizations?.addNewProductBtn ?? 'Create New Product',
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: theme.textTheme.titleLarge,
           ),
         ),
         body: Form(
@@ -428,31 +447,68 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                         theme,
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _amountController,
-                        enabled: !_isUploading,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
-                          ThousandsFormatter(),
-                        ],
-                        decoration: InputDecoration(
-                          labelText: '${localizations?.newProductPrice ?? 'Price'} *',
-                          hintText: localizations?.newProductPrice ?? 'Enter price',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: TextFormField(
+                              controller: _amountController,
+                              enabled: !_isUploading,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
+                                ThousandsFormatter(),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: '${localizations?.newProductPrice ?? 'Price'} *',
+                                hintText: localizations?.newProductPrice ?? 'Enter price',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                prefixIcon: const Icon(Icons.attach_money),
+                                filled: true,
+                                fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return localizations?.priceRequiredMessage ?? 'Please enter price';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                          prefixIcon: const Icon(Icons.attach_money),
-                          suffixText: 'UZS',
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return localizations?.priceRequiredMessage ?? 'Please enter price';
-                          }
-                          return null;
-                        },
+                          const SizedBox(width: 12),
+                          Expanded(
+                            flex: 2,
+                            child: DropdownButtonFormField<String>(
+                              value: _selectedCurrency,
+                              isExpanded: true,
+                              decoration: InputDecoration(
+                                labelText: localizations?.currency ?? 'Currency',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                filled: true,
+                                fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                              ),
+                              items: _availableCurrencies.map((currency) {
+                                final config = CurrencyUtils.getConfig(currency);
+                                return DropdownMenuItem(
+                                  value: currency,
+                                  child: Text(
+                                    '${config?.symbol ?? ''} $currency',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: _isUploading ? null : (value) {
+                                setState(() => _selectedCurrency = value!);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -546,9 +602,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                           )
                         : Text(
                             localizations?.upload ?? 'Upload Product',
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
+                            style: theme.textTheme.labelLarge?.copyWith(
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -599,9 +653,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         const SizedBox(width: 12),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
+          style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.onSurface,
           ),
         ),
@@ -647,17 +699,14 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                     const SizedBox(height: 12),
                     Text(
                       localizations?.imageInstructions ?? 'Tap to add images',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       localizations?.oneImageConfirmMessage ?? 'At least 1 image required',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                       ),
                     ),
@@ -693,9 +742,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                             const SizedBox(height: 8),
                             Text(
                               'Add More',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),
@@ -761,10 +808,8 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                             ),
                             child: Text(
                               '${index + 1}/${_selectedImages.length}',
-                              style: TextStyle(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurface,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),

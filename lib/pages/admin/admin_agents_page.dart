@@ -87,7 +87,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
         elevation: 0,
         title: Text(
           localizations?.admin_total_agents ?? 'Total Agents',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -151,14 +151,13 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
             const SizedBox(height: 16),
             Text(
               'Error loading agents',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
-            Text(_error ?? '', style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant)),
+            Text(_error ?? '', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: _loadAgents,
@@ -184,7 +183,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
           children: [
             Icon(Icons.badge_outlined, size: 64, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
-            Text('No agents found', style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant)),
+            Text('No agents found', style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
           ],
         ),
       );
@@ -198,7 +197,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: $count agents', style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
+              Text('Total: $count agents', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
             ],
           ),
         ),
@@ -234,7 +233,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                   icon: const Icon(Icons.chevron_left),
                   label: const Text('Previous'),
                 ),
-                Text('Page $_currentPage', style: TextStyle(color: colorScheme.onSurface)),
+                Text('Page $_currentPage', style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface)),
                 ElevatedButton.icon(
                   onPressed: next != null
                       ? () {
@@ -285,8 +284,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                           children: [
                             Text(
                               agencyName,
-                              style: TextStyle(
-                                fontSize: 16,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurface,
                               ),
@@ -300,8 +298,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                         const SizedBox(height: 4),
                         Text(
                           '@$username',
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -344,8 +341,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                 ),
                 child: Text(
                   specialization,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -377,8 +373,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
           const SizedBox(width: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),

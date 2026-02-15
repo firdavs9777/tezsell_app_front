@@ -69,9 +69,8 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
         ),
         title: Text(
           localizations?.security ?? 'Security',
-          style: TextStyle(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
             color: theme.colorScheme.onPrimary,
           ),
         ),
@@ -107,8 +106,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                         ? (localizations?.account_secure ?? 'Account Secure')
                         : (localizations?.improve_security ??
                             'Improve Security'),
-                    style: TextStyle(
-                      fontSize: 20,
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color:
                           _securityScore >= 70 ? theme.colorScheme.primary : const Color(0xFFFF9800),
@@ -164,8 +162,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                       const SizedBox(width: 8),
                       Text(
                         localizations?.danger_zone ?? 'Danger Zone',
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.error,
                         ),
@@ -209,8 +206,8 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               Icon(icon, color: _primaryColor),
               const SizedBox(width: 8),
               Text(title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 16),
@@ -256,11 +253,12 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title,
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w600)),
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   Text(subtitle,
-                      style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurfaceVariant)),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
@@ -285,12 +283,12 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: TextStyle(
-                        fontSize: 15,
+                    style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: theme.colorScheme.error)),
                 Text(subtitle,
-                    style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurfaceVariant)),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
@@ -663,12 +661,16 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
             Text(
               localizations?.delete_account_warning ??
                   'This action is PERMANENT and cannot be undone. All your data will be permanently deleted.',
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
               localizations?.what_will_be_deleted ?? 'What will be deleted:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(localizations?.profile_and_account_info ??
@@ -800,7 +802,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
             style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             child: Text(
               localizations?.delete_account ?? 'Delete Account',
-              style: const TextStyle(fontSize: 16),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
         ],

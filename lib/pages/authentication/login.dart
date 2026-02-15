@@ -553,12 +553,10 @@ class _LoginState extends ConsumerState<Login> {
 
                 const SizedBox(height: 32.0),
 
-                // Welcome text - Karrot style
+                // Welcome text - Modern style
                 Text(
                   AppLocalizations.of(context)?.welcomeBack ?? 'Welcome back!',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
 
                 const SizedBox(height: 8.0),
@@ -567,7 +565,7 @@ class _LoginState extends ConsumerState<Login> {
                   AppLocalizations.of(context)?.loginToYourAccount ??
                       'Login to continue',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
 
@@ -689,11 +687,10 @@ class _LoginState extends ConsumerState<Login> {
                     child: Text(
                       AppLocalizations.of(context)?.forgotPassword ??
                           'Forgot password?',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: _isLoading
                             ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
                             : Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -750,20 +747,17 @@ class _LoginState extends ConsumerState<Login> {
                               Text(
                                 AppLocalizations.of(context)?.loading ??
                                     'Loading...',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: -0.3,
+                                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
                           )
                         : Text(
                             AppLocalizations.of(context)?.login ?? 'Login',
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: -0.3,
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                              fontSize: 16,
                             ),
                           ),
                   ),
@@ -784,9 +778,9 @@ class _LoginState extends ConsumerState<Login> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         AppLocalizations.of(context)?.or ?? 'OR',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                     Expanded(
@@ -806,17 +800,12 @@ class _LoginState extends ConsumerState<Login> {
                       ? null
                       : _handleGoogleSignIn,
                   isLoading: _isGoogleLoading,
-                  icon: Image.asset(
-                    'assets/icons/google.png',
-                    width: 24,
-                    height: 24,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.g_mobiledata,
-                      size: 24,
-                      color: Colors.red,
-                    ),
+                  icon: Icon(
+                    Icons.g_mobiledata,
+                    size: 28,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.red,
                   ),
-                  label: 'Continue with Google',
+                  label: AppLocalizations.of(context)?.continueWithGoogle ?? 'Continue with Google',
                 ),
 
                 const SizedBox(height: 12.0),
@@ -835,7 +824,7 @@ class _LoginState extends ConsumerState<Login> {
                           ? Colors.white
                           : Colors.black,
                     ),
-                    label: 'Continue with Apple',
+                    label: AppLocalizations.of(context)?.continueWithApple ?? 'Continue with Apple',
                     isApple: true,
                   ),
                   const SizedBox(height: 24.0),
@@ -850,7 +839,7 @@ class _LoginState extends ConsumerState<Login> {
                       AppLocalizations.of(context)?.dontHaveAccount ??
                           "Don't have an account?",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     TextButton(
@@ -870,11 +859,10 @@ class _LoginState extends ConsumerState<Login> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)?.registerNow ?? 'Sign up',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: _isLoading || _isGoogleLoading || _isAppleLoading
-                              ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                              ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
                               : Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -953,9 +941,7 @@ class _LoginState extends ConsumerState<Login> {
                   const SizedBox(width: 12),
                   Text(
                     label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: isApple
                           ? (isDark ? Colors.black : Colors.white)
                           : Theme.of(context).colorScheme.onSurface,

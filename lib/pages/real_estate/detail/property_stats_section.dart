@@ -23,33 +23,33 @@ class PropertyStatsSection extends StatelessWidget {
 
     return Row(
       children: [
-        _buildStatItem(Icons.bed, '$bedrooms',
+        _buildStatItem(context, Icons.bed, '$bedrooms',
             localizations?.property_card_bed ?? 'bed', colorScheme),
         SizedBox(width: 24),
-        _buildStatItem(Icons.bathroom, '$bathrooms',
+        _buildStatItem(context, Icons.bathroom, '$bathrooms',
             localizations?.property_card_bath ?? 'bath', colorScheme),
         SizedBox(width: 24),
-        _buildStatItem(Icons.square_foot, '${squareMeters}m²', 'area', colorScheme),
+        _buildStatItem(context, Icons.square_foot, '${squareMeters}m²', 'area', colorScheme),
         if (parkingSpaces > 0) ...[
           SizedBox(width: 24),
-          _buildStatItem(Icons.local_parking, '$parkingSpaces',
+          _buildStatItem(context, Icons.local_parking, '$parkingSpaces',
               localizations?.property_card_parking ?? 'parking', colorScheme),
         ],
       ],
     );
   }
 
-  Widget _buildStatItem(IconData icon, String value, String label, ColorScheme colorScheme) {
+  Widget _buildStatItem(BuildContext context, IconData icon, String value, String label, ColorScheme colorScheme) {
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
         Icon(icon, size: 24, color: colorScheme.onSurfaceVariant),
         SizedBox(height: 4),
         Text(value,
-            style: TextStyle(
-                fontSize: 16,
+            style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface)),
-        Text(label, style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant)),
+        Text(label, style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
       ],
     );
   }

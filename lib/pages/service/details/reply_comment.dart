@@ -68,9 +68,8 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                 Expanded(
                   child: Text(
                     l10n.replying_to(widget.parentComment.user.username ?? l10n.anonymous),
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
                       color: colorScheme.onSurface,
                     ),
                   ),
@@ -114,15 +113,16 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                       children: [
                         Text(
                           widget.parentComment.user.username ?? l10n.anonymous,
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
                             color: colorScheme.onSurface,
                           ),
                         ),
                         Text(
                           widget.parentComment.text.toString(),
-                          style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),

@@ -24,6 +24,7 @@ class PropertyFeaturesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     final features = <String, bool>{
       localizations?.property_card_balcony ?? 'Balcony': hasBalcony,
       localizations?.property_card_garage ?? 'Garage': hasGarage,
@@ -43,7 +44,7 @@ class PropertyFeaturesSection extends StatelessWidget {
         Text(
           localizations?.property_details_features_amenities ??
               'Features & Amenities',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
         SizedBox(height: 12),
         Wrap(
@@ -59,8 +60,7 @@ class PropertyFeaturesSection extends StatelessWidget {
               ),
               child: Text(
                 feature.key,
-                style: TextStyle(
-                    fontSize: 14,
+                style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w500),
               ),

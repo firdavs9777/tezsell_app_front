@@ -127,9 +127,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               onTap: () => context.push('/user/${reply.user.id}'),
                               child: Text(
                                 reply.user.username,
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 13,
                                   color: colorScheme.onSurface,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -149,8 +148,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               ),
                               child: Text(
                                 AppLocalizations.of(context)?.you_label ?? 'You',
-                                style: const TextStyle(
-                                  fontSize: 9,
+                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -163,8 +161,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                     const SizedBox(width: 8),
                     Text(
                       _formatLocalTime(reply.createdAt, context),
-                      style: TextStyle(
-                        fontSize: 11,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -200,7 +197,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                       color: Colors.blue, size: 16),
                                   const SizedBox(width: 8),
                                   Text(AppLocalizations.of(context)?.editLabel ?? 'Edit',
-                                      style: const TextStyle(fontSize: 13)),
+                                      style: Theme.of(context).textTheme.bodySmall),
                                 ],
                               ),
                             ),
@@ -213,7 +210,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                       color: Colors.red, size: 16),
                                   const SizedBox(width: 8),
                                   Text(AppLocalizations.of(context)?.deleteLabel ?? 'Delete',
-                                      style: const TextStyle(fontSize: 13)),
+                                      style: Theme.of(context).textTheme.bodySmall),
                                 ],
                               ),
                             ),
@@ -226,8 +223,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                   const SizedBox(height: 2),
                   Text(
                     '${reply.user.location.region}, ${reply.user.location.district}',
-                    style: TextStyle(
-                      fontSize: 11,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -236,8 +232,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                 // Reply text
                 Text(
                   reply.text,
-                  style: TextStyle(
-                    fontSize: 13,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurface,
                   ),
                 ),
@@ -333,9 +328,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
           child: Center(
             child: Text(
               l10n.noComments,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
-                fontSize: 14,
               ),
             ),
           ),
@@ -354,9 +348,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
         iconColor: colorScheme.primary,
         title: Text(
           l10n.comments_title(widget.comments.length),
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
             color: colorScheme.onSurface,
           ),
         ),
@@ -420,9 +413,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                       onTap: () => context.push('/user/${comment.user.id}'),
                                       child: Text(
                                         comment.user.username ?? l10n.anonymous,
-                                        style: TextStyle(
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
                                           color: colorScheme.onSurface,
                                         ),
                                         overflow: TextOverflow.ellipsis,
@@ -435,8 +427,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                         ? _formatLocalTime(
                                             comment.created_at.toString(), context)
                                         : l10n.unknown_date,
-                                    style: TextStyle(
-                                      fontSize: 12,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: colorScheme.onSurfaceVariant,
                                     ),
                                   ),
@@ -490,8 +481,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                 const SizedBox(height: 2),
                                 Text(
                                   '${comment.user.location!.region}, ${comment.user.location!.district}',
-                                  style: TextStyle(
-                                    fontSize: 12,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: colorScheme.onSurfaceVariant,
                                   ),
                                 ),
@@ -500,8 +490,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               // Comment text
                               Text(
                                 comment.text.toString(),
-                                style: TextStyle(
-                                  fontSize: 14,
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onSurface,
                                 ),
                               ),

@@ -25,6 +25,7 @@ class AppConfig {
   static const String usersPath = '/api/accounts/users/';
   static const String sendSmsPath = '/accounts/send-sms/';
   static const String verifySmsPath = '/accounts/verify-code/';
+  static const String countriesPath = '/api/countries/';
   static const String regionsPath = '/accounts/regions/';
   static const String districtsPath = '/accounts/districts/';
   static const String refreshTokenPath = '/accounts/refresh-token/';
@@ -127,6 +128,20 @@ class AppConfig {
   static const String refreshTokenKey = 'refresh_token';
   static const String userIdKey = 'userId';
   static const String usernameKey = 'username';
+
+  // Supported Countries (15 former Soviet countries)
+  static const List<String> supportedCountries = [
+    'UZ', 'KZ', 'KG', 'TJ', 'TM',  // Central Asia (priority)
+    'RU', 'UA', 'BY', 'MD',         // Eastern Europe
+    'GE', 'AM', 'AZ',               // Caucasus
+    'EE', 'LV', 'LT',               // Baltic
+  ];
+
+  // Default country for new users
+  static const String defaultCountry = 'UZ';
+
+  // Support email (international)
+  static const String supportEmail = 'support@tezsell.com';
 
   // UI Constants
   static const int messagePageSize = 50;

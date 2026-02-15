@@ -9,11 +9,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/thousand_separator.dart';
+import 'package:app/utils/currency_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,8 +88,8 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     {'value': 'rent', 'label': 'For Rent'},
   ];
 
-  // Currencies
-  final List<String> _currencies = ['UZS', 'USD', 'EUR'];
+  // Currencies - dynamically loaded based on country
+  List<String> _currencies = ['UZS', 'USD', 'EUR'];
 
   @override
   void initState() {
@@ -95,6 +97,21 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     _loadUserLocation();
     _fetchRegions();
     _loadUserLocationsCache();
+    _loadCurrencies();
+  }
+
+  /// Load available currencies based on user's country
+  void _loadCurrencies() {
+    final selectedCountry = ref.read(selectedCountryProvider);
+    final countryCode = selectedCountry?.code ?? 'UZ';
+
+    setState(() {
+      // Show all available currencies since backend now supports them
+      _currencies = CurrencyUtils.getAllCurrencies();
+      // Set default currency based on user's country
+      final countryCurrency = CurrencyUtils.getCurrencyForCountry(countryCode);
+      _selectedCurrency = countryCurrency ?? 'UZS';
+    });
   }
 
   /// Pre-load UserLocations cache for coordinate lookup
@@ -421,10 +438,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               child: Text(
                 AppLocalizations.of(context)?.selectImageSource ??
                     'Select Image Source',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
             ListTile(
@@ -631,7 +645,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         elevation: 0,
         title: Text(
           localizations?.general_create_property ?? 'Create Property',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
       body: Form(
@@ -842,6 +856,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                           flex: 2,
                           child: DropdownButtonFormField<String>(
                             value: _selectedCurrency,
+                            isExpanded: true,
                             decoration: InputDecoration(
                               labelText: localizations?.property_create_currency ?? 'Currency',
                               border: OutlineInputBorder(
@@ -849,11 +864,16 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                               ),
                               filled: true,
                               fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                             ),
                             items: _currencies.map((currency) {
+                              final config = CurrencyUtils.getConfig(currency);
                               return DropdownMenuItem(
                                 value: currency,
-                                child: Text(currency),
+                                child: Text(
+                                  '${config?.symbol ?? ''} $currency',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -1047,8 +1067,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                         _isGeocoding
                                             ? 'Getting Location...'
                                             : (localizations?.property_create_location_detected ?? 'Location Detected'),
-                                        style: TextStyle(
-                                          fontSize: 13,
+                                        style: theme.textTheme.bodySmall?.copyWith(
                                           fontWeight: FontWeight.w600,
                                           color: successColor,
                                         ),
@@ -1057,8 +1076,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                       if (_selectedRegion != null && _selectedDistrict != null)
                                         Text(
                                           '$_selectedRegion, ${_selectedDistrict!.district}',
-                                          style: TextStyle(
-                                            fontSize: 11,
+                                          style: theme.textTheme.bodySmall?.copyWith(
                                             color: successColor.withOpacity(0.8),
                                           ),
                                         ),
@@ -1067,7 +1085,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                           padding: const EdgeInsets.only(top: 4),
                                           child: Text(
                                             '$_latitude, $_longitude',
-                                            style: TextStyle(
+                                            style: theme.textTheme.bodySmall?.copyWith(
                                               fontSize: 10,
                                               color: successColor.withOpacity(0.7),
                                             ),
@@ -1109,8 +1127,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 Expanded(
                                   child: Text(
                                     'Getting location coordinates...',
-                                    style: TextStyle(
-                                      fontSize: 13,
+                                    style: theme.textTheme.bodySmall?.copyWith(
                                       color: infoColor,
                                     ),
                                   ),
@@ -1208,8 +1225,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         )
                       : Text(
                           localizations?.general_create_property ?? 'Create Property',
-                          style: const TextStyle(
-                            fontSize: 17,
+                          style: theme.textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
                           ),
@@ -1260,8 +1276,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         const SizedBox(width: 12),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 18,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colorScheme.onSurface,
           ),
@@ -1516,8 +1531,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     Text(
                       localizations?.property_create_tap_to_add_images ??
                           'Tap to add images',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -1526,8 +1540,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     Text(
                       localizations?.property_create_at_least_one_image ??
                           'At least 1 image required',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant.withOpacity(0.7),
                       ),
                     ),
@@ -1563,8 +1576,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                             const SizedBox(height: 8),
                             Text(
                               localizations?.property_create_add_more ?? 'Add More',
-                              style: TextStyle(
-                                fontSize: 13,
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w500,
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -1630,9 +1642,8 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                             ),
                             child: Text(
                               '${index + 1}/${_selectedImages.length}',
-                              style: TextStyle(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurface,
-                                fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

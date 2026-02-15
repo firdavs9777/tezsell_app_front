@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
@@ -9,6 +10,7 @@ import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PasswordReset extends StatefulWidget {
+  final String countryCode;
   final String regionName;
   final String districtName;
   final String districtId;
@@ -17,6 +19,7 @@ class PasswordReset extends StatefulWidget {
 
   const PasswordReset({
     super.key,
+    this.countryCode = '',
     required this.regionName,
     required this.districtName,
     required this.districtId,
@@ -136,10 +139,15 @@ class _PasswordResetState extends State<PasswordReset> {
       _isLoading = true;
     });
 
+    developer.log('[PasswordReset] Starting registration', name: 'PasswordReset');
+    developer.log('[PasswordReset] Country: ${widget.countryCode}, Region: ${widget.regionName}, District: ${widget.districtName}', name: 'PasswordReset');
+    developer.log('[PasswordReset] Email: ${widget.email}, Username: $userName', name: 'PasswordReset');
+
     try {
 
       // Check if verification code is provided (required for registration)
       if (widget.verificationCode == null || widget.verificationCode!.isEmpty) {
+        developer.log('[PasswordReset] Error: No verification code provided', name: 'PasswordReset');
         _showErrorDialog('Verification code is required. Please verify your email first.');
         return;
       }
@@ -155,16 +163,25 @@ class _PasswordResetState extends State<PasswordReset> {
         _selectedImages.isNotEmpty ? _selectedImages[0] : null,
         null, // phone_number is optional
         widget.verificationCode!, // Required verification code
+        countryCode: widget.countryCode, // Pass country code to disambiguate districts
       );
 
       if (!mounted) return;
 
       if (result != null) {
-        // Store terms acceptance
+        developer.log('[PasswordReset] Registration successful', name: 'PasswordReset');
+
+        // Store terms acceptance and country code
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('terms_accepted', true);
         await prefs.setString('terms_accepted_date', DateTime.now().toIso8601String());
-        
+
+        // Store country code for future use
+        if (widget.countryCode.isNotEmpty) {
+          await prefs.setString('selected_country_code', widget.countryCode);
+          developer.log('[PasswordReset] Saved country code: ${widget.countryCode}', name: 'PasswordReset');
+        }
+
         // Success
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => const TabsScreen()),

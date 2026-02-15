@@ -14,6 +14,7 @@ class PropertyDescriptionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     if (description == null || description!.isEmpty) {
       return SizedBox.shrink();
@@ -24,12 +25,11 @@ class PropertyDescriptionSection extends StatelessWidget {
       children: [
         Text(
           localizations?.sections_description ?? 'Description',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
         SizedBox(height: 12),
         Text(description!,
-            style:
-                TextStyle(fontSize: 16, height: 1.5, color: colorScheme.onSurface)),
+            style: textTheme.bodyLarge?.copyWith(height: 1.5, color: colorScheme.onSurface)),
       ],
     );
   }

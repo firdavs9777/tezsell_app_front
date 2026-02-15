@@ -17,6 +17,7 @@ class PropertyStatusSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -30,10 +31,11 @@ class PropertyStatusSection extends StatelessWidget {
         children: [
           Text(
             localizations?.property_status_title ?? 'Property Status',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
           ),
           SizedBox(height: 12),
           _buildDetailRow(
+            context,
             localizations?.property_status_availability ?? 'Availability:',
             isActive
                 ? (localizations?.property_status_available ?? 'Available')
@@ -42,11 +44,13 @@ class PropertyStatusSection extends StatelessWidget {
             colorScheme,
           ),
           _buildDetailRow(
+            context,
             localizations?.property_status_property_id ?? 'Property ID:',
             property.id,
             colorScheme,
           ),
           _buildDetailRow(
+            context,
             localizations?.property_info_listed ?? 'Listed:',
             property.createdAt.toString().split(' ')[0],
             colorScheme,
@@ -56,7 +60,8 @@ class PropertyStatusSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, ColorScheme colorScheme) {
+  Widget _buildDetailRow(BuildContext context, String label, String value, ColorScheme colorScheme) {
+    final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -65,11 +70,11 @@ class PropertyStatusSection extends StatelessWidget {
           SizedBox(
             width: 120,
             child: Text(label,
-                style: TextStyle(
+                style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500, color: colorScheme.onSurfaceVariant)),
           ),
           Expanded(
-            child: Text(value, style: TextStyle(color: colorScheme.onSurface)),
+            child: Text(value, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface)),
           ),
         ],
       ),

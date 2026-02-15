@@ -228,7 +228,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               Text(
                 localizations?.welcome ?? 'Welcome to TezSell',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
                     ),
                 textAlign: TextAlign.center,
@@ -237,8 +236,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               Text(
                 localizations?.home_welcome_subtitle ?? 'Buy and sell with people nearby.\nSafe, simple, and local.',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface.withOpacity(0.6),
-                      height: 1.4,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -249,13 +247,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               _buildSocialButton(
                 onPressed: !_isGoogleLoading && !_isAppleLoading ? _handleGoogleSignIn : null,
                 isLoading: _isGoogleLoading,
-                icon: Image.asset(
-                  'assets/icons/google.png',
-                  width: 24,
-                  height: 24,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 24, color: Colors.red),
+                icon: Icon(
+                  Icons.g_mobiledata,
+                  size: 28,
+                  color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.red,
                 ),
-                label: 'Continue with Google',
+                label: localizations?.continueWithGoogle ?? 'Continue with Google',
               ),
               const SizedBox(height: 12),
 
@@ -269,7 +266,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     size: 24,
                     color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                   ),
-                  label: 'Continue with Apple',
+                  label: localizations?.continueWithApple ?? 'Continue with Apple',
                   isApple: true,
                 ),
                 const SizedBox(height: 16),
@@ -283,9 +280,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       localizations?.or ?? 'OR',
-                      style: TextStyle(
-                        color: colorScheme.onSurface.withOpacity(0.5),
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -311,10 +307,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     ),
                   ),
                   child: Text(
-                    'Continue with Email',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    localizations?.continueWithEmail ?? 'Continue with Email',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -377,9 +372,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   const SizedBox(width: 12),
                   Text(
                     label,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: isApple
                           ? (isDark ? Colors.black : Colors.white)
                           : colorScheme.onSurface,

@@ -121,7 +121,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Reports Management', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text('Reports Management', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -238,8 +238,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
               isBackendNotReady
                   ? 'Backend API Not Implemented Yet'
                   : 'Error loading reports',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -252,8 +251,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                       'Please implement: GET /api/admin/reports/\n\n'
                       'This endpoint should support filtering by status and content type.'
                   : _error ?? '',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -283,7 +281,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
           children: [
             Icon(Icons.flag_outlined, size: 64, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 16),
-            Text('No reports found', style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant)),
+            Text('No reports found', style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
           ],
         ),
       );
@@ -297,7 +295,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: $count reports', style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
+              Text('Total: $count reports', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface)),
             ],
           ),
         ),
@@ -333,7 +331,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                   icon: const Icon(Icons.chevron_left),
                   label: const Text('Previous'),
                 ),
-                Text('Page $_currentPage', style: TextStyle(color: colorScheme.onSurface)),
+                Text('Page $_currentPage', style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface)),
                 ElevatedButton.icon(
                   onPressed: next != null
                       ? () {
@@ -400,7 +398,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                     ),
                     child: Text(
                       status.toUpperCase(),
-                      style: TextStyle(color: statusColor, fontSize: 12, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: statusColor, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Container(
@@ -411,7 +409,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                     ),
                     child: Text(
                       contentType.toUpperCase(),
-                      style: TextStyle(color: colorScheme.primary, fontSize: 12, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -419,13 +417,13 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
               const SizedBox(height: 12),
               Text(
                 'Reason: $reason',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
               ),
               if (description.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -436,11 +434,11 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                 children: [
                   Text(
                     'By: $reporterName',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                   Text(
                     createdAt.isNotEmpty ? createdAt.split('T')[0] : '',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -505,7 +503,7 @@ class _ReportActionsSheetState extends State<_ReportActionsSheet> {
         children: [
           Text(
             'Report Actions',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
           ),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(

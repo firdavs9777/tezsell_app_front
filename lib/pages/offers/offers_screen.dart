@@ -83,7 +83,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               offersState.error!,
-              style: TextStyle(color: colorScheme.error),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.error),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -174,9 +174,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
@@ -295,9 +293,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
             const SizedBox(height: 24),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
@@ -305,8 +301,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -337,7 +332,7 @@ class _SentOffersTab extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               offersState.error!,
-              style: TextStyle(color: colorScheme.error),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.error),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -432,9 +427,7 @@ class _SentOffersTab extends ConsumerWidget {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
@@ -540,9 +533,7 @@ class _SentOffersTab extends ConsumerWidget {
             const SizedBox(height: 24),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
@@ -550,8 +541,7 @@ class _SentOffersTab extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,

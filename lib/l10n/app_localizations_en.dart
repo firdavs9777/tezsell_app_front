@@ -34,6 +34,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get continueWithApple => 'Continue with Apple';
+
+  @override
+  String get continueWithEmail => 'Continue with Email';
+
+  @override
   String get sellAndBuyProducts =>
       'Sell and buy any of your products only with us';
 
@@ -202,6 +211,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String selectedCountry(String countryName, String countryCode) {
     return 'Selected: $countryName ($countryCode)';
   }
+
+  @override
+  String get selectCountry => 'Select your country';
+
+  @override
+  String get changeCountry => 'Change country';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get allCountries => 'All countries';
+
+  @override
+  String get currencyRUB => 'Russian Ruble';
+
+  @override
+  String get currencyUAH => 'Ukrainian Hryvnia';
+
+  @override
+  String get currencyBYN => 'Belarusian Ruble';
+
+  @override
+  String get currencyMDL => 'Moldovan Leu';
+
+  @override
+  String get currencyGEL => 'Georgian Lari';
+
+  @override
+  String get currencyAMD => 'Armenian Dram';
+
+  @override
+  String get currencyAZN => 'Azerbaijani Manat';
+
+  @override
+  String get currencyKZT => 'Kazakhstani Tenge';
+
+  @override
+  String get currencyTMT => 'Turkmen Manat';
+
+  @override
+  String get currencyKGS => 'Kyrgyzstani Som';
+
+  @override
+  String get currencyTJS => 'Tajikistani Somoni';
+
+  @override
+  String get currencyUZS => 'Uzbek Som';
+
+  @override
+  String get currencyUSD => 'US Dollar';
+
+  @override
+  String get currencyEUR => 'Euro';
 
   @override
   String fullNumber(String phoneNumber) {
@@ -3954,4 +4017,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onTezsell => 'on TezSell';
+
+  @override
+  String get selectCountryFirst => 'Select country first';
+
+  @override
+  String get countrySelectionHint => 'Then you can choose your region';
 }
