@@ -244,13 +244,18 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   // KARROT-STYLE: Get or create direct chat
   Future<ChatRoom?> getOrCreateDirectChat(int targetUserId) async {
-    if (!state.isAuthenticated) {
+    print('🔍 [ChatProvider] getOrCreateDirectChat called for userId: $targetUserId');
+    print('🔍 [ChatProvider] isAuthenticated: ${state.isAuthenticated}');
 
+    if (!state.isAuthenticated) {
+      print('❌ [ChatProvider] Not authenticated, returning null');
       return null;
     }
 
     try {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
+
+      print('🔍 [ChatProvider] Checking existing chat rooms...');
 
       // 🔥 NEW: Check if chat already exists in current chat rooms
       final existingChat = state.chatRooms.firstWhere(
@@ -271,39 +276,41 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       // If chat already exists, return it without calling backend
       if (existingChat.id != -1) {
-
+        print('✅ [ChatProvider] Found existing chat: ${existingChat.id}');
         _safeUpdateState((s) => s.copyWith(isLoading: false));
         return existingChat;
       }
 
+      print('🔍 [ChatProvider] No existing chat found, calling API...');
+
       // 🔥 NEW: Try new start chat endpoint first (KakaoTalk-style)
       try {
+        print('🔍 [ChatProvider] Trying startChatWithUser API...');
         final result = await _apiService.startChatWithUser(targetUserId);
+        print('✅ [ChatProvider] startChatWithUser returned: $result');
         final chatData = result['chat'] as Map<String, dynamic>?;
         if (chatData != null) {
           final chatRoom = ChatRoom.fromJson(chatData);
-          
+
           // Check if this is an existing chat (not newly created)
           final wasCreated = result['created'] as bool? ?? false;
-          if (!wasCreated) {
+          print('✅ [ChatProvider] Chat ${wasCreated ? "created" : "found"}: ${chatRoom.id}');
 
-          } else {
-
-          }
-          
           // Reload chat list to sync with backend
           await loadChatRooms();
-          
+
           _safeUpdateState((s) => s.copyWith(isLoading: false));
-          
+
           return chatRoom;
         }
       } catch (e) {
-
+        print('⚠️ [ChatProvider] startChatWithUser failed: $e');
       }
 
       // Fallback to old endpoint
+      print('🔍 [ChatProvider] Trying fallback getOrCreateDirectChat API...');
       final chatRoom = await _apiService.getOrCreateDirectChat(targetUserId);
+      print('✅ [ChatProvider] Fallback returned: ${chatRoom?.id}');
 
       // Reload chat list
       await loadChatRooms();
@@ -312,7 +319,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       return chatRoom;
     } catch (e) {
-
+      print('❌ [ChatProvider] getOrCreateDirectChat error: $e');
       _safeUpdateState((s) => s.copyWith(
         isLoading: false,
         error: e.toString(),
@@ -487,22 +494,26 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       // Verify connection
       if (_chatRoomWS!.isConnected) {
+        print('✅ [ChatProvider] WebSocket connected to room $roomId');
 
         // 🔥 Properly set up subscription
         _chatRoomSubscription = _chatRoomWS!.messages.listen(
           (data) {
-
             _handleChatRoomMessage(data);
           },
           onError: (error) {
-
+            print('❌ [ChatProvider] WebSocket error: $error');
           },
           onDone: () {
-
+            print('🔌 [ChatProvider] WebSocket stream done');
           },
         );
-      } else {
 
+        // 🔥 NEW: Send read receipt when entering chat room (KakaoTalk-style)
+        // This tells the other user that we've read their messages
+        _chatRoomWS!.sendReadReceipt();
+      } else {
+        print('❌ [ChatProvider] Failed to establish WebSocket connection');
         _safeUpdateState((s) => s.copyWith(
           error: 'Failed to establish connection',
         ));
@@ -1208,14 +1219,103 @@ class ChatNotifier extends StateNotifier<ChatState> {
         break;
         
       case 'connection_established':
-
+        print('✅ [ChatProvider] Connection established');
         break;
+
       case 'error':
-
+        print('❌ [ChatProvider] WebSocket error: ${data['message']}');
         break;
-        
-      default:
 
+      // 🔥 NEW: Handle read receipts (KakaoTalk-style)
+      case 'read_receipt':
+      case 'messages_read':
+      case 'mark_read':
+        try {
+          print('📬 [ChatProvider] Read receipt received: $data');
+          final readerId = data['reader_id'] as int? ?? data['user_id'] as int?;
+          final messageIds = data['message_ids'] as List?;
+          final lastReadMessageId = data['last_read_message_id'] as int?;
+
+          if (readerId != null && readerId != state.currentUserId) {
+            // Update messages to show they've been read
+            final updatedMessages = state.messages.map((msg) {
+              // If specific message IDs provided, only update those
+              if (messageIds != null) {
+                if (messageIds.contains(msg.id)) {
+                  return ChatMessage(
+                    id: msg.id,
+                    messageType: msg.messageType,
+                    content: msg.content,
+                    file: msg.file,
+                    fileUrl: msg.fileUrl,
+                    duration: msg.duration,
+                    sender: msg.sender,
+                    timestamp: msg.timestamp,
+                    updatedAt: msg.updatedAt,
+                    isRead: true,
+                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
+                    isEdited: msg.isEdited,
+                    isDeleted: msg.isDeleted,
+                    replyTo: msg.replyTo,
+                    reactions: msg.reactions,
+                  );
+                }
+              } else if (lastReadMessageId != null) {
+                // Mark all messages up to lastReadMessageId as read
+                if (msg.id <= lastReadMessageId && msg.sender.id == state.currentUserId) {
+                  return ChatMessage(
+                    id: msg.id,
+                    messageType: msg.messageType,
+                    content: msg.content,
+                    file: msg.file,
+                    fileUrl: msg.fileUrl,
+                    duration: msg.duration,
+                    sender: msg.sender,
+                    timestamp: msg.timestamp,
+                    updatedAt: msg.updatedAt,
+                    isRead: true,
+                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
+                    isEdited: msg.isEdited,
+                    isDeleted: msg.isDeleted,
+                    replyTo: msg.replyTo,
+                    reactions: msg.reactions,
+                  );
+                }
+              } else {
+                // Mark all own messages as read by this reader
+                if (msg.sender.id == state.currentUserId && !msg.isRead) {
+                  return ChatMessage(
+                    id: msg.id,
+                    messageType: msg.messageType,
+                    content: msg.content,
+                    file: msg.file,
+                    fileUrl: msg.fileUrl,
+                    duration: msg.duration,
+                    sender: msg.sender,
+                    timestamp: msg.timestamp,
+                    updatedAt: msg.updatedAt,
+                    isRead: true,
+                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
+                    isEdited: msg.isEdited,
+                    isDeleted: msg.isDeleted,
+                    replyTo: msg.replyTo,
+                    reactions: msg.reactions,
+                  );
+                }
+              }
+              return msg;
+            }).toList();
+
+            _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+            print('✅ [ChatProvider] Updated ${updatedMessages.where((m) => m.isRead).length} messages as read');
+          }
+        } catch (e) {
+          print('❌ [ChatProvider] Error handling read receipt: $e');
+        }
+        break;
+
+      default:
+        print('⚠️ [ChatProvider] Unknown message type: ${data['type']}');
     }
   }
 
@@ -1580,4 +1680,13 @@ final availableUsersProvider = Provider<List<User>>((ref) {
 final totalUnreadCountProvider = Provider<int>((ref) {
   final chatRooms = ref.watch(chatProvider).chatRooms;
   return chatRooms.fold(0, (sum, room) => sum + room.unreadCount);
+});
+
+// Sorted messages provider - caches sorted result to avoid O(n log n) on every rebuild
+final sortedMessagesProvider = Provider<List<ChatMessage>>((ref) {
+  final messages = ref.watch(chatProvider).messages;
+  if (messages.isEmpty) return const [];
+  final sorted = List<ChatMessage>.from(messages);
+  sorted.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  return sorted;
 });

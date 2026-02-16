@@ -271,6 +271,43 @@ class ChatRoomWebSocketService {
 
       _channel!.sink.add(message);
 
+  /// 🔥 NEW: Send read receipt to mark messages as read (KakaoTalk-style)
+  void sendReadReceipt() {
+    if (!_isConnected || _channel == null) {
+      print('❌ Cannot send read receipt: not connected');
+      return;
+    }
+
+    try {
+      final message = json.encode({
+        'type': 'read_receipt',
+      });
+      _channel!.sink.add(message);
+      print('✅ Read receipt sent');
+    } catch (e) {
+      print('❌ Error sending read receipt: $e');
+    }
+  }
+
+  /// 🔥 NEW: Mark specific message as read
+  void markMessageAsRead(int messageId) {
+    if (!_isConnected || _channel == null) {
+      print('❌ Cannot mark message as read: not connected');
+      return;
+    }
+
+    try {
+      final message = json.encode({
+        'type': 'mark_read',
+        'message_id': messageId,
+      });
+      _channel!.sink.add(message);
+      print('✅ Marked message $messageId as read');
+    } catch (e) {
+      print('❌ Error marking message as read: $e');
+    }
+  }
+
     } catch (e) {
 
     }

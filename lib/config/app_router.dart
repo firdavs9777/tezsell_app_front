@@ -569,32 +569,51 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
 
   Future<void> _loadChatRoom() async {
     try {
-      final chatState = ref.read(chatProvider);
-      final chatRooms = chatState.chatRooms;
-      
-      // Try to find the chat room by ID
+      print('🔔 [ChatRoomWrapper] Loading chat with ID: ${widget.chatId}');
+
       final chatIdInt = int.tryParse(widget.chatId);
-      if (chatIdInt != null) {
-        final room = chatRooms.firstWhere(
-          (room) => room.id == chatIdInt,
-          orElse: () => ChatRoom(
-            id: chatIdInt,
-            name: 'Chat',
-            participants: [],
-            unreadCount: 0,
-          ),
-        );
-        
-        if (mounted) {
-          setState(() {
-            _chatRoom = room;
-            _isLoading = false;
-          });
-        }
-      } else {
+      if (chatIdInt == null) {
         throw Exception('Invalid chat ID: ${widget.chatId}');
       }
+
+      // Ensure chat provider is initialized
+      final chatNotifier = ref.read(chatProvider.notifier);
+      await chatNotifier.initialize();
+
+      // Wait for chat rooms to load if needed
+      var chatState = ref.read(chatProvider);
+      if (chatState.chatRooms.isEmpty && chatState.isAuthenticated) {
+        print('🔔 [ChatRoomWrapper] Chat rooms empty, loading...');
+        await chatNotifier.loadChatRooms();
+        chatState = ref.read(chatProvider);
+      }
+
+      // Try to find the chat room by ID in local state
+      ChatRoom? room;
+      try {
+        room = chatState.chatRooms.firstWhere((r) => r.id == chatIdInt);
+        print('✅ [ChatRoomWrapper] Found chat room in local state: ${room.name}');
+      } catch (e) {
+        print('⚠️ [ChatRoomWrapper] Chat not found locally, fetching from API...');
+        // Chat not found locally - this can happen when opening from notification
+        // Try to get or create the chat room via API
+        // For now, create a minimal room that will be populated when entering
+        room = ChatRoom(
+          id: chatIdInt,
+          name: 'Chat',
+          participants: [],
+          unreadCount: 0,
+        );
+      }
+
+      if (mounted) {
+        setState(() {
+          _chatRoom = room;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
+      print('❌ [ChatRoomWrapper] Error loading chat: $e');
       if (mounted) {
         setState(() {
           _error = e.toString();

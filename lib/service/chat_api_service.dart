@@ -155,24 +155,35 @@ class ChatApiService {
   // KARROT STYLE: Get or create direct chat
   Future<ChatRoom> getOrCreateDirectChat(int targetUserId) async {
     try {
+      print('🔍 [ChatAPI] getOrCreateDirectChat called for userId: $targetUserId');
       final headers = await _getHeaders();
+      print('🔍 [ChatAPI] Making POST to: $apiBaseUrl/chats/direct/');
+
       final response = await http.post(
         Uri.parse('$apiBaseUrl/chats/direct/'),
         headers: headers,
         body: json.encode({'target_user_id': targetUserId}),
-      );
+      ).timeout(const Duration(seconds: 30), onTimeout: () {
+        print('❌ [ChatAPI] getOrCreateDirectChat timed out');
+        throw Exception('Request timed out');
+      });
+
+      print('🔍 [ChatAPI] getOrCreateDirectChat response: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
+        print('✅ [ChatAPI] getOrCreateDirectChat success');
         return ChatRoom.fromJson(data['chat']);
       } else if (response.statusCode == 401) {
+        print('❌ [ChatAPI] Authentication failed');
         throw Exception('Authentication failed');
       } else {
         final error = json.decode(response.body);
+        print('❌ [ChatAPI] getOrCreateDirectChat failed: ${error['error']}');
         throw Exception(error['error'] ?? 'Failed to create chat');
       }
     } catch (e) {
-
+      print('❌ [ChatAPI] getOrCreateDirectChat error: $e');
       rethrow;
     }
   }
@@ -398,22 +409,31 @@ class ChatApiService {
   // 🔥 NEW: Start chat with user by ID (KakaoTalk-style)
   Future<Map<String, dynamic>> startChatWithUser(int userId) async {
     try {
+      print('🔍 [ChatAPI] startChatWithUser called for userId: $userId');
       final headers = await _getHeaders();
-      
+      print('🔍 [ChatAPI] Headers ready, making request to: $apiBaseUrl/chats/start/$userId/');
+
       final response = await http.get(
         Uri.parse('$apiBaseUrl/chats/start/$userId/'),
         headers: headers,
-      );
+      ).timeout(const Duration(seconds: 30), onTimeout: () {
+        print('❌ [ChatAPI] Request timed out after 30 seconds');
+        throw Exception('Request timed out');
+      });
+
+      print('🔍 [ChatAPI] Response status: ${response.statusCode}');
 
       // 🔥 Accept both 200 (OK) and 201 (Created) as success
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(utf8.decode(response.bodyBytes));
+        print('✅ [ChatAPI] startChatWithUser success');
         return data as Map<String, dynamic>;
       } else {
+        print('❌ [ChatAPI] startChatWithUser failed: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to start chat: ${response.statusCode}');
       }
     } catch (e) {
-
+      print('❌ [ChatAPI] startChatWithUser error: $e');
       rethrow;
     }
   }

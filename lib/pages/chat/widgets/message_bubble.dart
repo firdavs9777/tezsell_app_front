@@ -103,22 +103,22 @@ class MessageBubble extends StatelessWidget {
                       ),
                       width: double.infinity, // Ensure full width
                       decoration: BoxDecoration(
-                        // Telegram-style reply background
+                        // Modern reply background
                         color: isOwnMessage
-                            ? Theme.of(context).colorScheme.surfaceContainerHighest // Light background for dark text
-                            : Theme.of(context).colorScheme.surfaceContainerHighest, // Light grey for received messages
+                            ? Colors.white.withOpacity(0.15) // Subtle white for own messages
+                            : Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
                           bottomLeft: Radius.circular(2),
                           bottomRight: Radius.circular(2),
                         ),
                         border: Border(
                           left: BorderSide(
                             color: isOwnMessage
-                                ? Colors.white // White vertical bar
-                                : const Color(0xFF3390EC), // Telegram blue
-                            width: 2.5,
+                                ? Colors.white // White vertical bar for own messages
+                                : const Color(0xFF25D366), // WhatsApp green
+                            width: 3,
                           ),
                         ),
                       ),
@@ -132,8 +132,8 @@ class MessageBubble extends StatelessWidget {
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: isOwnMessage
-                                  ? const Color(0xFF3390EC) // Telegram blue for own messages
-                                  : const Color(0xFF3390EC), // Telegram blue
+                                  ? Colors.white // White for own messages
+                                  : const Color(0xFF25D366), // WhatsApp green
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -157,7 +157,9 @@ class MessageBubble extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: isOwnMessage
+                                      ? Colors.white.withOpacity(0.9) // White for own messages
+                                      : Theme.of(context).colorScheme.onSurface,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -169,28 +171,40 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
 
-                // Main message bubble (Telegram-style)
+                // Main message bubble (Modern WhatsApp/iMessage style)
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    horizontal: 14,
+                    vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    // Telegram green for own messages, surface for others
+                    // Modern gradient for own messages, subtle surface for others
+                    gradient: isOwnMessage
+                        ? const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF25D366), // WhatsApp green
+                              Color(0xFF128C7E), // Darker WhatsApp green
+                            ],
+                          )
+                        : null,
                     color: isOwnMessage
-                        ? const Color(0xFF3390EC) // Telegram blue-green
-                        : Theme.of(context).colorScheme.surface,
+                        ? null
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? const Color(0xFF2A2F32) // Dark mode received
+                            : const Color(0xFFF0F2F5), // Light mode received
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(12),
-                      topRight: const Radius.circular(12),
-                      bottomLeft: Radius.circular(isOwnMessage ? 12 : 4),
-                      bottomRight: Radius.circular(isOwnMessage ? 4 : 12),
+                      topLeft: const Radius.circular(18),
+                      topRight: const Radius.circular(18),
+                      bottomLeft: Radius.circular(isOwnMessage ? 18 : 4),
+                      bottomRight: Radius.circular(isOwnMessage ? 4 : 18),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -198,7 +212,7 @@ class MessageBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Sender name (for group chats) - Telegram style
+                      // Sender name (for group chats) - Modern style
                       if (!isOwnMessage)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4),
@@ -207,7 +221,7 @@ class MessageBubble extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF3390EC), // Telegram blue
+                              color: const Color(0xFF25D366), // WhatsApp green
                             ),
                           ),
                         ),
@@ -329,27 +343,45 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  // 🔥 NEW: Read receipt widget (Telegram-style)
+  // 🔥 Read receipt widget (KakaoTalk + WhatsApp hybrid style)
   Widget _buildReadReceipt() {
     // Use actual ChatMessage properties: isRead and readBy
     final readCount = message.readBy.length;
     final hasBeenRead = message.isRead || readCount > 0;
-    final isDelivered =
-        message.id != null; // If message has ID, it was sent to server
+    final isDelivered = message.id != null; // If message has ID, it was sent to server
 
     if (hasBeenRead) {
-      // Read by someone (blue double check - Telegram style)
-      return Icon(Icons.done_all, size: 16, color: const Color(0xFF3390EC));
-    } else if (isDelivered) {
-      // Delivered but not read (grey double check)
-      return Icon(
+      // Read - show blue double check (WhatsApp style)
+      return const Icon(
         Icons.done_all,
         size: 16,
-        color: Colors.white.withOpacity(0.6),
+        color: Color(0xFF53BDEB), // Light blue - visible on green background
+      );
+    } else if (isDelivered) {
+      // Delivered but not read - show unread count (KakaoTalk style)
+      // In 1:1 chat, this shows "1" meaning 1 person hasn't read it
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFC107), // KakaoTalk yellow
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text(
+          '1',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
       );
     } else {
       // Sent but not delivered (single grey check)
-      return Icon(Icons.done, size: 16, color: Colors.white.withOpacity(0.6));
+      return Icon(
+        Icons.done,
+        size: 16,
+        color: Colors.white.withOpacity(0.7),
+      );
     }
   }
 

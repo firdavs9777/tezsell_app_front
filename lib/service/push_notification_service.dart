@@ -161,56 +161,80 @@ class PushNotificationService {
   /// Stores notification for later if router is not yet available
   void _navigateFromNotification(RemoteMessage message) {
     final data = message.data;
+    print('🔔 [Navigation] Full notification data: $data');
+
     final type = data['type'] as String?;
-    final objectId = data['object_id'] as String?;
+    // Try multiple possible keys for object ID
+    final objectId = data['object_id'] as String? ??
+        data['objectId'] as String? ??
+        data['chat_id'] as String? ??
+        data['room_id'] as String?;
+
+    print('🔔 [Navigation] Extracted: type=$type, objectId=$objectId');
 
     // If router is not yet set, store the notification for later
     if (_router == null) {
-      print('🔔 Router not set yet, storing notification for later navigation');
+      print('🔔 [Navigation] Router not set yet, storing notification for later');
       _pendingNotification = message;
       return;
     }
 
     if (objectId == null && type == null) {
-      print('🔔 No navigation data in notification');
+      print('🔔 [Navigation] No navigation data in notification');
       return;
     }
 
-    print('🔔 Navigating from notification: type=$type, objectId=$objectId');
+    print('🔔 [Navigation] Navigating: type=$type, objectId=$objectId');
 
     // Give the app a moment to settle before navigating
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       try {
+        String? targetRoute;
+
         switch (type) {
           case 'product_like':
           case 'recommended_product':
-            _router!.go('/product/$objectId');
+            if (objectId != null) targetRoute = '/product/$objectId';
             break;
           case 'service_like':
           case 'service_comment':
           case 'recommended_service':
-            _router!.go('/service/$objectId');
+            if (objectId != null) targetRoute = '/service/$objectId';
             break;
           case 'real_estate':
-            _router!.go('/real-estate/$objectId');
+            if (objectId != null) targetRoute = '/real-estate/$objectId';
             break;
           case 'chat':
-            _router!.go('/chat/$objectId');
+          case 'message':
+          case 'new_message':
+            if (objectId != null) {
+              targetRoute = '/chat/$objectId';
+            } else {
+              // If no object ID, go to chat list
+              targetRoute = '/chat';
+            }
             break;
           case 'offer':
           case 'offer_accepted':
           case 'offer_declined':
           case 'offer_countered':
-            _router!.go('/offers');
+            targetRoute = '/offers';
             break;
           default:
             // Navigate to notifications tab for other types
-            _router!.go('/tabs');
+            targetRoute = '/tabs';
             break;
         }
-        print('✅ Navigation completed');
+
+        if (targetRoute != null) {
+          print('✅ [Navigation] Navigating to: $targetRoute');
+          _router!.go(targetRoute);
+        } else {
+          print('⚠️ [Navigation] No valid route determined, going to /tabs');
+          _router!.go('/tabs');
+        }
       } catch (e) {
-        print('❌ Navigation error: $e');
+        print('❌ [Navigation] Error: $e');
       }
     });
   }
@@ -494,6 +518,30 @@ class PushNotificationService {
     print('   Message ID: ${message.messageId}');
     print('   Sent time: ${message.sentTime}');
     print('   From: ${message.from}');
+
+    // 🔥 Filter out notifications for own messages
+    final prefs = await SharedPreferences.getInstance();
+    final currentUserIdStr = prefs.getString('userId');
+    final currentUserId = currentUserIdStr != null ? int.tryParse(currentUserIdStr) : null;
+
+    // Get sender ID from notification data
+    final data = message.data;
+    int? senderId;
+    if (data.containsKey('sender_id')) {
+      senderId = data['sender_id'] is int
+          ? data['sender_id']
+          : int.tryParse(data['sender_id'].toString());
+    } else if (data.containsKey('sender')) {
+      senderId = data['sender'] is int
+          ? data['sender']
+          : int.tryParse(data['sender'].toString());
+    }
+
+    // Skip notification if it's from the current user (own message)
+    if (currentUserId != null && senderId != null && currentUserId == senderId) {
+      print('🔔 Skipping notification for own message (sender=$senderId, currentUser=$currentUserId)');
+      return;
+    }
 
     // Show local notification when app is in foreground
     final notification = message.notification;

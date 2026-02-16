@@ -76,10 +76,11 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         setState(() {
           _isSearching = false;
         });
-        final l = AppLocalizations.of(context)!;
+        final l = AppLocalizations.of(context);
+        final errorMessage = l?.search_failed(e.toString()) ?? 'Search failed: $e';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l.search_failed(e.toString())),
+            content: Text(errorMessage),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -115,14 +116,17 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
   
   // 🔥 NEW: Block/unblock user
   Future<void> _toggleBlockUser(User user, bool isBlocked) async {
+    // Get localization before async operation
+    final l = AppLocalizations.of(context);
+
     try {
       if (isBlocked) {
         await ref.read(chatProvider.notifier).unblockUser(user.id);
         if (mounted) {
-          final l = AppLocalizations.of(context)!;
+          final message = l?.user_unblocked(user.username) ?? 'User ${user.username} unblocked';
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l.user_unblocked(user.username)),
+              content: Text(message),
               backgroundColor: Theme.of(context).brightness == Brightness.dark
                   ? Theme.of(context).colorScheme.primary
                   : const Color(0xFF43A047),
@@ -132,10 +136,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       } else {
         await ref.read(chatProvider.notifier).blockUser(user.id);
         if (mounted) {
-          final l = AppLocalizations.of(context)!;
+          final message = l?.user_blocked(user.username) ?? 'User ${user.username} blocked';
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l.user_blocked(user.username)),
+              content: Text(message),
               backgroundColor: Theme.of(context).colorScheme.tertiary,
             ),
           );
@@ -143,10 +147,12 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
     } catch (e) {
       if (mounted) {
-        final l = AppLocalizations.of(context)!;
+        final errorMessage = isBlocked
+            ? (l?.failed_to_unblock ?? 'Failed to unblock user')
+            : (l?.failed_to_block ?? 'Failed to block user');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(isBlocked ? l.failed_to_unblock : l.failed_to_block),
+            content: Text(errorMessage),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -160,12 +166,13 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
 
     // 🔥 Handle different response formats
     // Backend returns user data directly, so 'id' is at root level
-    final userId = searchResult['id'] as int? ?? 
+    final userId = searchResult['id'] as int? ??
                    searchResult['user_id'] as int?;
     if (userId == null) {
-      final l = AppLocalizations.of(context)!;
+      final l = AppLocalizations.of(context);
+      final errorMessage = l?.invalid_user_data ?? 'Invalid user data';
       ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l.invalid_user_data)),
+            SnackBar(content: Text(errorMessage)),
       );
       return;
     }
@@ -208,36 +215,46 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       _isCreatingChat = true;
     });
 
+    // Get localization before showing dialog (to avoid null context issues)
+    final localizations = AppLocalizations.of(context);
+    final startingChatText = localizations?.starting_chat ?? 'Starting chat...';
+
     try {
+      print('🔍 [UserList] Starting chat with userId: $userId');
+
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => PopScope(
+        builder: (dialogContext) => PopScope(
           canPop: false,
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
-                Builder(
-                  builder: (context) {
-                    final l = AppLocalizations.of(context)!;
-                    return Text(
-                      l.starting_chat,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                    );
-                  },
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(
+                      startingChatText,
+                      style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       );
 
+      print('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat...');
+
       // Use new start chat endpoint (it's integrated in getOrCreateDirectChat)
       // This will check for existing chat and only create if needed
       final chatRoom = await ref.read(chatProvider.notifier).getOrCreateDirectChat(userId);
+
+      print('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
 
       if (mounted) Navigator.of(context).pop();
 
@@ -257,10 +274,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
 
       if (mounted) {
-        final l = AppLocalizations.of(context)!;
+        final errorText = localizations?.failed_to_start_chat(e.toString()) ?? 'Failed to start chat: $e';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l.failed_to_start_chat(e.toString())),
+            content: Text(errorText),
             backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -282,35 +299,45 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       _isCreatingChat = true;
     });
 
+    // Get localization before showing dialog (to avoid null context issues)
+    final localizations = AppLocalizations.of(context);
+    final startingChatText = localizations?.starting_chat ?? 'Starting chat...';
+
     try {
+      print('🔍 [UserList] _startChatWithUser called for user: ${user.id} (${user.username})');
+
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => PopScope(
+        builder: (dialogContext) => PopScope(
           canPop: false,
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
-                Builder(
-                  builder: (context) {
-                    final l = AppLocalizations.of(context)!;
-                    return Text(
-                      l.starting_chat,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                    );
-                  },
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(
+                      startingChatText,
+                      style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       );
 
+      print('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat for user.id: ${user.id}');
+
       final chatRoom =
           await ref.read(chatProvider.notifier).getOrCreateDirectChat(user.id);
+
+      print('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
 
       if (mounted) Navigator.of(context).pop();
 
@@ -330,10 +357,10 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
       }
 
       if (mounted) {
-        final l = AppLocalizations.of(context)!;
+        final errorText = localizations?.failed_to_start_chat(e.toString()) ?? 'Failed to start chat: $e';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l.failed_to_start_chat(e.toString())),
+            content: Text(errorText),
             backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -603,13 +630,13 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     bool isOnline,
     String? profileImage,
   ) {
-    final l = AppLocalizations.of(context)!;
-    final username = userData['username'] as String? ?? l.unknown;
-    final displayName = userData['display_name'] as String? ?? 
-                       '${userData['first_name'] ?? ''} ${userData['last_name'] ?? ''}'.trim() ??
-                       username;
+    final l = AppLocalizations.of(context);
+    final username = userData['username'] as String? ?? l?.unknown ?? 'Unknown';
+    final fullName = '${userData['first_name'] ?? ''} ${userData['last_name'] ?? ''}'.trim();
+    final displayName = userData['display_name'] as String? ??
+                       (fullName.isNotEmpty ? fullName : username);
     final avatarLetter = username.isNotEmpty ? username[0].toUpperCase() : '?';
-    
+
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: Material(
@@ -630,8 +657,8 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => ImageViewer(
-                                imageUrl: profileImage!,
-                                title: username ?? 'Profile Picture',
+                                imageUrl: profileImage,
+                                title: username,
                               ),
                             ),
                           );
@@ -651,7 +678,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                         ),
                         child: ClipOval(
                           child: Image.network(
-                            profileImage!,
+                            profileImage,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) => Center(
                               child: Text(
@@ -915,36 +942,42 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
   // 🔥 NEW: Show block confirmation dialog
   void _showBlockDialog(User user) {
     final isBlocked = ref.read(chatProvider).blockedUserIds.contains(user.id);
-    
+
+    // Get localization before showing dialog (to avoid null context issues)
+    final l = AppLocalizations.of(context);
+    final titleText = isBlocked
+        ? (l?.unblock_user ?? 'Unblock User')
+        : (l?.block_user ?? 'Block User');
+    final contentText = isBlocked
+        ? (l?.unblock_user_confirm(user.username) ?? 'Unblock ${user.username}?')
+        : (l?.block_user_confirm(user.username) ?? 'Block ${user.username}?');
+    final cancelText = l?.cancel ?? 'Cancel';
+    final actionText = titleText;
+
     showDialog(
       context: context,
-      builder: (context) {
-        final l = AppLocalizations.of(context)!;
+      builder: (dialogContext) {
         return AlertDialog(
-          title: Text(isBlocked ? l.unblock_user : l.block_user),
-          content: Text(
-            isBlocked
-                ? l.unblock_user_confirm(user.username)
-                : l.block_user_confirm(user.username),
-          ),
+          title: Text(titleText),
+          content: Text(contentText),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l.cancel),
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(cancelText),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 await _toggleBlockUser(user, isBlocked);
               },
               child: Text(
-                isBlocked ? l.unblock_user : l.block_user,
+                actionText,
                 style: TextStyle(
                   color: isBlocked
-                      ? (Theme.of(context).brightness == Brightness.dark
-                          ? Theme.of(context).colorScheme.primary
+                      ? (Theme.of(dialogContext).brightness == Brightness.dark
+                          ? Theme.of(dialogContext).colorScheme.primary
                           : const Color(0xFF43A047))
-                      : Theme.of(context).colorScheme.error,
+                      : Theme.of(dialogContext).colorScheme.error,
                 ),
               ),
             ),
