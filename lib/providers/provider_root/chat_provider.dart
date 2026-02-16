@@ -1223,7 +1223,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
         break;
 
       case 'error':
-        print('❌ [ChatProvider] WebSocket error: ${data['message']}');
+        final errorMsg = data['error'] as String? ?? data['message'] as String? ?? '';
+        print('❌ [ChatProvider] WebSocket error: $errorMsg');
         break;
 
       // 🔥 NEW: Handle read receipts (KakaoTalk-style)
@@ -1262,7 +1263,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 }
               } else if (lastReadMessageId != null) {
                 // Mark all messages up to lastReadMessageId as read
-                if (msg.id <= lastReadMessageId && msg.sender.id == state.currentUserId) {
+                if (msg.id != null && msg.id! <= lastReadMessageId && msg.sender.id == state.currentUserId) {
                   return ChatMessage(
                     id: msg.id,
                     messageType: msg.messageType,

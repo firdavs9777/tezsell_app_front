@@ -353,13 +353,19 @@ class ChatApiService {
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         // Handle both paginated and non-paginated responses
-        final users = (data is List) ? data : (data['results'] ?? []);
-        return (users as List).map((json) => User.fromJson(json)).toList();
+        final usersList = (data is List) ? data : (data['results'] ?? []);
+
+        // 🔍 Debug: Log online status for each user
+        for (var u in usersList) {
+          print('👤 [Users] ${u['username']}: is_online=${u['is_online']}, last_seen=${u['last_seen']}');
+        }
+
+        return (usersList as List).map((json) => User.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load users');
       }
     } catch (e) {
-
+      print('❌ [Users] Error loading users: $e');
       return [];
     }
   }

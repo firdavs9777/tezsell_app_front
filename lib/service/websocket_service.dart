@@ -259,7 +259,6 @@ class ChatRoomWebSocketService {
 
   void sendTypingStatus(bool isTyping) {
     if (!_isConnected || _channel == null) {
-
       return;
     }
 
@@ -268,22 +267,25 @@ class ChatRoomWebSocketService {
         'type': 'typing',
         'is_typing': isTyping,
       });
-
       _channel!.sink.add(message);
+    } catch (e) {
+      print('❌ Error sending typing status: $e');
+    }
+  }
 
-  /// 🔥 NEW: Send read receipt to mark messages as read (KakaoTalk-style)
+  /// 🔥 Send read receipt to mark messages as read (KakaoTalk-style)
   void sendReadReceipt() {
     if (!_isConnected || _channel == null) {
-      print('❌ Cannot send read receipt: not connected');
       return;
     }
 
     try {
+      // Backend expects 'mark_read' type
       final message = json.encode({
-        'type': 'read_receipt',
+        'type': 'mark_read',
       });
       _channel!.sink.add(message);
-      print('✅ Read receipt sent');
+      print('✅ Read receipt sent (mark_read)');
     } catch (e) {
       print('❌ Error sending read receipt: $e');
     }
@@ -305,11 +307,6 @@ class ChatRoomWebSocketService {
       print('✅ Marked message $messageId as read');
     } catch (e) {
       print('❌ Error marking message as read: $e');
-    }
-  }
-
-    } catch (e) {
-
     }
   }
 

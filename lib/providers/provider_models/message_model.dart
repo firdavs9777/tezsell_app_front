@@ -242,6 +242,8 @@ class ChatRoom {
         participantsList = (json['participants'] as List)
             .map((p) {
               if (p is Map<String, dynamic>) {
+                // 🔍 Debug: Log participant online status
+                print('👤 [ChatRoom] Participant: ${p['username']}, is_online=${p['is_online']}, last_seen=${p['last_seen']}');
                 return User.fromJson(p);
               } else if (p is int) {
                 return User(id: p, username: 'User $p');
@@ -251,6 +253,7 @@ class ChatRoom {
             .whereType<User>()
             .toList();
       } catch (e) {
+        print('❌ [ChatRoom] Error parsing participants: $e');
       }
     } else if (json['participant_ids'] != null &&
         json['participant_ids'] is List) {
