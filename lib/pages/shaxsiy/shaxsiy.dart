@@ -10,6 +10,8 @@ import 'package:app/pages/shaxsiy/main_profile/profile_edit.dart';
 import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
 import 'package:app/pages/shaxsiy/properties/saved_properties.dart';
 import 'package:app/pages/shaxsiy/security/main_security.dart';
+import 'package:app/pages/shaxsiy/widgets/profile_follow_list_sheet.dart';
+import 'package:app/pages/shaxsiy/widgets/profile_menu_card.dart';
 import 'package:app/pages/real_estate/agent/become_agent_page.dart';
 import 'package:app/pages/real_estate/agent/agent_dashboard_page.dart';
 import 'package:app/pages/admin/admin_dashboard.dart';
@@ -17,7 +19,6 @@ import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
-import 'package:app/providers/provider_models/user_profile_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
@@ -27,7 +28,6 @@ import 'package:app/pages/authentication/login.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/widgets/image_viewer.dart';
-import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -356,7 +356,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _FollowListSheet(
+      builder: (context) => ProfileFollowListSheet(
         title: localizations?.profile_followers ?? 'Obunachilar',
         userId: _currentUserId!,
         isFollowers: true,
@@ -371,90 +371,10 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _FollowListSheet(
+      builder: (context) => ProfileFollowListSheet(
         title: localizations?.profile_following ?? 'Obunalar',
         userId: _currentUserId!,
         isFollowers: false,
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-    );
-  }
-
-  Widget _buildMenuCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-    Color? iconColor,
-    Widget? trailing,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: (iconColor ?? const Color(0xFFFF6F00)).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? const Color(0xFFFF6F00),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              trailing ??
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                  ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -789,9 +709,9 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   Divider(color: colorScheme.outlineVariant, height: 1),
 
                   // My Items Section
-                  _buildSectionTitle(localizations?.myProfile ?? 'My Items'),
+                  ProfileSectionTitle(localizations?.myProfile ?? 'My Items'),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.inventory_2_rounded,
                     title: localizations?.myProductsTitle ?? 'My Products',
                     subtitle: '${products.length} items',
@@ -799,7 +719,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => context.push('/profile/my-products'),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.room_service_rounded,
                     title: localizations?.myServicesTitle ?? 'My Services',
                     subtitle: '${services.length} services',
@@ -807,7 +727,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => context.push('/profile/my-services'),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.favorite_rounded,
                     title: localizations?.favoriteProductsTitle ?? 'Favorite Products',
                     subtitle: '${favoriteItems.likedProducts.length} items',
@@ -815,7 +735,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => context.push('/profile/favorites/products'),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.star_rounded,
                     title: localizations?.favoriteServicesTitle ?? 'Favorite Services',
                     subtitle: '${favoriteItems.likedServices.length} services',
@@ -833,9 +753,9 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   _buildAdminSection(user, localizations),
 
                   // Settings Section
-                  _buildSectionTitle(localizations?.settings ?? 'Settings'),
+                  ProfileSectionTitle(localizations?.settings ?? 'Settings'),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.language_rounded,
                     title: localizations?.language ?? 'Language',
                     subtitle: _getCurrentLanguageName(),
@@ -843,7 +763,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => _showLanguageDialog(context, localizations),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.palette_rounded,
                     title: localizations?.theme ?? 'Theme',
                     subtitle: _getCurrentThemeName(localizations),
@@ -851,7 +771,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => _showThemeDialog(context, localizations),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.my_location_rounded,
                     title: localizations?.location_settings ?? 'Location',
                     subtitle: 'Default area and location services',
@@ -862,7 +782,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     ),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.security_rounded,
                     title: localizations?.security ?? 'Security',
                     subtitle: 'Password, 2FA, and login history',
@@ -874,9 +794,9 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   ),
 
                   // Support Section
-                  _buildSectionTitle(localizations?.customer_support ?? 'Support'),
+                  ProfileSectionTitle(localizations?.customer_support ?? 'Support'),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.headset_mic_rounded,
                     title: localizations?.customer_center ?? 'Customer Center',
                     subtitle: 'Get help and support',
@@ -887,7 +807,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     ),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.help_outline_rounded,
                     title: localizations?.customer_inquiries ?? 'Inquiries',
                     subtitle: 'Ask questions or report issues',
@@ -898,7 +818,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     ),
                   ),
 
-                  _buildMenuCard(
+                  ProfileMenuCard(
                     icon: Icons.article_rounded,
                     title: localizations?.customer_terms ?? 'Terms and Conditions',
                     subtitle: 'Privacy policy and terms',
@@ -998,7 +918,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         return tokenAsync.when(
           data: (token) {
             if (token == null) {
-              return _buildMenuCard(
+              return ProfileMenuCard(
                 icon: Icons.real_estate_agent_rounded,
                 title: localizations?.saved_properties_title ?? 'Saved Properties',
                 subtitle: 'Login to view saved properties',
@@ -1013,7 +933,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
             final savedPropertiesAsync = ref.watch(savedPropertiesNotifierProvider(token));
 
             return savedPropertiesAsync.when(
-              data: (response) => _buildMenuCard(
+              data: (response) => ProfileMenuCard(
                 icon: Icons.real_estate_agent_rounded,
                 title: localizations?.saved_properties_title ?? 'Saved Properties',
                 subtitle: '${response.count} items',
@@ -1023,7 +943,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
               ),
-              loading: () => _buildMenuCard(
+              loading: () => ProfileMenuCard(
                 icon: Icons.real_estate_agent_rounded,
                 title: localizations?.saved_properties_title ?? 'Saved Properties',
                 subtitle: 'Loading...',
@@ -1033,7 +953,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                   MaterialPageRoute(builder: (context) => SavedProperties()),
                 ),
               ),
-              error: (_, __) => _buildMenuCard(
+              error: (_, __) => ProfileMenuCard(
                 icon: Icons.real_estate_agent_rounded,
                 title: localizations?.saved_properties_title ?? 'Saved Properties',
                 subtitle: '0 items',
@@ -1045,7 +965,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               ),
             );
           },
-          loading: () => _buildMenuCard(
+          loading: () => ProfileMenuCard(
             icon: Icons.real_estate_agent_rounded,
             title: localizations?.saved_properties_title ?? 'Saved Properties',
             subtitle: 'Loading...',
@@ -1066,7 +986,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         return tokenAsync.when(
           data: (token) {
             if (token == null) {
-              return _buildMenuCard(
+              return ProfileMenuCard(
                 icon: Icons.badge_rounded,
                 title: localizations?.becomeAgent ?? 'Become an Agent',
                 subtitle: 'Login to apply',
@@ -1085,7 +1005,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                 final isVerified = snapshot.data?['is_verified'] ?? false;
 
                 if (isAgent && isVerified) {
-                  return _buildMenuCard(
+                  return ProfileMenuCard(
                     icon: Icons.verified_user_rounded,
                     title: localizations?.general_verified_agent ?? 'Verified Agent',
                     subtitle: localizations?.agentViewProfile ?? 'View your agent profile',
@@ -1096,7 +1016,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     ),
                   );
                 } else if (isAgent && !isVerified) {
-                  return _buildMenuCard(
+                  return ProfileMenuCard(
                     icon: Icons.pending_rounded,
                     title: localizations?.general_application_under_review ?? 'Application Under Review',
                     subtitle: localizations?.general_check_status ?? 'Check status',
@@ -1125,7 +1045,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     },
                   );
                 } else {
-                  return _buildMenuCard(
+                  return ProfileMenuCard(
                     icon: Icons.badge_rounded,
                     title: localizations?.becomeAgent ?? 'Become an Agent',
                     subtitle: localizations?.becomeAgentSubtitle ?? 'List properties and help clients',
@@ -1141,7 +1061,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               },
             );
           },
-          loading: () => _buildMenuCard(
+          loading: () => ProfileMenuCard(
             icon: Icons.badge_rounded,
             title: localizations?.becomeAgent ?? 'Become an Agent',
             subtitle: 'Loading...',
@@ -1166,8 +1086,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(localizations?.admin_panel ?? 'Admin Panel'),
-          _buildMenuCard(
+          ProfileSectionTitle(localizations?.admin_panel ?? 'Admin Panel'),
+          ProfileMenuCard(
             icon: Icons.admin_panel_settings,
             title: localizations?.admin_dashboard_title ?? 'Admin Dashboard',
             subtitle: localizations?.admin_dashboard_subtitle ?? 'Real-time overview of your platform',
@@ -1181,208 +1101,5 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       );
     }
     return const SizedBox.shrink();
-  }
-}
-
-// Follow List Bottom Sheet
-class _FollowListSheet extends ConsumerWidget {
-  final String title;
-  final int userId;
-  final bool isFollowers;
-
-  const _FollowListSheet({
-    required this.title,
-    required this.userId,
-    required this.isFollowers,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final listAsync = isFollowers
-        ? ref.watch(userFollowersProvider(userId))
-        : ref.watch(userFollowingProvider(userId));
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      builder: (context, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Divider(height: 1, color: colorScheme.outlineVariant),
-            Expanded(
-              child: listAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      AppErrorHandler.getErrorMessage(error),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: colorScheme.error),
-                    ),
-                  ),
-                ),
-                data: (response) {
-                  final l = AppLocalizations.of(context);
-                  if (response.results.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.4),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            isFollowers
-                                ? (l?.profile_no_followers_yet ?? "Hali obunachilar yo'q")
-                                : (l?.profile_no_following_yet ?? "Hali obunalar yo'q"),
-                            style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: response.results.length,
-                    itemBuilder: (context, index) {
-                      final user = response.results[index];
-                      return _FollowUserTile(user: user);
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FollowUserTile extends ConsumerStatefulWidget {
-  final FollowUser user;
-
-  const _FollowUserTile({required this.user});
-
-  @override
-  ConsumerState<_FollowUserTile> createState() => _FollowUserTileState();
-}
-
-class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
-  bool _isLoading = false;
-  late bool _isFollowing;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFollowing = widget.user.isFollowing;
-  }
-
-  Future<void> _toggleFollow() async {
-    if (_isLoading) return;
-
-    setState(() => _isLoading = true);
-
-    try {
-      final profileService = ref.read(profileServiceProvider);
-      if (_isFollowing) {
-        await profileService.unfollowUser(userId: widget.user.id);
-      } else {
-        await profileService.followUser(userId: widget.user.id);
-      }
-      setState(() => _isFollowing = !_isFollowing);
-    } catch (e) {
-      if (mounted) AppErrorHandler.showError(context, e);
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return ListTile(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.push('/user/${widget.user.id}');
-      },
-      leading: CircleAvatar(
-        radius: 24,
-        backgroundColor: colorScheme.primaryContainer,
-        child: widget.user.profileImage.image.isNotEmpty
-            ? ClipOval(
-                child: CachedNetworkImageWidget(
-                  imageUrl: widget.user.profileImage.image,
-                  width: 48,
-                  height: 48,
-                  fit: BoxFit.cover,
-                ),
-              )
-            : Text(
-                widget.user.initials,
-                style: TextStyle(fontWeight: FontWeight.bold, color: colorScheme.onPrimaryContainer),
-              ),
-      ),
-      title: Text(widget.user.username, style: const TextStyle(fontWeight: FontWeight.w600)),
-      trailing: _isLoading
-          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
-          : Builder(
-              builder: (context) {
-                final l = AppLocalizations.of(context);
-                return SizedBox(
-                  width: 100,
-                  child: _isFollowing
-                      ? OutlinedButton(
-                          onPressed: _toggleFollow,
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            minimumSize: const Size(0, 32),
-                            side: BorderSide(color: colorScheme.outline),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: Text(l?.profile_following_btn ?? 'Obuna', style: const TextStyle(fontSize: 13)),
-                        )
-                      : FilledButton(
-                          onPressed: _toggleFollow,
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            minimumSize: const Size(0, 32),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: Text(l?.profile_follow ?? "Obuna bo'lish", style: const TextStyle(fontSize: 13)),
-                        ),
-                );
-              },
-            ),
-    );
   }
 }
