@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app/constants/constants.dart';
+import 'package:app/pages/shaxsiy/main_profile/widgets/profile_edit_avatar.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_models/country_model.dart';
@@ -408,53 +409,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // Profile Image Section
-              GestureDetector(
+              ProfileEditAvatar(
+                user: currentUser,
+                selectedImage: selectedImage,
                 onTap: _pickImage,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: colorScheme.surfaceVariant,
-                      backgroundImage: _getProfileImage(),
-                      child: _getProfileImage() == null
-                          ? Icon(
-                              Icons.person,
-                              size: 60,
-                              color: colorScheme.onSurface.withOpacity(0.6),
-                            )
-                          : null,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: colorScheme.surface,
-                            width: 2,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: colorScheme.onPrimary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                localizations?.tap_change_profile ?? 'Tap to change photo',
-                style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.6),
-                  fontSize: 14,
-                ),
               ),
               const SizedBox(height: 32),
 
@@ -501,21 +459,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   labelText: localizations?.country ?? 'Country',
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.flag),
-                  suffixIcon: isLoadingCountries
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        )
-                      : null,
+                  suffixIcon: buildLoadingSuffix(context, isLoadingCountries),
                 ),
                 hint: Text(localizations?.selectCountry ?? 'Select a country'),
                 items: countriesList.map((CountryModel country) {
@@ -548,21 +492,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   labelText: localizations?.region ?? 'Region',
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.location_on),
-                  suffixIcon: isLoadingRegions
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        )
-                      : null,
+                  suffixIcon: buildLoadingSuffix(context, isLoadingRegions),
                 ),
                 hint: Text(selectedCountry == null
                     ? localizations?.selectCountryFirst ?? 'Select country first'
@@ -598,21 +528,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       localizations?.districtSelectParagraph ?? 'District',
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.location_city),
-                  suffixIcon: isLoadingDistricts
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        )
-                      : null,
+                  suffixIcon: buildLoadingSuffix(context, isLoadingDistricts),
                 ),
                 hint: Text(selectedRegion == null
                     ? localizations?.selectRegion ?? 'Select a region first'
@@ -649,17 +565,4 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     );
   }
 
-  ImageProvider? _getProfileImage() {
-    if (selectedImage != null) {
-      return FileImage(selectedImage!);
-    } else if (currentUser?.profileImage != null) {
-      final imagePath = currentUser!.profileImage!.image;
-      final imageUrl = imagePath.startsWith('http://') ||
-              imagePath.startsWith('https://')
-          ? imagePath
-          : "$baseUrl$imagePath";
-      return NetworkImage(imageUrl);
-    }
-    return null;
-  }
 }
