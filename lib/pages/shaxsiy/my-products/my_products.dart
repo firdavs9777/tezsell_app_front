@@ -1,14 +1,12 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/shaxsiy/my-products/product_edit.dart';
+import 'package:app/pages/shaxsiy/my-products/widgets/my_products_card.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
-import 'package:app/utils/currency_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:app/l10n/app_localizations.dart';
 
 class MyProducts extends ConsumerStatefulWidget {
   const MyProducts({super.key});
@@ -267,30 +265,6 @@ class _MyProductsState extends ConsumerState<MyProducts> {
     context.push('/product/${product.id}');
   }
 
-  String _formatPrice(Products product) {
-    final priceValue = double.tryParse(product.price) ?? 0;
-    if (priceValue == 0) return 'Price not set';
-
-    final config = CurrencyUtils.getConfig(product.currency);
-    final formatted = NumberFormat('#,##0', 'en_US').format(priceValue.toInt());
-    return '${config?.symbol ?? ''} $formatted ${product.currency}';
-  }
-
-  String _getTimeAgo(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays > 30) {
-      return DateFormat('MMM d, y').format(date);
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
-    }
-    return 'Just now';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -337,18 +311,20 @@ class _MyProductsState extends ConsumerState<MyProducts> {
             ),
           ],
         ),
-        body: _buildBody(localizations, colorScheme, isDark),
+        body: _buildBody(),
       ),
     );
   }
 
-  Widget _buildBody(AppLocalizations? localizations, ColorScheme colorScheme, bool isDark) {
+  Widget _buildBody() {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (_products.isEmpty) {
-      return _buildEmptyState(localizations, colorScheme);
+      return MyProductsEmptyState(
+        onAddProduct: () => context.push('/product/new'),
+      );
     }
 
     return RefreshIndicator(
@@ -364,266 +340,16 @@ class _MyProductsState extends ConsumerState<MyProducts> {
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          return _buildProductCard(_products[index], colorScheme, isDark);
+          final product = _products[index];
+          return MyProductsCard(
+            product: product,
+            onView: () => _viewProduct(product),
+            onEdit: () => _editProduct(product),
+            onDelete: () => _deleteProduct(product),
+          );
         },
       ),
     );
   }
 
-  Widget _buildEmptyState(AppLocalizations? localizations, ColorScheme colorScheme) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.inventory_2_outlined,
-                size: 64,
-                color: colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              localizations?.no_products_found ?? 'No products yet',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              localizations?.add_first_product ??
-                  'Start selling by adding your first product',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            ),
-            const SizedBox(height: 32),
-            FilledButton.icon(
-              onPressed: () => context.push('/product/new'),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add Product'),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductCard(Products product, ColorScheme colorScheme, bool isDark) {
-    final imageUrl = product.images.isNotEmpty
-        ? (product.images.first.image.startsWith('http')
-            ? product.images.first.image
-            : '$baseUrl${product.images.first.image}')
-        : null;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        elevation: isDark ? 0 : 1,
-        shadowColor: Colors.black12,
-        child: InkWell(
-          onTap: () => _viewProduct(product),
-          child: Column(
-            children: [
-              // Main content
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Product Image
-                    Hero(
-                      tag: 'product-${product.id}',
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: colorScheme.surfaceContainerHighest,
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: imageUrl != null
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => _buildPlaceholder(colorScheme),
-                              )
-                            : _buildPlaceholder(colorScheme),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Product Details
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title
-                          Text(
-                            product.title,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 6),
-                          // Price
-                          Text(
-                            _formatPrice(product),
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.primary,
-                                ),
-                          ),
-                          const SizedBox(height: 8),
-                          // Location
-                          if (product.location.district.isNotEmpty)
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  size: 14,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${product.location.district}, ${product.location.region}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          const SizedBox(height: 8),
-                          // Status badges
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: [
-                              _buildStatusBadge(
-                                product.inStock
-                                    ? (AppLocalizations.of(context)?.in_stock ?? 'In Stock')
-                                    : (AppLocalizations.of(context)?.out_of_stock ?? 'Out of Stock'),
-                                product.inStock ? Colors.green : Colors.red,
-                              ),
-                              _buildStatusBadge(
-                                product.condition.toUpperCase(),
-                                Colors.blue,
-                              ),
-                              if (product.isSold)
-                                _buildStatusBadge('SOLD', Colors.orange),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Divider
-              Divider(height: 1, color: colorScheme.outlineVariant.withOpacity(0.5)),
-              // Action buttons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    // Time ago
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        _getTimeAgo(product.updatedAt),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                      ),
-                    ),
-                    const Spacer(),
-                    // View button
-                    TextButton.icon(
-                      onPressed: () => _viewProduct(product),
-                      icon: const Icon(Icons.visibility_outlined, size: 18),
-                      label: const Text('View'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.onSurfaceVariant,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    ),
-                    // Edit button
-                    TextButton.icon(
-                      onPressed: () => _editProduct(product),
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      label: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    ),
-                    // Delete button
-                    IconButton(
-                      onPressed: () => _deleteProduct(product),
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
-                        size: 20,
-                        color: colorScheme.error,
-                      ),
-                      tooltip: 'Delete',
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlaceholder(ColorScheme colorScheme) {
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Icon(
-        Icons.image_outlined,
-        size: 32,
-        color: colorScheme.onSurfaceVariant.withOpacity(0.5),
-      ),
-    );
-  }
-
-  Widget _buildStatusBadge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: color.withOpacity(0.8),
-            ),
-      ),
-    );
-  }
 }
