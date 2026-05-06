@@ -1,15 +1,12 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/shaxsiy/my-services/service_edit.dart';
-import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/pages/shaxsiy/my-services/widgets/my_services_card.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
-import 'package:app/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:app/l10n/app_localizations.dart';
 
 class MyServices extends ConsumerStatefulWidget {
   const MyServices({super.key});
@@ -268,35 +265,6 @@ class _MyServicesState extends ConsumerState<MyServices> {
     context.push('/service/${service.id}');
   }
 
-  String _getCategoryName(CategoryModel category) {
-    final locale = Localizations.localeOf(context).languageCode;
-    switch (locale) {
-      case 'uz':
-        return category.nameUz;
-      case 'ru':
-        return category.nameRu;
-      case 'en':
-      default:
-        return category.nameEn;
-    }
-  }
-
-  String _getTimeAgo(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays > 30) {
-      return DateFormat('MMM d, y').format(date);
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
-    }
-    return 'Just now';
-  }
-
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
@@ -343,18 +311,20 @@ class _MyServicesState extends ConsumerState<MyServices> {
             ),
           ],
         ),
-        body: _buildBody(localizations, colorScheme, isDark),
+        body: _buildBody(),
       ),
     );
   }
 
-  Widget _buildBody(AppLocalizations? localizations, ColorScheme colorScheme, bool isDark) {
+  Widget _buildBody() {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (_services.isEmpty) {
-      return _buildEmptyState(localizations, colorScheme);
+      return MyServicesEmptyState(
+        onAddService: () => context.push('/service/new'),
+      );
     }
 
     return RefreshIndicator(
@@ -370,251 +340,16 @@ class _MyServicesState extends ConsumerState<MyServices> {
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          return _buildServiceCard(_services[index], colorScheme, isDark);
+          final service = _services[index];
+          return MyServicesCard(
+            service: service,
+            onView: () => _viewService(service),
+            onEdit: () => _editService(service),
+            onDelete: () => _deleteService(service),
+          );
         },
       ),
     );
   }
 
-  Widget _buildEmptyState(AppLocalizations? localizations, ColorScheme colorScheme) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.miscellaneous_services_outlined,
-                size: 64,
-                color: colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              localizations?.no_services_found ?? 'No services yet',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              localizations?.add_first_service ??
-                  'Start by adding your first service',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            ),
-            const SizedBox(height: 32),
-            FilledButton.icon(
-              onPressed: () => context.push('/service/new'),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add Service'),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildServiceCard(Services service, ColorScheme colorScheme, bool isDark) {
-    final imageUrl = service.images.isNotEmpty
-        ? ImageUtils.buildImageUrl(service.images.first.image)
-        : null;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        clipBehavior: Clip.antiAlias,
-        elevation: isDark ? 0 : 1,
-        shadowColor: Colors.black12,
-        child: InkWell(
-          onTap: () => _viewService(service),
-          child: Column(
-            children: [
-              // Main content
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Service Image
-                    Hero(
-                      tag: 'service-${service.id}',
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: colorScheme.surfaceContainerHighest,
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: imageUrl != null
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => _buildPlaceholder(colorScheme),
-                              )
-                            : _buildPlaceholder(colorScheme),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Service Details
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title
-                          Text(
-                            service.name,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 6),
-                          // Description
-                          Text(
-                            service.description,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-                          // Location
-                          if (service.location.district.isNotEmpty)
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  size: 14,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${service.location.district}, ${service.location.region}',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          const SizedBox(height: 8),
-                          // Category badge
-                          _buildStatusBadge(
-                            _getCategoryName(service.category),
-                            colorScheme.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Divider
-              Divider(height: 1, color: colorScheme.outlineVariant.withOpacity(0.5)),
-              // Action buttons
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    // Time ago
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        _getTimeAgo(service.createdAt),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                      ),
-                    ),
-                    const Spacer(),
-                    // View button
-                    TextButton.icon(
-                      onPressed: () => _viewService(service),
-                      icon: const Icon(Icons.visibility_outlined, size: 18),
-                      label: const Text('View'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.onSurfaceVariant,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    ),
-                    // Edit button
-                    TextButton.icon(
-                      onPressed: () => _editService(service),
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      label: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    ),
-                    // Delete button
-                    IconButton(
-                      onPressed: () => _deleteService(service),
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
-                        size: 20,
-                        color: colorScheme.error,
-                      ),
-                      tooltip: 'Delete',
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlaceholder(ColorScheme colorScheme) {
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Icon(
-        Icons.miscellaneous_services_outlined,
-        size: 32,
-        color: colorScheme.onSurfaceVariant.withOpacity(0.5),
-      ),
-    );
-  }
-
-  Widget _buildStatusBadge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: color.withOpacity(0.8),
-            ),
-      ),
-    );
-  }
 }
