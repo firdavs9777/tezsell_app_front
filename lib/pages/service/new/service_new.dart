@@ -1,4 +1,5 @@
 import 'package:app/common_widgets/common_button.dart';
+import 'package:app/pages/service/new/widgets/service_new_image_picker.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
@@ -339,7 +340,16 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Images Section
-                _buildImagesSection(theme, localizations),
+                ServiceNewImagePicker(
+                  images: _selectedImages,
+                  isUploading: _isUploading,
+                  onAddTap: _showImageSourceDialog,
+                  onRemove: (index) {
+                    setState(() {
+                      _selectedImages.removeAt(index);
+                    });
+                  },
+                ),
                 const SizedBox(height: 20),
 
                 // Basic Information Card
@@ -516,9 +526,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
-        ),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withOpacity(0.03),
@@ -551,173 +559,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildImagesSection(ThemeData theme, AppLocalizations? localizations) {
-    final colorScheme = theme.colorScheme;
-
-    return _buildCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader(
-            localizations?.serviceImages ?? localizations?.newProductImages ?? 'Service Images',
-            Icons.photo_library,
-            theme,
-          ),
-          const SizedBox(height: 16),
-          if (_selectedImages.isEmpty)
-            GestureDetector(
-              onTap: _isUploading ? null : _showImageSourceDialog,
-              child: Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: colorScheme.outline.withOpacity(0.3),
-                    style: BorderStyle.solid,
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add_photo_alternate,
-                      size: 56,
-                      color: colorScheme.primary,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      localizations?.imageUploadHelper ?? 'Tap to add images',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'At least 1 image required',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _selectedImages.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == _selectedImages.length) {
-                    return GestureDetector(
-                      onTap: _isUploading ? null : _showImageSourceDialog,
-                      child: Container(
-                        width: 160,
-                        margin: const EdgeInsets.only(right: 12),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: colorScheme.outline.withOpacity(0.3),
-                            width: 2,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, size: 36, color: colorScheme.primary),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Add More',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(right: 12),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.file(
-                            _selectedImages[index],
-                            fit: BoxFit.cover,
-                            height: 200,
-                            width: 160,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: GestureDetector(
-                            onTap: _isUploading
-                                ? null
-                                : () {
-                                    setState(() {
-                                      _selectedImages.removeAt(index);
-                                    });
-                                  },
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: colorScheme.error,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: colorScheme.shadow.withOpacity(0.2),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.close,
-                                color: colorScheme.onError,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surface.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '${index + 1}/${_selectedImages.length}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
