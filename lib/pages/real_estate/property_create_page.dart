@@ -7,6 +7,9 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:app/pages/real_estate/widgets/property_detail_grid.dart';
+import 'package:app/pages/real_estate/widgets/property_form_widgets.dart';
+import 'package:app/pages/real_estate/widgets/property_image_picker.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
@@ -656,19 +659,27 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Images Section
-              _buildImagesSection(theme, localizations),
+              PropertyImagePicker(
+                images: _selectedImages,
+                onAddTap: _showImageSourceDialog,
+                onRemove: (index) {
+                  setState(() {
+                    _selectedImages.removeAt(index);
+                  });
+                },
+              ),
               const SizedBox(height: 20),
 
               // Basic Information Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_basic_information ??
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_basic_information ??
                             'Basic Information',
-                        Icons.info_outline,
-                        theme),
+                      icon: Icons.info_outline,
+                    ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _titleController,
@@ -728,14 +739,14 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               const SizedBox(height: 16),
 
               // Property Type & Listing Type Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_property_type ?? 'Property Type',
-                        Icons.category,
-                        theme),
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_property_type ?? 'Property Type',
+                      icon: Icons.category,
+                    ),
                     const SizedBox(height: 16),
                     // Stack vertically on small screens to avoid overflow
                     LayoutBuilder(
@@ -743,7 +754,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         if (constraints.maxWidth < 400) {
                           return Column(
                             children: [
-                              _buildDropdownField(
+                              PropertyFormDropdownField(
                                 label: localizations?.property_create_property_type_required ??
                                     'Property Type *',
                                 value: _selectedPropertyType,
@@ -752,11 +763,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 onChanged: (value) {
                                   setState(() => _selectedPropertyType = value!);
                                 },
-                                theme: theme,
-                                localizations: localizations,
                               ),
                               const SizedBox(height: 16),
-                              _buildDropdownField(
+                              PropertyFormDropdownField(
                                 label: localizations?.property_create_listing_type_required ??
                                     'Listing Type *',
                                 value: _selectedListingType,
@@ -765,8 +774,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 onChanged: (value) {
                                   setState(() => _selectedListingType = value!);
                                 },
-                                theme: theme,
-                                localizations: localizations,
                               ),
                             ],
                           );
@@ -774,7 +781,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         return Row(
                           children: [
                             Expanded(
-                              child: _buildDropdownField(
+                              child: PropertyFormDropdownField(
                                 label: localizations?.property_create_property_type_required ??
                                     'Property Type *',
                                 value: _selectedPropertyType,
@@ -783,13 +790,11 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 onChanged: (value) {
                                   setState(() => _selectedPropertyType = value!);
                                 },
-                                theme: theme,
-                                localizations: localizations,
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: _buildDropdownField(
+                              child: PropertyFormDropdownField(
                                 label: localizations?.property_create_listing_type_required ??
                                     'Listing Type *',
                                 value: _selectedListingType,
@@ -798,8 +803,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 onChanged: (value) {
                                   setState(() => _selectedListingType = value!);
                                 },
-                                theme: theme,
-                                localizations: localizations,
                               ),
                             ),
                           ],
@@ -812,14 +815,14 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               const SizedBox(height: 16),
 
               // Pricing Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_pricing ?? 'Pricing',
-                        Icons.attach_money,
-                        theme),
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_pricing ?? 'Pricing',
+                      icon: Icons.attach_money,
+                    ),
                     const SizedBox(height: 16),
                     Row(
                       children: [
@@ -889,30 +892,38 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               const SizedBox(height: 16),
 
               // Property Details Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_property_details ?? 'Property Details',
-                        Icons.home_work,
-                        theme),
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_property_details ?? 'Property Details',
+                      icon: Icons.home_work,
+                    ),
                     const SizedBox(height: 16),
-                    _buildPropertyDetailGrid(),
+                    PropertyDetailGrid(
+                      squareMetersController: _squareMetersController,
+                      bedroomsController: _bedroomsController,
+                      bathroomsController: _bathroomsController,
+                      floorController: _floorController,
+                      totalFloorsController: _totalFloorsController,
+                      parkingSpacesController: _parkingSpacesController,
+                      yearBuiltController: _yearBuiltController,
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
 
               // Location Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_location ?? 'Location',
-                        Icons.location_on,
-                        theme),
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_location ?? 'Location',
+                      icon: Icons.location_on,
+                    ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _addressController,
@@ -1143,55 +1154,55 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
               const SizedBox(height: 16),
 
               // Features Card
-              _buildCard(
+              PropertyFormCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader(
-                        localizations?.property_create_features ?? 'Features',
-                        Icons.star_outline,
-                        theme),
+                    PropertyFormSectionHeader(
+                      title: localizations?.property_create_features ?? 'Features',
+                      icon: Icons.star_outline,
+                    ),
                     const SizedBox(height: 16),
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
                       children: [
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_balcony ?? 'Balcony',
-                            _hasBalcony,
-                            Icons.balcony,
-                            (value) => setState(() => _hasBalcony = value),
-                            theme),
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_garage ?? 'Garage',
-                            _hasGarage,
-                            Icons.garage,
-                            (value) => setState(() => _hasGarage = value),
-                            theme),
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_garden ?? 'Garden',
-                            _hasGarden,
-                            Icons.yard,
-                            (value) => setState(() => _hasGarden = value),
-                            theme),
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_pool ?? 'Pool',
-                            _hasPool,
-                            Icons.pool,
-                            (value) => setState(() => _hasPool = value),
-                            theme),
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_elevator ?? 'Elevator',
-                            _hasElevator,
-                            Icons.elevator,
-                            (value) => setState(() => _hasElevator = value),
-                            theme),
-                        _buildFeatureChip(
-                            localizations?.property_create_feature_furnished ?? 'Furnished',
-                            _isFurnished,
-                            Icons.chair,
-                            (value) => setState(() => _isFurnished = value),
-                            theme),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_balcony ?? 'Balcony',
+                          value: _hasBalcony,
+                          icon: Icons.balcony,
+                          onChanged: (value) => setState(() => _hasBalcony = value),
+                        ),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_garage ?? 'Garage',
+                          value: _hasGarage,
+                          icon: Icons.garage,
+                          onChanged: (value) => setState(() => _hasGarage = value),
+                        ),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_garden ?? 'Garden',
+                          value: _hasGarden,
+                          icon: Icons.yard,
+                          onChanged: (value) => setState(() => _hasGarden = value),
+                        ),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_pool ?? 'Pool',
+                          value: _hasPool,
+                          icon: Icons.pool,
+                          onChanged: (value) => setState(() => _hasPool = value),
+                        ),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_elevator ?? 'Elevator',
+                          value: _hasElevator,
+                          icon: Icons.elevator,
+                          onChanged: (value) => setState(() => _hasElevator = value),
+                        ),
+                        PropertyFeatureChip(
+                          label: localizations?.property_create_feature_furnished ?? 'Furnished',
+                          value: _isFurnished,
+                          icon: Icons.chair,
+                          onChanged: (value) => setState(() => _isFurnished = value),
+                        ),
                       ],
                     ),
                   ],
@@ -1240,462 +1251,4 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     );
   }
 
-  Widget _buildCard({required Widget child}) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.2),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-
-  Widget _buildSectionHeader(String title, IconData icon, ThemeData theme) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 20, color: theme.colorScheme.primary),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDropdownField({
-    required String label,
-    required String value,
-    required List<Map<String, String>> items,
-    required IconData icon,
-    required Function(String?) onChanged,
-    required ThemeData theme,
-    AppLocalizations? localizations,
-  }) {
-    // Helper function to get localized label
-    String getLocalizedLabel(String value, String defaultLabel) {
-      if (localizations == null) return defaultLabel;
-      
-      // Property types
-      switch (value) {
-        case 'apartment':
-          return localizations.property_types_apartment;
-        case 'house':
-          return localizations.property_types_house;
-        case 'townhouse':
-          return localizations.property_types_townhouse;
-        case 'villa':
-          return localizations.property_types_villa;
-        case 'commercial':
-          return localizations.property_types_commercial;
-        case 'office':
-          return localizations.property_types_office;
-        case 'land':
-          return localizations.property_types_land;
-        case 'warehouse':
-          return localizations.property_types_warehouse;
-        // Listing types
-        case 'sale':
-          return localizations.listing_types_for_sale;
-        case 'rent':
-          return localizations.listing_types_for_rent;
-        default:
-          return defaultLabel;
-      }
-    }
-
-    return DropdownButtonFormField<String>(
-      value: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        prefixIcon: Icon(icon),
-        filled: true,
-        fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
-      ),
-      items: items.map((item) {
-        return DropdownMenuItem(
-          value: item['value'],
-          child: Text(
-            getLocalizedLabel(item['value']!, item['label']!),
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
-      }).toList(),
-      onChanged: onChanged,
-    );
-  }
-
-  Widget _buildPropertyDetailGrid() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final localizations = AppLocalizations.of(context);
-
-    return Column(
-      children: [
-        // Row 1: Square Meters, Bedrooms
-        Row(
-          children: [
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _squareMetersController,
-                label: localizations?.property_create_square_meters ?? 'Sq. Meters *',
-                icon: Icons.square_foot,
-                isRequired: true,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _bedroomsController,
-                label: localizations?.property_create_bedrooms ?? 'Bedrooms *',
-                icon: Icons.bed,
-                isRequired: true,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        // Row 2: Bathrooms, Floor
-        Row(
-          children: [
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _bathroomsController,
-                label: localizations?.property_create_bathrooms ?? 'Bathrooms *',
-                icon: Icons.bathroom,
-                isRequired: true,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _floorController,
-                label: localizations?.property_create_floor ?? 'Floor',
-                icon: Icons.layers,
-                isRequired: false,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        // Row 3: Total Floors, Parking
-        Row(
-          children: [
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _totalFloorsController,
-                label: localizations?.property_create_total_floors ?? 'Total Floors',
-                icon: Icons.business,
-                isRequired: false,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _parkingSpacesController,
-                label: localizations?.property_create_parking ?? 'Parking',
-                icon: Icons.local_parking,
-                isRequired: false,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        // Row 4: Year Built
-        Row(
-          children: [
-            Expanded(
-              child: _buildDetailInputField(
-                controller: _yearBuiltController,
-                label: localizations?.property_create_year_built ?? 'Year Built',
-                icon: Icons.calendar_today,
-                isRequired: false,
-                theme: theme,
-                localizations: localizations,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailInputField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    required bool isRequired,
-    required ThemeData theme,
-    AppLocalizations? localizations,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        prefixIcon: Icon(icon, size: 20),
-        filled: true,
-        fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-      ],
-      validator: isRequired
-          ? (value) {
-              if (value == null || value.trim().isEmpty) {
-                return localizations?.property_create_required ?? 'Required';
-              }
-              return null;
-            }
-          : null,
-    );
-  }
-
-  Widget _buildImagesSection(ThemeData theme, AppLocalizations? localizations) {
-    final colorScheme = theme.colorScheme;
-
-    return _buildCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader(
-              localizations?.property_create_images ?? 'Property Images',
-              Icons.photo_library,
-              theme),
-          const SizedBox(height: 16),
-          if (_selectedImages.isEmpty)
-            GestureDetector(
-              onTap: _showImageSourceDialog,
-              child: Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: colorScheme.outline.withOpacity(0.3),
-                    style: BorderStyle.solid,
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add_photo_alternate,
-                      size: 56,
-                      color: colorScheme.primary,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      localizations?.property_create_tap_to_add_images ??
-                          'Tap to add images',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      localizations?.property_create_at_least_one_image ??
-                          'At least 1 image required',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _selectedImages.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == _selectedImages.length) {
-                    return GestureDetector(
-                      onTap: _showImageSourceDialog,
-                      child: Container(
-                        width: 160,
-                        margin: const EdgeInsets.only(right: 12),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: colorScheme.outline.withOpacity(0.3),
-                            width: 2,
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, size: 36, color: colorScheme.primary),
-                            const SizedBox(height: 8),
-                            Text(
-                              localizations?.property_create_add_more ?? 'Add More',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return Container(
-                    width: 160,
-                    margin: const EdgeInsets.only(right: 12),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.file(
-                            _selectedImages[index],
-                            fit: BoxFit.cover,
-                            height: 200,
-                            width: 160,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedImages.removeAt(index);
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: colorScheme.error,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: colorScheme.shadow.withOpacity(0.2),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.close,
-                                color: colorScheme.onError,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surface.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              '${index + 1}/${_selectedImages.length}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureChip(
-    String label,
-    bool value,
-    IconData icon,
-    Function(bool) onChanged,
-    ThemeData theme,
-  ) {
-    return FilterChip(
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: 6),
-          Text(label),
-        ],
-      ),
-      selected: value,
-      onSelected: onChanged,
-      selectedColor: theme.colorScheme.primaryContainer,
-      checkmarkColor: theme.colorScheme.onPrimaryContainer,
-      labelStyle: TextStyle(
-        color: value
-            ? theme.colorScheme.onPrimaryContainer
-            : theme.colorScheme.onSurface,
-        fontWeight: value ? FontWeight.w600 : FontWeight.normal,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: value
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline.withOpacity(0.3),
-          width: value ? 1.5 : 1,
-        ),
-      ),
-    );
-  }
 }
