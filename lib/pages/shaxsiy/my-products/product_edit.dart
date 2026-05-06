@@ -1,4 +1,5 @@
 import 'package:app/common_widgets/common_button.dart';
+import 'package:app/pages/shaxsiy/my-products/widgets/product_edit_image_grid.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
@@ -478,121 +479,23 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                 ),
                 const SizedBox(height: 10),
 
-                // Existing Images Section
                 if (activeExistingImageUrls.isNotEmpty) ...[
                   _buildSectionTitle(
                       localizations?.existing_images ?? 'Existing Images'),
                   const SizedBox(height: 10),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: activeExistingImageUrls.length,
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              activeExistingImageUrls[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.error),
-                                );
-                              },
-                            ),
-                          ),
-                          Positioned(
-                            top: 2,
-                            right: 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                onPressed: () => _removeExistingImage(index),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(
-                                  minWidth: 24,
-                                  minHeight: 24,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                  ProductEditImageGrid.network(
+                    urls: activeExistingImageUrls,
+                    onRemove: _removeExistingImage,
                   ),
                   const SizedBox(height: 20),
                 ],
 
-                // New Images Section
                 if (_newImages.isNotEmpty) ...[
                   _buildSectionTitle(localizations?.new_images ?? 'New Images'),
                   const SizedBox(height: 10),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: _newImages.length,
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              _newImages[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
-                            ),
-                          ),
-                          Positioned(
-                            top: 2,
-                            right: 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                                onPressed: () => _removeNewImage(index),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(
-                                  minWidth: 24,
-                                  minHeight: 24,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                  ProductEditImageGrid.files(
+                    files: _newImages,
+                    onRemove: _removeNewImage,
                   ),
                 ],
 
