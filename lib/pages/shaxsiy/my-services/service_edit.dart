@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/pages/shaxsiy/my-services/widgets/service_edit_image_list.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
@@ -440,155 +441,39 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Existing Images
                       if (_existingImages.isNotEmpty) ...[
                         Text(
                           localizations?.current_images ?? 'Current Images',
                           style: theme.textTheme.titleSmall,
                         ),
                         const SizedBox(height: 8),
-                        SizedBox(
-                          height: 100,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _existingImages.length,
-                            itemBuilder: (context, index) {
-                              final imageData = _existingImages[index];
-                              return Container(
-                                margin: const EdgeInsets.only(right: 8),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        imageData['url'],
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Container(
-                                            width: 100,
-                                            height: 100,
-                                            color: colorScheme.surfaceVariant,
-                                            child: const Icon(Icons.error),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: GestureDetector(
-                                        onTap: () =>
-                                            _removeExistingImage(imageData),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: colorScheme.error,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            Icons.close,
-                                            color: colorScheme.onError,
-                                            size: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                        ServiceEditImageList.network(
+                          urls: _existingImages
+                              .map<String>((img) => img['url'] as String)
+                              .toList(),
+                          onRemoveAt: (index) =>
+                              _removeExistingImage(_existingImages[index]),
                         ),
                         const SizedBox(height: 16),
                       ],
 
-                      // New Images
                       if (_newImages.isNotEmpty) ...[
                         Text(
                           localizations?.new_images ?? 'New Images',
                           style: theme.textTheme.titleSmall,
                         ),
                         const SizedBox(height: 8),
-                        SizedBox(
-                          height: 100,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _newImages.length,
-                            itemBuilder: (context, index) {
-                              final image = _newImages[index];
-                              return Container(
-                                margin: const EdgeInsets.only(right: 8),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.file(
-                                        image,
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: GestureDetector(
-                                        onTap: () => _removeNewImage(image),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            color: colorScheme.error,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            Icons.close,
-                                            color: colorScheme.onError,
-                                            size: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                        ServiceEditImageList.files(
+                          files: _newImages,
+                          onRemoveAt: (index) =>
+                              _removeNewImage(_newImages[index]),
                         ),
                       ],
 
                       if (_existingImages.isEmpty && _newImages.isEmpty)
-                        Container(
-                          height: 100,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceVariant,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: colorScheme.outline.withOpacity(0.3),
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.image_outlined,
-                                color: colorScheme.onSurface.withOpacity(0.5),
-                                size: 32,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                localizations?.no_images_selected ??
-                                    'No images selected',
-                                style: TextStyle(
-                                  color: colorScheme.onSurface.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
-                          ),
+                        ServiceEditEmptyImageState(
+                          message: localizations?.no_images_selected ??
+                              'No images selected',
                         ),
                     ],
                   ),
