@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/chat/chat_room.dart';
+import 'package:app/pages/profile/widgets/sliver_tab_bar_delegate.dart';
+import 'package:app/pages/profile/widgets/user_profile_follow_list.dart';
+import 'package:app/pages/profile/widgets/user_profile_grids.dart';
+import 'package:app/pages/profile/widgets/user_profile_more_options.dart';
 import 'package:app/providers/provider_models/user_profile_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/utils/error_handler.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
-import 'package:app/widgets/report_content_dialog.dart';
-import 'package:app/utils/error_handler.dart';
-import 'package:app/utils/image_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -109,7 +109,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
           profileAsync.whenOrNull(
             data: (profile) => IconButton(
               icon: Icon(Icons.more_horiz, color: colorScheme.onSurface),
-              onPressed: () => _showMoreOptions(context, profile),
+              onPressed: () => showUserProfileMoreOptions(context, profile),
             ),
           ) ?? const SizedBox.shrink(),
         ],
@@ -306,10 +306,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             ),
           ),
 
-          // Tab Bar
           SliverPersistentHeader(
             pinned: true,
-            delegate: _SliverTabBarDelegate(
+            delegate: SliverTabBarDelegate(
               TabBar(
                 controller: _tabController,
                 indicatorColor: colorScheme.primary,
@@ -330,12 +329,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Products Tab
-          _buildProductsGrid(context, profile, colorScheme),
-          // Services Tab
-          _buildServicesGrid(context, profile, colorScheme),
-          // Properties Tab
-          _buildPropertiesGrid(context, profile, colorScheme),
+          UserProfileProductsGrid(profile: profile),
+          UserProfileServicesGrid(profile: profile),
+          const UserProfilePropertiesGrid(),
         ],
       ),
     );
@@ -657,176 +653,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     }
   }
 
-  Widget _buildProductsGrid(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
-    final productsAsync = ref.watch(userProductsProvider(profile.id));
-    final localizations = AppLocalizations.of(context);
-
-    return productsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _buildEmptyState(
-        icon: Icons.error_outline,
-        title: localizations?.profile_error_occurred ?? "Error occurred",
-        subtitle: localizations?.profile_error_loading_products ?? "Error loading products",
-        colorScheme: colorScheme,
-      ),
-      data: (products) {
-        if (products.isEmpty) {
-          return _buildEmptyState(
-            icon: Icons.inventory_2_outlined,
-            title: localizations?.profile_no_products ?? "No products",
-            subtitle: localizations?.profile_user_no_products ?? "This user hasn't posted any products yet",
-            colorScheme: colorScheme,
-          );
-        }
-
-        return GridView.builder(
-          padding: const EdgeInsets.all(2),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 2,
-          ),
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return GestureDetector(
-              onTap: () => context.push('/product/${product.id}'),
-              child: Container(
-                color: colorScheme.surfaceContainerHighest,
-                child: product.images.isNotEmpty
-                    ? Image.network(
-                        ImageUtils.buildImageUrl(product.images[0].image),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.image_not_supported_outlined,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      )
-                    : Icon(
-                        Icons.inventory_2_outlined,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildServicesGrid(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
-    final servicesAsync = ref.watch(userServicesProvider(profile.id));
-    final localizations = AppLocalizations.of(context);
-
-    return servicesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => _buildEmptyState(
-        icon: Icons.error_outline,
-        title: localizations?.profile_error_occurred ?? "Error occurred",
-        subtitle: localizations?.profile_error_loading_services ?? "Error loading services",
-        colorScheme: colorScheme,
-      ),
-      data: (services) {
-        if (services.isEmpty) {
-          return _buildEmptyState(
-            icon: Icons.handyman_outlined,
-            title: localizations?.profile_no_services ?? "No services",
-            subtitle: localizations?.profile_user_no_services ?? "This user hasn't posted any services yet",
-            colorScheme: colorScheme,
-          );
-        }
-
-        return GridView.builder(
-          padding: const EdgeInsets.all(2),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 2,
-          ),
-          itemCount: services.length,
-          itemBuilder: (context, index) {
-            final service = services[index];
-            return GestureDetector(
-              onTap: () => context.push('/service/${service.id}'),
-              child: Container(
-                color: colorScheme.surfaceContainerHighest,
-                child: service.images.isNotEmpty
-                    ? Image.network(
-                        ImageUtils.buildImageUrl(service.images[0].image),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.image_not_supported_outlined,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      )
-                    : Icon(
-                        Icons.handyman_outlined,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildPropertiesGrid(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
-    final localizations = AppLocalizations.of(context);
-    // Properties are not in the model yet, show empty state
-    return _buildEmptyState(
-      icon: Icons.home_work_outlined,
-      title: localizations?.profile_no_properties ?? "No properties",
-      subtitle: localizations?.profile_user_no_properties ?? "This user hasn't posted any properties yet",
-      colorScheme: colorScheme,
-    );
-  }
-
-  Widget _buildEmptyState({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required ColorScheme colorScheme,
-  }) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.5),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showFollowersSheet(BuildContext context, UserProfile profile) {
     final localizations = AppLocalizations.of(context);
@@ -834,7 +660,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) => _FollowListSheet(
+      builder: (sheetContext) => UserProfileFollowListSheet(
         title: localizations?.profile_followers ?? 'Followers',
         userId: profile.id,
         isFollowers: true,
@@ -848,390 +674,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) => _FollowListSheet(
+      builder: (sheetContext) => UserProfileFollowListSheet(
         title: localizations?.profile_following ?? 'Following',
         userId: profile.id,
         isFollowers: false,
       ),
-    );
-  }
-
-  void _showMoreOptions(BuildContext context, UserProfile profile) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final localizations = AppLocalizations.of(context);
-    final profileUrl = 'https://webtezsell.com/user/${profile.id}';
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.share_outlined),
-              title: Text(localizations?.profile_share ?? 'Share'),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _shareProfile(context, profile, profileUrl);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.link),
-              title: Text(localizations?.profile_copy_link ?? 'Copy link'),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _copyProfileLink(context, profileUrl);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.flag_outlined, color: colorScheme.error),
-              title: Text(localizations?.profile_report ?? 'Report', style: TextStyle(color: colorScheme.error)),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _reportUser(context, profile);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _shareProfile(BuildContext context, UserProfile profile, String profileUrl) {
-    final localizations = AppLocalizations.of(context);
-    final shareText = '${localizations?.checkOutProfile ?? "Check out"} ${profile.username} ${localizations?.onTezsell ?? "on TezSell"}: $profileUrl';
-    final box = context.findRenderObject() as RenderBox?;
-    Share.share(
-      shareText,
-      subject: profile.username,
-      sharePositionOrigin: box != null
-          ? box.localToGlobal(Offset.zero) & box.size
-          : const Rect.fromLTWH(0, 0, 100, 100),
-    );
-  }
-
-  void _copyProfileLink(BuildContext context, String profileUrl) {
-    final localizations = AppLocalizations.of(context);
-    Clipboard.setData(ClipboardData(text: profileUrl));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(localizations?.linkCopied ?? 'Link copied to clipboard'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  void _reportUser(BuildContext context, UserProfile profile) async {
-    final localizations = AppLocalizations.of(context);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => ReportContentDialog(
-        contentType: 'user',
-        contentId: profile.id,
-        contentTitle: profile.username,
-      ),
-    );
-
-    if (result == true && mounted) {
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text(localizations?.reportSubmitted ?? 'Report submitted successfully'),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          backgroundColor: colorScheme.primary,
-        ),
-      );
-    }
-  }
-}
-
-// Sliver Tab Bar Delegate
-class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-  final Color backgroundColor;
-
-  _SliverTabBarDelegate(this.tabBar, this.backgroundColor);
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: backgroundColor,
-      child: tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverTabBarDelegate oldDelegate) {
-    return tabBar != oldDelegate.tabBar ||
-        backgroundColor != oldDelegate.backgroundColor;
-  }
-}
-
-// Follow List Bottom Sheet
-class _FollowListSheet extends ConsumerWidget {
-  final String title;
-  final int userId;
-  final bool isFollowers;
-
-  const _FollowListSheet({
-    required this.title,
-    required this.userId,
-    required this.isFollowers,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final listAsync = isFollowers
-        ? ref.watch(userFollowersProvider(userId))
-        : ref.watch(userFollowingProvider(userId));
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.4,
-      maxChildSize: 0.9,
-      builder: (context, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            // Handle
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Title
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Divider(height: 1, color: colorScheme.outlineVariant),
-            // List
-            Expanded(
-              child: listAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      AppErrorHandler.getErrorMessage(error),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: colorScheme.error),
-                    ),
-                  ),
-                ),
-                data: (response) {
-                  final localizations = AppLocalizations.of(context);
-                  if (response.results.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.4),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            isFollowers
-                                ? (localizations?.profile_no_followers_yet ?? "No followers yet")
-                                : (localizations?.profile_no_following_yet ?? "Not following anyone yet"),
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: response.results.length,
-                    itemBuilder: (context, index) {
-                      final user = response.results[index];
-                      return _FollowUserTile(user: user);
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FollowUserTile extends ConsumerStatefulWidget {
-  final FollowUser user;
-
-  const _FollowUserTile({required this.user});
-
-  @override
-  ConsumerState<_FollowUserTile> createState() => _FollowUserTileState();
-}
-
-class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
-  bool _isLoading = false;
-  late bool _isFollowing;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFollowing = widget.user.isFollowing;
-  }
-
-  Future<void> _toggleFollow() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final profileService = ref.read(profileServiceProvider);
-      if (_isFollowing) {
-        await profileService.unfollowUser(userId: widget.user.id);
-      } else {
-        await profileService.followUser(userId: widget.user.id);
-      }
-      setState(() {
-        _isFollowing = !_isFollowing;
-      });
-    } catch (e) {
-      if (mounted) {
-        AppErrorHandler.showError(context, e);
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final localizations = AppLocalizations.of(context);
-
-    return ListTile(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.push('/user/${widget.user.id}');
-      },
-      leading: CircleAvatar(
-        radius: 24,
-        backgroundColor: colorScheme.primaryContainer,
-        child: widget.user.profileImage.image.isNotEmpty
-            ? ClipOval(
-                child: CachedNetworkImageWidget(
-                  imageUrl: widget.user.profileImage.image,
-                  width: 48,
-                  height: 48,
-                  fit: BoxFit.cover,
-                ),
-              )
-            : Text(
-                widget.user.initials,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onPrimaryContainer,
-                ),
-              ),
-      ),
-      title: Text(
-        widget.user.username,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-      ),
-      trailing: _isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : SizedBox(
-              width: 100,
-              child: _isFollowing
-                  ? OutlinedButton(
-                      onPressed: _toggleFollow,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        minimumSize: const Size(0, 32),
-                        side: BorderSide(color: colorScheme.outline),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        localizations?.profile_following_btn ?? 'Following',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    )
-                  : FilledButton(
-                      onPressed: _toggleFollow,
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        minimumSize: const Size(0, 32),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        localizations?.profile_follow ?? 'Follow',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-            ),
     );
   }
 }
