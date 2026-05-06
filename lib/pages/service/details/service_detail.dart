@@ -2,6 +2,9 @@ import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/service/comments/comments.dart';
 import 'package:app/pages/service/comments/create_comment.dart';
 import 'package:app/pages/service/details/edit_comment.dart';
+import 'package:app/pages/service/details/widgets/service_detail_carrot_bottom_bar.dart';
+import 'package:app/pages/service/details/widgets/service_detail_image_slider.dart';
+import 'package:app/pages/service/details/widgets/service_detail_provider_section.dart';
 import 'package:app/pages/service/details/recommended_services.dart';
 import 'package:app/pages/service/details/reply_comment.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
@@ -34,10 +37,8 @@ class ServiceDetail extends ConsumerStatefulWidget {
 }
 
 class _ServiceDetailState extends ConsumerState<ServiceDetail> {
-  late PageController _pageController;
   Services? _serviceData;
   late Future<List<Services>> _recommendedServices;
-  int _currentImageIndex = 0;
   bool _isLiking = false;
   bool? _isLiked;
 
@@ -52,7 +53,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
     _fetchSingleService();
     _fetchRecommendedServices();
     _loadLikeStatus();
@@ -60,7 +60,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
 
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -465,7 +464,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               const SizedBox(width: 8),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildImageSlider(imageUrls),
+              background: ServiceDetailImageSlider(imageUrls: imageUrls),
             ),
           ),
           // Content
@@ -473,7 +472,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProviderSection(service),
+                ServiceDetailProviderSection(service: service),
                 _buildDivider(),
                 _buildServiceInfo(service),
                 _buildDivider(),
@@ -557,162 +556,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               },
             ),
             const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageSlider(List<String> imageUrls) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    if (imageUrls.isEmpty) {
-      return Container(
-        color: colorScheme.surfaceContainerHighest,
-        child: Center(
-          child: Icon(
-            Icons.image_not_supported_outlined,
-            size: 64,
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-      );
-    }
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        PageView.builder(
-          controller: _pageController,
-          onPageChanged: (index) => setState(() => _currentImageIndex = index),
-          itemCount: imageUrls.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ImageViewer(
-                      imageUrls: imageUrls,
-                      initialIndex: index,
-                    ),
-                  ),
-                );
-              },
-              child: CachedNetworkImageWidget(
-                imageUrl: imageUrls[index],
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
-            );
-          },
-        ),
-        // Carrot-style page indicator
-        if (imageUrls.length > 1)
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(imageUrls.length, (index) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  width: _currentImageIndex == index ? 20 : 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: _currentImageIndex == index
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                );
-              }),
-            ),
-          ),
-        // Image counter badge
-        if (imageUrls.length > 1)
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '${_currentImageIndex + 1}/${imageUrls.length}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildProviderSection(Services service) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final localizations = AppLocalizations.of(context);
-    final provider = service.userName;
-    final providerId = provider.id;
-
-    return InkWell(
-      onTap: providerId > 0 ? () => context.push('/user/$providerId') : null,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-              child: ClipOval(
-                child: provider.profileImage?.image != null
-                    ? CachedNetworkImageWidget(
-                        imageUrl: ImageUtils.buildImageUrl(provider.profileImage!.image),
-                        width: 48,
-                        height: 48,
-                        fit: BoxFit.cover,
-                      )
-                    : Container(
-                        color: colorScheme.surfaceContainerHighest,
-                        child: Icon(Icons.person, color: colorScheme.onSurfaceVariant, size: 24),
-                      ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    provider.username ?? (localizations?.service_provider ?? 'Provider'),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    provider.location?.region ?? (localizations?.searchLocation ?? 'Location'),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right_rounded, color: colorScheme.onSurfaceVariant, size: 24),
           ],
         ),
       ),
@@ -869,91 +712,13 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         onCancel: _cancelReplyingComment,
       );
     } else {
-      return _buildCarrotBottomBar(service);
+      return ServiceDetailCarrotBottomBar(
+        isLiked: _isLiked ?? false,
+        isLiking: _isLiking,
+        onToggleLike: _toggleLike,
+        onStartChat: _startChat,
+      );
     }
   }
 
-  Widget _buildCarrotBottomBar(Services service) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final localizations = AppLocalizations.of(context);
-    final currentLikeStatus = _isLiked ?? false;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        border: Border(
-          top: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.3), width: 1),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          child: Row(
-            children: [
-              // Heart button
-              GestureDetector(
-                onTap: _isLiking ? null : _toggleLike,
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colorScheme.outline.withOpacity(0.3), width: 1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: _isLiking
-                      ? const Center(
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        )
-                      : Icon(
-                          currentLikeStatus ? Icons.favorite : Icons.favorite_border,
-                          color: currentLikeStatus ? Colors.red : colorScheme.onSurfaceVariant,
-                          size: 24,
-                        ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Container(width: 1, height: 36, color: colorScheme.outline.withOpacity(0.2)),
-              const SizedBox(width: 12),
-              // Service label
-              Expanded(
-                child: Text(
-                  localizations?.service_provider ?? 'Service',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Chat button (Carrot orange)
-              SizedBox(
-                height: 48,
-                child: FilledButton(
-                  onPressed: _startChat,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6F0F),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                  ),
-                  child: Text(
-                    localizations?.chat ?? 'Chat',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
