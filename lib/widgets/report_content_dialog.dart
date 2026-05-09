@@ -197,7 +197,7 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
             Text(
               localizations?.selectReportReason ??
                   'Please select a reason for reporting:',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
@@ -228,7 +228,7 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
                     'Additional details (optional)',
                 hintText: localizations?.reportDetailsHint ??
                     'Provide any additional information...',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
             ),
           ],
@@ -250,7 +250,7 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
             foregroundColor: Colors.white,
           ),
           child: _isSubmitting
-              ? SizedBox(
+              ? const SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(

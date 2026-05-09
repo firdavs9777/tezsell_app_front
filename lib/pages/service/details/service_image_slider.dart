@@ -1,5 +1,4 @@
 // Keep the existing classes (ServiceImageSlider, ServiceDetailsSection, RecommendedServicesSection)
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
@@ -21,7 +20,7 @@ class ServiceImageSlider extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    List<String> imageUrls = service.images.isNotEmpty
+    final List<String> imageUrls = service.images.isNotEmpty
         ? service.images.map((image) => image.image).toList()
         : [];
 
@@ -100,7 +99,7 @@ class ServiceImageSlider extends StatelessWidget {
                     onTap: () {
                       if (pageController.hasClients &&
                           pageController.page != null) {
-                        int currentPage = pageController.page!.toInt();
+                        final int currentPage = pageController.page!.toInt();
                         if (currentPage > 0) {
                           pageController.previousPage(
                             duration: const Duration(milliseconds: 300),
@@ -138,7 +137,7 @@ class ServiceImageSlider extends StatelessWidget {
                     onTap: () {
                       if (pageController.hasClients &&
                           pageController.page != null) {
-                        int currentPage = pageController.page!.toInt();
+                        final int currentPage = pageController.page!.toInt();
                         if (currentPage < imageUrls.length - 1) {
                           pageController.nextPage(
                             duration: const Duration(milliseconds: 300),

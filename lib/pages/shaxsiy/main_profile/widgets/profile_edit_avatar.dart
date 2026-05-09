@@ -21,7 +21,7 @@ class ProfileEditAvatar extends StatelessWidget {
     if (selectedImage != null) {
       return FileImage(selectedImage!);
     }
-    final image = user?.profileImage?.image;
+    final image = user?.profileImage.image;
     if (image == null || image.isEmpty) return null;
     final url = image.startsWith('http://') || image.startsWith('https://')
         ? image

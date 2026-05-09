@@ -417,7 +417,7 @@ class AnalyticsDashboard extends StatelessWidget {
                   child: _buildTrustStat(
                     context,
                     Icons.star_rounded,
-                    '${trustScore.averageRating.toStringAsFixed(1)}',
+                    trustScore.averageRating.toStringAsFixed(1),
                     'Rating',
                     Colors.amber,
                   ),

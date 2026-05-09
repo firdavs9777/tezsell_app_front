@@ -18,8 +18,8 @@ class SavedProperties extends ConsumerWidget {
 
     return Scaffold(
       body: tokenAsync.when(
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => const Center(
           child: Text('Error loading authentication'),
         ),
         data: (token) {
@@ -41,7 +41,7 @@ class SavedProperties extends ConsumerWidget {
   ) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -50,14 +50,14 @@ class SavedProperties extends ConsumerWidget {
               size: 80,
               color: theme.colorScheme.onSurfaceVariant,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text(
               l10n.authLoginRequired,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               l10n.authLoginToViewSaved,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -65,14 +65,14 @@ class SavedProperties extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('/login');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primaryColor,
-                padding: EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -168,7 +168,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
           SnackBar(
             content: Text(l10n.successPropertyUnsaved),
             backgroundColor: const Color(0xFFFF9800),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -179,7 +179,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
           SnackBar(
             content: Text(l10n.alertsUnsavePropertyFailed),
             backgroundColor: Theme.of(context).colorScheme.error,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -231,7 +231,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               ),
             ),
             centerTitle: false,
-            titlePadding: EdgeInsets.only(left: 16, bottom: 16),
+            titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
           ),
         ),
         savedPropertiesAsync.when(
@@ -240,8 +240,8 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
                   Text(
                     l10n.loadingSavedProperties,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -258,14 +258,14 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     l10n.errorsFailedToLoadSaved,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     error.toString(),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -273,10 +273,10 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: _refreshProperties,
-                    icon: Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh),
                     label: Text(l10n.actionsRetry),
                   ),
                 ],
@@ -298,7 +298,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
                   if (_isLoadingMore) _buildLoadingMoreIndicator(),
                   if (response.next == null && response.results.isNotEmpty)
                     _buildNoMorePropertiesIndicator(l10n),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
               ),
             );
@@ -315,7 +315,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
   ) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -324,14 +324,14 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               size: 80,
               color: theme.colorScheme.onSurfaceVariant,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text(
               l10n.savedPropertiesNoSaved,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               l10n.savedPropertiesStartSaving,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -339,14 +339,14 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('/properties');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primaryColor,
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 48,
                   vertical: 16,
                 ),
@@ -369,7 +369,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
 
   Widget _buildResultsHeader(int count, AppLocalizations l10n) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -381,7 +381,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
           ),
           IconButton(
             onPressed: _refreshProperties,
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             tooltip: l10n.actionsRefresh,
           ),
         ],
@@ -395,8 +395,8 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
   ) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: response.results.length,
       itemBuilder: (context, index) {
         final savedProperty = response.results[index];
@@ -415,7 +415,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
   }
 
   Widget _buildLoadingMoreIndicator() {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.all(16),
       child: Center(
         child: CircularProgressIndicator(),
@@ -425,7 +425,7 @@ class _SavedPropertiesListState extends ConsumerState<_SavedPropertiesList> {
 
   Widget _buildNoMorePropertiesIndicator(AppLocalizations l10n) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Center(
         child: Text(
           l10n.resultsNoMoreProperties,

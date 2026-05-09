@@ -93,18 +93,13 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                 children: [
                   CircleAvatar(
                     radius: 16,
-                    backgroundImage: widget.parentComment.user.profileImage !=
-                            null
-                        ? NetworkImage(
-                            widget.parentComment.user.profileImage!.image.startsWith('http://') ||
-                                    widget.parentComment.user.profileImage!.image.startsWith('https://')
-                                ? widget.parentComment.user.profileImage!.image
-                                : '${baseUrl}${widget.parentComment.user.profileImage!.image}')
-                        : null,
+                    backgroundImage: NetworkImage(
+                            widget.parentComment.user.profileImage.image.startsWith('http://') ||
+                                    widget.parentComment.user.profileImage.image.startsWith('https://')
+                                ? widget.parentComment.user.profileImage.image
+                                : '$baseUrl${widget.parentComment.user.profileImage.image}'),
                     backgroundColor: colorScheme.surfaceContainerHighest,
-                    child: widget.parentComment.user.profileImage == null
-                        ? Icon(Icons.person, size: 16, color: colorScheme.onSurfaceVariant)
-                        : null,
+                    child: null,
                   ),
                   const SizedBox(width: 8),
                   Expanded(

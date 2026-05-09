@@ -74,7 +74,7 @@ class ProductNewPricingCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: DropdownButtonFormField<String>(
-                  value: selectedCurrency,
+                  initialValue: selectedCurrency,
                   isExpanded: true,
                   decoration: InputDecoration(
                     labelText: localizations?.currency ?? 'Currency',

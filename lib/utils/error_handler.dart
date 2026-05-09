@@ -42,7 +42,7 @@ class ApiException implements Exception {
       case 400:
         return "Noto'g'ri so'rov. Ma'lumotlarni tekshiring.";
       case 401:
-        return "Avtorizatsiya talab qilinadi. Iltimos, qaytadan kiring.";
+        return 'Avtorizatsiya talab qilinadi. Iltimos, qaytadan kiring.';
       case 403:
         return "Ruxsat yo'q. Siz faqat o'z e'lonlaringizni tahrirlashingiz mumkin.";
       case 404:
@@ -54,11 +54,11 @@ class ApiException implements Exception {
       case 500:
         return "Server xatosi. Keyinroq urinib ko'ring.";
       case 502:
-        return "Server vaqtincha ishlamayapti.";
+        return 'Server vaqtincha ishlamayapti.';
       case 503:
-        return "Xizmat vaqtincha mavjud emas.";
+        return 'Xizmat vaqtincha mavjud emas.';
       default:
-        return "Kutilmagan xatolik yuz berdi.";
+        return 'Kutilmagan xatolik yuz berdi.';
     }
   }
 
@@ -124,7 +124,7 @@ class AppErrorHandler {
     } else if (error is Exception) {
       return error.toString().replaceFirst('Exception: ', '');
     }
-    return "Kutilmagan xatolik yuz berdi.";
+    return 'Kutilmagan xatolik yuz berdi.';
   }
 
   /// Get error message for specific HTTP status code

@@ -291,7 +291,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                             ),
                             if (isVerified) ...[
                               const SizedBox(width: 8),
-                              Icon(Icons.verified, color: Colors.blue, size: 18),
+                              const Icon(Icons.verified, color: Colors.blue, size: 18),
                             ],
                           ],
                         ),

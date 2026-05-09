@@ -1,5 +1,4 @@
 import 'package:app/providers/provider_models/service_model.dart';
-import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
@@ -30,12 +29,12 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
       case 'uz':
-        return widget.service.category?.nameUz ?? '';
+        return widget.service.category.nameUz ?? '';
       case 'ru':
-        return widget.service.category?.nameRu ?? '';
+        return widget.service.category.nameRu ?? '';
       case 'en':
       default:
-        return widget.service.category?.nameEn ?? '';
+        return widget.service.category.nameEn ?? '';
     }
   }
 
@@ -89,7 +88,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
 
           // Service Title
           Text(
-            widget.service.name!,
+            widget.service.name,
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w700,
@@ -142,7 +141,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  widget.service.description!,
+                  widget.service.description,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
@@ -229,13 +228,12 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                       color: colorScheme.primaryContainer,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: widget.service.userName.profileImage?.image != null
-                                        ? ClipOval(
+                                    child: ClipOval(
                                             child: Image.network(
-                                              widget.service.userName.profileImage!.image.startsWith('http://') ||
-                                                      widget.service.userName.profileImage!.image.startsWith('https://')
-                                                  ? widget.service.userName.profileImage!.image
-                                                  : '$baseUrl${widget.service.userName.profileImage!.image}',
+                                              widget.service.userName.profileImage.image.startsWith('http://') ||
+                                                      widget.service.userName.profileImage.image.startsWith('https://')
+                                                  ? widget.service.userName.profileImage.image
+                                                  : '$baseUrl${widget.service.userName.profileImage.image}',
                                               fit: BoxFit.cover,
                                               errorBuilder: (context, error, stackTrace) => Icon(
                                                 Icons.person_rounded,
@@ -243,11 +241,6 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                                 size: 28,
                                               ),
                                             ),
-                                          )
-                                        : Icon(
-                                            Icons.person_rounded,
-                                            color: colorScheme.primary,
-                                            size: 28,
                                           ),
                                   ),
                                 ),

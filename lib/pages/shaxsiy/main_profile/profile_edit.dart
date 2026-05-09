@@ -445,7 +445,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   labelText: localizations?.phoneNumber,
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.phone),
-                  fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+                  fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                   filled: true,
                 ),
                 enabled: false,
@@ -454,7 +454,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
               // Country Dropdown
               DropdownButtonFormField<CountryModel>(
-                value: selectedCountry,
+                initialValue: selectedCountry,
                 decoration: InputDecoration(
                   labelText: localizations?.country ?? 'Country',
                   border: const OutlineInputBorder(),
@@ -482,7 +482,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
               // Region Dropdown
               DropdownButtonFormField<Regions>(
-                value: selectedRegion != null && regionsList.isNotEmpty
+                initialValue: selectedRegion != null && regionsList.isNotEmpty
                     ? regionsList.cast<Regions?>().firstWhere(
                         (r) => r?.region == selectedRegion,
                         orElse: () => null,
@@ -522,7 +522,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
               // District Dropdown
               DropdownButtonFormField<Districts>(
-                value: selectedDistrict,
+                initialValue: selectedDistrict,
                 decoration: InputDecoration(
                   labelText:
                       localizations?.districtSelectParagraph ?? 'District',

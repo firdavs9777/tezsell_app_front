@@ -34,21 +34,12 @@ class ServiceDetailProviderSection extends StatelessWidget {
                 ),
               ),
               child: ClipOval(
-                child: provider.profileImage?.image != null
-                    ? CachedNetworkImageWidget(
+                child: CachedNetworkImageWidget(
                         imageUrl: ImageUtils.buildImageUrl(
-                            provider.profileImage!.image),
+                            provider.profileImage.image),
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
-                      )
-                    : Container(
-                        color: colorScheme.surfaceContainerHighest,
-                        child: Icon(
-                          Icons.person,
-                          color: colorScheme.onSurfaceVariant,
-                          size: 24,
-                        ),
                       ),
               ),
             ),
@@ -67,7 +58,7 @@ class ServiceDetailProviderSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    provider.location?.region ??
+                    provider.location.region ??
                         (localizations?.searchLocation ?? 'Location'),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,

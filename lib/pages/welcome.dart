@@ -1,4 +1,3 @@
-import 'package:app/pages/tab_bar/splash_screen.dart';
 import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/providers/provider_root/theme_provider.dart';
 import 'package:app/config/app_router.dart';

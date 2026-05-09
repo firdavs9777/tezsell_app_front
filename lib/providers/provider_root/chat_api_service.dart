@@ -233,7 +233,7 @@ class ChatApiService {
     }
 
     try {
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/api/chat/$roomId/messages/'),
       );
@@ -279,7 +279,7 @@ class ChatApiService {
     }
 
     try {
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/api/chat/$roomId/messages/'),
       );
@@ -568,7 +568,7 @@ class ChatApiService {
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         // Parse reactions: {"👍": [1, 2], "❤️": [3]}
-        Map<String, List<int>> reactions = {};
+        final Map<String, List<int>> reactions = {};
         if (data['reactions'] != null && data['reactions'] is Map) {
           final reactionsData = data['reactions'] as Map<String, dynamic>;
           reactionsData.forEach((emoji, userIds) {

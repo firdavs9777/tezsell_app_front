@@ -8,7 +8,7 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
 class ChatApiService {
-  static const String apiBaseUrl = '$baseUrl';
+  static const String apiBaseUrl = baseUrl;
 
   // Get auth token
   Future<String?> _getToken() async {
@@ -23,7 +23,7 @@ class ChatApiService {
     }
 
     try {
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/chats/$roomId/messages/'),
       );
@@ -71,7 +71,7 @@ class ChatApiService {
     }
 
     try {
-      var request = http.MultipartRequest(
+      final request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/chats/$roomId/messages/'),
       );
@@ -539,7 +539,7 @@ class ChatApiService {
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         // Parse reactions: {"👍": [1, 2], "❤️": [3]}
-        Map<String, List<int>> reactions = {};
+        final Map<String, List<int>> reactions = {};
         if (data['reactions'] != null && data['reactions'] is Map) {
           final reactionsData = data['reactions'] as Map<String, dynamic>;
           reactionsData.forEach((emoji, userIds) {

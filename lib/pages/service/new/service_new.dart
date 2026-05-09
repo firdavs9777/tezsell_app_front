@@ -1,6 +1,4 @@
-import 'package:app/common_widgets/common_button.dart';
 import 'package:app/pages/service/new/widgets/service_new_image_picker.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
@@ -9,7 +7,6 @@ import 'package:app/utils/content_filter.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -46,7 +43,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
   List<CategoryModel> availableCategories = [];
   int? selectedCategory;
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   final picker = ImagePicker();
   bool _isUploading = false;
 
@@ -140,7 +137,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
           maxHeight: 2560,
           imageQuality: 95,
         );
-        if (pickedFiles != null && mounted) {
+        if (mounted) {
           setState(() {
             _selectedImages.addAll(
               pickedFiles.map((pickedFile) => File(pickedFile.path)),
@@ -267,33 +264,25 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
 
       scaffoldMessenger.hideCurrentSnackBar();
 
-      if (service != null) {
-        AppLogger.info('Service created successfully: ${service.id}');
+      AppLogger.info('Service created successfully: ${service.id}');
 
-        // Trigger refresh in services list
-        ref.read(servicesRefreshProvider.notifier).state++;
+      // Trigger refresh in services list
+      ref.read(servicesRefreshProvider.notifier).state++;
 
-        // Show success message
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text('Service successfully added!'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+      // Show success message
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(
+          content: Text('Service successfully added!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
 
-        // Pop this page to go back to services list (was opened with Navigator.push)
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      } else {
-        AppLogger.error('Service creation returned null');
-        AppErrorHandler.showError(
-          context,
-          'Error while creating service. Please try again.',
-        );
+      // Pop this page to go back to services list (was opened with Navigator.push)
+      if (mounted) {
+        Navigator.of(context).pop();
       }
-    } catch (e) {
+        } catch (e) {
       AppErrorHandler.logError('ServiceNew._submitProduct', e);
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -428,7 +417,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<CategoryModel>(
-                        value: selectedCategory != null
+                        initialValue: selectedCategory != null
                             ? availableCategories.firstWhere(
                                 (cat) => cat.id == selectedCategory,
                                 orElse: () => availableCategories.first,

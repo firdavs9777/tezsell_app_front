@@ -7,7 +7,6 @@ import '../../service/notification_websocket_service.dart';
 import '../../service/authentication_service.dart';
 import '../../service/notification_service.dart';
 import '../../service/push_notification_service.dart';
-import 'chat_provider.dart';
 
 // Notification State
 class NotificationState {

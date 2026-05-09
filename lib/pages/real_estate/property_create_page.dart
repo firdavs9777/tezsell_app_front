@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,7 +19,6 @@ import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/currency_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PropertyCreatePage extends ConsumerStatefulWidget {
@@ -44,7 +42,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
   final _yearBuiltController = TextEditingController();
   final _parkingSpacesController = TextEditingController();
 
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   final _picker = ImagePicker();
   bool _isUploading = false;
 
@@ -172,7 +170,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
 
   Future<void> _getCurrentLocation() async {
     try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -211,7 +209,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         return;
       }
 
-      Position position = await Geolocator.getCurrentPosition(
+      final Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
@@ -473,7 +471,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
           maxHeight: 1920,
           imageQuality: 85,
         );
-        if (pickedFiles != null && mounted) {
+        if (mounted) {
           setState(() {
             _selectedImages.addAll(
               pickedFiles.map((pickedFile) => File(pickedFile.path)),
@@ -858,7 +856,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         Expanded(
                           flex: 2,
                           child: DropdownButtonFormField<String>(
-                            value: _selectedCurrency,
+                            initialValue: _selectedCurrency,
                             isExpanded: true,
                             decoration: InputDecoration(
                               labelText: localizations?.property_create_currency ?? 'Currency',
@@ -949,7 +947,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     const SizedBox(height: 16),
                     // Region Dropdown (Required)
                     DropdownButtonFormField<String>(
-                      value: _selectedRegion,
+                      initialValue: _selectedRegion,
                       isExpanded: true,
                       decoration: InputDecoration(
                         labelText: '${localizations?.region ?? 'Region'} *',
@@ -994,7 +992,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     const SizedBox(height: 16),
                     // District Dropdown (Required)
                     DropdownButtonFormField<Districts>(
-                      value: _selectedDistrict,
+                      initialValue: _selectedDistrict,
                       isExpanded: true,
                       decoration: InputDecoration(
                         labelText: '${localizations?.districtSelectParagraph ?? 'District'} *',

@@ -38,9 +38,9 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
 
     final lat = _latitude!;
     final lng = _longitude!;
-    final zoom = 15;
-    final width = 600;
-    final height = 400;
+    const zoom = 15;
+    const width = 600;
+    const height = 400;
 
     // Using OpenStreetMap Static Map
     return 'https://staticmap.openstreetmap.de/staticmap.php?center=$lat,$lng&zoom=$zoom&size=${width}x$height&markers=$lat,$lng,red-pushpin';
@@ -103,7 +103,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                                         loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Text(
                                 'Loading map...',
                                 style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -123,7 +123,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -140,9 +140,9 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.location_on,
+                              const Icon(Icons.location_on,
                                   color: Colors.white, size: 20),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   widget.property.address,
@@ -156,27 +156,27 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: _openInMaps,
-                                  icon: Icon(Icons.directions, size: 18),
-                                  label: Text('Get Directions'),
+                                  icon: const Icon(Icons.directions, size: 18),
+                                  label: const Text('Get Directions'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     foregroundColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 12),
                                   ),
                                 ),
                               ),
                               if (widget.onFullscreenToggle != null) ...[
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 IconButton(
                                   onPressed: widget.onFullscreenToggle,
-                                  icon: Icon(Icons.fullscreen,
+                                  icon: const Icon(Icons.fullscreen,
                                       color: Colors.white),
                                   style: IconButton.styleFrom(
                                     backgroundColor:
@@ -208,9 +208,9 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.map, size: 64, color: colorScheme.onSurfaceVariant),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 widget.property.address,
                 style: textTheme.bodyLarge?.copyWith(
@@ -220,7 +220,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               '${widget.property.district}, ${widget.property.city}',
               style: textTheme.bodyMedium?.copyWith(
@@ -228,11 +228,11 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: _openInMaps,
-              icon: Icon(Icons.directions, size: 18),
-              label: Text('Open in Maps'),
+              icon: const Icon(Icons.directions, size: 18),
+              label: const Text('Open in Maps'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
@@ -255,16 +255,16 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.location_off, size: 64, color: colorScheme.onSurfaceVariant),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Location not available',
               style: textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 widget.property.address,
                 style: textTheme.bodyMedium?.copyWith(
@@ -328,7 +328,7 @@ class FullscreenMapModal extends StatelessWidget {
         backgroundColor: Colors.black.withOpacity(0.7),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: onClose,
         ),
         title: Text(
@@ -337,7 +337,7 @@ class FullscreenMapModal extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.directions, color: Colors.white),
+            icon: const Icon(Icons.directions, color: Colors.white),
             onPressed: _openInMaps,
             tooltip: 'Get Directions',
           ),
@@ -367,23 +367,23 @@ class FullscreenMapModal extends StatelessWidget {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.map, size: 80, color: Colors.white),
-                        SizedBox(height: 16),
+                        const Icon(Icons.map, size: 80, color: Colors.white),
+                        const SizedBox(height: 16),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Text(
                             property.address,
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         ElevatedButton.icon(
                           onPressed: _openInMaps,
-                          icon: Icon(Icons.directions),
-                          label: Text('Open in Maps App'),
+                          icon: const Icon(Icons.directions),
+                          label: const Text('Open in Maps App'),
                           style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 12),
                           ),
                         ),
@@ -395,8 +395,8 @@ class FullscreenMapModal extends StatelessWidget {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_off, size: 80, color: Colors.white),
-                  SizedBox(height: 16),
+                  const Icon(Icons.location_off, size: 80, color: Colors.white),
+                  const SizedBox(height: 16),
                   Text(
                     'Location coordinates not available',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),

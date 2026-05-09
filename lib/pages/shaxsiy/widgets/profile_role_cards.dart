@@ -23,7 +23,7 @@ class ProfileSavedPropertiesCard extends ConsumerWidget {
 
     void navigate() => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SavedProperties()),
+          MaterialPageRoute(builder: (context) => const SavedProperties()),
         );
 
     ProfileMenuCard card(String subtitle, {VoidCallback? onTap}) {

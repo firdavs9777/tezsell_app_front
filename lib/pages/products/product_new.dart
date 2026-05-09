@@ -306,34 +306,25 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
       scaffoldMessenger.hideCurrentSnackBar();
 
-      if (product != null) {
-        AppLogger.info('Product created successfully: ${product.id}');
+      AppLogger.info('Product created successfully: ${product.id}');
 
-        ref.read(productsRefreshProvider.notifier).state++;
+      ref.read(productsRefreshProvider.notifier).state++;
 
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations?.productCreatedSuccess ??
-                  'Product successfully added!',
-            ),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            localizations?.productCreatedSuccess ??
+                'Product successfully added!',
           ),
-        );
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
 
-        if (mounted) {
-          Navigator.of(context).pop();
-        }
-      } else {
-        AppLogger.error('Product creation returned null');
-        AppErrorHandler.showError(
-          context,
-          localizations?.errorCreatingProduct ??
-              'Error while creating product. Please try again.',
-        );
+      if (mounted) {
+        Navigator.of(context).pop();
       }
-    } catch (e) {
+        } catch (e) {
       AppErrorHandler.logError('ProductNew._submitProduct', e);
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();

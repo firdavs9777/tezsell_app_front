@@ -71,8 +71,8 @@ class _TownsListState extends State<TownsList> {
       developer.log('[TownsList] Response status: ${response.statusCode}', name: 'TownsList');
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> responseData = json.decode(response.body);
-        List<dynamic> districtData = responseData['districts'] ?? [];
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<dynamic> districtData = responseData['districts'] ?? [];
         print('[TownsList] Loaded ${districtData.length} districts');
         developer.log('[TownsList] Loaded ${districtData.length} districts', name: 'TownsList');
 
@@ -204,7 +204,7 @@ class _TownsListState extends State<TownsList> {
         ) ??
         '${widget.city_name} - ${district.name}';
 
-    bool? confirm = await showDialog(
+    final bool? confirm = await showDialog(
       context: context,
       barrierColor: Theme.of(context).brightness == Brightness.dark
           ? Colors.white.withOpacity(0.1)
@@ -336,8 +336,8 @@ class _TownsListState extends State<TownsList> {
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, size: 20),
-          color: Theme.of(context).colorScheme.onBackground,
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(

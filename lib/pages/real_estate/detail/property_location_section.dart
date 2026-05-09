@@ -28,7 +28,7 @@ class PropertyLocationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
             borderRadius: BorderRadius.circular(12),
@@ -40,7 +40,7 @@ class PropertyLocationSection extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.location_on, color: Colors.red[400]),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       '${property.address}, ${property.city}, ${property.district}',
@@ -50,7 +50,7 @@ class PropertyLocationSection extends StatelessWidget {
                 ],
               ),
               if (floor != null && totalFloors != null) ...[
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   '${localizations?.property_details_floor ?? "Floor"}: $floor ${localizations?.property_details_of ?? "of"} $totalFloors',
                   style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -59,9 +59,9 @@ class PropertyLocationSection extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
@@ -70,7 +70,7 @@ class PropertyLocationSection extends StatelessWidget {
               BoxShadow(
                   color: colorScheme.shadow.withOpacity(0.05),
                   blurRadius: 10,
-                  offset: Offset(0, 2)),
+                  offset: const Offset(0, 2)),
             ],
           ),
           child: Column(
@@ -83,26 +83,26 @@ class PropertyLocationSection extends StatelessWidget {
                       style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
                   TextButton.icon(
                     onPressed: onFullscreenMap,
-                    icon: Icon(Icons.fullscreen, size: 16),
+                    icon: const Icon(Icons.fullscreen, size: 16),
                     label:
                         Text('View Fullscreen', style: textTheme.bodySmall),
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               PropertyMapWidget(
                 property: property,
                 height: 250,
                 showControls: true,
                 onFullscreenToggle: onFullscreenMap,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(8),
@@ -110,7 +110,7 @@ class PropertyLocationSection extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.location_on, color: Colors.red[400], size: 16),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

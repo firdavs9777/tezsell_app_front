@@ -274,7 +274,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     iconColor: const Color(0xFF4CAF50),
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyHomeTown()),
+                      MaterialPageRoute(builder: (context) => const MyHomeTown()),
                     ),
                   ),
                   ProfileMenuCard(
@@ -285,7 +285,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SecuritySettingsPage()),
+                          builder: (context) => const SecuritySettingsPage()),
                     ),
                   ),
                   ProfileSectionTitle(
@@ -298,7 +298,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CustomerCenterPage()),
+                          builder: (context) => const CustomerCenterPage()),
                     ),
                   ),
                   ProfileMenuCard(
@@ -309,7 +309,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => InquiriesPage()),
+                          builder: (context) => const InquiriesPage()),
                     ),
                   ),
                   ProfileMenuCard(
@@ -321,7 +321,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TermsAndConditionsPage()),
+                          builder: (context) => const TermsAndConditionsPage()),
                     ),
                   ),
                   const SizedBox(height: 32),

@@ -11,21 +11,21 @@ class ThousandsFormatter extends TextInputFormatter {
   ) {
     // Handle empty input
     if (newValue.text.isEmpty) {
-      return TextEditingValue(
+      return const TextEditingValue(
         text: '',
         selection: TextSelection.collapsed(offset: 0),
       );
     }
 
     // Remove commas and parse the raw number
-    String rawValue = newValue.text.replaceAll(',', '');
+    final String rawValue = newValue.text.replaceAll(',', '');
 
     // Limit input to 9 digits
     if (rawValue.length > 9) {
       return oldValue; // Reject changes if input exceeds 9 digits
     }
 
-    double? parsedValue = double.tryParse(rawValue);
+    final double? parsedValue = double.tryParse(rawValue);
 
     // If parsing fails, return the unformatted newValue
     if (parsedValue == null) {
@@ -33,7 +33,7 @@ class ThousandsFormatter extends TextInputFormatter {
     }
 
     // Format the parsed number
-    String formattedValue = _formatter.format(parsedValue);
+    final String formattedValue = _formatter.format(parsedValue);
 
     // Calculate the new cursor position
     int cursorPosition = formattedValue.length -

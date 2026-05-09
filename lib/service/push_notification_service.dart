@@ -3,10 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/app_config.dart';
 import '../models/notification_model.dart';
-import '../providers/provider_root/notification_provider.dart';
 import 'notification_websocket_service.dart';
 import 'badge_service.dart';
 import 'package:http/http.dart' as http;
@@ -248,7 +246,7 @@ class PushNotificationService {
 
     try {
       // Request permission
-      NotificationSettings settings = await _messaging.requestPermission(
+      final NotificationSettings settings = await _messaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
@@ -287,7 +285,7 @@ class PushNotificationService {
 
         _initialized = true;
         print('✅ Firebase Push Notifications initialized');
-        print('📱 FCM Token: ${_fcmToken}...');
+        print('📱 FCM Token: $_fcmToken...');
         print('💡 Make sure your backend is sending notifications to this FCM token');
         print('💡 Test by sending a notification from Firebase Console or your backend');
         
@@ -558,7 +556,7 @@ class PushNotificationService {
                 message.data['notification']?['body'] ?? 
                 '';
 
-    AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       android?.channelId ?? 'general_notifications',
       android?.channelId ?? 'General Notifications',
       channelDescription: 'Notifications for app updates',

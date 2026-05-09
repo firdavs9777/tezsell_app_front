@@ -296,7 +296,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<bool>(
-                  value: _isActiveFilter,
+                  initialValue: _isActiveFilter,
                   decoration: InputDecoration(
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

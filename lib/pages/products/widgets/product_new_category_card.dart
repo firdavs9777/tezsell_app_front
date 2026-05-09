@@ -36,7 +36,7 @@ class ProductNewCategoryCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<CategoryModel>(
-            value: selectedCategoryId != null && availableCategories.isNotEmpty
+            initialValue: selectedCategoryId != null && availableCategories.isNotEmpty
                 ? availableCategories.firstWhere(
                     (cat) => cat.id == selectedCategoryId,
                     orElse: () => availableCategories.first,

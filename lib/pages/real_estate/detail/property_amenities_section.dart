@@ -42,7 +42,7 @@ class PropertyAmenitiesSection extends StatelessWidget {
         .where((e) => e.value != null && e.value! > 0)
         .toList();
 
-    if (availableAmenities.isEmpty) return SizedBox.shrink();
+    if (availableAmenities.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,9 +51,9 @@ class PropertyAmenitiesSection extends StatelessWidget {
           localizations?.sections_nearby_amenities ?? 'Nearby Amenities',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
             borderRadius: BorderRadius.circular(12),
@@ -82,18 +82,18 @@ class PropertyAmenitiesSection extends StatelessWidget {
               }
 
               return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: amenityColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(amenityIcon, color: amenityColor, size: 20),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         amenity.key,

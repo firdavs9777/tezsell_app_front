@@ -278,7 +278,7 @@ class _RegisterState extends State<Register> {
 
       filteredCityId = [];
       for (String city in filteredCities) {
-        int index = cities.indexOf(city);
+        final int index = cities.indexOf(city);
         if (index != -1) {
           filteredCityId.add(cityId[index]);
         }

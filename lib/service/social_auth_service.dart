@@ -112,7 +112,7 @@ class SocialAuthService {
   /// Login with Google
   Future<SocialAuthResponse> loginWithGoogle(String idToken, {String? photoUrl}) async {
     try {
-      final url = '$baseUrl/accounts/auth/google/';
+      const url = '$baseUrl/accounts/auth/google/';
       if (kDebugMode) {
         print('🔐 Google login API call to: $url');
       }

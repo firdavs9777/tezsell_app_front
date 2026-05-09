@@ -94,7 +94,7 @@ class WebSocketService {
             }
 
             _messageController!.add(decoded);
-          } catch (e, stackTrace) {
+          } catch (e) {
           }
         },
         onError: (error) {
@@ -110,7 +110,7 @@ class WebSocketService {
       await Future.delayed(const Duration(milliseconds: 500));
 
       _isConnecting = false;
-    } catch (e, stackTrace) {
+    } catch (e) {
       _isConnecting = false;
       _isConnected = false;
       rethrow;

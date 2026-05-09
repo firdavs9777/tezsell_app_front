@@ -1,4 +1,3 @@
-import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -43,7 +42,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
   }
 
   void submitComment() async {
-    String commentText = commentController.text.trim();
+    final String commentText = commentController.text.trim();
     if (commentText.isEmpty || _isSubmitting) return;
 
     setState(() {
@@ -304,7 +303,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                         ),
                       ),
                       const Spacer(),
-                      if (commentController.text.length > 0)
+                      if (commentController.text.isNotEmpty)
                         Text(
                           '${commentController.text.length}/500',
                           style: TextStyle(

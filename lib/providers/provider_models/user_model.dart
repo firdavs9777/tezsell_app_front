@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:app/providers/provider_models/location_model.dart';
 

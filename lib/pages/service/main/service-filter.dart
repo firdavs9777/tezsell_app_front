@@ -207,7 +207,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                       )
                     : null,
                 filled: true,
-                fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+                fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
@@ -247,7 +247,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                         itemCount: filteredCategories.length,
                         itemBuilder: (context, index) {
                           final category = filteredCategories[index];
-                          IconData? iconData = iconMap[category.icon];
+                          final IconData? iconData = iconMap[category.icon];
 
                           return Material(
                             color: Colors.transparent,
@@ -377,7 +377,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceVariant.withOpacity(0.3),
+                color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
                 shape: BoxShape.circle,
               ),
               child: Icon(

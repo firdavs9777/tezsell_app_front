@@ -51,7 +51,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
   String selectedCurrency = 'Sum';
   bool inStock = true;
 
-  List<File> _newImages = [];
+  final List<File> _newImages = [];
   // Changed: Track existing images with their deletion status
   List<ExistingImageData> _existingImages = [];
   final picker = ImagePicker();
@@ -61,15 +61,15 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
     _descriptionController.text = widget.product.description ?? '';
 
     // Handle price conversion safely - price is a String
-    int price = int.tryParse(widget.product.price?.toString() ?? '0') ?? 0;
+    final int price = int.tryParse(widget.product.price.toString() ?? '0') ?? 0;
     _amountController.text = _formatter.format(price);
 
-    selectedCategory = widget.product.category?.id;
+    selectedCategory = widget.product.category.id;
     selectedCondition = widget.product.condition ?? 'new';
 
     // Handle currency mapping - convert "So'm" to "Sum" if needed
     String productCurrency = widget.product.currency ?? 'Sum';
-    if (productCurrency == "So'm" || productCurrency == "So`m") {
+    if (productCurrency == "So'm" || productCurrency == 'So`m') {
       productCurrency = 'Sum';
     }
     selectedCurrency = productCurrency;
@@ -77,16 +77,14 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
     inStock = widget.product.inStock ?? true;
 
     // Initialize existing images with better tracking
-    if (widget.product.images != null) {
-      _existingImages = widget.product.images!
-          .map((img) => ExistingImageData(
-                id: img.id ?? 0,
-                imageUrl: img.image ?? '',
-                isDeleted: false,
-              ))
-          .toList();
+    _existingImages = widget.product.images
+        .map((img) => ExistingImageData(
+              id: img.id ?? 0,
+              imageUrl: img.image ?? '',
+              isDeleted: false,
+            ))
+        .toList();
     }
-  }
 
   // Function to get the appropriate category name based on current locale
   String getCategoryName(CategoryModel category) {
@@ -122,29 +120,27 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
     try {
       if (isMulti) {
         final pickedFiles = await picker.pickMultiImage();
-        if (pickedFiles != null) {
-          // Check total image count limit
-          final currentImageCount =
-              _getActiveExistingImagesCount() + _newImages.length;
-          final maxNewImages = 10 - currentImageCount;
+        // Check total image count limit
+        final currentImageCount =
+            _getActiveExistingImagesCount() + _newImages.length;
+        final maxNewImages = 10 - currentImageCount;
 
-          if (pickedFiles.length > maxNewImages) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    'You can only add ${maxNewImages} more image(s). Maximum 10 images allowed.'),
-                duration: Duration(seconds: 3),
-              ),
-            );
-            return;
-          }
-
-          setState(() {
-            _newImages
-                .addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
-          });
+        if (pickedFiles.length > maxNewImages) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'You can only add $maxNewImages more image(s). Maximum 10 images allowed.'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+          return;
         }
-      } else {
+
+        setState(() {
+          _newImages
+              .addAll(pickedFiles.map((pickedFile) => File(pickedFile.path)));
+        });
+            } else {
         final pickedFile = await picker.pickImage(source: ImageSource.gallery);
         if (pickedFile != null) {
           final currentImageCount =
@@ -227,7 +223,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       return;
     }
 
-    int? price = int.tryParse(_amountController.text.replaceAll(',', ''));
+    final int? price = int.tryParse(_amountController.text.replaceAll(',', ''));
     if (price == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Invalid price entered. Please enter a valid number.'),
@@ -258,7 +254,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
 
       final updatedProduct =
           await ref.read(productsServiceProvider).updateProduct(
-                productId: widget.product.id!,
+                productId: widget.product.id,
                 title: _titleController.text,
                 description: _descriptionController.text,
                 price: price,
@@ -272,15 +268,13 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                     : null,
               );
 
-      if (updatedProduct != null) {
-        // Pop back to parent screen with success result
-        Navigator.pop(context, updatedProduct);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Product successfully updated'),
-          duration: Duration(seconds: 3),
-        ));
-      }
-    } catch (e) {
+      // Pop back to parent screen with success result
+      Navigator.pop(context, updatedProduct);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Product successfully updated'),
+        duration: Duration(seconds: 3),
+      ));
+        } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error while updating product: $e'),
         duration: const Duration(seconds: 3),
@@ -325,7 +319,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -530,7 +524,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       title,
       style: TextStyle(
         fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
@@ -572,6 +566,6 @@ class ExistingImageData {
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
+    return '${this[0].toUpperCase()}${substring(1)}';
   }
 }

@@ -27,7 +27,7 @@ class PropertyDetailsSection extends StatelessWidget {
               'Basic Information',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildDetailRow(
           context,
           localizations?.property_details_property_type ?? 'Property Type:',
@@ -54,7 +54,7 @@ class PropertyDetailsSection extends StatelessWidget {
   Widget _buildDetailRow(BuildContext context, String label, String value, ColorScheme colorScheme) {
     final textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

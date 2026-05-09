@@ -110,7 +110,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                       .primaryContainer
                                   : Theme.of(context)
                                       .colorScheme
-                                      .surfaceVariant,
+                                      .surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
@@ -206,7 +206,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     ),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     disabledBackgroundColor:
-                        Theme.of(context).colorScheme.surfaceVariant,
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     disabledForegroundColor: Theme.of(context)
                         .colorScheme

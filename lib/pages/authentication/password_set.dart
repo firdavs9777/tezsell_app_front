@@ -43,7 +43,7 @@ class _PasswordResetState extends State<PasswordReset> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
 
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
   // Password validation helper
@@ -124,9 +124,9 @@ class _PasswordResetState extends State<PasswordReset> {
       return;
     }
 
-    String userName = _userNameController.text.trim();
-    String password = _passwordController.text;
-    String passwordConfirmation = _passwordConfirmationController.text;
+    final String userName = _userNameController.text.trim();
+    final String password = _passwordController.text;
+    final String passwordConfirmation = _passwordConfirmationController.text;
 
     // Check password match
     if (password != passwordConfirmation) {
@@ -199,7 +199,7 @@ class _PasswordResetState extends State<PasswordReset> {
       String errorMessage = AppLocalizations.of(context)?.registrationError ??
           'Ro\'yxatdan o\'tishda xatolik yuz berdi';
 
-      String errorString = e.toString().toLowerCase();
+      final String errorString = e.toString().toLowerCase();
 
       // Check for specific error patterns from backend
       if (errorString.contains('email already exists') ||
@@ -668,9 +668,9 @@ class _PasswordResetState extends State<PasswordReset> {
                   child: Text(
                     AppLocalizations.of(context)?.viewTerms ??
                         'View Terms and Conditions',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: const Color(0xFFFF6F0F),
+                      color: Color(0xFFFF6F0F),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -727,7 +727,7 @@ class _PasswordResetState extends State<PasswordReset> {
                             Text(
                               AppLocalizations.of(context)?.loading ??
                                   'Loading...',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: -0.3,
@@ -737,7 +737,7 @@ class _PasswordResetState extends State<PasswordReset> {
                         )
                       : Text(
                           AppLocalizations.of(context)?.finish ?? 'Finish',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.3,

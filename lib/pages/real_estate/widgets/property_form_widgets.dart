@@ -119,7 +119,7 @@ class PropertyFormDropdownField extends StatelessWidget {
     final localizations = AppLocalizations.of(context);
 
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       isExpanded: true,
       decoration: InputDecoration(
         labelText: label,

@@ -212,7 +212,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedContentType,
+                  initialValue: _selectedContentType,
                   decoration: InputDecoration(
                     labelText: 'Content Type',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -238,7 +238,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButtonFormField<bool>(
-                  value: _isActiveFilter,
+                  initialValue: _isActiveFilter,
                   decoration: InputDecoration(
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

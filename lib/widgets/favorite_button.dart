@@ -395,7 +395,7 @@ class NotifyPriceDropToggle extends StatelessWidget {
         decoration: BoxDecoration(
           color: enabled
               ? const Color(0xFF4CAF50).withOpacity(0.1)
-              : colorScheme.surfaceVariant.withOpacity(0.5),
+              : colorScheme.surfaceContainerHighest.withOpacity(0.5),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: enabled

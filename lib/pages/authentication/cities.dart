@@ -10,7 +10,7 @@ class CityList extends StatefulWidget {
 class _CityListState extends State<CityList> {
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return const Card(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[

@@ -192,10 +192,10 @@ class RatingSummary extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Icon(
+                    const Icon(
                       Icons.star_rounded,
                       size: 12,
-                      color: const Color(0xFFFFB800),
+                      color: Color(0xFFFFB800),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -203,7 +203,7 @@ class RatingSummary extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                         child: LinearProgressIndicator(
                           value: percentage,
-                          backgroundColor: colorScheme.surfaceVariant,
+                          backgroundColor: colorScheme.surfaceContainerHighest,
                           valueColor: const AlwaysStoppedAnimation(
                             Color(0xFFFFB800),
                           ),

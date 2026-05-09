@@ -20,7 +20,7 @@ Widget _buildTextField({
         borderRadius: BorderRadius.circular(10),
       ),
       labelStyle: TextStyle(
-        color: Theme.of(context).colorScheme.onBackground, // Use context here
+        color: Theme.of(context).colorScheme.onSurface, // Use context here
       ),
     ),
   );

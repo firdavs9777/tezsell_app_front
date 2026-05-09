@@ -19,7 +19,7 @@ class PropertyTitleSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
@@ -27,7 +27,7 @@ class PropertyTitleSection extends StatelessWidget {
           BoxShadow(
             color: colorScheme.shadow.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -47,7 +47,7 @@ class PropertyTitleSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -60,9 +60,8 @@ class PropertyTitleSection extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: isDark ? colorScheme.primary : const Color(0xFF43A047)),
                     ),
-                    if (property.pricePerSqm != null &&
-                        property.pricePerSqm.isNotEmpty) ...[
-                      SizedBox(height: 4),
+                    if (property.pricePerSqm.isNotEmpty) ...[
+                      const SizedBox(height: 4),
                       Text(
                         '${property.pricePerSqm} ${property.currency}${localizations?.property_info_price_per_sqm ?? "/m²"}',
                         style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -72,7 +71,7 @@ class PropertyTitleSection extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.blue[50],
                   borderRadius: BorderRadius.circular(12),
@@ -82,7 +81,7 @@ class PropertyTitleSection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.visibility, size: 16, color: Colors.blue[700]),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text(
                       '${property.viewsCount}',
                       style: textTheme.bodySmall?.copyWith(

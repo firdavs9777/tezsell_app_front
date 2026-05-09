@@ -200,7 +200,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                           children: [
                             _buildStatColumn(
                               count: profile.totalListings,
-                              label: AppLocalizations.of(context)?.profile_listings ?? "Listings",
+                              label: AppLocalizations.of(context)?.profile_listings ?? 'Listings',
                               onTap: null,
                             ),
                             _buildStatColumn(

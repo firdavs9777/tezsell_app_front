@@ -47,7 +47,7 @@ class NotificationApiService {
         // Non-paginated response (list of notifications)
         return NotificationResponse(
           count: (jsonData as List).length,
-          results: (jsonData as List)
+          results: (jsonData)
               .map((item) => NotificationModel.fromJson(item))
               .toList(),
         );

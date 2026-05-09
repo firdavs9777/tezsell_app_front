@@ -51,7 +51,7 @@ class UserProfile {
       'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
       'Iyul', 'Avgust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'
     ];
-    return "${months[memberSince.month - 1]} ${memberSince.year}";
+    return '${months[memberSince.month - 1]} ${memberSince.year}';
   }
 
   /// Check if this is the current user (should not show follow button)

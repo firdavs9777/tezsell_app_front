@@ -469,7 +469,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                       : null,
                   style: FilledButton.styleFrom(
                     backgroundColor: colorScheme.primary,
-                    disabledBackgroundColor: colorScheme.surfaceVariant,
+                    disabledBackgroundColor: colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -571,7 +571,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       return Container(
         height: 56,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceVariant.withOpacity(0.3),
+          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
         ),
@@ -589,7 +589,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       decoration: BoxDecoration(
         color: enabled
             ? colorScheme.surface
-            : colorScheme.surfaceVariant.withOpacity(0.3),
+            : colorScheme.surfaceContainerHighest.withOpacity(0.3),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: enabled
@@ -598,7 +598,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
         ),
       ),
       child: DropdownButtonFormField<T>(
-        value: value,
+        initialValue: value,
         isExpanded: true,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

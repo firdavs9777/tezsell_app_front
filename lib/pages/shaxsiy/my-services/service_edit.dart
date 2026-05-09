@@ -3,7 +3,6 @@ import 'package:app/pages/shaxsiy/my-services/widgets/service_edit_image_list.da
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
-import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,10 +27,10 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
   final _descriptionController = TextEditingController();
 
   List<CategoryModel> _categories = [];
-  List<Location> _locations = [];
-  List<File> _newImages = [];
+  final List<Location> _locations = [];
+  final List<File> _newImages = [];
   List<Map<String, dynamic>> _existingImages = [];
-  List<int> _imagesToDelete = [];
+  final List<int> _imagesToDelete = [];
 
   CategoryModel? _selectedCategory;
   Location? _selectedLocation;
@@ -315,7 +314,7 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                         )
                       else
                         DropdownButtonFormField<CategoryModel>(
-                          value: _selectedCategory,
+                          initialValue: _selectedCategory,
                           decoration: InputDecoration(
                             hintText: localizations?.select_category ??
                                 'Select category',
@@ -375,7 +374,7 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                         )
                       else
                         DropdownButtonFormField<Location>(
-                          value: _selectedLocation,
+                          initialValue: _selectedLocation,
                           decoration: InputDecoration(
                             hintText: localizations?.select_location ??
                                 'Select location',

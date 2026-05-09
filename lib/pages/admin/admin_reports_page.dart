@@ -163,7 +163,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedStatus,
+                  initialValue: _selectedStatus,
                   decoration: InputDecoration(
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -189,7 +189,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButtonFormField<String>(
-                  value: _selectedContentType,
+                  initialValue: _selectedContentType,
                   decoration: InputDecoration(
                     labelText: 'Content Type',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -507,7 +507,7 @@ class _ReportActionsSheetState extends State<_ReportActionsSheet> {
           ),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(
-            value: _selectedAction,
+            initialValue: _selectedAction,
             decoration: InputDecoration(
               labelText: 'Action',
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

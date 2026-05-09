@@ -36,7 +36,7 @@ class PropertyFeaturesSection extends StatelessWidget {
 
     final availableFeatures = features.entries.where((e) => e.value).toList();
 
-    if (availableFeatures.isEmpty) return SizedBox.shrink();
+    if (availableFeatures.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,13 +46,13 @@ class PropertyFeaturesSection extends StatelessWidget {
               'Features & Amenities',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: availableFeatures.map((feature) {
             return Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: colorScheme.primaryContainer.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(20),

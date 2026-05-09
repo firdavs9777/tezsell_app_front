@@ -99,7 +99,7 @@ class OffersNotifier extends StateNotifier<OffersState> {
 
   /// Accept an offer (seller)
   Future<Offer> acceptOffer(int offerId) async {
-    final request = const OfferResponseRequest(action: 'accept');
+    const request = OfferResponseRequest(action: 'accept');
     final offer = await _service.respondToOffer(offerId, request);
     await loadOffers();
     return offer;

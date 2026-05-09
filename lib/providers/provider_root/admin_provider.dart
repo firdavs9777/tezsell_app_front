@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:app/config/app_config.dart';
 import 'package:app/utils/app_logger.dart';
-import 'package:app/utils/error_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -460,7 +459,7 @@ class AdminService {
       } else if (response.statusCode == 403) {
         throw Exception('Access denied. Admin privileges required.');
       } else {
-        throw Exception('Failed to ${action} agent');
+        throw Exception('Failed to $action agent');
       }
     } catch (e) {
       AppLogger.error('Error verifying agent: $e');

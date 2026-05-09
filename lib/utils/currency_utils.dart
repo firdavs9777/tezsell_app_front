@@ -196,7 +196,7 @@ class CurrencyUtils {
   /// Get available currencies for a country (limited set: country default + USD + EUR)
   static List<String> getCurrenciesForCountry(String countryCode) {
     final defaultCurrency = countryDefaultCurrency[countryCode] ?? 'USD';
-    return [defaultCurrency, 'USD', 'EUR'].toSet().toList();
+    return {defaultCurrency, 'USD', 'EUR'}.toList();
   }
 
   /// Get all available currencies
@@ -370,10 +370,10 @@ class ValidationRules {
     if (config == null) return null;
 
     if (price < config.minPrice) {
-      return "Minimum price: ${CurrencyUtils.formatPrice(config.minPrice, currency: currency)}";
+      return 'Minimum price: ${CurrencyUtils.formatPrice(config.minPrice, currency: currency)}';
     }
     if (price > config.maxPrice) {
-      return "Maximum price: ${CurrencyUtils.formatPrice(config.maxPrice, currency: currency)}";
+      return 'Maximum price: ${CurrencyUtils.formatPrice(config.maxPrice, currency: currency)}';
     }
     return null;
   }
@@ -381,10 +381,10 @@ class ValidationRules {
   /// Validate title length
   static String? validateTitle(String title) {
     if (title.length < minTitleLength) {
-      return "Title must be at least $minTitleLength characters";
+      return 'Title must be at least $minTitleLength characters';
     }
     if (title.length > maxTitleLength) {
-      return "Title must not exceed $maxTitleLength characters";
+      return 'Title must not exceed $maxTitleLength characters';
     }
     return null;
   }
@@ -392,10 +392,10 @@ class ValidationRules {
   /// Validate description length
   static String? validateDescription(String description) {
     if (description.length < minDescriptionLength) {
-      return "Description must be at least $minDescriptionLength characters";
+      return 'Description must be at least $minDescriptionLength characters';
     }
     if (description.length > maxDescriptionLength) {
-      return "Description must not exceed $maxDescriptionLength characters";
+      return 'Description must not exceed $maxDescriptionLength characters';
     }
     return null;
   }
@@ -403,7 +403,7 @@ class ValidationRules {
   /// Validate image count
   static String? validateImageCount(int count) {
     if (count > maxImagesPerListing) {
-      return "Maximum $maxImagesPerListing images allowed";
+      return 'Maximum $maxImagesPerListing images allowed';
     }
     return null;
   }
@@ -411,7 +411,7 @@ class ValidationRules {
   /// Validate image size
   static String? validateImageSize(int sizeBytes) {
     if (sizeBytes > maxImageSizeBytes) {
-      return "Image size must not exceed ${maxImageSizeMB}MB";
+      return 'Image size must not exceed ${maxImageSizeMB}MB';
     }
     return null;
   }

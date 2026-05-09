@@ -104,7 +104,7 @@ Uri _buildWebSocketUri(String token) {
             final jsonData = json.decode(message);
             print('✅ JSON decoded successfully');
             print('📋 Parsed JSON data: $jsonData');
-            print('📋 JSON keys: ${jsonData is Map ? (jsonData as Map).keys.toList() : 'Not a Map'}');
+            print('📋 JSON keys: ${jsonData is Map ? (jsonData).keys.toList() : 'Not a Map'}');
             
             final notification = NotificationModel.fromJson(jsonData);
             print('✅ Notification model created:');

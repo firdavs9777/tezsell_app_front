@@ -17,7 +17,7 @@ class PropertyDescriptionSection extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     if (description == null || description!.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return Column(
@@ -27,7 +27,7 @@ class PropertyDescriptionSection extends StatelessWidget {
           localizations?.sections_description ?? 'Description',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(description!,
             style: textTheme.bodyLarge?.copyWith(height: 1.5, color: colorScheme.onSurface)),
       ],

@@ -21,7 +21,7 @@ final setAuthStateProvider =
 final setIsAuthenticatedProvider =
     StateProvider.family<void, bool>((ref, isAuth) async {
   final prefs = await ref.watch(sharedPrefProvider);
-  final check = await ref.watch(setAuthStateProvider);
+  final check = ref.watch(setAuthStateProvider);
   prefs.setBool(isAuthenticatedKey, isAuth);
 });
 
@@ -29,7 +29,7 @@ final setIsAuthenticatedProvider =
 final setAuthenticatedUserProvider =
     StateProvider.family<void, String>((ref, phoneNumber) async {
   final prefs = await ref.watch(sharedPrefProvider);
-  final check = await ref.watch(setAuthStateProvider);
+  final check = ref.watch(setAuthStateProvider);
   prefs.setString(authenticatedUserPhonenumberKey, phoneNumber);
 });
 
@@ -44,7 +44,7 @@ final getIsAuthenticatedProvider = FutureProvider<bool>((ref) async {
 final getAuthenticatedUserProvider = FutureProvider<String>((ref) async {
   final prefs = await ref.watch(sharedPrefProvider);
 
-  final check = await ref.watch(setAuthStateProvider);
+  final check = ref.watch(setAuthStateProvider);
   return prefs.getString(authenticatedUserPhonenumberKey) ?? '';
 });
 

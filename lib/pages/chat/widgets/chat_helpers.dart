@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 class ChatHelpers {
   /// Check if two dates are on the same day

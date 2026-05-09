@@ -12,8 +12,8 @@ class Cities {
   });
 
   factory Cities.fromJson(Map<String, dynamic> json) => Cities(
-        cities: json["cities"],
-        towns: json["towns"],
+        cities: json['cities'],
+        towns: json['towns'],
       );
 }
 

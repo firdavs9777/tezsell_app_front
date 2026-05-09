@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/pages/real_estate/property_inquiry_dialog.dart';
 
 class PropertyContactSection extends StatelessWidget {
   final RealEstate property;
@@ -38,7 +37,7 @@ class PropertyContactSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
@@ -51,7 +50,7 @@ class PropertyContactSection extends StatelessWidget {
             localizations?.contact_title ?? 'Contact Information',
             style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           if (property.agent != null) ...[
             InkWell(
               onTap: () => context.push('/user/${property.agent!.id}'),
@@ -65,7 +64,7 @@ class PropertyContactSection extends StatelessWidget {
                       backgroundColor: Colors.blue[100],
                       child: Icon(Icons.person, color: Colors.blue[600]),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +105,7 @@ class PropertyContactSection extends StatelessWidget {
                       backgroundColor: Colors.green[100],
                       child: Icon(Icons.home, color: Colors.green[600]),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,20 +135,20 @@ class PropertyContactSection extends StatelessWidget {
               ),
             ),
           ],
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Inquiry Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: onInquiry,
-              icon: Icon(Icons.message),
+              icon: const Icon(Icons.message),
               label: Text(
                 localizations?.contact_send_inquiry ?? 'Send Inquiry',
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: colorScheme.primary,
                 foregroundColor: colorScheme.onPrimary,
-                padding: EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

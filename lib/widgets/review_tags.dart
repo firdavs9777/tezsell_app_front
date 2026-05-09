@@ -115,7 +115,7 @@ class ReviewTagSelector extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? baseColor.withOpacity(0.15)
-              : colorScheme.surfaceVariant.withOpacity(0.5),
+              : colorScheme.surfaceContainerHighest.withOpacity(0.5),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? baseColor : colorScheme.outline.withOpacity(0.2),

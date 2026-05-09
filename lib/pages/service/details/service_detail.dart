@@ -1,13 +1,11 @@
 import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/service/comments/comments.dart';
-import 'package:app/pages/service/comments/create_comment.dart';
 import 'package:app/pages/service/details/edit_comment.dart';
 import 'package:app/pages/service/details/widgets/service_detail_carrot_bottom_bar.dart';
 import 'package:app/pages/service/details/widgets/service_detail_image_slider.dart';
 import 'package:app/pages/service/details/widgets/service_detail_provider_section.dart';
 import 'package:app/pages/service/details/recommended_services.dart';
 import 'package:app/pages/service/details/reply_comment.dart';
-import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
@@ -15,14 +13,11 @@ import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/widgets/report_content_dialog.dart';
-import 'package:app/widgets/cached_network_image_widget.dart';
-import 'package:app/widgets/image_viewer.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
@@ -104,12 +99,12 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
       case 'uz':
-        return widget.service.category?.nameUz ?? '';
+        return widget.service.category.nameUz ?? '';
       case 'ru':
-        return widget.service.category?.nameRu ?? '';
+        return widget.service.category.nameRu ?? '';
       case 'en':
       default:
-        return widget.service.category?.nameEn ?? '';
+        return widget.service.category.nameEn ?? '';
     }
   }
 
@@ -286,14 +281,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         final service = await ref
             .read(profileServiceProvider)
             .dislikeSingleService(serviceId: widget.service.id.toString());
-        if (service != null && mounted) {
+        if (mounted) {
           setState(() => _serviceData = service);
         }
       } else {
         final service = await ref
             .read(profileServiceProvider)
             .likeSingleService(serviceId: widget.service.id.toString());
-        if (service != null && mounted) {
+        if (mounted) {
           setState(() => _serviceData = service);
         }
       }
@@ -482,7 +477,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                 _buildDivider(),
                 // Comments section
                 CommentsMain(
-                  key: ValueKey(service.comments?.length ?? 0),
+                  key: ValueKey(service.comments.length ?? 0),
                   id: service.id.toString(),
                   comments: service.comments ?? [],
                   onEditComment: _startEditingComment,
@@ -687,7 +682,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           Icon(Icons.chat_bubble_outline, size: 16, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 4),
           Text(
-            '${service.comments?.length ?? 0}',
+            '${service.comments.length ?? 0}',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
         ],

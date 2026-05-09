@@ -58,7 +58,7 @@ class CityList extends StatelessWidget {
               vertical: 8,
             ),
             onTap: () async {
-              bool? confirm = await showDialog<bool>(
+              final bool? confirm = await showDialog<bool>(
                 context: context,
                 barrierDismissible: true,
                 builder: (BuildContext context) {
@@ -70,7 +70,7 @@ class CityList extends StatelessWidget {
                       ),
                       title: Row(
                         children: [
-                          Icon(Icons.info_outline, color: Colors.orange),
+                          const Icon(Icons.info_outline, color: Colors.orange),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(

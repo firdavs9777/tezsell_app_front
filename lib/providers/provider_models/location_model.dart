@@ -34,7 +34,7 @@ class Location {
     return Location(
       id: json['id'] != null ? int.tryParse(json['id'].toString()) ?? 0 : 0,
       countryCode: json['country_code'],
-      country: json["country"] ?? '',
+      country: json['country'] ?? '',
       region: json['region'] ?? '',
       district: json['district'] ?? '',
       fullAddress: json['full_address'],

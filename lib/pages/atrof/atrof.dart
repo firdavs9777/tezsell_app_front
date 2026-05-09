@@ -5,6 +5,6 @@ class AtrofMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Atrofimda');
+    return const Text('Atrofimda');
   }
 }

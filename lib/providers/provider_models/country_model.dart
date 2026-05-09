@@ -72,77 +72,77 @@ class CountryModel {
   static List<CountryModel> get supportedCountries => [
     CountryModel(
       id: 1, code: 'UZ', name: "O'zbekiston", nameEn: 'Uzbekistan', nameRu: 'Узбекистан',
-      currency: CurrencyInfo(code: 'UZS', symbol: "so'm", name: "So'm"),
+      currency: const CurrencyInfo(code: 'UZS', symbol: "so'm", name: "So'm"),
       phoneCode: '+998', flagEmoji: _codeToEmoji('UZ'),
     ),
     CountryModel(
       id: 2, code: 'KZ', name: 'Qozog\'iston', nameEn: 'Kazakhstan', nameRu: 'Казахстан',
-      currency: CurrencyInfo(code: 'KZT', symbol: '\u20B8', name: 'Tenge'),
+      currency: const CurrencyInfo(code: 'KZT', symbol: '\u20B8', name: 'Tenge'),
       phoneCode: '+7', flagEmoji: _codeToEmoji('KZ'),
     ),
     CountryModel(
       id: 3, code: 'KG', name: 'Qirg\'iziston', nameEn: 'Kyrgyzstan', nameRu: 'Кыргызстан',
-      currency: CurrencyInfo(code: 'KGS', symbol: '\u0441', name: 'Som'),
+      currency: const CurrencyInfo(code: 'KGS', symbol: '\u0441', name: 'Som'),
       phoneCode: '+996', flagEmoji: _codeToEmoji('KG'),
     ),
     CountryModel(
       id: 4, code: 'TJ', name: 'Tojikiston', nameEn: 'Tajikistan', nameRu: 'Таджикистан',
-      currency: CurrencyInfo(code: 'TJS', symbol: 'SM', name: 'Somoni'),
+      currency: const CurrencyInfo(code: 'TJS', symbol: 'SM', name: 'Somoni'),
       phoneCode: '+992', flagEmoji: _codeToEmoji('TJ'),
     ),
     CountryModel(
       id: 5, code: 'TM', name: 'Turkmaniston', nameEn: 'Turkmenistan', nameRu: 'Туркменистан',
-      currency: CurrencyInfo(code: 'TMT', symbol: 'm', name: 'Manat'),
+      currency: const CurrencyInfo(code: 'TMT', symbol: 'm', name: 'Manat'),
       phoneCode: '+993', flagEmoji: _codeToEmoji('TM'),
     ),
     CountryModel(
       id: 6, code: 'RU', name: 'Rossiya', nameEn: 'Russia', nameRu: 'Россия',
-      currency: CurrencyInfo(code: 'RUB', symbol: '\u20BD', name: 'Ruble'),
+      currency: const CurrencyInfo(code: 'RUB', symbol: '\u20BD', name: 'Ruble'),
       phoneCode: '+7', flagEmoji: _codeToEmoji('RU'),
     ),
     CountryModel(
       id: 7, code: 'UA', name: 'Ukraina', nameEn: 'Ukraine', nameRu: 'Украина',
-      currency: CurrencyInfo(code: 'UAH', symbol: '\u20B4', name: 'Hryvnia'),
+      currency: const CurrencyInfo(code: 'UAH', symbol: '\u20B4', name: 'Hryvnia'),
       phoneCode: '+380', flagEmoji: _codeToEmoji('UA'),
     ),
     CountryModel(
       id: 8, code: 'BY', name: 'Belarus', nameEn: 'Belarus', nameRu: 'Беларусь',
-      currency: CurrencyInfo(code: 'BYN', symbol: 'Br', name: 'Ruble'),
+      currency: const CurrencyInfo(code: 'BYN', symbol: 'Br', name: 'Ruble'),
       phoneCode: '+375', flagEmoji: _codeToEmoji('BY'),
     ),
     CountryModel(
       id: 9, code: 'MD', name: 'Moldova', nameEn: 'Moldova', nameRu: 'Молдова',
-      currency: CurrencyInfo(code: 'MDL', symbol: 'L', name: 'Leu'),
+      currency: const CurrencyInfo(code: 'MDL', symbol: 'L', name: 'Leu'),
       phoneCode: '+373', flagEmoji: _codeToEmoji('MD'),
     ),
     CountryModel(
       id: 10, code: 'GE', name: 'Gruziya', nameEn: 'Georgia', nameRu: 'Грузия',
-      currency: CurrencyInfo(code: 'GEL', symbol: '\u20BE', name: 'Lari'),
+      currency: const CurrencyInfo(code: 'GEL', symbol: '\u20BE', name: 'Lari'),
       phoneCode: '+995', flagEmoji: _codeToEmoji('GE'),
     ),
     CountryModel(
       id: 11, code: 'AM', name: 'Armaniston', nameEn: 'Armenia', nameRu: 'Армения',
-      currency: CurrencyInfo(code: 'AMD', symbol: '\u058F', name: 'Dram'),
+      currency: const CurrencyInfo(code: 'AMD', symbol: '\u058F', name: 'Dram'),
       phoneCode: '+374', flagEmoji: _codeToEmoji('AM'),
     ),
     CountryModel(
       id: 12, code: 'AZ', name: 'Ozarbayjon', nameEn: 'Azerbaijan', nameRu: 'Азербайджан',
-      currency: CurrencyInfo(code: 'AZN', symbol: '\u20BC', name: 'Manat'),
+      currency: const CurrencyInfo(code: 'AZN', symbol: '\u20BC', name: 'Manat'),
       phoneCode: '+994', flagEmoji: _codeToEmoji('AZ'),
     ),
     CountryModel(
       id: 13, code: 'EE', name: 'Estoniya', nameEn: 'Estonia', nameRu: 'Эстония',
-      currency: CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
+      currency: const CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
       phoneCode: '+372', flagEmoji: _codeToEmoji('EE'),
     ),
     CountryModel(
       id: 14, code: 'LV', name: 'Latviya', nameEn: 'Latvia', nameRu: 'Латвия',
-      currency: CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
+      currency: const CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
       phoneCode: '+371', flagEmoji: _codeToEmoji('LV'),
     ),
     CountryModel(
       id: 15, code: 'LT', name: 'Litva', nameEn: 'Lithuania', nameRu: 'Литва',
-      currency: CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
+      currency: const CurrencyInfo(code: 'EUR', symbol: '\u20AC', name: 'Euro'),
       phoneCode: '+370', flagEmoji: _codeToEmoji('LT'),
     ),
   ];

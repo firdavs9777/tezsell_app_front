@@ -25,13 +25,13 @@ class PropertyStatsSection extends StatelessWidget {
       children: [
         _buildStatItem(context, Icons.bed, '$bedrooms',
             localizations?.property_card_bed ?? 'bed', colorScheme),
-        SizedBox(width: 24),
+        const SizedBox(width: 24),
         _buildStatItem(context, Icons.bathroom, '$bathrooms',
             localizations?.property_card_bath ?? 'bath', colorScheme),
-        SizedBox(width: 24),
+        const SizedBox(width: 24),
         _buildStatItem(context, Icons.square_foot, '${squareMeters}m²', 'area', colorScheme),
         if (parkingSpaces > 0) ...[
-          SizedBox(width: 24),
+          const SizedBox(width: 24),
           _buildStatItem(context, Icons.local_parking, '$parkingSpaces',
               localizations?.property_card_parking ?? 'parking', colorScheme),
         ],
@@ -44,7 +44,7 @@ class PropertyStatsSection extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, size: 24, color: colorScheme.onSurfaceVariant),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Text(value,
             style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,

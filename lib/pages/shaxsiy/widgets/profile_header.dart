@@ -95,26 +95,25 @@ class ProfileHeader extends ConsumerWidget {
               ),
             ],
           ),
-          if (user.location != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 14,
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  size: 14,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${user.location.region}, ${user.location.district}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${user.location!.region}, ${user.location!.district}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
@@ -150,8 +149,8 @@ String _formatCount(int count) {
 }
 
 String? _resolveProfileImageUrl(UserInfo user) {
-  final image = user.profileImage?.image;
-  if (image == null || image.isEmpty) return null;
+  final image = user.profileImage.image;
+  if (image.isEmpty) return null;
   if (image.startsWith('http://') || image.startsWith('https://')) {
     return image;
   }
