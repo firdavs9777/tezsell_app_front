@@ -130,7 +130,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha: 0.7),
                           ],
                         ),
                       ),
@@ -180,7 +180,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
                                       color: Colors.white),
                                   style: IconButton.styleFrom(
                                     backgroundColor:
-                                        Colors.white.withOpacity(0.2),
+                                        Colors.white.withValues(alpha: 0.2),
                                   ),
                                 ),
                               ],
@@ -268,7 +268,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
               child: Text(
                 widget.property.address,
                 style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -325,7 +325,7 @@ class FullscreenMapModal extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.7),
+        backgroundColor: Colors.black.withValues(alpha: 0.7),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.white),

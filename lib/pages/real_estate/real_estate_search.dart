@@ -137,9 +137,9 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: colorScheme.onPrimary.withOpacity(0.2),
+        color: colorScheme.onPrimary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.onPrimary.withOpacity(0.3)),
+        border: Border.all(color: colorScheme.onPrimary.withValues(alpha: 0.3)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -193,7 +193,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
             'Yuqoridagi qidiruv maydoniga\nkalit so\'zlarni kiriting',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
           ),
         ],

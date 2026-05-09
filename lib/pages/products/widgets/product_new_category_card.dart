@@ -24,7 +24,7 @@ class ProductNewCategoryCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
-    final fillColor = colorScheme.surfaceContainerHighest.withOpacity(0.3);
+    final fillColor = colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
 
     return ProductNewCard(
       child: Column(

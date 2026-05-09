@@ -88,7 +88,7 @@ class _FavoriteButtonState extends State<FavoriteButton>
     final colorScheme = Theme.of(context).colorScheme;
     final activeColor = widget.activeColor ?? Colors.red;
     final inactiveColor =
-        widget.inactiveColor ?? colorScheme.onSurface.withOpacity(0.4);
+        widget.inactiveColor ?? colorScheme.onSurface.withValues(alpha: 0.4);
 
     return GestureDetector(
       onTap: _handleTap,
@@ -104,13 +104,13 @@ class _FavoriteButtonState extends State<FavoriteButton>
                 decoration: widget.showBorder
                     ? BoxDecoration(
                         color: widget.isFavorited
-                            ? activeColor.withOpacity(0.1)
+                            ? activeColor.withValues(alpha: 0.1)
                             : colorScheme.surface,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: widget.isFavorited
-                              ? activeColor.withOpacity(0.3)
-                              : colorScheme.outline.withOpacity(0.2),
+                              ? activeColor.withValues(alpha: 0.3)
+                              : colorScheme.outline.withValues(alpha: 0.2),
                           width: 1,
                         ),
                       )
@@ -174,7 +174,7 @@ class FavoriteButtonWithCount extends StatelessWidget {
               fontWeight: FontWeight.w500,
               color: isFavorited
                   ? Colors.red
-                  : colorScheme.onSurface.withOpacity(0.6),
+                  : colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -202,7 +202,7 @@ class FloatingFavoriteButton extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -244,7 +244,7 @@ class PriceDropBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFF4CAF50).withOpacity(0.15),
+        color: const Color(0xFF4CAF50).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
@@ -279,15 +279,15 @@ class PriceDropBadge extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF4CAF50).withOpacity(0.1),
-            const Color(0xFF4CAF50).withOpacity(0.05),
+            const Color(0xFF4CAF50).withValues(alpha: 0.1),
+            const Color(0xFF4CAF50).withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFF4CAF50).withOpacity(0.2),
+          color: const Color(0xFF4CAF50).withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -327,7 +327,7 @@ class PriceDropBadge extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           decoration: TextDecoration.lineThrough,
-                          color: colorScheme.onSurface.withOpacity(0.5),
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -394,13 +394,13 @@ class NotifyPriceDropToggle extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: enabled
-              ? const Color(0xFF4CAF50).withOpacity(0.1)
-              : colorScheme.surfaceContainerHighest.withOpacity(0.5),
+              ? const Color(0xFF4CAF50).withValues(alpha: 0.1)
+              : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: enabled
-                ? const Color(0xFF4CAF50).withOpacity(0.3)
-                : colorScheme.outline.withOpacity(0.2),
+                ? const Color(0xFF4CAF50).withValues(alpha: 0.3)
+                : colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -413,7 +413,7 @@ class NotifyPriceDropToggle extends StatelessWidget {
               size: 18,
               color: enabled
                   ? const Color(0xFF4CAF50)
-                  : colorScheme.onSurface.withOpacity(0.5),
+                  : colorScheme.onSurface.withValues(alpha: 0.5),
             ),
             const SizedBox(width: 8),
             Text(
@@ -423,7 +423,7 @@ class NotifyPriceDropToggle extends StatelessWidget {
                 fontWeight: enabled ? FontWeight.w500 : FontWeight.w400,
                 color: enabled
                     ? const Color(0xFF4CAF50)
-                    : colorScheme.onSurface.withOpacity(0.7),
+                    : colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(width: 8),

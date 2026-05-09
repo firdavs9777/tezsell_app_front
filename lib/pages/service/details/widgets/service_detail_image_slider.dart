@@ -86,7 +86,7 @@ class _ServiceDetailImageSliderState extends State<ServiceDetailImageSlider> {
                   decoration: BoxDecoration(
                     color: _currentImageIndex == index
                         ? Colors.white
-                        : Colors.white.withOpacity(0.5),
+                        : Colors.white.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -101,7 +101,7 @@ class _ServiceDetailImageSliderState extends State<ServiceDetailImageSlider> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(

@@ -50,7 +50,7 @@ class ProfileEditAvatar extends StatelessWidget {
                     ? Icon(
                         Icons.person,
                         size: 60,
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       )
                     : null,
               ),
@@ -78,7 +78,7 @@ class ProfileEditAvatar extends StatelessWidget {
         Text(
           localizations?.tap_change_profile ?? 'Tap to change photo',
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
           ),
         ),

@@ -78,7 +78,7 @@ class SecurityOption extends StatelessWidget {
           border: Border.all(color: theme.colorScheme.outlineVariant),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -89,7 +89,7 @@ class SecurityOption extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: primary.withOpacity(0.1),
+                color: primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: primary, size: 24),
@@ -168,7 +168,7 @@ class SecurityDangerOption extends StatelessWidget {
           Icon(
             Icons.arrow_forward_ios,
             size: 16,
-            color: theme.colorScheme.error.withOpacity(0.7),
+            color: theme.colorScheme.error.withValues(alpha: 0.7),
           ),
         ],
       ),

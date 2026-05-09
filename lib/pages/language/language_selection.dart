@@ -75,7 +75,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.6),
+                            .withValues(alpha: 0.6),
                       ),
                 ),
               ),
@@ -151,11 +151,11 @@ class LanguageSelectionScreen extends ConsumerWidget {
                                               ? Theme.of(context)
                                                   .colorScheme
                                                   .onPrimaryContainer
-                                                  .withOpacity(0.8)
+                                                  .withValues(alpha: 0.8)
                                               : Theme.of(context)
                                                   .colorScheme
                                                   .onSurface
-                                                  .withOpacity(0.6),
+                                                  .withValues(alpha: 0.6),
                                         ),
                                       ),
                                     ],
@@ -211,7 +211,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     disabledForegroundColor: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.38),
+                        .withValues(alpha: 0.38),
                   ),
                   child: TezSellText(
                     localizations?.continueButton ?? 'Continue',

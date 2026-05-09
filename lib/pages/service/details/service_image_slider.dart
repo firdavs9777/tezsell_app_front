@@ -77,7 +77,7 @@ class ServiceImageSlider extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.3),
+                    Colors.black.withValues(alpha: 0.3),
                   ],
                 ),
               ),
@@ -91,7 +91,7 @@ class ServiceImageSlider extends StatelessWidget {
               bottom: 0,
               child: Center(
                 child: Material(
-                  color: colorScheme.surface.withOpacity(0.9),
+                  color: colorScheme.surface.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(24),
                   elevation: 2,
                   child: InkWell(
@@ -129,7 +129,7 @@ class ServiceImageSlider extends StatelessWidget {
               bottom: 0,
               child: Center(
                 child: Material(
-                  color: colorScheme.surface.withOpacity(0.9),
+                  color: colorScheme.surface.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(24),
                   elevation: 2,
                   child: InkWell(
@@ -173,7 +173,7 @@ class ServiceImageSlider extends StatelessWidget {
                     dotWidth: 8.0,
                     dotHeight: 8.0,
                     spacing: 6.0,
-                    dotColor: Colors.white.withOpacity(0.4),
+                    dotColor: Colors.white.withValues(alpha: 0.4),
                     activeDotColor: Colors.white,
                     paintStyle: PaintingStyle.fill,
                   ),

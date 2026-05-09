@@ -15,10 +15,10 @@ class PropertyFormCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.03),
+            color: theme.colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -47,7 +47,7 @@ class PropertyFormSectionHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+            color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 20, color: theme.colorScheme.primary),
@@ -127,7 +127,7 @@ class PropertyFormDropdownField extends StatelessWidget {
         prefixIcon: Icon(icon),
         filled: true,
         fillColor:
-            theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
       ),
       items: items.map((item) {
         return DropdownMenuItem(
@@ -170,7 +170,7 @@ class PropertyFormDetailInputField extends StatelessWidget {
         prefixIcon: Icon(icon, size: 20),
         filled: true,
         fillColor:
-            theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       ),
@@ -230,7 +230,7 @@ class PropertyFeatureChip extends StatelessWidget {
         side: BorderSide(
           color: value
               ? theme.colorScheme.primary
-              : theme.colorScheme.outline.withOpacity(0.3),
+              : theme.colorScheme.outline.withValues(alpha: 0.3),
           width: value ? 1.5 : 1,
         ),
       ),

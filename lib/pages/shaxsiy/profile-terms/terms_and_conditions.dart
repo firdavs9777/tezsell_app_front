@@ -38,7 +38,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
               end: Alignment.bottomRight,
               colors: [
                 theme.primaryColor,
-                theme.primaryColor.withOpacity(0.8),
+                theme.primaryColor.withValues(alpha: 0.8),
               ],
             ),
           ),
@@ -105,13 +105,13 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    theme.primaryColor.withOpacity(0.1),
-                    theme.primaryColor.withOpacity(0.05),
+                    theme.primaryColor.withValues(alpha: 0.1),
+                    theme.primaryColor.withValues(alpha: 0.05),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: theme.primaryColor.withOpacity(0.3),
+                  color: theme.primaryColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Column(

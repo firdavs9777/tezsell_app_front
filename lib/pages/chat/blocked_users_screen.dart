@@ -164,7 +164,7 @@ class _BlockedUsersScreenState extends ConsumerState<BlockedUsersScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Theme.of(context).shadowColor.withOpacity(0.1),
+                              color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                               spreadRadius: 1,
                               blurRadius: 3,
                               offset: const Offset(0, 1),

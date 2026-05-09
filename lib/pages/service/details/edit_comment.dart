@@ -44,7 +44,7 @@ class _EditCommentWidgetState extends State<EditCommentWidget> {
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.2),
+            color: colorScheme.shadow.withValues(alpha: 0.2),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, -3),

@@ -113,7 +113,7 @@ class SavedPropertyCard extends ConsumerWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -204,14 +204,14 @@ class SavedPropertyCard extends ConsumerWidget {
               Icon(
                 Icons.calendar_today,
                 size: 14,
-                color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               ),
               const SizedBox(width: 4),
               Text(
                 '${l10n.savedPropertiesSavedOn} ${formatDate(savedAt)}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
               ),
             ],

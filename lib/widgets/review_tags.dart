@@ -39,7 +39,7 @@ class ReviewTagSelector extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: colorScheme.onSurface.withOpacity(0.6),
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -61,7 +61,7 @@ class ReviewTagSelector extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: colorScheme.onSurface.withOpacity(0.6),
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -80,7 +80,7 @@ class ReviewTagSelector extends StatelessWidget {
             '${selectedTags.length}/$maxSelection selected',
             style: TextStyle(
               fontSize: 12,
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
         ],
@@ -114,11 +114,11 @@ class ReviewTagSelector extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? baseColor.withOpacity(0.15)
-              : colorScheme.surfaceContainerHighest.withOpacity(0.5),
+              ? baseColor.withValues(alpha: 0.15)
+              : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? baseColor : colorScheme.outline.withOpacity(0.2),
+            color: isSelected ? baseColor : colorScheme.outline.withValues(alpha: 0.2),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -142,7 +142,7 @@ class ReviewTagSelector extends StatelessWidget {
                     ? baseColor
                     : canSelect
                         ? colorScheme.onSurface
-                        : colorScheme.onSurface.withOpacity(0.4),
+                        : colorScheme.onSurface.withValues(alpha: 0.4),
               ),
             ),
             if (isSelected) ...[
@@ -200,7 +200,7 @@ class ReviewTagsDisplay extends StatelessWidget {
             vertical: 4 * size,
           ),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12 * size),
           ),
           child: Row(
@@ -286,10 +286,10 @@ class QuickFeedbackButtons extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.15) : colorScheme.surface,
+          color: isSelected ? color.withValues(alpha: 0.15) : colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? color : colorScheme.outline.withOpacity(0.2),
+            color: isSelected ? color : colorScheme.outline.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
         ),

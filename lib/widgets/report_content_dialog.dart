@@ -189,7 +189,7 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
                 'Reporting: ${widget.contentTitle}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 16),

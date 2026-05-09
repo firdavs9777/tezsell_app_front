@@ -43,7 +43,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [primary, primary.withOpacity(0.8)],
+              colors: [primary, primary.withValues(alpha: 0.8)],
             ),
           ),
         ),
@@ -101,10 +101,10 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [primary.withOpacity(0.1), primary.withOpacity(0.05)],
+          colors: [primary.withValues(alpha: 0.1), primary.withValues(alpha: 0.05)],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primary.withOpacity(0.3)),
+        border: Border.all(color: primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -145,9 +145,9 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.error.withOpacity(0.05),
+        color: theme.colorScheme.error.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
+        border: Border.all(color: theme.colorScheme.error.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [

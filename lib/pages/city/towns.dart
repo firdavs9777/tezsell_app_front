@@ -111,8 +111,8 @@ class _TownsListState extends State<TownsList> {
     showDialog(
       context: context,
       barrierColor: Theme.of(context).brightness == Brightness.dark
-          ? Colors.white.withOpacity(0.1)
-          : Colors.black.withOpacity(0.5),
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.5),
       builder: (BuildContext context) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
@@ -207,8 +207,8 @@ class _TownsListState extends State<TownsList> {
     final bool? confirm = await showDialog(
       context: context,
       barrierColor: Theme.of(context).brightness == Brightness.dark
-          ? Colors.white.withOpacity(0.1)
-          : Colors.black.withOpacity(0.5),
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.5),
       builder: (BuildContext dialogContext) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
@@ -225,7 +225,7 @@ class _TownsListState extends State<TownsList> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: Theme.of(dialogContext).primaryColor.withOpacity(0.1),
+                      color: Theme.of(dialogContext).primaryColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -480,7 +480,7 @@ class _TownsListState extends State<TownsList> {
                             Icons.chevron_right_rounded,
                             color: Theme.of(
                               context,
-                            ).textTheme.bodySmall?.color?.withOpacity(0.5),
+                            ).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                             size: 24,
                           ),
                         ),
@@ -500,7 +500,7 @@ class _TownsListState extends State<TownsList> {
                               size: 64,
                               color: Theme.of(
                                 context,
-                              ).textTheme.bodySmall?.color?.withOpacity(0.3),
+                              ).textTheme.bodySmall?.color?.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -521,7 +521,7 @@ class _TownsListState extends State<TownsList> {
                               style: TextStyle(
                                 color: Theme.of(
                                   context,
-                                ).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                ).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),

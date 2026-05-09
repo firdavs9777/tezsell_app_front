@@ -54,9 +54,9 @@ class PropertyFeaturesSection extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withOpacity(0.3),
+                color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colorScheme.primary.withOpacity(0.3)),
+                border: Border.all(color: colorScheme.primary.withValues(alpha: 0.3)),
               ),
               child: Text(
                 feature.key,

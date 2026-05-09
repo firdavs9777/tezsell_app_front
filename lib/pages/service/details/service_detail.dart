@@ -500,7 +500,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -612,9 +612,9 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF6F0F).withOpacity(0.1),
+              color: const Color(0xFFFF6F0F).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFF6F0F).withOpacity(0.3)),
+              border: Border.all(color: const Color(0xFFFF6F0F).withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -656,7 +656,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           Text(
             service.description ?? (localizations?.newProductDescription ?? 'No description'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withOpacity(0.85),
+              color: colorScheme.onSurface.withValues(alpha: 0.85),
               height: 1.6,
             ),
           ),

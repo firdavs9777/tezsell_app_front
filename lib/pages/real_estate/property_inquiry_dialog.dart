@@ -180,7 +180,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                         Text(
                           widget.propertyTitle,
                           style: TextStyle(
-                            color: colorScheme.onPrimary.withOpacity(0.9),
+                            color: colorScheme.onPrimary.withValues(alpha: 0.9),
                             fontSize: 14,
                           ),
                           maxLines: 1,
@@ -246,7 +246,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                          fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                         ),
                         maxLines: 4,
                         textInputAction: TextInputAction.newline,
@@ -269,7 +269,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             filled: true,
-                            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                            fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                           ),
                         ),
 
@@ -286,7 +286,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             filled: true,
-                            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                            fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -304,7 +304,7 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(20),
                 ),

@@ -35,10 +35,10 @@ class TrustScoreWidget extends StatelessWidget {
             vertical: 4 * size,
           ),
           decoration: BoxDecoration(
-            color: tempColor.withOpacity(0.15),
+            color: tempColor.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(12 * size),
             border: Border.all(
-              color: tempColor.withOpacity(0.3),
+              color: tempColor.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -67,7 +67,7 @@ class TrustScoreWidget extends StatelessWidget {
             _getLevelLabel(tempLevel),
             style: TextStyle(
               fontSize: 12 * size,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -118,7 +118,7 @@ class TrustBadgeCompact extends StatelessWidget {
         vertical: 2 * size,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8 * size),
       ),
       child: Row(
@@ -163,15 +163,15 @@ class TrustScoreCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            tempColor.withOpacity(0.1),
-            tempColor.withOpacity(0.05),
+            tempColor.withValues(alpha: 0.1),
+            tempColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: tempColor.withOpacity(0.2),
+          color: tempColor.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -207,7 +207,7 @@ class TrustScoreCard extends StatelessWidget {
                     'Manner Temperature',
                     style: TextStyle(
                       fontSize: 14,
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -263,7 +263,7 @@ class TrustScoreCard extends StatelessWidget {
       width: 24,
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.grey.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
@@ -278,7 +278,7 @@ class TrustScoreCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  color.withOpacity(0.7),
+                  color.withValues(alpha: 0.7),
                   color,
                 ],
                 begin: Alignment.bottomCenter,
@@ -332,7 +332,7 @@ class TrustScoreCard extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11,
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -343,10 +343,10 @@ class TrustScoreCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Color(badge.colorValue).withOpacity(0.15),
+        color: Color(badge.colorValue).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Color(badge.colorValue).withOpacity(0.3),
+          color: Color(badge.colorValue).withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -390,10 +390,10 @@ class UserBadgeWidget extends StatelessWidget {
           vertical: 4 * size,
         ),
         decoration: BoxDecoration(
-          color: Color(badge.colorValue).withOpacity(0.15),
+          color: Color(badge.colorValue).withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12 * size),
           border: Border.all(
-            color: Color(badge.colorValue).withOpacity(0.3),
+            color: Color(badge.colorValue).withValues(alpha: 0.3),
             width: 1,
           ),
         ),

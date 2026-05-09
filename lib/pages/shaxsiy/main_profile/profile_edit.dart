@@ -445,7 +445,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   labelText: localizations?.phoneNumber,
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.phone),
-                  fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                  fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   filled: true,
                 ),
                 enabled: false,

@@ -85,7 +85,7 @@ class Home extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(20),
       ),
       child: PopupMenuButton<String>(
@@ -156,7 +156,7 @@ class Home extends ConsumerWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: colorScheme.primary.withOpacity(0.2),
+                color: colorScheme.primary.withValues(alpha: 0.2),
                 blurRadius: 30,
                 spreadRadius: 5,
               ),
@@ -175,7 +175,7 @@ class Home extends ConsumerWidget {
                   height: 120,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
+                      colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.8)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -309,7 +309,7 @@ class Home extends ConsumerWidget {
       child: Text(
         l?.home_terms_notice ?? 'By continuing, you agree to our Terms of Service and Privacy Policy',
         style: textTheme.bodySmall?.copyWith(
-          color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
         ),
         textAlign: TextAlign.center,
       ),

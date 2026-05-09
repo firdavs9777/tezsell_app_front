@@ -178,7 +178,7 @@ class _RegisterState extends State<Register> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurface.withOpacity(0.3),
+                  color: colorScheme.onSurface.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -306,8 +306,8 @@ class _RegisterState extends State<Register> {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selectedCountry != null
-                ? colorScheme.primary.withOpacity(0.3)
-                : colorScheme.outline.withOpacity(0.2),
+                ? colorScheme.primary.withValues(alpha: 0.3)
+                : colorScheme.outline.withValues(alpha: 0.2),
             width: 1.5,
           ),
         ),
@@ -338,7 +338,7 @@ class _RegisterState extends State<Register> {
             ] else ...[
               Icon(
                 Icons.public,
-                color: colorScheme.onSurface.withOpacity(0.5),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
                 size: 24,
               ),
               const SizedBox(width: 12),
@@ -353,7 +353,7 @@ class _RegisterState extends State<Register> {
             ],
             Icon(
               Icons.keyboard_arrow_down,
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ],
         ),
@@ -372,7 +372,7 @@ class _RegisterState extends State<Register> {
           Icon(
             Icons.public,
             size: 80,
-            color: colorScheme.primary.withOpacity(0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 16),
           Text(
@@ -387,7 +387,7 @@ class _RegisterState extends State<Register> {
           Text(
             AppLocalizations.of(context)?.countrySelectionHint ?? 'Then you can choose your region',
             style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),
@@ -431,8 +431,8 @@ class _RegisterState extends State<Register> {
                 boxShadow: [
                   BoxShadow(
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.08),
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.08),
                     blurRadius: 20,
                     offset: const Offset(0, 4),
                   ),
@@ -508,7 +508,7 @@ class _RegisterState extends State<Register> {
                   prefixIcon: Icon(
                     Icons.search,
                     color: selectedCountry == null
-                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                         : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   hintText: selectedCountry == null
@@ -582,7 +582,7 @@ class _RegisterState extends State<Register> {
                                             ? []
                                             : [
                                                 BoxShadow(
-                                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                                                   blurRadius: 12,
                                                   offset: const Offset(0, 4),
                                                 ),

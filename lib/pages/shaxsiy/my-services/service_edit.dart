@@ -310,7 +310,7 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                           localizations?.no_categories_available ??
                               'No categories available',
                           style: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.6)),
+                              color: colorScheme.onSurface.withValues(alpha: 0.6)),
                         )
                       else
                         DropdownButtonFormField<CategoryModel>(
@@ -370,7 +370,7 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                           localizations?.no_locations_available ??
                               'No locations available',
                           style: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.6)),
+                              color: colorScheme.onSurface.withValues(alpha: 0.6)),
                         )
                       else
                         DropdownButtonFormField<Location>(

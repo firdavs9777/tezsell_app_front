@@ -54,7 +54,7 @@ class MessageOptionsSheet extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isOwnMessage ? theme.primaryColor.withOpacity(0.1) : Theme.of(context).colorScheme.surfaceContainerHighest,
+                  color: isOwnMessage ? theme.primaryColor.withValues(alpha: 0.1) : Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

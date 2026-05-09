@@ -123,7 +123,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.08),
+            color: colorScheme.shadow.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, -2),
           ),
@@ -161,7 +161,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFFF6F0F).withOpacity(0.2),
+                          color: const Color(0xFFFF6F0F).withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -188,7 +188,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                         borderRadius: BorderRadius.circular(22),
                         border: Border.all(
                           color: _isFocused
-                              ? const Color(0xFFFF6F0F).withOpacity(0.3)
+                              ? const Color(0xFFFF6F0F).withValues(alpha: 0.3)
                               : Colors.transparent,
                           width: 1.5,
                         ),
@@ -248,7 +248,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFFF6F0F).withOpacity(0.4),
+                              color: const Color(0xFFFF6F0F).withValues(alpha: 0.4),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),

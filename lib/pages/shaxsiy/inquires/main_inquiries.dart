@@ -33,7 +33,7 @@ class _InquiriesPageState extends State<InquiriesPage> {
               end: Alignment.bottomRight,
               colors: [
                 theme.primaryColor,
-                theme.primaryColor.withOpacity(0.8),
+                theme.primaryColor.withValues(alpha: 0.8),
               ],
             ),
           ),

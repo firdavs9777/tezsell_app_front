@@ -153,7 +153,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          bottom: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+          bottom: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2)),
         ),
       ),
       child: Column(
@@ -168,7 +168,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   ),
                   items: [
                     const DropdownMenuItem(value: null, child: Text('All Status')),
@@ -194,7 +194,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                     labelText: 'Content Type',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   ),
                   items: [
                     const DropdownMenuItem(value: null, child: Text('All Types')),
@@ -316,7 +316,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              border: Border(top: BorderSide(color: colorScheme.outline.withOpacity(0.2))),
+              border: Border(top: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -392,7 +392,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: statusColor),
                     ),
@@ -404,7 +404,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withOpacity(0.3),
+                      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(

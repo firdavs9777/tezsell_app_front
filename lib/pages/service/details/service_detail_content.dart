@@ -57,7 +57,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
               color: colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: colorScheme.primary.withOpacity(0.2),
+                color: colorScheme.primary.withValues(alpha: 0.2),
                 width: 1,
               ),
             ),
@@ -106,12 +106,12 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: colorScheme.outline.withOpacity(0.08),
+                color: colorScheme.outline.withValues(alpha: 0.08),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: theme.shadowColor.withOpacity(0.04),
+                  color: theme.shadowColor.withValues(alpha: 0.04),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -145,7 +145,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
-                    color: colorScheme.onSurface.withOpacity(0.8),
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
                     height: 1.6,
                     letterSpacing: 0.1,
                   ),
@@ -161,12 +161,12 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: colorScheme.outline.withOpacity(0.08),
+                color: colorScheme.outline.withValues(alpha: 0.08),
                 width: 1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: theme.shadowColor.withOpacity(0.04),
+                  color: theme.shadowColor.withValues(alpha: 0.04),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -196,13 +196,13 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
-                                  color: colorScheme.onSurface.withOpacity(0.7),
+                                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                                   letterSpacing: 0.1,
                                 ),
                               ),
                               Icon(
                                 Icons.chevron_right_rounded,
-                                color: colorScheme.onSurface.withOpacity(0.4),
+                                color: colorScheme.onSurface.withValues(alpha: 0.4),
                                 size: 20,
                               ),
                             ],
@@ -217,7 +217,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: colorScheme.primary.withOpacity(0.2),
+                                      color: colorScheme.primary.withValues(alpha: 0.2),
                                       width: 2,
                                     ),
                                   ),
@@ -280,7 +280,7 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                             ),
                                             style: TextStyle(
                                               fontSize: 14,
-                                              color: colorScheme.onSurface.withOpacity(0.7),
+                                              color: colorScheme.onSurface.withValues(alpha: 0.7),
                                               fontWeight: FontWeight.w400,
                                             ),
                                             overflow: TextOverflow.ellipsis,

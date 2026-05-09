@@ -26,7 +26,7 @@ class StarRatingInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final active = activeColor ?? const Color(0xFFFFB800);
-    final inactive = inactiveColor ?? colorScheme.outline.withOpacity(0.3);
+    final inactive = inactiveColor ?? colorScheme.outline.withValues(alpha: 0.3);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -101,7 +101,7 @@ class StarRatingDisplay extends StatelessWidget {
             icon,
             color: isFull || isHalf
                 ? starColor
-                : colorScheme.outline.withOpacity(0.3),
+                : colorScheme.outline.withValues(alpha: 0.3),
             size: size,
           );
         }),
@@ -164,7 +164,7 @@ class RatingSummary extends StatelessWidget {
                 '$totalReviews reviews',
                 style: TextStyle(
                   fontSize: 13,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -188,7 +188,7 @@ class RatingSummary extends StatelessWidget {
                       '$stars',
                       style: TextStyle(
                         fontSize: 12,
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -218,7 +218,7 @@ class RatingSummary extends StatelessWidget {
                         '$count',
                         style: TextStyle(
                           fontSize: 12,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         textAlign: TextAlign.end,
                       ),
@@ -252,7 +252,7 @@ class RatingBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFB800).withOpacity(0.15),
+        color: const Color(0xFFFFB800).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -278,7 +278,7 @@ class RatingBadge extends StatelessWidget {
               '($reviewCount)',
               style: TextStyle(
                 fontSize: 11,
-                color: colorScheme.onSurface.withOpacity(0.5),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],

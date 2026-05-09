@@ -124,7 +124,7 @@ class _LanguageOption extends ConsumerWidget {
                   : Icons.radio_button_unchecked,
               color: isSelected
                   ? colorScheme.primary
-                  : colorScheme.onSurface.withOpacity(0.4),
+                  : colorScheme.onSurface.withValues(alpha: 0.4),
               size: 20,
             ),
           ],

@@ -25,7 +25,7 @@ class ServiceDetailCarrotBottomBar extends StatelessWidget {
         color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outlineVariant.withOpacity(0.3),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -42,7 +42,7 @@ class ServiceDetailCarrotBottomBar extends StatelessWidget {
                   height: 48,
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: colorScheme.outline.withOpacity(0.3),
+                      color: colorScheme.outline.withValues(alpha: 0.3),
                     ),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -70,7 +70,7 @@ class ServiceDetailCarrotBottomBar extends StatelessWidget {
               Container(
                 width: 1,
                 height: 36,
-                color: colorScheme.outline.withOpacity(0.2),
+                color: colorScheme.outline.withValues(alpha: 0.2),
               ),
               const SizedBox(width: 12),
               Expanded(

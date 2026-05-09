@@ -691,7 +691,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         ),
                         prefixIcon: const Icon(Icons.title),
                         filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -717,7 +717,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         ),
                         prefixIcon: const Icon(Icons.description),
                         filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       ),
                       maxLines: 4,
                       validator: (value) {
@@ -837,7 +837,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                               ),
                               prefixIcon: const Icon(Icons.attach_money),
                               filled: true,
-                              fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                              fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                             ),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -864,7 +864,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               filled: true,
-                              fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                              fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                             ),
                             items: _currencies.map((currency) {
@@ -934,7 +934,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         ),
                         prefixIcon: const Icon(Icons.location_on),
                         filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -956,7 +956,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         ),
                         prefixIcon: const Icon(Icons.location_city),
                         filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         suffixIcon: _isLoadingRegions
                             ? const Padding(
                                 padding: EdgeInsets.all(12.0),
@@ -1001,7 +1001,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         ),
                         prefixIcon: const Icon(Icons.location_city),
                         filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         suffixIcon: _isLoadingDistricts
                             ? const Padding(
                                 padding: EdgeInsets.all(12.0),
@@ -1045,8 +1045,8 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         builder: (context) {
                           final isDark = Theme.of(context).brightness == Brightness.dark;
                           final successColor = isDark ? colorScheme.primary : const Color(0xFF43A047);
-                          final successBgColor = isDark ? colorScheme.primaryContainer.withOpacity(0.3) : const Color(0xFFE8F5E9);
-                          final successBorderColor = isDark ? colorScheme.primary.withOpacity(0.5) : const Color(0xFFA5D6A7);
+                          final successBgColor = isDark ? colorScheme.primaryContainer.withValues(alpha: 0.3) : const Color(0xFFE8F5E9);
+                          final successBorderColor = isDark ? colorScheme.primary.withValues(alpha: 0.5) : const Color(0xFFA5D6A7);
                           return Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
@@ -1086,7 +1086,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                         Text(
                                           '$_selectedRegion, ${_selectedDistrict!.district}',
                                           style: theme.textTheme.bodySmall?.copyWith(
-                                            color: successColor.withOpacity(0.8),
+                                            color: successColor.withValues(alpha: 0.8),
                                           ),
                                         ),
                                       if (!_isGeocoding)
@@ -1096,7 +1096,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                                             '$_latitude, $_longitude',
                                             style: theme.textTheme.bodySmall?.copyWith(
                                               fontSize: 10,
-                                              color: successColor.withOpacity(0.7),
+                                              color: successColor.withValues(alpha: 0.7),
                                             ),
                                           ),
                                         ),
@@ -1113,8 +1113,8 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                         builder: (context) {
                           final isDark = Theme.of(context).brightness == Brightness.dark;
                           final infoColor = isDark ? colorScheme.tertiary : const Color(0xFF1976D2);
-                          final infoBgColor = isDark ? colorScheme.tertiaryContainer.withOpacity(0.3) : const Color(0xFFE3F2FD);
-                          final infoBorderColor = isDark ? colorScheme.tertiary.withOpacity(0.5) : const Color(0xFF90CAF9);
+                          final infoBgColor = isDark ? colorScheme.tertiaryContainer.withValues(alpha: 0.3) : const Color(0xFFE3F2FD);
+                          final infoBorderColor = isDark ? colorScheme.tertiary.withValues(alpha: 0.5) : const Color(0xFF90CAF9);
                           return Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(

@@ -179,7 +179,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          bottom: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+          bottom: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2)),
         ),
       ),
       child: Column(
@@ -202,7 +202,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                   : null,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               filled: true,
-              fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             ),
             onSubmitted: (_) => _loadContent(),
           ),
@@ -217,7 +217,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                     labelText: 'Content Type',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   ),
                   items: [
                     const DropdownMenuItem(value: null, child: Text('All Types')),
@@ -243,7 +243,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   ),
                   items: const [
                     DropdownMenuItem(value: null, child: Text('All')),
@@ -501,7 +501,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              border: Border(top: BorderSide(color: colorScheme.outline.withOpacity(0.2))),
+              border: Border(top: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -585,7 +585,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: typeColor.withOpacity(0.1),
+                            color: typeColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(iconData, color: typeColor, size: 20),
@@ -615,7 +615,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: isActive ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                      color: isActive ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: isActive ? Colors.green : Colors.red),
                     ),

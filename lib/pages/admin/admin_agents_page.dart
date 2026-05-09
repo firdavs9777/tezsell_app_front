@@ -119,7 +119,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
                     : null,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 filled: true,
-                fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
               ),
               onSubmitted: (_) {
                 setState(() => _currentPage = 1);
@@ -218,7 +218,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              border: Border(top: BorderSide(color: colorScheme.outline.withOpacity(0.2))),
+              border: Border(top: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -336,7 +336,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -363,7 +363,7 @@ class _AdminAgentsPageState extends ConsumerState<AdminAgentsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

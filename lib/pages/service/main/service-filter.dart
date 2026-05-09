@@ -186,7 +186,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
               decoration: InputDecoration(
                 hintText: localizations?.searchCategory ?? 'Search categories...',
                 hintStyle: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                   fontSize: 15,
                 ),
                 prefixIcon: Icon(
@@ -198,7 +198,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                     ? IconButton(
                         icon: Icon(
                           Icons.clear_rounded,
-                          color: colorScheme.onSurface.withOpacity(0.5),
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                           size: 20,
                         ),
                         onPressed: () {
@@ -207,7 +207,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                       )
                     : null,
                 filled: true,
-                fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
@@ -219,7 +219,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: colorScheme.outline.withOpacity(0.1),
+                    color: colorScheme.outline.withValues(alpha: 0.1),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
@@ -266,7 +266,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                                   color: theme.cardColor,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: colorScheme.outline.withOpacity(0.1),
+                                    color: colorScheme.outline.withValues(alpha: 0.1),
                                     width: 1,
                                   ),
                                 ),
@@ -277,7 +277,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                                       width: 48,
                                       height: 48,
                                       decoration: BoxDecoration(
-                                        color: colorScheme.primaryContainer.withOpacity(0.3),
+                                        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
@@ -300,7 +300,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
                                     // Arrow icon
                                     Icon(
                                       Icons.chevron_right_rounded,
-                                      color: colorScheme.onSurface.withOpacity(0.4),
+                                      color: colorScheme.onSurface.withValues(alpha: 0.4),
                                       size: 24,
                                     ),
                                   ],
@@ -356,7 +356,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
           TextSpan(
             text: text.substring(startIndex, endIndex),
             style: TextStyle(
-              backgroundColor: colorScheme.primary.withOpacity(0.2),
+              backgroundColor: colorScheme.primary.withValues(alpha: 0.2),
               color: colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
@@ -377,13 +377,13 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.search_off_rounded,
                 size: 48,
-                color: colorScheme.onSurface.withOpacity(0.4),
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
               ),
             ),
             const SizedBox(height: 16),
@@ -392,7 +392,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 8),
@@ -400,7 +400,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
               'Try a different search term',
               style: TextStyle(
                 fontSize: 14,
-                color: colorScheme.onSurface.withOpacity(0.5),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],
@@ -421,7 +421,7 @@ class _ServiceFilterState extends ConsumerState<ServiceFilter> {
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.outline.withOpacity(0.1),
+              color: colorScheme.outline.withValues(alpha: 0.1),
               width: 1,
             ),
           ),
@@ -509,7 +509,7 @@ class _ServiceSkeletonBoxState extends State<_ServiceSkeletonBox>
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            color: widget.colorScheme.onSurface.withOpacity(_animation.value),
+            color: widget.colorScheme.onSurface.withValues(alpha: _animation.value),
             borderRadius: BorderRadius.circular(widget.borderRadius),
           ),
         );

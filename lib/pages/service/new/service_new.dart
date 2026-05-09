@@ -363,7 +363,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                           ),
                           prefixIcon: const Icon(Icons.work),
                           filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                          fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -388,7 +388,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                           ),
                           prefixIcon: const Icon(Icons.description),
                           filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                          fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -431,7 +431,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                           ),
                           prefixIcon: const Icon(Icons.category),
                           filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                          fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         ),
                         hint: Text(
                           localizations?.serviceCategory ?? 'Select a category',
@@ -515,10 +515,10 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.03),
+            color: theme.colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -534,7 +534,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+            color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 20, color: theme.colorScheme.primary),

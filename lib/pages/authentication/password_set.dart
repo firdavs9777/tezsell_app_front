@@ -284,8 +284,8 @@ class _PasswordResetState extends State<PasswordReset> {
                   boxShadow: [
                     BoxShadow(
                       color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withOpacity(0.1)
-                        : Colors.black.withOpacity(0.08),
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 4),
                     ),
@@ -346,7 +346,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   prefixIcon: Icon(
                     Icons.person_outline,
                     color: _isLoading
-                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                         : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   labelText: AppLocalizations.of(context)?.username ??
@@ -391,7 +391,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   prefixIcon: Icon(
                     Icons.lock_outline,
                     color: _isLoading
-                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                         : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   suffixIcon: IconButton(
@@ -400,7 +400,7 @@ class _PasswordResetState extends State<PasswordReset> {
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: _isLoading
-                          ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                          ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                           : Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 22,
                     ),
@@ -467,7 +467,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   prefixIcon: Icon(
                     Icons.lock_outline,
                     color: _isLoading
-                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                         : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   suffixIcon: IconButton(
@@ -476,7 +476,7 @@ class _PasswordResetState extends State<PasswordReset> {
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: _isLoading
-                          ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                          ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                           : Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 22,
                     ),
@@ -524,7 +524,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   prefixIcon: Icon(
                     Icons.image_outlined,
                     color: _isLoading
-                        ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                        ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                         : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   hintText: AppLocalizations.of(context)?.profileImage ??
@@ -568,7 +568,7 @@ class _PasswordResetState extends State<PasswordReset> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 12,
                           offset: const Offset(0, 2),
                         ),
@@ -691,7 +691,7 @@ class _PasswordResetState extends State<PasswordReset> {
                             ? []
                             : [
                                 BoxShadow(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -701,10 +701,10 @@ class _PasswordResetState extends State<PasswordReset> {
                     onPressed: _isLoading ? null : _handleRegistration,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2)
                           : Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
-                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

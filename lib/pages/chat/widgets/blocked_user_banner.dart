@@ -16,7 +16,7 @@ class BlockedUserBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.tertiaryContainer.withOpacity(0.3),
+      color: Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.3),
       child: Row(
         children: [
           Icon(Icons.block, color: Theme.of(context).colorScheme.tertiary),

@@ -117,7 +117,7 @@ class _SwipeableMessageState extends State<SwipeableMessage>
                           shape: BoxShape.circle,
                           color: isTriggered
                               ? const Color(0xFF3390EC)
-                              : Colors.grey.withOpacity(0.3 + progress * 0.4),
+                              : Colors.grey.withValues(alpha: 0.3 + progress * 0.4),
                         ),
                         child: Icon(
                           Icons.reply_rounded,

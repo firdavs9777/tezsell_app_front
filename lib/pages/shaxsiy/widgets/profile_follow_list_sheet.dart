@@ -80,7 +80,7 @@ class ProfileFollowListSheet extends ConsumerWidget {
                             Icons.people_outline,
                             size: 64,
                             color: colorScheme.onSurfaceVariant
-                                .withOpacity(0.4),
+                                .withValues(alpha: 0.4),
                           ),
                           const SizedBox(height: 16),
                           Text(

@@ -293,7 +293,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withOpacity(0.3),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -403,10 +403,10 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                     return Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: successColor.withOpacity(isDark ? 0.15 : 0.1),
+                        color: successColor.withValues(alpha: isDark ? 0.15 : 0.1),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: successColor.withOpacity(isDark ? 0.4 : 0.3),
+                          color: successColor.withValues(alpha: isDark ? 0.4 : 0.3),
                         ),
                       ),
                       child: Row(
@@ -426,8 +426,8 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontWeight: FontWeight.w500,
                                     color: isDark
-                                        ? colorScheme.onSurface.withOpacity(0.7)
-                                        : successColor.withOpacity(0.9),
+                                        ? colorScheme.onSurface.withValues(alpha: 0.7)
+                                        : successColor.withValues(alpha: 0.9),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -444,7 +444,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                                   '${selectedCountry!.flagEmoji} ${selectedCountry!.getLocalizedName(locale)}',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: isDark
-                                        ? colorScheme.onSurface.withOpacity(0.7)
+                                        ? colorScheme.onSurface.withValues(alpha: 0.7)
                                         : const Color(0xFF388E3C),
                                   ),
                                 ),
@@ -509,7 +509,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: colorScheme.outline.withOpacity(0.3),
+            color: colorScheme.outline.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
@@ -533,7 +533,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                 child: Text(
                   AppLocalizations.of(context)?.selectCountry ?? 'Select country',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                   ),
                 ),
               ),
@@ -571,9 +571,9 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       return Container(
         height: 56,
         decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
+          border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
         ),
         child: const Center(
           child: SizedBox(
@@ -589,12 +589,12 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
       decoration: BoxDecoration(
         color: enabled
             ? colorScheme.surface
-            : colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: enabled
-              ? colorScheme.outline.withOpacity(0.3)
-              : colorScheme.outline.withOpacity(0.1),
+              ? colorScheme.outline.withValues(alpha: 0.3)
+              : colorScheme.outline.withValues(alpha: 0.1),
         ),
       ),
       child: DropdownButtonFormField<T>(
@@ -605,7 +605,7 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
           border: InputBorder.none,
           hintText: hint,
           hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
           ),
         ),
         icon: Icon(

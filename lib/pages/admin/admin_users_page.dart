@@ -263,7 +263,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          bottom: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+          bottom: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2)),
         ),
       ),
       child: Column(
@@ -286,7 +286,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                   : null,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               filled: true,
-              fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+              fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             ),
             onSubmitted: (_) => _loadUsers(),
           ),
@@ -301,7 +301,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                     labelText: 'Status',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                    fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                   ),
                   items: const [
                     DropdownMenuItem(value: null, child: Text('All Users')),
@@ -421,7 +421,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              border: Border(top: BorderSide(color: colorScheme.outline.withOpacity(0.2))),
+              border: Border(top: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -491,7 +491,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.1),
+                                  color: Colors.red.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text('SUPER', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.red)),
@@ -501,7 +501,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withOpacity(0.1),
+                                  color: Colors.blue.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text('STAFF', style: Theme.of(context).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue)),
@@ -520,7 +520,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: isActive ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                      color: isActive ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: isActive ? Colors.green : Colors.red),
                     ),
