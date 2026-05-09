@@ -16,6 +16,8 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/maps/neighborhood_verifier.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
@@ -211,6 +213,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     },
                   ),
                   Divider(color: colorScheme.outlineVariant, height: 1),
+                  const _MyNeighborhoodsSection(),
+                  Divider(color: colorScheme.outlineVariant, height: 1),
                   ProfileSectionTitle(localizations?.myProfile ?? 'My Items'),
                   ProfileMenuCard(
                     icon: Icons.inventory_2_rounded,
@@ -332,5 +336,78 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         ),
       ),
     );
+  }
+}
+
+class _MyNeighborhoodsSection extends ConsumerWidget {
+  const _MyNeighborhoodsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final list = ref.watch(verifiedNeighborhoodsProvider);
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('My neighborhoods', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            if (list.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text('No verified neighborhoods yet.'),
+              )
+            else
+              ...list.map((v) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.place,
+                      color: v.isExpired
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.primary,
+                    ),
+                    title: Text(v.neighborhood.displayName),
+                    subtitle: Text(
+                      v.isExpired
+                          ? 'Expired — re-verify'
+                          : 'Verified ${_formatRelative(v.verifiedAt)}',
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => ref
+                          .read(verifiedNeighborhoodsProvider.notifier)
+                          .remove(v.neighborhood.id),
+                    ),
+                  )),
+            if (list.length < 2)
+              TextButton.icon(
+                onPressed: () => _openVerifierSheet(context),
+                icon: const Icon(Icons.add_location_alt_outlined),
+                label: Text(list.isEmpty
+                    ? 'Verify a neighborhood'
+                    : 'Add a second neighborhood'),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openVerifierSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const SafeArea(child: NeighborhoodVerifier()),
+    );
+  }
+
+  String _formatRelative(DateTime d) {
+    final diff = DateTime.now().difference(d);
+    if (diff.inDays >= 1) return '${diff.inDays}d ago';
+    if (diff.inHours >= 1) return '${diff.inHours}h ago';
+    return 'just now';
   }
 }
