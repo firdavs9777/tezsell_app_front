@@ -2,6 +2,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/utils/image_utils.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -79,10 +80,12 @@ class MyServicesCard extends StatelessWidget {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: imageUrl != null
-                            ? Image.network(
-                                imageUrl,
+                            ? CachedNetworkImageWidget(
+                                imageUrl: imageUrl,
+                                width: 100,
+                                height: 100,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) =>
+                                errorWidget:
                                     _Placeholder(colorScheme: colorScheme),
                               )
                             : _Placeholder(colorScheme: colorScheme),

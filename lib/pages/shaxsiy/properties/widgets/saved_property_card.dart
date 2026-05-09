@@ -1,4 +1,5 @@
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,22 +47,20 @@ class SavedPropertyCard extends ConsumerWidget {
   Widget _buildImage(ThemeData theme, AppLocalizations l10n) {
     return Stack(
       children: [
-        ClipRRect(
+        CachedNetworkImageWidget(
+          imageUrl: property.mainImage,
+          height: 200,
+          width: double.infinity,
+          fit: BoxFit.cover,
           borderRadius:
               const BorderRadius.vertical(top: Radius.circular(12)),
-          child: Image.network(
-            property.mainImage,
+          errorWidget: Container(
             height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stack) => Container(
-              height: 200,
-              color: theme.colorScheme.outlineVariant,
-              child: Icon(
-                Icons.apartment,
-                size: 60,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            color: theme.colorScheme.outlineVariant,
+            child: Icon(
+              Icons.apartment,
+              size: 60,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ),

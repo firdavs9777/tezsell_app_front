@@ -1,7 +1,7 @@
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/user_profile_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
-import 'package:app/utils/image_utils.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -50,10 +50,10 @@ class UserProfileProductsGrid extends ConsumerWidget {
               child: Container(
                 color: colorScheme.surfaceContainerHighest,
                 child: product.images.isNotEmpty
-                    ? Image.network(
-                        ImageUtils.buildImageUrl(product.images[0].image),
+                    ? CachedNetworkImageWidget(
+                        imageUrl: product.images[0].image,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
+                        errorWidget: Icon(
                           Icons.image_not_supported_outlined,
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -115,10 +115,10 @@ class UserProfileServicesGrid extends ConsumerWidget {
               child: Container(
                 color: colorScheme.surfaceContainerHighest,
                 child: service.images.isNotEmpty
-                    ? Image.network(
-                        ImageUtils.buildImageUrl(service.images[0].image),
+                    ? CachedNetworkImageWidget(
+                        imageUrl: service.images[0].image,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
+                        errorWidget: Icon(
                           Icons.image_not_supported_outlined,
                           color: colorScheme.onSurfaceVariant,
                         ),

@@ -1,7 +1,7 @@
 import 'package:app/pages/service/details/service_detail.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
-import 'package:app/utils/image_utils.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -80,13 +80,12 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: service.images.isNotEmpty
-                            ? Image.network(
-                                ImageUtils.buildImageUrl(service.images[0].image),
+                            ? CachedNetworkImageWidget(
+                                imageUrl: service.images[0].image,
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Image.asset(
+                                errorWidget: Image.asset(
                                   'assets/logo/logo_no_background.png',
                                   width: 80,
                                   height: 80,

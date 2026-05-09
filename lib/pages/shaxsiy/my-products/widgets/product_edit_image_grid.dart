@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProductEditImageGrid extends StatelessWidget {
@@ -40,12 +41,12 @@ class ProductEditImageGrid extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: _urls != null
-                  ? Image.network(
-                      _urls[index],
+                  ? CachedNetworkImageWidget(
+                      imageUrl: _urls[index],
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
-                      errorBuilder: (context, error, stackTrace) => Container(
+                      errorWidget: Container(
                         color: Colors.grey[300],
                         child: const Icon(Icons.error),
                       ),

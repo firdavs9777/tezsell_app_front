@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 
 class ServiceEditImageList extends StatelessWidget {
@@ -40,19 +41,17 @@ class ServiceEditImageList extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: _urls != null
-                      ? Image.network(
-                          _urls[index],
+                      ? CachedNetworkImageWidget(
+                          imageUrl: _urls[index],
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 100,
-                              height: 100,
-                              color: colorScheme.surfaceContainerHighest,
-                              child: const Icon(Icons.error),
-                            );
-                          },
+                          errorWidget: Container(
+                            width: 100,
+                            height: 100,
+                            color: colorScheme.surfaceContainerHighest,
+                            child: const Icon(Icons.error),
+                          ),
                         )
                       : Image.file(
                           _files![index],
