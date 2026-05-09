@@ -2,8 +2,12 @@ import 'package:app/pages/service/new/service_new.dart';
 import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,9 +18,14 @@ import 'package:app/l10n/app_localizations.dart';
 class ServiceMain extends ConsumerStatefulWidget {
   final String regionName;
   final String districtName;
+  final int? districtId;
 
-  const ServiceMain(
-      {super.key, required this.regionName, required this.districtName});
+  const ServiceMain({
+    super.key,
+    required this.regionName,
+    required this.districtName,
+    this.districtId,
+  });
 
   @override
   _ServiceMainState createState() => _ServiceMainState();
@@ -93,7 +102,8 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       final encodedCategory = Uri.encodeComponent(categoryName);
       final encodedRegion = Uri.encodeComponent(widget.regionName);
       final encodedDistrict = Uri.encodeComponent(widget.districtName);
-      context.push('/services?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict');
+      final districtIdParam = widget.districtId != null ? '&districtId=${widget.districtId}' : '';
+      context.push('/services?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict$districtIdParam');
       // Reset selection after navigation
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
@@ -116,6 +126,9 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
   Future<void> _loadInitialServices() async {
     if (!mounted || _isDisposed) return;
 
+    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
+    print('🔧 [ServiceMain] Loading services with districtId: ${widget.districtId}, filter active: $hasLocationFilter');
+
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -124,11 +137,20 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     });
 
     try {
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final hasLegacyFilter = hasLocationFilter ||
+          widget.regionName.isNotEmpty ||
+          widget.districtName.isNotEmpty;
       final services = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
             pageSize: 12,
             regionName: widget.regionName,
             districtName: widget.districtName,
+            districtId: widget.districtId,
+            neighborhoodId:
+                hasLegacyFilter ? null : activeNbhd?.neighborhood.id,
+            radiusKm: hasLegacyFilter ? null : radius,
           );
 
       if (mounted && !_isDisposed) {
@@ -164,6 +186,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 pageSize: 12,
                 regionName: widget.regionName,
                 districtName: widget.districtName,
+                districtId: widget.districtId,
               );
 
       if (mounted && !_isDisposed) {
@@ -182,13 +205,8 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       if (mounted && !_isDisposed) {
         setState(() {
           _isLoadingMore = false;
+          _hasMoreData = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading more services: $error'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
       }
     }
   }
@@ -227,6 +245,15 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       if (previous != null && previous != next) {
         _loadInitialServices();
       }
+    });
+    // Phase-1: reload when verified-neighborhood or radius changes
+    ref.listen(activeNeighborhoodProvider, (prev, next) {
+      if (prev?.neighborhood.id != next?.neighborhood.id) {
+        _loadInitialServices();
+      }
+    });
+    ref.listen<double>(radiusProvider, (prev, next) {
+      if (prev != next) _loadInitialServices();
     });
 
     return Scaffold(
@@ -335,6 +362,38 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
               ),
             ),
           ),
+          Consumer(
+            builder: (context, ref, _) {
+              final active = ref.watch(activeNeighborhoodProvider);
+              final verified = ref.watch(verifiedNeighborhoodsProvider);
+              return Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                color: theme.cardColor,
+                child: Row(
+                  children: [
+                    if (active != null)
+                      InputChip(
+                        avatar: const Icon(Icons.place, size: 16),
+                        label: Text(active.neighborhood.name),
+                        onPressed: verified.length > 1
+                            ? () {
+                                final cur = ref.read(
+                                    activeNeighborhoodIndexProvider);
+                                ref
+                                    .read(activeNeighborhoodIndexProvider
+                                        .notifier)
+                                    .state = cur == 0 ? 1 : 0;
+                              }
+                            : null,
+                      ),
+                    const SizedBox(width: 4),
+                    const Expanded(child: RadiusSlider()),
+                  ],
+                ),
+              );
+            },
+          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
@@ -441,7 +500,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'More',
+                      AppLocalizations.of(context)?.more_categories ?? 'More',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -504,7 +563,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     final localizations = AppLocalizations.of(context);
 
     if (_isInitialLoading) {
-      return const ProductListSkeleton(itemCount: 5);
+      return const ServiceListSkeleton(itemCount: 5);
     }
 
     if (_allServices.isEmpty) {
@@ -544,7 +603,9 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                   if (widget.regionName.isNotEmpty ||
                       widget.districtName.isNotEmpty)
                     Text(
-                      'No services found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                      localizations?.no_services_in_location(
+                        widget.districtName.isNotEmpty ? widget.districtName : widget.regionName,
+                      ) ?? 'No services found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
                       style: TextStyle(
                         fontSize: 14,
                         color: colorScheme.onSurface.withValues(alpha: 0.6),
@@ -567,21 +628,18 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
         // Show services
         if (index < _allServices.length) {
           final service = _allServices[index];
-          return ServiceList(service: service, refresh: refresh);
+          return ServiceList(
+            key: ValueKey('service_${service.id}'),
+            service: service,
+            refresh: refresh,
+          );
         }
 
         // Show loading indicator at the bottom
         if (_hasMoreData) {
-          return Container(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: _isLoadingMore
-                  ? CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          );
+          return _isLoadingMore
+              ? const ServiceSkeletonItem()
+              : const SizedBox.shrink();
         }
 
         // Show "end of list" indicator
@@ -589,7 +647,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
           padding: const EdgeInsets.all(24.0),
           child: Center(
             child: Text(
-              'No more services to load',
+              localizations?.no_more_services ?? 'No more services to load',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                 fontSize: 14,

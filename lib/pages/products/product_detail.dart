@@ -7,8 +7,10 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
+import 'package:app/widgets/maps/map_view.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/utils/error_handler.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
@@ -96,17 +98,18 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     try {
       final now = DateTime.now();
       final difference = now.difference(date);
+      final localizations = AppLocalizations.of(context);
 
       if (difference.inDays > 30) {
         return DateFormat('MMM d').format(date);
       } else if (difference.inDays > 0) {
-        return '${difference.inDays}d ago';
+        return localizations?.time_days_ago(difference.inDays) ?? '${difference.inDays}d ago';
       } else if (difference.inHours > 0) {
-        return '${difference.inHours}h ago';
+        return localizations?.time_hours_ago(difference.inHours) ?? '${difference.inHours}h ago';
       } else if (difference.inMinutes > 0) {
-        return '${difference.inMinutes}m ago';
+        return localizations?.time_minutes_ago(difference.inMinutes) ?? '${difference.inMinutes}m ago';
       } else {
-        return 'Just now';
+        return localizations?.time_just_now ?? 'Just now';
       }
     } catch (e) {
       return '';
@@ -348,6 +351,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 _buildProductInfo(),
                 _buildDivider(),
                 _buildDescription(),
+                _buildLocationMap(),
                 _buildDivider(),
                 _buildRecommendedProducts(),
                 const SizedBox(height: 100), // Space for bottom bar
@@ -705,6 +709,37 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 (localizations?.newProductDescription ?? 'No description'),
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withOpacity(0.85),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationMap() {
+    final lat = widget.product.latitude;
+    final lng = widget.product.longitude;
+    if (lat == null || lng == null) return const SizedBox.shrink();
+    final textTheme = Theme.of(context).textTheme;
+    final localizations = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            localizations?.location ?? 'Location',
+            style: textTheme.titleMedium,
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: MapView(
+              center: LatLng(lat, lng),
+              mode: widget.product.showExactPin
+                  ? MapViewMode.exact
+                  : MapViewMode.approximate,
+              height: 200,
             ),
           ),
         ],

@@ -114,9 +114,16 @@ class ProductsService {
     return _prefs!;
   }
 
-  // Performance-optimized getProducts with caching
-  Future<List<Products>> getProducts() async {
-    const cacheKey = 'all_products';
+  // Performance-optimized getProducts with caching.
+  // [neighborhoodId] + [radiusKm] filter to a Carrot-style neighborhood radius
+  // (phase 1). When both null → return all (backward-compatible).
+  Future<List<Products>> getProducts({
+    String? neighborhoodId,
+    double? radiusKm,
+  }) async {
+    final cacheKey = neighborhoodId == null && radiusKm == null
+        ? 'all_products'
+        : 'products_${neighborhoodId ?? ""}_${radiusKm ?? ""}';
 
     // Check cache first
     if (_productsCache.containsKey(cacheKey)) {
@@ -131,7 +138,10 @@ class ProductsService {
     final timer = Stopwatch()..start();
 
     try {
-      final future = _fetchProducts();
+      final future = _fetchProducts(
+        neighborhoodId: neighborhoodId,
+        radiusKm: radiusKm,
+      );
       _pendingRequests[cacheKey] = future;
 
       final products = await future;
@@ -159,10 +169,19 @@ class ProductsService {
     }
   }
 
-  Future<List<Products>> _fetchProducts() async {
+  Future<List<Products>> _fetchProducts({
+    String? neighborhoodId,
+    double? radiusKm,
+  }) async {
     try {
+      final qp = <String, dynamic>{};
+      if (neighborhoodId != null) qp['neighborhood_id'] = neighborhoodId;
+      if (radiusKm != null && radiusKm.isFinite) {
+        qp['radius_km'] = radiusKm.toStringAsFixed(0);
+      }
       final response = await dio.get(
         '/$PRODUCTS_URL/',
+        queryParameters: qp.isEmpty ? null : qp,
         options: Options(
           extra: {'retryCount': 0}, // Initialize retry count
         ),
@@ -247,9 +266,12 @@ class ProductsService {
     String regionName = "",
     String districtName = "",
     String productTitle = "",
+    int? districtId,  // Added for locale-independent filtering
+    String? neighborhoodId,
+    double? radiusKm,
   }) async {
     final cacheKey =
-        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_$productTitle';
+        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_$productTitle';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -267,6 +289,9 @@ class ProductsService {
       regionName: regionName,
       districtName: districtName,
       productTitle: productTitle,
+      districtId: districtId,
+      neighborhoodId: neighborhoodId,
+      radiusKm: radiusKm,
     );
 
     _pendingRequests[cacheKey] = future;
@@ -290,6 +315,9 @@ class ProductsService {
     required String regionName,
     required String districtName,
     required String productTitle,
+    int? districtId,
+    String? neighborhoodId,
+    double? radiusKm,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -297,16 +325,57 @@ class ProductsService {
         'page_size': pageSize.toString(),
       };
 
-      // Only add non-empty parameters to reduce URL size
+      if (neighborhoodId != null) {
+        queryParams['neighborhood_id'] = neighborhoodId;
+      }
+      if (radiusKm != null && radiusKm.isFinite) {
+        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+      }
+
+      // Prefer district_id over name strings (avoids locale mismatch issues)
+      // Only add location filter if districtId is provided and valid
+      if (districtId != null && districtId > 0) {
+        queryParams['district_id'] = districtId.toString();
+        if (kDebugMode) {
+          print('📦 [ProductsAPI] Filtering by district_id: $districtId');
+        }
+      } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
+        // Fallback to name-based filtering only if names are provided
+        if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
+        if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
+        if (kDebugMode) {
+          print('📦 [ProductsAPI] Filtering by names: region=$regionName, district=$districtName');
+        }
+      } else {
+        if (kDebugMode) {
+          print('📦 [ProductsAPI] No location filter - loading ALL products');
+        }
+      }
+
       if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
-      if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
-      if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
       if (productTitle.isNotEmpty) queryParams['product_title'] = productTitle;
+
+      if (kDebugMode) {
+        print('📦 [ProductsAPI] Fetching with params: $queryParams');
+      }
 
       final response = await dio.get(
         '/$PRODUCTS_URL/', // Fixed with leading slash
         queryParameters: queryParams,
       );
+
+      if (kDebugMode) {
+        print('📦 [ProductsAPI] ─────────────────────────────────');
+        print('📦 [ProductsAPI] URL: ${response.requestOptions.uri}');
+        print('📦 [ProductsAPI] Status: ${response.statusCode}');
+        print('📦 [ProductsAPI] Count: ${response.data?['count'] ?? 'N/A'}');
+        print('📦 [ProductsAPI] Results length: ${(response.data?['results'] as List?)?.length ?? 0}');
+        if ((response.data?['results'] as List?)?.isNotEmpty == true) {
+          final firstProduct = response.data['results'][0];
+          print('📦 [ProductsAPI] First product location: ${firstProduct['location'] ?? firstProduct['userAddress'] ?? 'N/A'}');
+        }
+        print('📦 [ProductsAPI] ─────────────────────────────────');
+      }
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -474,6 +543,14 @@ class ProductsService {
     required int categoryId,
     required List<File> imageFiles,
     String currency = 'UZS',
+    // Phase-1 OSM/Carrot place fields (optional during transition).
+    double? latitude,
+    double? longitude,
+    String? placeId,
+    String? formattedAddress,
+    String? countryCode,
+    String? regionName,
+    String? cityName,
   }) async {
     final timer = Stopwatch()..start();
 
@@ -546,6 +623,13 @@ class ProductsService {
         'userAddress_id': locationId,
         'userName_id': userIdInt,
         'description': description,
+        if (latitude != null) 'latitude': latitude,
+        if (longitude != null) 'longitude': longitude,
+        if (placeId != null) 'place_id': placeId,
+        if (formattedAddress != null) 'formatted_address': formattedAddress,
+        if (countryCode != null) 'country_code': countryCode,
+        if (regionName != null) 'region_name': regionName,
+        if (cityName != null) 'city_name': cityName,
       });
 
       // Add images efficiently

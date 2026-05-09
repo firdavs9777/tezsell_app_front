@@ -279,6 +279,13 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
             description: _descriptionController.text.trim(),
             categoryId: selectedCategory!,
             imageFiles: _selectedImages,
+            latitude: _pickedPlace?.lat,
+            longitude: _pickedPlace?.lng,
+            placeId: _pickedPlace?.placeId,
+            formattedAddress: _pickedPlace?.formattedAddress,
+            countryCode: _pickedPlace?.countryCode,
+            regionName: _pickedPlace?.region,
+            cityName: _pickedPlace?.city,
           );
 
       if (!mounted) return;

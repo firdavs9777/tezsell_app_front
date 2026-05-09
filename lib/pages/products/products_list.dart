@@ -2,8 +2,12 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/radius_provider.dart';
+import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +18,14 @@ import 'package:app/l10n/app_localizations.dart';
 class ProductsList extends ConsumerStatefulWidget {
   final String regionName;
   final String districtName;
+  final int? districtId;  // Added for locale-independent filtering
 
-  const ProductsList(
-      {super.key, required this.regionName, required this.districtName});
+  const ProductsList({
+    super.key,
+    required this.regionName,
+    required this.districtName,
+    this.districtId,
+  });
 
   @override
   ConsumerState<ProductsList> createState() => _ProductsListState();
@@ -33,6 +42,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   bool _isInitialLoading = true;
   bool _isDisposed = false;
   bool _isCategoriesLoading = true;
+  int _loadGeneration = 0; // Prevents stale requests from overwriting newer ones
 
   @override
   void initState() {
@@ -86,7 +96,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       final encodedCategory = Uri.encodeComponent(categoryName);
       final encodedRegion = Uri.encodeComponent(widget.regionName);
       final encodedDistrict = Uri.encodeComponent(widget.districtName);
-      context.push('/products?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict');
+      final districtIdParam = widget.districtId != null ? '&districtId=${widget.districtId}' : '';
+      context.push('/products?category=$encodedCategory&region=$encodedRegion&district=$encodedDistrict$districtIdParam');
       // Reset selection after navigation
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
@@ -116,7 +127,23 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
   Future<void> _loadInitialProducts() async {
     if (!mounted || _isDisposed) return;
-    
+
+    // Increment generation so any in-flight older request is ignored
+    final thisGeneration = ++_loadGeneration;
+
+    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
+    print('📦 [ProductsList] ═══════════════════════════════════════');
+    print('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
+    print('📦 [ProductsList]   Filter active: $hasLocationFilter');
+    if (hasLocationFilter) {
+      print('📦 [ProductsList]   districtId: ${widget.districtId}');
+      print('📦 [ProductsList]   region: "${widget.regionName}"');
+      print('📦 [ProductsList]   district: "${widget.districtName}"');
+    } else {
+      print('📦 [ProductsList]   Loading ALL products (no location filter)');
+    }
+    print('📦 [ProductsList] ═══════════════════════════════════════');
+
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -125,13 +152,34 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     });
 
     try {
+      // Phase-1 OSM/Carrot filter: only applied when user has a verified
+      // neighborhood active and is not browsing region/district directly.
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final hasLegacyFilter =
+          (widget.districtId != null && widget.districtId! > 0) ||
+              widget.regionName.isNotEmpty ||
+              widget.districtName.isNotEmpty;
       final products =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,
                 pageSize: 12,
                 regionName: widget.regionName,
                 districtName: widget.districtName,
+                districtId: widget.districtId,
+                neighborhoodId: hasLegacyFilter
+                    ? null
+                    : activeNbhd?.neighborhood.id,
+                radiusKm: hasLegacyFilter ? null : radius,
               );
+
+      // Ignore if a newer load was triggered while this was in-flight
+      if (thisGeneration != _loadGeneration) {
+        print('📦 [ProductsList] Stale response ignored (gen=$thisGeneration, current=$_loadGeneration)');
+        return;
+      }
+
+      print('📦 [ProductsList] Filtered products: ${products.length}');
 
       if (mounted && !_isDisposed) {
         setState(() {
@@ -143,6 +191,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         });
       }
     } catch (error) {
+      if (thisGeneration != _loadGeneration) return;
       if (mounted && !_isDisposed) {
         setState(() {
           _isInitialLoading = false;
@@ -166,6 +215,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 pageSize: 12,
                 regionName: widget.regionName,
                 districtName: widget.districtName,
+                districtId: widget.districtId,
               );
 
       if (mounted && !_isDisposed) {
@@ -184,14 +234,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       if (mounted && !_isDisposed) {
         setState(() {
           _isLoadingMore = false;
+          _hasMoreData = false; // Stop retrying on error (e.g. 404 = no more pages)
         });
-        // Show error snackbar
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading more products: $error'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
       }
     }
   }
@@ -214,7 +258,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     super.didUpdateWidget(oldWidget);
     // Reload products if location changed
     if (oldWidget.regionName != widget.regionName ||
-        oldWidget.districtName != widget.districtName) {
+        oldWidget.districtName != widget.districtName ||
+        oldWidget.districtId != widget.districtId) {
       _loadInitialProducts();
     }
   }
@@ -231,6 +276,15 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         print('🔄 ProductsList: Refresh triggered! $previous -> $next, reloading products...');
         _loadInitialProducts();
       }
+    });
+    // Phase-1: reload when verified-neighborhood or radius changes
+    ref.listen(activeNeighborhoodProvider, (prev, next) {
+      if (prev?.neighborhood.id != next?.neighborhood.id) {
+        _loadInitialProducts();
+      }
+    });
+    ref.listen<double>(radiusProvider, (prev, next) {
+      if (prev != next) _loadInitialProducts();
     });
 
     return Scaffold(
@@ -268,7 +322,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {
-                            context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
+                            context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}${widget.districtId != null ? '&districtId=${widget.districtId}' : ''}');
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10.0),
@@ -338,6 +392,41 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 ],
               ),
             ),
+          ),
+          // Carrot-style neighborhood pill + radius slider (phase 1)
+          Consumer(
+            builder: (context, ref, _) {
+              final active = ref.watch(activeNeighborhoodProvider);
+              final verified = ref.watch(verifiedNeighborhoodsProvider);
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                color: theme.cardColor,
+                child: Row(
+                  children: [
+                    if (active != null)
+                      InputChip(
+                        avatar: const Icon(Icons.place, size: 16),
+                        label: Text(active.neighborhood.name),
+                        onPressed: verified.length > 1
+                            ? () {
+                                final cur = ref.read(
+                                    activeNeighborhoodIndexProvider);
+                                ref
+                                    .read(activeNeighborhoodIndexProvider
+                                        .notifier)
+                                    .state = cur == 0 ? 1 : 0;
+                              }
+                            : null,
+                      ),
+                    const SizedBox(width: 4),
+                    const Expanded(child: RadiusSlider()),
+                  ],
+                ),
+              );
+            },
           ),
           Expanded(
             child: RefreshIndicator(
@@ -416,7 +505,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'More',
+                      AppLocalizations.of(context)?.more_categories ?? 'More',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -432,7 +521,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 ),
                 onPressed: () {
                   HapticFeedback.selectionClick();
-                  context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}');
+                  context.push('/product/categories?region=${widget.regionName}&district=${widget.districtName}${widget.districtId != null ? '&districtId=${widget.districtId}' : ''}');
                 },
               ),
             );
@@ -519,7 +608,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                   if (widget.regionName.isNotEmpty ||
                       widget.districtName.isNotEmpty)
                     Text(
-                      'No products found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
+                      localizations?.no_products_in_location(
+                        widget.districtName.isNotEmpty ? widget.districtName : widget.regionName,
+                      ) ?? 'No products found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
                       style: TextStyle(
                         fontSize: 14,
                         color: colorScheme.onSurface.withOpacity(0.6),
@@ -542,21 +633,17 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         // Show products
         if (index < _allProducts.length) {
           final product = _allProducts[index];
-          return ProductMain(product: product);
+          return ProductMain(
+            key: ValueKey('product_${product.id}'),
+            product: product,
+          );
         }
 
         // Show loading indicator at the bottom
         if (_hasMoreData) {
-          return Container(
-            padding: const EdgeInsets.all(24.0),
-            child: Center(
-              child: _isLoadingMore
-                  ? CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          );
+          return _isLoadingMore
+              ? const ProductSkeletonItem()
+              : const SizedBox.shrink();
         }
 
         // Show "end of list" indicator
@@ -564,7 +651,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
           padding: const EdgeInsets.all(24.0),
           child: Center(
             child: Text(
-              'No more products to load',
+              localizations?.no_more_products ?? 'No more products to load',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 fontSize: 14,

@@ -25,6 +25,9 @@ class RealEstate {
     required this.latitude,
     required this.longitude,
     required this.address,
+    this.placeId,
+    this.formattedAddress,
+    this.countryCode,
   });
 
   final String id;
@@ -53,36 +56,61 @@ class RealEstate {
   final String longitude;
   final String address;
 
+  // Phase-1 OSM/Carrot place metadata.
+  final String? placeId;
+  final String? formattedAddress;
+  final String? countryCode;
+
   factory RealEstate.fromJson(Map<String, dynamic> json) {
-    return RealEstate(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      propertyType: json['property_type'] ?? '',
-      propertyTypeDisplay: json['property_type_display'] ?? '',
-      listingType: json['listing_type'] ?? '',
-      listingTypeDisplay: json['listing_type_display'] ?? '',
-      price: json['price'] ?? '0.00',
-      pricePerSqm: json['price_per_sqm'] ?? '0.00',
-      currency: json['currency'] ?? 'UZS',
-      squareMeters: json['square_meters'] ?? 0,
-      bedrooms: json['bedrooms'] ?? 0,
-      bathrooms: json['bathrooms'] ?? 0,
-      district: json['district'] ?? '',
-      city: json['city'] ?? '',
-      region: json['region'] ?? '',
-      userLocation: UserLocation.fromJson(json['user_location'] ?? {}),
-      owner: Owner.fromJson(json['owner'] ?? {}),
-      agent: json['agent'] != null ? Agent.fromJson(json['agent']) : null,
-      mainImage: json['main_image'] ?? '',
-      isFeatured: json['is_featured'] ?? false,
-      viewsCount: json['views_count'] ?? 0,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      latitude: json['latitude'] ?? '0.0',
-      longitude: json['longitude'] ?? '0.0',
-      address: json['address'] ?? '',
-    );
+    try {
+      return RealEstate(
+        id: (json['id'] ?? '').toString(),
+        title: (json['title'] ?? '').toString(),
+        propertyType: (json['property_type'] ?? '').toString(),
+        propertyTypeDisplay: (json['property_type_display'] ?? '').toString(),
+        listingType: (json['listing_type'] ?? '').toString(),
+        listingTypeDisplay: (json['listing_type_display'] ?? '').toString(),
+        price: (json['price'] ?? '0.00').toString(),
+        pricePerSqm: (json['price_per_sqm'] ?? '0.00').toString(),
+        currency: (json['currency'] ?? 'UZS').toString(),
+        squareMeters: json['square_meters'] is int
+            ? json['square_meters']
+            : int.tryParse(json['square_meters']?.toString() ?? '0') ?? 0,
+        bedrooms: json['bedrooms'] is int
+            ? json['bedrooms']
+            : int.tryParse(json['bedrooms']?.toString() ?? '0') ?? 0,
+        bathrooms: json['bathrooms'] is int
+            ? json['bathrooms']
+            : int.tryParse(json['bathrooms']?.toString() ?? '0') ?? 0,
+        district: (json['district'] ?? '').toString(),
+        city: (json['city'] ?? '').toString(),
+        region: (json['region'] ?? '').toString(),
+        userLocation: UserLocation.fromJson(json['user_location'] ?? {}),
+        owner: Owner.fromJson(json['owner'] ?? {}),
+        agent: json['agent'] != null ? Agent.fromJson(json['agent']) : null,
+        mainImage: (json['main_image'] ?? '').toString(),
+        isFeatured: json['is_featured'] ?? false,
+        viewsCount: json['views_count'] is int
+            ? json['views_count']
+            : int.tryParse(json['views_count']?.toString() ?? '0') ?? 0,
+        createdAt: json['created_at'] != null
+            ? DateTime.parse(json['created_at'])
+            : DateTime.now(),
+        latitude: (json['latitude'] ?? '0.0').toString(),
+        longitude: (json['longitude'] ?? '0.0').toString(),
+        address: (json['address'] ?? '').toString(),
+        placeId: json['place_id'] as String?,
+        formattedAddress: json['formatted_address'] as String?,
+        countryCode: json['country_code'] as String?,
+      );
+    } catch (e) {
+      print('[RealEstate.fromJson] ERROR parsing: $e');
+      print('[RealEstate.fromJson] JSON keys: ${json.keys.toList()}');
+      print('[RealEstate.fromJson] id type: ${json['id']?.runtimeType}, value: ${json['id']}');
+      print('[RealEstate.fromJson] owner type: ${json['owner']?.runtimeType}');
+      print('[RealEstate.fromJson] user_location type: ${json['user_location']?.runtimeType}');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -112,6 +140,9 @@ class RealEstate {
       'latitude': latitude,
       'longitude': longitude,
       'address': address,
+      if (placeId != null) 'place_id': placeId,
+      if (formattedAddress != null) 'formatted_address': formattedAddress,
+      if (countryCode != null) 'country_code': countryCode,
     };
   }
 }

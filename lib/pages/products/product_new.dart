@@ -314,9 +314,6 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         ),
       );
 
-      // NOTE: _pickedPlace not yet sent — extending createProduct signature
-      // requires touching lib/providers/provider_root/product_provider.dart
-      // which is currently WIP. Once that WIP merges, add place_id/lat/lng/etc.
       final product = await ref.read(productsServiceProvider).createProduct(
             title: _titleController.text.trim(),
             description: _descriptionController.text.trim(),
@@ -324,6 +321,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             categoryId: _selectedCategoryId!,
             imageFiles: _selectedImages,
             currency: _selectedCurrency,
+            latitude: _pickedPlace?.lat,
+            longitude: _pickedPlace?.lng,
+            placeId: _pickedPlace?.placeId,
+            formattedAddress: _pickedPlace?.formattedAddress,
+            countryCode: _pickedPlace?.countryCode,
+            regionName: _pickedPlace?.region,
+            cityName: _pickedPlace?.city,
           );
 
       if (!mounted) return;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/widgets/maps/map_view.dart';
+import 'package:latlong2/latlong.dart';
 
 class PropertyMapWidget extends StatefulWidget {
   final RealEstate property;
@@ -32,19 +34,6 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   }
 
   bool get _hasValidCoordinates => _latitude != null && _longitude != null;
-
-  String get _mapImageUrl {
-    if (!_hasValidCoordinates) return '';
-
-    final lat = _latitude!;
-    final lng = _longitude!;
-    const zoom = 15;
-    const width = 600;
-    const height = 400;
-
-    // Using OpenStreetMap Static Map
-    return 'https://staticmap.openstreetmap.de/staticmap.php?center=$lat,$lng&zoom=$zoom&size=${width}x$height&markers=$lat,$lng,red-pushpin';
-  }
 
   Future<void> _openInMaps() async {
     if (!_hasValidCoordinates) return;
@@ -85,36 +74,12 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
         child: _hasValidCoordinates
             ? Stack(
                 children: [
-                  // Static map image
+                  // Interactive flutter_map (real estate always shows exact pin)
                   Positioned.fill(
-                    child: Image.network(
-                      _mapImageUrl,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                    : null,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Loading map...',
-                                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildFallbackMap();
-                      },
+                    child: MapView(
+                      center: LatLng(_latitude!, _longitude!),
+                      mode: MapViewMode.exact,
+                      height: widget.height,
                     ),
                   ),
                   // Overlay with location info
@@ -345,52 +310,10 @@ class FullscreenMapModal extends StatelessWidget {
       ),
       body: Center(
         child: _hasValidCoordinates
-            ? InteractiveViewer(
-                minScale: 0.5,
-                maxScale: 4.0,
-                child: Image.network(
-                  'https://staticmap.openstreetmap.de/staticmap.php?center=${_latitude!},${_longitude!}&zoom=15&size=800x800&markers=${_latitude!},${_longitude!},red-pushpin',
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.map, size: 80, color: Colors.white),
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Text(
-                            property.address,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          onPressed: _openInMaps,
-                          icon: const Icon(Icons.directions),
-                          label: const Text('Open in Maps App'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+            ? MapView(
+                center: LatLng(_latitude!, _longitude!),
+                mode: MapViewMode.exact,
+                height: MediaQuery.of(context).size.height,
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -21,8 +21,19 @@ class ServiceProvider {
     }
   }
 
-  Future<List<Services>> getServices() async {
-    final response = await http.get(Uri.parse('$baseUrl$SERVICES_URL/'));
+  Future<List<Services>> getServices({
+    String? neighborhoodId,
+    double? radiusKm,
+  }) async {
+    final qp = <String, String>{};
+    if (neighborhoodId != null) qp['neighborhood_id'] = neighborhoodId;
+    if (radiusKm != null && radiusKm.isFinite) {
+      qp['radius_km'] = radiusKm.toStringAsFixed(0);
+    }
+    final uri = Uri.parse('$baseUrl$SERVICES_URL/').replace(
+      queryParameters: qp.isEmpty ? null : qp,
+    );
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return (data['results'] as List)
@@ -143,6 +154,14 @@ class ServiceProvider {
     required String description,
     required int categoryId,
     required List<File> imageFiles,
+    // Phase-1 OSM/Carrot place fields (optional during transition).
+    double? latitude,
+    double? longitude,
+    String? placeId,
+    String? formattedAddress,
+    String? countryCode,
+    String? regionName,
+    String? cityName,
   }) async {
     const url = '$baseUrl$SERVICES_URL/';
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -211,6 +230,13 @@ class ServiceProvider {
       'images': imageFiles
           .map((file) => MultipartFile.fromFileSync(file.path))
           .toList(),
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (placeId != null) 'place_id': placeId,
+      if (formattedAddress != null) 'formatted_address': formattedAddress,
+      if (countryCode != null) 'country_code': countryCode,
+      if (regionName != null) 'region_name': regionName,
+      if (cityName != null) 'city_name': cityName,
     });
     final response = await dio.post(url,
         data: formData,
@@ -346,6 +372,9 @@ class ServiceProvider {
     required String regionName,
     required String districtName,
     required String serviceName,
+    int? districtId,
+    String? neighborhoodId,
+    double? radiusKm,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -353,10 +382,30 @@ class ServiceProvider {
         'page_size': pageSize.toString(),
       };
 
+      if (neighborhoodId != null) {
+        queryParams['neighborhood_id'] = neighborhoodId;
+      }
+      if (radiusKm != null && radiusKm.isFinite) {
+        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+      }
+
+      // Prefer district_id over name strings (avoids locale mismatch issues)
+      if (districtId != null && districtId > 0) {
+        queryParams['district_id'] = districtId.toString();
+        if (kDebugMode) {
+          print('🔧 [ServicesAPI] Filtering by district_id: $districtId');
+        }
+      } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
+        // Fallback to name-based filtering
+        if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
+        if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
+        if (kDebugMode) {
+          print('🔧 [ServicesAPI] Filtering by names: region=$regionName, district=$districtName');
+        }
+      }
+
       // Only add non-empty parameters to reduce URL size
       if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
-      if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
-      if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
       if (serviceName.isNotEmpty) queryParams['service_name'] = serviceName;
 
       final response = await dio.get(
@@ -393,9 +442,12 @@ class ServiceProvider {
     String regionName = "",
     String districtName = "",
     String serviceName = "",
+    int? districtId,
+    String? neighborhoodId,
+    double? radiusKm,
   }) async {
     final cacheKey =
-        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_$serviceName';
+        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_$serviceName';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -413,6 +465,9 @@ class ServiceProvider {
       regionName: regionName,
       districtName: districtName,
       serviceName: serviceName,
+      districtId: districtId,
+      neighborhoodId: neighborhoodId,
+      radiusKm: radiusKm,
     );
 
     _pendingRequests[cacheKey] = future;
