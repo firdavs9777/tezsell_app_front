@@ -23,6 +23,14 @@ class Products {
     required this.userAddress,
     required this.createdAt,
     required this.updatedAt,
+    this.latitude,
+    this.longitude,
+    this.placeId,
+    this.formattedAddress,
+    this.countryCode,
+    this.regionName,
+    this.cityName,
+    this.showExactPin = false,
   });
 
   final int id;
@@ -34,8 +42,8 @@ class Products {
   final Location location;
   final String currency;
   final bool inStock;
-  final bool isActive;  // NEW: Whether product is visible
-  final bool isSold;    // NEW: Whether product is sold
+  final bool isActive;
+  final bool isSold;
   final List<ImageData> images;
   final double rating;
   final int likeCount;
@@ -44,6 +52,18 @@ class Products {
   final UserAddress userAddress;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  // Phase-1 OSM/Carrot location metadata.
+  final double? latitude;
+  final double? longitude;
+  final String? placeId;
+  final String? formattedAddress;
+  final String? countryCode;
+  final String? regionName;
+  final String? cityName;
+
+  /// Privacy-pin reveal flag — true once buyer-seller chat initiated.
+  final bool showExactPin;
 
   /// Returns localized condition label
   String get conditionLabel {
@@ -111,6 +131,20 @@ class Products {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : DateTime.now(),
+      latitude: _toDouble(json['latitude']),
+      longitude: _toDouble(json['longitude']),
+      placeId: json['place_id'] as String?,
+      formattedAddress: json['formatted_address'] as String?,
+      countryCode: json['country_code'] as String?,
+      regionName: json['region_name'] as String?,
+      cityName: json['city_name'] as String?,
+      showExactPin: (json['show_exact_pin'] as bool?) ?? false,
     );
   }
+}
+
+double? _toDouble(dynamic v) {
+  if (v == null) return null;
+  if (v is num) return v.toDouble();
+  return double.tryParse(v.toString());
 }

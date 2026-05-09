@@ -6,8 +6,11 @@ import 'package:app/pages/products/widgets/product_new_category_card.dart';
 import 'package:app/pages/products/widgets/product_new_image_picker.dart';
 import 'package:app/pages/products/widgets/product_new_pricing_card.dart';
 import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/providers/provider_models/place.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/widgets/maps/location_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/currency_utils.dart';
@@ -39,6 +42,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   String _selectedCurrency = 'UZS';
   List<String> _availableCurrencies = ['UZS', 'USD', 'EUR'];
+  Place? _pickedPlace;
 
   @override
   void initState() {
@@ -53,6 +57,23 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     _descriptionController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openMapPicker() async {
+    final initial = _pickedPlace != null
+        ? LatLng(_pickedPlace!.lat, _pickedPlace!.lng)
+        : const LatLng(41.3, 69.24);
+    final picked = await Navigator.of(context).push<Place>(
+      MaterialPageRoute(
+        builder: (_) => LocationPicker(
+          initialCenter: initial,
+          onConfirmed: (p) => Navigator.of(context).pop(p),
+        ),
+      ),
+    );
+    if (picked != null && mounted) {
+      setState(() => _pickedPlace = picked);
+    }
   }
 
   void _loadCurrencies() {
@@ -293,6 +314,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         ),
       );
 
+      // NOTE: _pickedPlace not yet sent — extending createProduct signature
+      // requires touching lib/providers/provider_root/product_provider.dart
+      // which is currently WIP. Once that WIP merges, add place_id/lat/lng/etc.
       final product = await ref.read(productsServiceProvider).createProduct(
             title: _titleController.text.trim(),
             description: _descriptionController.text.trim(),
@@ -402,6 +426,21 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                       _selectedCategoryId = category.id;
                     });
                   },
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.map_outlined),
+                    title: Text(_pickedPlace?.formattedAddress ??
+                        'Pick location on map'),
+                    subtitle: _pickedPlace == null
+                        ? const Text('Drop a pin so buyers see where the item is')
+                        : Text(
+                            '${_pickedPlace!.lat.toStringAsFixed(5)}, ${_pickedPlace!.lng.toStringAsFixed(5)}',
+                          ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: _isUploading ? null : _openMapPicker,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(

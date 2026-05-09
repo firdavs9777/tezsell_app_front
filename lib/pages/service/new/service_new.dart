@@ -1,14 +1,17 @@
 import 'package:app/pages/service/new/widgets/service_new_image_picker.dart';
 import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/providers/provider_models/place.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
+import 'package:app/widgets/maps/location_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:io';
 
 import 'package:intl/intl.dart';
@@ -46,6 +49,24 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   final List<File> _selectedImages = [];
   final picker = ImagePicker();
   bool _isUploading = false;
+  Place? _pickedPlace;
+
+  Future<void> _openMapPicker() async {
+    final initial = _pickedPlace != null
+        ? LatLng(_pickedPlace!.lat, _pickedPlace!.lng)
+        : const LatLng(41.3, 69.24);
+    final picked = await Navigator.of(context).push<Place>(
+      MaterialPageRoute(
+        builder: (_) => LocationPicker(
+          initialCenter: initial,
+          onConfirmed: (p) => Navigator.of(context).pop(p),
+        ),
+      ),
+    );
+    if (picked != null && mounted) {
+      setState(() => _pickedPlace = picked);
+    }
+  }
 
   String getCategoryName(CategoryModel category) {
     final locale = Localizations.localeOf(context).languageCode;
@@ -463,6 +484,21 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
                         },
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.map_outlined),
+                    title: Text(_pickedPlace?.formattedAddress ??
+                        'Pick service location'),
+                    subtitle: _pickedPlace == null
+                        ? const Text('Help nearby customers find your service')
+                        : Text(
+                            '${_pickedPlace!.lat.toStringAsFixed(5)}, ${_pickedPlace!.lng.toStringAsFixed(5)}',
+                          ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: _isUploading ? null : _openMapPicker,
                   ),
                 ),
                 const SizedBox(height: 24),

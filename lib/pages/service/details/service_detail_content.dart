@@ -1,8 +1,10 @@
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/widgets/maps/map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 
 class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
@@ -298,6 +300,23 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                     ),
                   ),
                 ),
+                if (widget.service.latitude != null &&
+                    widget.service.longitude != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: MapView(
+                        center: LatLng(
+                          widget.service.latitude!,
+                          widget.service.longitude!,
+                        ),
+                        mode: widget.service.showExactPin
+                            ? MapViewMode.exact
+                            : MapViewMode.approximate,
+                      ),
+                    ),
+                  ),
                 // Chat Button Row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),

@@ -13,6 +13,9 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_models/location_model.dart';
+import 'package:app/providers/provider_models/place.dart';
+import 'package:app/widgets/maps/location_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
@@ -52,6 +55,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
   String? _latitude;
   String? _longitude;
   int? _userLocationId;
+  Place? _pickedPlace;
 
   // Location selection
   List<Regions> _regionsList = [];
@@ -152,6 +156,31 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     _yearBuiltController.dispose();
     _parkingSpacesController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openMapPicker() async {
+    final initial = (_latitude != null && _longitude != null)
+        ? LatLng(double.parse(_latitude!), double.parse(_longitude!))
+        : const LatLng(41.3, 69.24); // Tashkent default
+    final picked = await Navigator.of(context).push<Place>(
+      MaterialPageRoute(
+        builder: (_) => LocationPicker(
+          initialCenter: initial,
+          onConfirmed: (p) => Navigator.of(context).pop(p),
+        ),
+      ),
+    );
+    if (picked != null && mounted) {
+      setState(() {
+        _pickedPlace = picked;
+        _latitude = picked.lat.toStringAsFixed(6);
+        _longitude = picked.lng.toStringAsFixed(6);
+        if (_addressController.text.isEmpty &&
+            picked.formattedAddress != null) {
+          _addressController.text = picked.formattedAddress!;
+        }
+      });
+    }
   }
 
   Future<void> _loadUserLocation() async {
@@ -921,6 +950,21 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     PropertyFormSectionHeader(
                       title: localizations?.property_create_location ?? 'Location',
                       icon: Icons.location_on,
+                    ),
+                    const SizedBox(height: 16),
+                    // Map picker — opens LocationPicker, fills lat/lng/address
+                    OutlinedButton.icon(
+                      key: const Key('PropertyCreate.openMapPicker'),
+                      onPressed: _openMapPicker,
+                      icon: const Icon(Icons.map_outlined),
+                      label: Text(_pickedPlace?.formattedAddress ??
+                          (_latitude != null && _longitude != null
+                              ? '$_latitude, $_longitude'
+                              : 'Pick on map')),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                        alignment: Alignment.centerLeft,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
