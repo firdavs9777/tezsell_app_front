@@ -7,6 +7,7 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:app/widgets/notification_bell.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
@@ -150,6 +151,10 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
             localLocation.valueOrNull?['district'] as String? ?? '';
         final localDistrictId =
             localLocation.valueOrNull?['districtId'] as int?;
+        // Karrot priority: a fresh map pick wins over local prefs / backend
+        // profile location for both the products query AND the TabBar's
+        // visible location chip.
+        final activeNbhd = ref.watch(activeNeighborhoodProvider);
 
         return FutureBuilder<UserInfo>(
           future: userInfoAsync,
@@ -158,7 +163,19 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
             String districtName = '';
             int? districtId;
 
-            if (localDistrictId != null &&
+            if (activeNbhd != null) {
+              regionName = activeNbhd.neighborhood.region;
+              districtName = activeNbhd.neighborhood.city.isNotEmpty
+                  ? activeNbhd.neighborhood.city
+                  : activeNbhd.neighborhood.name;
+              // No backend district FK for off-grid picks — keep null;
+              // products/services list pages prefer activeNeighborhood path
+              // when this is the case.
+              districtId = null;
+              print(
+                '📍 [TabBar] Using ACTIVE PICK: ${activeNbhd.neighborhood.displayName}',
+              );
+            } else if (localDistrictId != null &&
                 localRegion.isNotEmpty &&
                 localDistrict.isNotEmpty) {
               regionName = localRegion;
