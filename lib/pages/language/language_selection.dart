@@ -1,5 +1,6 @@
 // lib/screens/language_selection_screen.dart
 import 'package:app/common_widgets/tezsell_text.dart';
+import 'package:app/widgets/branding/tezsell_wordmark.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,28 +43,11 @@ class LanguageSelectionScreen extends ConsumerWidget {
             children: [
               const SizedBox(height: 40),
 
-              // Header with logo
-              Center(
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        'assets/logo/logo.png',
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.apps,
-                            size: 100,
-                            color: Theme.of(context).colorScheme.primary,
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+              // Brand wordmark
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 24),
+                  child: TezSellWordmark(size: TezSellWordmarkSize.medium),
                 ),
               ),
 

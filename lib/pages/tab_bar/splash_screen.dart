@@ -1,3 +1,4 @@
+import 'package:app/widgets/branding/tezsell_wordmark.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/utils/app_logger.dart';
@@ -168,76 +169,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     opacity: _fadeAnimation.value,
                     child: Transform.scale(
                       scale: _scaleAnimation.value,
-                      child: Column(
-                        children: [
-                          // Logo with glow effect
-                          Container(
-                            width: 140,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: colorScheme.primary.withOpacity(isDark ? 0.3 : 0.25),
-                                  blurRadius: 40,
-                                  spreadRadius: 10,
-                                ),
-                              ],
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: colorScheme.primary
+                                  .withValues(alpha: isDark ? 0.25 : 0.18),
+                              blurRadius: 60,
+                              spreadRadius: 4,
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(70),
-                              child: Image.asset(
-                                'assets/logo/logo.png',
-                                width: 140,
-                                height: 140,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 140,
-                                    height: 140,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.storefront_rounded,
-                                      size: 64,
-                                      color: colorScheme.onPrimary,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 28),
-
-                          // App Name
-                          Text(
-                            'Tezsell',
-                            style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.w800,
-                              color: colorScheme.onSurface,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-
-                          // Tagline
-                          Text(
-                            AppLocalizations.of(context)?.home_welcome_title ?? 'Your neighborhood marketplace',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: colorScheme.onSurfaceVariant,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        child: TezSellWordmark(
+                          size: TezSellWordmarkSize.large,
+                          showTagline: true,
+                          tagline:
+                              AppLocalizations.of(context)?.home_welcome_title ??
+                                  'Your neighborhood marketplace',
+                        ),
                       ),
                     ),
                   );
@@ -266,7 +215,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Loading...',
+                          AppLocalizations.of(context)?.loading ?? 'Loading...',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

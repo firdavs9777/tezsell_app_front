@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/pages/authentication/map_register.dart';
+import 'package:app/widgets/branding/tezsell_wordmark.dart';
 import 'package:app/providers/provider_root/social_auth_provider.dart';
 import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/service/token_refresh_service.dart';
@@ -202,31 +203,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             children: [
               const Spacer(flex: 2),
 
-              // Logo
-              ClipRRect(
-                borderRadius: BorderRadius.circular(60),
-                child: Image.asset(
-                  'assets/logo/logo.png',
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.store_rounded,
-                        size: 60,
-                        color: colorScheme.primary,
-                      ),
-                    );
-                  },
-                ),
-              ),
+              // Brand wordmark
+              const TezSellWordmark(size: TezSellWordmarkSize.medium),
               const SizedBox(height: 32),
 
               // Welcome text
