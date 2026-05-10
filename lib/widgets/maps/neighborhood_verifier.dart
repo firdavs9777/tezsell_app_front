@@ -1,3 +1,4 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
@@ -38,19 +39,21 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
       _error = null;
     });
 
+    final l = AppLocalizations.of(context);
     try {
       final perm = await Geolocator.requestPermission();
       if (perm == LocationPermission.denied) {
         setState(() {
           _stage = _Stage.error;
-          _error = 'Location permission denied — please enable in Settings';
+          _error = l?.location_permission_denied_settings ??
+              'Location permission denied — please enable in Settings';
         });
         return;
       }
       if (perm == LocationPermission.deniedForever) {
         setState(() {
           _stage = _Stage.error;
-          _error =
+          _error = l?.location_permission_permanent ??
               'Location permanently denied — open Settings to enable';
         });
         return;
@@ -66,8 +69,9 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
         _strictAttempts++;
         setState(() {
           _stage = _Stage.error;
-          _error = 'GPS accuracy is ${pos.accuracy.toStringAsFixed(0)}m '
-              '(need ≤100m). Move to an open area and try again.';
+          _error = l?.gps_accuracy_too_low(pos.accuracy.toStringAsFixed(0)) ??
+              'GPS accuracy is ${pos.accuracy.toStringAsFixed(0)}m '
+                  '(need ≤100m). Move to an open area and try again.';
         });
         return;
       }
@@ -78,7 +82,8 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
       if (nbhd == null) {
         setState(() {
           _stage = _Stage.error;
-          _error = 'Could not identify neighborhood for your location.';
+          _error = l?.neighborhood_not_identified ??
+              'Could not identify neighborhood for your location.';
         });
         return;
       }
@@ -123,17 +128,19 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Verify your neighborhood',
+          Text(l?.verify_neighborhood_title ?? 'Verify your neighborhood',
               style: theme.textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text(
-            "Stand in your neighborhood. We'll check your GPS and ask you to confirm.",
+            l?.verify_neighborhood_subtitle ??
+                "Stand in your neighborhood. We'll check your GPS and ask you to confirm.",
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -141,11 +148,12 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
             ElevatedButton(
               key: const Key('NeighborhoodVerifier.start'),
               onPressed: () => _start(),
-              child: const Text('Verify Neighborhood'),
+              child: Text(
+                  l?.verify_neighborhood_button ?? 'Verify Neighborhood'),
             ),
           if (_stage == _Stage.requesting) const LinearProgressIndicator(),
           if (_stage == _Stage.error) ...[
-            Text(_error ?? 'Unknown error',
+            Text(_error ?? l?.unknown_error ?? 'Unknown error',
                 style: TextStyle(color: theme.colorScheme.error)),
             const SizedBox(height: 8),
             Row(
@@ -154,17 +162,20 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
                 if (_strictAttempts >= NeighborhoodVerifier.maxStrictAttempts)
                   TextButton(
                     onPressed: () => _start(allowLowConfidence: true),
-                    child: const Text('Continue with low confidence'),
+                    child: Text(l?.verify_neighborhood_low_confidence ??
+                        'Continue with low confidence'),
                   ),
                 ElevatedButton(
                   onPressed: () => _start(),
-                  child: const Text('Retry'),
+                  child:
+                      Text(l?.verify_neighborhood_retry ?? 'Retry'),
                 ),
               ],
             ),
           ],
           if (_stage == _Stage.confirming && _resolved != null) ...[
-            Text("You're in:", style: theme.textTheme.bodyMedium),
+            Text(l?.verify_neighborhood_youre_in ?? "You're in:",
+                style: theme.textTheme.bodyMedium),
             const SizedBox(height: 4),
             Text(_resolved!.displayName, style: theme.textTheme.titleMedium),
             const SizedBox(height: 16),
@@ -173,12 +184,12 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
               children: [
                 TextButton(
                   onPressed: () => setState(() => _stage = _Stage.idle),
-                  child: const Text('Cancel'),
+                  child: Text(l?.cancel ?? 'Cancel'),
                 ),
                 ElevatedButton(
                   key: const Key('NeighborhoodVerifier.confirm'),
                   onPressed: _confirm,
-                  child: const Text('Confirm'),
+                  child: Text(l?.confirm ?? 'Confirm'),
                 ),
               ],
             ),
@@ -186,7 +197,8 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
           if (_stage == _Stage.submitting) const LinearProgressIndicator(),
           if (_stage == _Stage.done)
             Text(
-              'Verified! ${_resolved?.displayName}',
+              l?.verify_neighborhood_done(_resolved?.displayName ?? '') ??
+                  'Verified! ${_resolved?.displayName}',
               style: TextStyle(color: theme.colorScheme.primary),
             ),
         ],

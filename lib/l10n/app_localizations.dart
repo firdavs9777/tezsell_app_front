@@ -7977,6 +7977,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No items with location data in this area yet.'**
   String get browse_no_items_with_location;
+
+  /// No description provided for @location_picker_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location'**
+  String get location_picker_title;
+
+  /// No description provided for @location_picker_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm location'**
+  String get location_picker_confirm;
+
+  /// No description provided for @location_picker_resolve_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t resolve address — pick again or confirm with coordinates only'**
+  String get location_picker_resolve_failed;
+
+  /// No description provided for @location_picker_selected_fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected location'**
+  String get location_picker_selected_fallback;
+
+  /// No description provided for @location_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied'**
+  String get location_permission_denied;
+
+  /// No description provided for @location_permission_denied_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied — please enable in Settings'**
+  String get location_permission_denied_settings;
+
+  /// No description provided for @location_permission_permanent.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permanently denied — open Settings to enable'**
+  String get location_permission_permanent;
+
+  /// No description provided for @gps_error.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS error: {error}'**
+  String gps_error(String error);
+
+  /// No description provided for @verify_neighborhood_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your neighborhood'**
+  String get verify_neighborhood_title;
+
+  /// No description provided for @verify_neighborhood_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.'**
+  String get verify_neighborhood_subtitle;
+
+  /// No description provided for @verify_neighborhood_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Neighborhood'**
+  String get verify_neighborhood_button;
+
+  /// No description provided for @verify_neighborhood_low_confidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with low confidence'**
+  String get verify_neighborhood_low_confidence;
+
+  /// No description provided for @verify_neighborhood_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get verify_neighborhood_retry;
+
+  /// No description provided for @verify_neighborhood_youre_in.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re in:'**
+  String get verify_neighborhood_youre_in;
+
+  /// No description provided for @verify_neighborhood_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified! {name}'**
+  String verify_neighborhood_done(String name);
+
+  /// No description provided for @gps_accuracy_too_low.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS accuracy is {meters}m (need ≤100m). Move to an open area and try again.'**
+  String gps_accuracy_too_low(String meters);
+
+  /// No description provided for @neighborhood_not_identified.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not identify neighborhood for your location.'**
+  String get neighborhood_not_identified;
+
+  /// No description provided for @unknown_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error'**
+  String get unknown_error;
+
+  /// No description provided for @place_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for an address or place'**
+  String get place_search_hint;
+
+  /// No description provided for @place_search_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Search unavailable — drop a pin instead'**
+  String get place_search_unavailable;
+
+  /// No description provided for @radius_slider_city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get radius_slider_city;
+
+  /// No description provided for @radius_slider_km.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} km'**
+  String radius_slider_km(String value);
 }
 
 class _AppLocalizationsDelegate

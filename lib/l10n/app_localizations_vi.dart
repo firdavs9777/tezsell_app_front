@@ -4169,4 +4169,85 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get browse_no_items_with_location =>
       'No items with location data in this area yet.';
+
+  @override
+  String get location_picker_title => 'Set location';
+
+  @override
+  String get location_picker_confirm => 'Confirm location';
+
+  @override
+  String get location_picker_resolve_failed =>
+      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+
+  @override
+  String get location_picker_selected_fallback => 'Selected location';
+
+  @override
+  String get location_permission_denied => 'Location permission denied';
+
+  @override
+  String get location_permission_denied_settings =>
+      'Location permission denied — please enable in Settings';
+
+  @override
+  String get location_permission_permanent =>
+      'Location permanently denied — open Settings to enable';
+
+  @override
+  String gps_error(String error) {
+    return 'GPS error: $error';
+  }
+
+  @override
+  String get verify_neighborhood_title => 'Verify your neighborhood';
+
+  @override
+  String get verify_neighborhood_subtitle =>
+      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+
+  @override
+  String get verify_neighborhood_button => 'Verify Neighborhood';
+
+  @override
+  String get verify_neighborhood_low_confidence =>
+      'Continue with low confidence';
+
+  @override
+  String get verify_neighborhood_retry => 'Retry';
+
+  @override
+  String get verify_neighborhood_youre_in => 'You\'re in:';
+
+  @override
+  String verify_neighborhood_done(String name) {
+    return 'Verified! $name';
+  }
+
+  @override
+  String gps_accuracy_too_low(String meters) {
+    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+  }
+
+  @override
+  String get neighborhood_not_identified =>
+      'Could not identify neighborhood for your location.';
+
+  @override
+  String get unknown_error => 'Unknown error';
+
+  @override
+  String get place_search_hint => 'Search for an address or place';
+
+  @override
+  String get place_search_unavailable =>
+      'Search unavailable — drop a pin instead';
+
+  @override
+  String get radius_slider_city => 'City';
+
+  @override
+  String radius_slider_km(String value) {
+    return '$value km';
+  }
 }

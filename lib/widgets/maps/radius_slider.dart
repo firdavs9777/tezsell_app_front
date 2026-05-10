@@ -1,3 +1,4 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ class RadiusSlider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(radiusProvider);
     final notifier = ref.read(radiusProvider.notifier);
+    final l = AppLocalizations.of(context);
     return SizedBox(
       height: 44,
       child: ListView(
@@ -20,7 +22,8 @@ class RadiusSlider extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
-                label: Text('${p.toStringAsFixed(0)} km'),
+                label: Text(l?.radius_slider_km(p.toStringAsFixed(0)) ??
+                    '${p.toStringAsFixed(0)} km'),
                 selected: current == p,
                 onSelected: (_) => notifier.set(p),
               ),
@@ -28,7 +31,7 @@ class RadiusSlider extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: ChoiceChip(
-              label: const Text('City'),
+              label: Text(l?.radius_slider_city ?? 'City'),
               selected: current == double.infinity,
               onSelected: (_) => notifier.set(double.infinity),
             ),

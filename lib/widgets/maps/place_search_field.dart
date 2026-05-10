@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/place.dart';
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:app/services/maps/maps_exceptions.dart';
@@ -10,13 +11,13 @@ import 'package:latlong2/latlong.dart';
 class PlaceSearchField extends ConsumerStatefulWidget {
   final ValueChanged<Place> onSelected;
   final LatLng? near;
-  final String hintText;
+  final String? hintText;
 
   const PlaceSearchField({
     super.key,
     required this.onSelected,
     this.near,
-    this.hintText = 'Search for an address or place',
+    this.hintText,
   });
 
   @override
@@ -75,6 +76,7 @@ class _PlaceSearchFieldState extends ConsumerState<PlaceSearchField> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -82,7 +84,9 @@ class _PlaceSearchFieldState extends ConsumerState<PlaceSearchField> {
           controller: _controller,
           onChanged: _onChanged,
           decoration: InputDecoration(
-            hintText: widget.hintText,
+            hintText: widget.hintText ??
+                l?.place_search_hint ??
+                'Search for an address or place',
             prefixIcon: const Icon(Icons.search),
             suffixIcon: _loading
                 ? const Padding(
@@ -101,7 +105,8 @@ class _PlaceSearchFieldState extends ConsumerState<PlaceSearchField> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              'Search unavailable — drop a pin instead',
+              l?.place_search_unavailable ??
+                  'Search unavailable — drop a pin instead',
               style: Theme.of(context)
                   .textTheme
                   .bodySmall

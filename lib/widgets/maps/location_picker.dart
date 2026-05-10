@@ -1,3 +1,4 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/place.dart';
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:app/services/maps/maps_exceptions.dart';
@@ -70,8 +71,11 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
       if (perm == LocationPermission.denied ||
           perm == LocationPermission.deniedForever) {
         if (!mounted) return;
+        final l = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission denied')),
+          SnackBar(
+              content: Text(l?.location_permission_denied ??
+                  'Location permission denied')),
         );
         return;
       }
@@ -85,8 +89,10 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
       await _resolveCenter();
     } catch (e) {
       if (!mounted) return;
+      final l = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('GPS error: $e')),
+        SnackBar(
+            content: Text(l?.gps_error(e.toString()) ?? 'GPS error: $e')),
       );
     }
   }
@@ -95,8 +101,10 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
   Widget build(BuildContext context) {
     final provider = ref.watch(mapsProviderProvider);
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Set location')),
+      appBar: AppBar(
+          title: Text(l?.location_picker_title ?? 'Set location')),
       body: Stack(
         children: [
           FlutterMap(
@@ -167,12 +175,15 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
                       const LinearProgressIndicator()
                     else if (_error != null)
                       Text(
-                        "Couldn't resolve address — pick again or confirm with coordinates only",
+                        l?.location_picker_resolve_failed ??
+                            "Couldn't resolve address — pick again or confirm with coordinates only",
                         style: TextStyle(color: theme.colorScheme.error),
                       )
                     else if (_resolvedPlace != null)
                       Text(
-                        _resolvedPlace!.formattedAddress ?? 'Selected location',
+                        _resolvedPlace!.formattedAddress ??
+                            l?.location_picker_selected_fallback ??
+                            'Selected location',
                         style: theme.textTheme.bodyLarge,
                       ),
                     const SizedBox(height: 8),
@@ -181,7 +192,8 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
                       onPressed: _resolvedPlace == null
                           ? null
                           : () => widget.onConfirmed(_resolvedPlace!),
-                      child: const Text('Confirm location'),
+                      child: Text(
+                          l?.location_picker_confirm ?? 'Confirm location'),
                     ),
                   ],
                 ),
