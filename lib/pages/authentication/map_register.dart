@@ -3,7 +3,6 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/authentication/mobile_authentication.dart';
-import 'package:app/pages/authentication/register.dart';
 import 'package:app/providers/provider_models/country_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/place.dart';
@@ -261,24 +260,6 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onPrimary,
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: _resolving
-                      ? null
-                      : () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (_) => const Register()),
-                          ),
-                  child: Text(
-                    localizations?.use_dropdown_instead ??
-                        'Use dropdown instead',
-                    style: TextStyle(
-                        color: colorScheme.onSurface.withValues(alpha: 0.6)),
                   ),
                 ),
               ),
