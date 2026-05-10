@@ -230,8 +230,9 @@ class ServiceProvider {
       'images': imageFiles
           .map((file) => MultipartFile.fromFileSync(file.path))
           .toList(),
-      if (latitude != null) 'latitude': latitude,
-      if (longitude != null) 'longitude': longitude,
+      // Backend DecimalField caps at 6 decimal places — round before send.
+      if (latitude != null) 'latitude': latitude.toStringAsFixed(6),
+      if (longitude != null) 'longitude': longitude.toStringAsFixed(6),
       if (placeId != null) 'place_id': placeId,
       if (formattedAddress != null) 'formatted_address': formattedAddress,
       if (countryCode != null) 'country_code': countryCode,
