@@ -1541,6 +1541,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_properties_loaded => 'All properties loaded';
 
   @override
+  String n_properties(int count) {
+    return '$count properties';
+  }
+
+  @override
+  String get in_area => 'in area';
+
+  @override
   String get pagination_previous => 'Previous';
 
   @override
@@ -3632,6 +3640,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get please_log_in => 'Please log in to view messages';
 
   @override
+  String get pin => 'Pin';
+
+  @override
+  String get unpin => 'Unpin';
+
+  @override
   String get delete_chat => 'Delete Chat';
 
   @override
@@ -3714,6 +3728,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online => 'online';
+
+  @override
+  String get offline => 'offline';
+
+  @override
+  String last_seen_at(String time) {
+    return 'last seen $time';
+  }
 
   @override
   String participants(int count) {
@@ -4023,4 +4045,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get countrySelectionHint => 'Then you can choose your region';
+
+  @override
+  String get something_went_wrong => 'Something went wrong';
+
+  @override
+  String get check_connection_and_retry =>
+      'Please check your internet connection and try again';
+
+  @override
+  String get sold_badge => 'SOLD';
+
+  @override
+  String get more_categories => 'More';
+
+  @override
+  String no_products_in_location(String location) {
+    return 'No products found in $location';
+  }
+
+  @override
+  String get no_more_products => 'No more products to load';
+
+  @override
+  String time_days_ago(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String time_hours_ago(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String time_minutes_ago(int count) {
+    return '${count}m ago';
+  }
+
+  @override
+  String get time_just_now => 'Just now';
+
+  @override
+  String no_services_in_location(String location) {
+    return 'No services found in $location';
+  }
+
+  @override
+  String get no_more_services => 'No more services to load';
+
+  @override
+  String get error_loading_more_services => 'Error loading more services';
+
+  @override
+  String get verification_code_length => 'Verification code must be 6 digits';
+
+  @override
+  String get map_register_title => 'Where do you live?';
+
+  @override
+  String get map_register_headline => 'Pick your neighborhood on the map';
+
+  @override
+  String get map_register_subtitle =>
+      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+
+  @override
+  String get pick_on_map => 'Pick on map';
+
+  @override
+  String get pick_again => 'Pick again';
+
+  @override
+  String get resolving_location => 'Resolving location…';
+
+  @override
+  String get use_dropdown_instead => 'Use dropdown instead';
+
+  @override
+  String country_not_supported(String country) {
+    return 'We don\'t support $country yet.';
+  }
+
+  @override
+  String get region_not_auto_detected =>
+      'Couldn\'t auto-detect your region — pick it manually.';
+
+  @override
+  String get district_not_auto_detected =>
+      'Couldn\'t auto-detect your district — pick it manually.';
+
+  @override
+  String get browse_no_items_with_location =>
+      'No items with location data in this area yet.';
 }

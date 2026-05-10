@@ -1555,6 +1555,14 @@ class AppLocalizationsUz extends AppLocalizations {
   String get all_properties_loaded => 'Barcha mulklar yuklandi';
 
   @override
+  String n_properties(int count) {
+    return '$count ta mulk';
+  }
+
+  @override
+  String get in_area => 'hududida';
+
+  @override
   String get pagination_previous => 'Oldingi';
 
   @override
@@ -3691,7 +3699,13 @@ class AppLocalizationsUz extends AppLocalizations {
   String get please_log_in => 'Xabarlarni ko‘rish uchun tizimga kiring';
 
   @override
-  String get delete_chat => 'Chatni o‘chirish';
+  String get pin => 'Biriktirish';
+
+  @override
+  String get unpin => 'Olib tashlash';
+
+  @override
+  String get delete_chat => 'Chatni o’chirish';
 
   @override
   String delete_chat_confirm(String name) {
@@ -3773,6 +3787,14 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get online => 'onlayn';
+
+  @override
+  String get offline => 'oflayn';
+
+  @override
+  String last_seen_at(String time) {
+    return 'oxirgi marta $time';
+  }
 
   @override
   String participants(int count) {
@@ -4086,4 +4108,97 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get countrySelectionHint => 'Keyin viloyatni tanlashingiz mumkin';
+
+  @override
+  String get something_went_wrong => 'Xatolik yuz berdi';
+
+  @override
+  String get check_connection_and_retry =>
+      'Internet ulanishini tekshiring va qaytadan urinib ko\'ring';
+
+  @override
+  String get sold_badge => 'SOTILGAN';
+
+  @override
+  String get more_categories => 'Yana';
+
+  @override
+  String no_products_in_location(String location) {
+    return '$location da mahsulot topilmadi';
+  }
+
+  @override
+  String get no_more_products => 'Boshqa mahsulot yo\'q';
+
+  @override
+  String time_days_ago(int count) {
+    return '$count kun oldin';
+  }
+
+  @override
+  String time_hours_ago(int count) {
+    return '$count soat oldin';
+  }
+
+  @override
+  String time_minutes_ago(int count) {
+    return '$count daqiqa oldin';
+  }
+
+  @override
+  String get time_just_now => 'Hozirgina';
+
+  @override
+  String no_services_in_location(String location) {
+    return '$location da xizmat topilmadi';
+  }
+
+  @override
+  String get no_more_services => 'Boshqa xizmat yo\'q';
+
+  @override
+  String get error_loading_more_services => 'Xizmatlarni yuklashda xatolik';
+
+  @override
+  String get verification_code_length =>
+      'Tasdiqlash kodi 6 raqamdan iborat bo\'lishi kerak';
+
+  @override
+  String get map_register_title => 'Where do you live?';
+
+  @override
+  String get map_register_headline => 'Pick your neighborhood on the map';
+
+  @override
+  String get map_register_subtitle =>
+      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+
+  @override
+  String get pick_on_map => 'Pick on map';
+
+  @override
+  String get pick_again => 'Pick again';
+
+  @override
+  String get resolving_location => 'Resolving location…';
+
+  @override
+  String get use_dropdown_instead => 'Use dropdown instead';
+
+  @override
+  String country_not_supported(String country) {
+    return 'We don\'t support $country yet.';
+  }
+
+  @override
+  String get region_not_auto_detected =>
+      'Couldn\'t auto-detect your region — pick it manually.';
+
+  @override
+  String get district_not_auto_detected =>
+      'Couldn\'t auto-detect your district — pick it manually.';
+
+  @override
+  String get browse_no_items_with_location =>
+      'No items with location data in this area yet.';
 }

@@ -692,11 +692,13 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     }
 
     if (mapped.isEmpty) {
+      final localizations = AppLocalizations.of(context);
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'No services with location data in this area yet.',
+            localizations?.browse_no_items_with_location ??
+                'No items with location data in this area yet.',
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),

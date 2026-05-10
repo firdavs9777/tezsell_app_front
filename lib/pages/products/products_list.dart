@@ -697,11 +697,13 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     }
 
     if (mapped.isEmpty) {
+      final localizations = AppLocalizations.of(context);
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'No products with location data in this area yet.',
+            localizations?.browse_no_items_with_location ??
+                'No items with location data in this area yet.',
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: theme.colorScheme.onSurface.withOpacity(0.6)),

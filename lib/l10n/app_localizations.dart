@@ -7911,6 +7911,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verification code must be 6 digits'**
   String get verification_code_length;
+
+  /// AppBar title on map-first registration
+  ///
+  /// In en, this message translates to:
+  /// **'Where do you live?'**
+  String get map_register_title;
+
+  /// No description provided for @map_register_headline.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your neighborhood on the map'**
+  String get map_register_headline;
+
+  /// No description provided for @map_register_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We use it to show you nearby buyers and sellers. You can adjust your radius later.'**
+  String get map_register_subtitle;
+
+  /// No description provided for @pick_on_map.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick on map'**
+  String get pick_on_map;
+
+  /// No description provided for @pick_again.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick again'**
+  String get pick_again;
+
+  /// No description provided for @resolving_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving location…'**
+  String get resolving_location;
+
+  /// No description provided for @use_dropdown_instead.
+  ///
+  /// In en, this message translates to:
+  /// **'Use dropdown instead'**
+  String get use_dropdown_instead;
+
+  /// No description provided for @country_not_supported.
+  ///
+  /// In en, this message translates to:
+  /// **'We don\'t support {country} yet.'**
+  String country_not_supported(String country);
+
+  /// No description provided for @region_not_auto_detected.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t auto-detect your region — pick it manually.'**
+  String get region_not_auto_detected;
+
+  /// No description provided for @district_not_auto_detected.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t auto-detect your district — pick it manually.'**
+  String get district_not_auto_detected;
+
+  /// Empty-state message in map browse mode
+  ///
+  /// In en, this message translates to:
+  /// **'No items with location data in this area yet.'**
+  String get browse_no_items_with_location;
 }
 
 class _AppLocalizationsDelegate

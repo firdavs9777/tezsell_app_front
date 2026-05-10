@@ -4098,4 +4098,43 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get verification_code_length => 'Verification code must be 6 digits';
+
+  @override
+  String get map_register_title => 'Where do you live?';
+
+  @override
+  String get map_register_headline => 'Pick your neighborhood on the map';
+
+  @override
+  String get map_register_subtitle =>
+      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+
+  @override
+  String get pick_on_map => 'Pick on map';
+
+  @override
+  String get pick_again => 'Pick again';
+
+  @override
+  String get resolving_location => 'Resolving location…';
+
+  @override
+  String get use_dropdown_instead => 'Use dropdown instead';
+
+  @override
+  String country_not_supported(String country) {
+    return 'We don\'t support $country yet.';
+  }
+
+  @override
+  String get region_not_auto_detected =>
+      'Couldn\'t auto-detect your region — pick it manually.';
+
+  @override
+  String get district_not_auto_detected =>
+      'Couldn\'t auto-detect your district — pick it manually.';
+
+  @override
+  String get browse_no_items_with_location =>
+      'No items with location data in this area yet.';
 }

@@ -55,8 +55,10 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
     try {
       // 1) Match country.
       final country = _matchCountry(place.countryCode);
+      final l = AppLocalizations.of(context);
       if (country == null) {
-        _fallback("We don't support ${place.countryCode ?? 'this country'} yet.");
+        _fallback(l?.country_not_supported(place.countryCode ?? 'this country') ??
+            "We don't support ${place.countryCode ?? 'this country'} yet.");
         return;
       }
 
@@ -64,7 +66,8 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
       final regions = await _service.getRegions(country.code);
       final region = _bestMatchRegion(regions, place);
       if (region == null) {
-        _fallback("Couldn't auto-detect your region — pick it manually.");
+        _fallback(l?.region_not_auto_detected ??
+            "Couldn't auto-detect your region — pick it manually.");
         return;
       }
 
@@ -72,7 +75,8 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
       final districts = await _service.getDistricts(region.id);
       final district = _bestMatchDistrict(districts, place);
       if (district == null) {
-        _fallback("Couldn't auto-detect your district — pick it manually.");
+        _fallback(l?.district_not_auto_detected ??
+            "Couldn't auto-detect your district — pick it manually.");
         return;
       }
 
@@ -157,11 +161,7 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        title: Text(
-          localizations?.chooseLanguage != null
-              ? 'Where do you live?'
-              : 'Where do you live?',
-        ),
+        title: Text(localizations?.map_register_title ?? 'Where do you live?'),
       ),
       body: SafeArea(
         child: Padding(
@@ -173,14 +173,16 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
               Icon(Icons.public, size: 64, color: colorScheme.primary),
               const SizedBox(height: 24),
               Text(
-                'Pick your neighborhood on the map',
+                localizations?.map_register_headline ??
+                    'Pick your neighborhood on the map',
                 style: theme.textTheme.headlineSmall
                     ?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               Text(
-                'We use it to show you nearby buyers and sellers. '
-                'You can adjust your radius later.',
+                localizations?.map_register_subtitle ??
+                    'We use it to show you nearby buyers and sellers. '
+                        'You can adjust your radius later.',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
@@ -251,8 +253,10 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
                       : const Icon(Icons.map_outlined),
                   label: Text(
                     _resolving
-                        ? 'Resolving…'
-                        : (_picked == null ? 'Pick on map' : 'Pick again'),
+                        ? (localizations?.resolving_location ?? 'Resolving…')
+                        : (_picked == null
+                            ? (localizations?.pick_on_map ?? 'Pick on map')
+                            : (localizations?.pick_again ?? 'Pick again')),
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onPrimary,
@@ -271,7 +275,8 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
                                 builder: (_) => const Register()),
                           ),
                   child: Text(
-                    'Use dropdown instead',
+                    localizations?.use_dropdown_instead ??
+                        'Use dropdown instead',
                     style: TextStyle(
                         color: colorScheme.onSurface.withValues(alpha: 0.6)),
                   ),

@@ -1547,6 +1547,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get all_properties_loaded => 'Вся недвижимость загружена';
 
   @override
+  String n_properties(int count) {
+    return '$count объектов';
+  }
+
+  @override
+  String get in_area => 'в районе';
+
+  @override
   String get pagination_previous => 'Предыдущая';
 
   @override
@@ -3671,6 +3679,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Пожалуйста, войдите, чтобы просматривать сообщения';
 
   @override
+  String get pin => 'Закрепить';
+
+  @override
+  String get unpin => 'Открепить';
+
+  @override
   String get delete_chat => 'Удалить чат';
 
   @override
@@ -3753,6 +3767,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get online => 'в сети';
+
+  @override
+  String get offline => 'не в сети';
+
+  @override
+  String last_seen_at(String time) {
+    return 'был(а) $time';
+  }
 
   @override
   String participants(int count) {
@@ -4065,4 +4087,97 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get countrySelectionHint => 'Затем вы сможете выбрать регион';
+
+  @override
+  String get something_went_wrong => 'Что-то пошло не так';
+
+  @override
+  String get check_connection_and_retry =>
+      'Проверьте подключение к интернету и попробуйте снова';
+
+  @override
+  String get sold_badge => 'ПРОДАНО';
+
+  @override
+  String get more_categories => 'Ещё';
+
+  @override
+  String no_products_in_location(String location) {
+    return 'Товары в $location не найдены';
+  }
+
+  @override
+  String get no_more_products => 'Больше товаров нет';
+
+  @override
+  String time_days_ago(int count) {
+    return '$count дн. назад';
+  }
+
+  @override
+  String time_hours_ago(int count) {
+    return '$count ч. назад';
+  }
+
+  @override
+  String time_minutes_ago(int count) {
+    return '$count мин. назад';
+  }
+
+  @override
+  String get time_just_now => 'Только что';
+
+  @override
+  String no_services_in_location(String location) {
+    return 'Услуги в $location не найдены';
+  }
+
+  @override
+  String get no_more_services => 'Больше услуг нет';
+
+  @override
+  String get error_loading_more_services => 'Ошибка загрузки услуг';
+
+  @override
+  String get verification_code_length =>
+      'Код подтверждения должен содержать 6 цифр';
+
+  @override
+  String get map_register_title => 'Where do you live?';
+
+  @override
+  String get map_register_headline => 'Pick your neighborhood on the map';
+
+  @override
+  String get map_register_subtitle =>
+      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+
+  @override
+  String get pick_on_map => 'Pick on map';
+
+  @override
+  String get pick_again => 'Pick again';
+
+  @override
+  String get resolving_location => 'Resolving location…';
+
+  @override
+  String get use_dropdown_instead => 'Use dropdown instead';
+
+  @override
+  String country_not_supported(String country) {
+    return 'We don\'t support $country yet.';
+  }
+
+  @override
+  String get region_not_auto_detected =>
+      'Couldn\'t auto-detect your region — pick it manually.';
+
+  @override
+  String get district_not_auto_detected =>
+      'Couldn\'t auto-detect your district — pick it manually.';
+
+  @override
+  String get browse_no_items_with_location =>
+      'No items with location data in this area yet.';
 }
