@@ -12,7 +12,11 @@ class TooManyNeighborhoodsException implements Exception {
 
 class VerifiedNeighborhoodsNotifier
     extends StateNotifier<List<VerifiedNeighborhood>> {
-  static const _prefsKey = 'verified_neighborhoods_v1';
+  // _v2: bumped from _v1 to invalidate the simulator-test cache that was
+  // pinning users to stale entries (e.g. US:323854723 from earlier runs).
+  // First launch after upgrade hydrates empty; user re-picks via /change-city.
+  static const _prefsKey = 'verified_neighborhoods_v2';
+  static const _legacyPrefsKey = 'verified_neighborhoods_v1';
   static const maxCount = 2;
 
   VerifiedNeighborhoodsNotifier() : super(const []) {
@@ -21,6 +25,8 @@ class VerifiedNeighborhoodsNotifier
 
   Future<void> hydrate() async {
     final prefs = await SharedPreferences.getInstance();
+    // Wipe the legacy key on first hydrate so the stale entries are gone.
+    await prefs.remove(_legacyPrefsKey);
     final raw = prefs.getString(_prefsKey);
     if (raw == null) return;
     try {
@@ -28,7 +34,10 @@ class VerifiedNeighborhoodsNotifier
           .map((e) =>
               VerifiedNeighborhood.fromJson(e as Map<String, dynamic>))
           .toList();
-      state = list;
+      // Don't clobber state if something already populated it while hydrate
+      // was awaiting (e.g. an add() in tests, or a /change-city pick before
+      // hydrate completes).
+      if (state.isEmpty) state = list;
     } catch (_) {
       await prefs.remove(_prefsKey);
     }
