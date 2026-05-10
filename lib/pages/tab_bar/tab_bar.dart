@@ -332,6 +332,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
             Flexible(
               child: Consumer(
                 builder: (context, ref, child) {
+                  // Karrot priority: a fresh map pick wins over the backend
+                  // profile district for the location chip too.
+                  final activeNbhd = ref.watch(activeNeighborhoodProvider);
                   final userInfoAsync = ref.watch(
                     profileServiceProvider.select(
                       (provider) => provider.getUserInfo(),
@@ -340,22 +343,22 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
                   return FutureBuilder<UserInfo>(
                     future: userInfoAsync,
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Text(
-                          '...',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        );
+                      String label;
+                      if (activeNbhd != null) {
+                        label = activeNbhd.neighborhood.city.isNotEmpty
+                            ? activeNbhd.neighborhood.city
+                            : activeNbhd.neighborhood.name;
+                      } else if (!snapshot.hasData) {
+                        label = '...';
+                      } else {
+                        label = snapshot.data!.location.district.isNotEmpty
+                            ? snapshot.data!.location.district
+                            : (localizations?.searchLocation ?? 'Location');
                       }
-                      final district = snapshot.data!.location.district.isNotEmpty
-                          ? snapshot.data!.location.district
-                          : (localizations?.searchLocation ?? 'Location');
                       return Text(
-                        district.length > 12
-                            ? '${district.substring(0, 10)}..'
-                            : district,
+                        label.length > 12
+                            ? '${label.substring(0, 10)}..'
+                            : label,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: colorScheme.primary,
                           fontWeight: FontWeight.w600,
