@@ -142,20 +142,20 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     });
 
     try {
+      // Karrot priority: an active verified-neighborhood (set by the map
+      // location filter) wins over the backend-synced district from TabBar.
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
-      final hasLegacyFilter = hasLocationFilter ||
-          widget.regionName.isNotEmpty ||
-          widget.districtName.isNotEmpty;
+      final useNeighborhood = activeNbhd != null;
       final services = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
             pageSize: 12,
-            regionName: widget.regionName,
-            districtName: widget.districtName,
-            districtId: widget.districtId,
+            regionName: useNeighborhood ? '' : widget.regionName,
+            districtName: useNeighborhood ? '' : widget.districtName,
+            districtId: useNeighborhood ? null : widget.districtId,
             neighborhoodId:
-                hasLegacyFilter ? null : activeNbhd?.neighborhood.id,
-            radiusKm: hasLegacyFilter ? null : radius,
+                useNeighborhood ? activeNbhd.neighborhood.id : null,
+            radiusKm: useNeighborhood ? radius : null,
           );
 
       if (mounted && !_isDisposed) {
@@ -185,13 +185,19 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
 
     try {
       final nextPage = _currentPage + 1;
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final newServices =
           await ref.read(serviceMainProvider).getFilteredServices(
                 currentPage: nextPage,
                 pageSize: 12,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
-                districtId: widget.districtId,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
               );
 
       if (mounted && !_isDisposed) {

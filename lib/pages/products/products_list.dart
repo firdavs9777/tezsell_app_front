@@ -157,25 +157,24 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     });
 
     try {
-      // Phase-1 OSM/Carrot filter: only applied when user has a verified
-      // neighborhood active and is not browsing region/district directly.
+      // Karrot priority: an active verified-neighborhood (set by the map
+      // location filter) ALWAYS wins over the backend-synced district that
+      // TabBar passes via widget.regionName/districtId. This way a fresh
+      // map pick takes effect immediately even though the user's profile
+      // location in the DB still says Andijon (or wherever).
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
-      final hasLegacyFilter =
-          (widget.districtId != null && widget.districtId! > 0) ||
-              widget.regionName.isNotEmpty ||
-              widget.districtName.isNotEmpty;
+      final useNeighborhood = activeNbhd != null;
       final products =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,
                 pageSize: 12,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
-                districtId: widget.districtId,
-                neighborhoodId: hasLegacyFilter
-                    ? null
-                    : activeNbhd?.neighborhood.id,
-                radiusKm: hasLegacyFilter ? null : radius,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
               );
 
       // Ignore if a newer load was triggered while this was in-flight
@@ -214,13 +213,19 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
     try {
       final nextPage = _currentPage + 1;
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final newProducts =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: nextPage,
                 pageSize: 12,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
-                districtId: widget.districtId,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
               );
 
       if (mounted && !_isDisposed) {
