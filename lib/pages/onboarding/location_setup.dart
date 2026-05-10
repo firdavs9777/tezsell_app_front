@@ -110,6 +110,9 @@ class _LocationSetupScreenState
         );
       }
 
+      // Onboarding pick is canonical — wipe any stale entries from earlier
+      // testing/installs so this is the only verified neighborhood.
+      await ref.read(verifiedNeighborhoodsProvider.notifier).clear();
       await ref.read(verifiedNeighborhoodsProvider.notifier).add(
             VerifiedNeighborhood(
               neighborhood: neighborhood,
@@ -118,11 +121,7 @@ class _LocationSetupScreenState
               lowConfidence: true,
             ),
           );
-      final list = ref.read(verifiedNeighborhoodsProvider);
-      final newIdx =
-          list.indexWhere((v) => v.neighborhood.id == neighborhood!.id);
-      ref.read(activeNeighborhoodIndexProvider.notifier).state =
-          newIdx >= 0 ? newIdx : 0;
+      ref.read(activeNeighborhoodIndexProvider.notifier).state = 0;
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('userLocation');

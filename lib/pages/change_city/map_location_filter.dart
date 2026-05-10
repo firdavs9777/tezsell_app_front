@@ -115,8 +115,12 @@ class _MapLocationFilterPageState
         );
       }
 
-      // Add to verified-neighborhoods cache (provider replaces by id, so no
-      // duplicates) and set active so the radius slider applies.
+      // Browse filter is "where I'm looking right now" — distinct from the
+      // GPS-verified "where I live" identity. Clear stale browse entries
+      // (e.g. a US: pick from earlier simulator testing) so the fresh pick
+      // is canonical and at index 0. The user can still re-verify a home
+      // neighborhood later via the profile flow.
+      await ref.read(verifiedNeighborhoodsProvider.notifier).clear();
       await ref.read(verifiedNeighborhoodsProvider.notifier).add(
             VerifiedNeighborhood(
               neighborhood: neighborhood,
@@ -125,11 +129,7 @@ class _MapLocationFilterPageState
               lowConfidence: true,
             ),
           );
-      final list = ref.read(verifiedNeighborhoodsProvider);
-      final newIdx =
-          list.indexWhere((v) => v.neighborhood.id == neighborhood!.id);
-      ref.read(activeNeighborhoodIndexProvider.notifier).state =
-          newIdx >= 0 ? newIdx : 0;
+      ref.read(activeNeighborhoodIndexProvider.notifier).state = 0;
 
       // Clear legacy district keys so browse pages take the
       // neighborhood + radius path (Karrot) instead of district-only.
