@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,30 +8,42 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/country_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/place.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/service/country_service.dart';
-import 'package:app/widgets/branding/tezsell_wordmark.dart';
 import 'package:app/widgets/maps/location_picker.dart';
 
 /// Map-first replacement for the legacy /change-city dropdown flow.
-/// User picks a spot on the map; we reverse-geocode + name-match against the
-/// existing /accounts/regions and /locations/regions/<id>/districts APIs, then
-/// persist the resolved country/region/district to SharedPreferences using the
-/// same keys the legacy ChangeCity page wrote — keeps callers compatible.
-class MapLocationFilterPage extends StatefulWidget {
+/// Auto-launches the picker on entry; on confirm, persists location to the
+/// SharedPreferences keys legacy ChangeCity wrote AND deactivates any
+/// verified-neighborhood (so a stale US: entry from earlier testing doesn't
+/// override the user's fresh pick). Pops with `true` so callers refresh.
+class MapLocationFilterPage extends ConsumerStatefulWidget {
   const MapLocationFilterPage({super.key});
 
   @override
-  State<MapLocationFilterPage> createState() => _MapLocationFilterPageState();
+  ConsumerState<MapLocationFilterPage> createState() =>
+      _MapLocationFilterPageState();
 }
 
-class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
+class _MapLocationFilterPageState
+    extends ConsumerState<MapLocationFilterPage> {
   final _service = CountryService();
 
-  Place? _picked;
   bool _resolving = false;
   String? _error;
+  bool _pickerLaunched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-open the picker on entry — the page itself is just the resolution
+    // host. No "Pick on map" button gating, no two-step UX.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _openPicker());
+  }
 
   Future<void> _openPicker() async {
+    if (_pickerLaunched) return;
+    _pickerLaunched = true;
     final initial = await _detectInitialCenter();
     if (!mounted) return;
     final result = await Navigator.of(context).push<Place>(
@@ -41,12 +54,30 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
         ),
       ),
     );
-    if (result == null || !mounted) return;
-    setState(() {
-      _picked = result;
-      _error = null;
-    });
+    if (!mounted) return;
+    if (result == null) {
+      // User backed out without picking — pop the wrapper too with no result.
+      Navigator.of(context).pop(false);
+      return;
+    }
     await _resolveAndSave(result);
+  }
+
+  Future<LatLng> _detectInitialCenter() async {
+    try {
+      final perm = await Geolocator.requestPermission();
+      if (perm == LocationPermission.always ||
+          perm == LocationPermission.whileInUse) {
+        final pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+          timeLimit: const Duration(seconds: 6),
+        );
+        return LatLng(pos.latitude, pos.longitude);
+      }
+    } catch (_) {
+      // permission / GPS / timeout — fall through
+    }
+    return const LatLng(41.3, 69.24);
   }
 
   Future<void> _resolveAndSave(Place place) async {
@@ -56,9 +87,6 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
     });
 
     try {
-      // Best-effort match against backend tables. International users (US/EU/
-      // JP/KR/etc) fall through with the place's reverse-geocoded strings —
-      // any country picked on the map should be browseable. Carrot-style.
       final country = _matchCountry(place.countryCode);
       final countryCode =
           country?.code ?? (place.countryCode ?? '').toUpperCase();
@@ -78,10 +106,6 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
       final districtName =
           district?.district ?? place.city ?? place.region ?? '';
 
-      // Persist using the same keys legacy ChangeCity wrote so callers
-      // (products_list, main_service, tab_bar) refresh as before. districtId
-      // may be empty for off-grid countries — backend filter will fall back
-      // to lat/lng radius via the verified-neighborhood path.
       final prefs = await SharedPreferences.getInstance();
       if (district != null) {
         await prefs.setString('userLocation', district.id.toString());
@@ -92,39 +116,23 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
       await prefs.setString('localDistrictName', districtName);
       await prefs.setString('localCountryCode', countryCode);
 
+      // Deactivate any verified-neighborhood for browse filter purposes —
+      // otherwise a stale US: entry from earlier testing keeps winning the
+      // first products fetch on app launch. The verified neighborhood itself
+      // remains in profile (user can manage from there); only the active
+      // index is cleared.
+      ref.read(activeNeighborhoodIndexProvider.notifier).state = -1;
+
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } catch (e) {
-      if (mounted) _fail('$e');
-    } finally {
-      if (mounted) setState(() => _resolving = false);
-    }
-  }
-
-  /// Try GPS first; fall back to last-saved coords if available; finally to a
-  /// neutral Tashkent default. Avoids dropping users into the wrong country.
-  Future<LatLng> _detectInitialCenter() async {
-    try {
-      final perm = await Geolocator.requestPermission();
-      if (perm == LocationPermission.always ||
-          perm == LocationPermission.whileInUse) {
-        final pos = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.medium,
-          timeLimit: const Duration(seconds: 6),
-        );
-        return LatLng(pos.latitude, pos.longitude);
+      if (mounted) {
+        setState(() {
+          _resolving = false;
+          _error = '$e';
+        });
       }
-    } catch (_) {
-      // permissions denied / GPS off / timeout — fall through
     }
-    return const LatLng(41.3, 69.24);
-  }
-
-  void _fail(String msg) {
-    setState(() {
-      _resolving = false;
-      _error = msg;
-    });
   }
 
   CountryModel? _matchCountry(String? code) {
@@ -176,6 +184,9 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
+    // The page is mostly invisible — the picker auto-launches on top.
+    // We only show this scaffold while resolving the picked Place or if
+    // resolution errored (user can retry via the AppBar action).
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
@@ -183,108 +194,36 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
         title: Text(localizations?.map_register_title ?? 'Pick your area'),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              const Center(child: TezSellWordmark(size: TezSellWordmarkSize.small)),
-              const SizedBox(height: 24),
-              Text(
-                localizations?.map_register_headline ??
-                    'Pick your neighborhood on the map',
-                style: theme.textTheme.headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                localizations?.map_register_subtitle ??
-                    'Browse buyers and sellers near the spot you choose. '
-                        'You can change this anytime.',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-              ),
-              const SizedBox(height: 32),
-              if (_picked != null)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.4),
-                    borderRadius: BorderRadius.circular(12),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_resolving) ...[
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                      localizations?.resolving_location ?? 'Resolving…',
+                      style: theme.textTheme.bodyMedium),
+                ] else if (_error != null) ...[
+                  Icon(Icons.error_outline,
+                      size: 48, color: colorScheme.error),
+                  const SizedBox(height: 12),
+                  Text(_error!, textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      _pickerLaunched = false;
+                      _openPicker();
+                    },
+                    icon: const Icon(Icons.map_outlined),
+                    label: Text(
+                        localizations?.pick_again ?? 'Pick again'),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_on, color: colorScheme.primary),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          _picked!.formattedAddress ??
-                              '${_picked!.lat.toStringAsFixed(4)}, ${_picked!.lng.toStringAsFixed(4)}',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (_error != null) ...[
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline,
-                          color: colorScheme.onErrorContainer, size: 20),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(_error!,
-                            style: TextStyle(
-                                color: colorScheme.onErrorContainer)),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ],
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: _resolving ? null : _openPicker,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    backgroundColor: colorScheme.primary,
-                    foregroundColor: colorScheme.onPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  icon: _resolving
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.map_outlined),
-                  label: Text(
-                    _resolving
-                        ? (localizations?.resolving_location ?? 'Resolving…')
-                        : (_picked == null
-                            ? (localizations?.pick_on_map ?? 'Pick on map')
-                            : (localizations?.pick_again ?? 'Pick again')),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
+            ),
           ),
         ),
       ),
