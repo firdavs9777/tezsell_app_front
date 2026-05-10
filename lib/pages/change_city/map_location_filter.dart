@@ -115,13 +115,11 @@ class _MapLocationFilterPageState
         );
       }
 
-      // Browse filter is "where I'm looking right now" — distinct from the
-      // GPS-verified "where I live" identity. Clear stale browse entries
-      // (e.g. a US: pick from earlier simulator testing) so the fresh pick
-      // is canonical and at index 0. The user can still re-verify a home
-      // neighborhood later via the profile flow.
-      await ref.read(verifiedNeighborhoodsProvider.notifier).clear();
-      await ref.read(verifiedNeighborhoodsProvider.notifier).add(
+      // Karrot two-neighborhood model: keep up to maxCount (2) verified
+      // entries, FIFO-evict the oldest when full. The newly added pick
+      // becomes the active one — user can still toggle to the other entry
+      // via the InputChip on the products/services feed.
+      await ref.read(verifiedNeighborhoodsProvider.notifier).addEvictingOldest(
             VerifiedNeighborhood(
               neighborhood: neighborhood,
               verifiedAt: DateTime.now(),
@@ -129,7 +127,11 @@ class _MapLocationFilterPageState
               lowConfidence: true,
             ),
           );
-      ref.read(activeNeighborhoodIndexProvider.notifier).state = 0;
+      final list = ref.read(verifiedNeighborhoodsProvider);
+      final newIdx =
+          list.indexWhere((v) => v.neighborhood.id == neighborhood!.id);
+      ref.read(activeNeighborhoodIndexProvider.notifier).state =
+          newIdx >= 0 ? newIdx : list.length - 1;
 
       // Mirror the pick into the legacy local prefs the rest of the app
       // (search, filtered_products page, profile chip) still reads. Geo-

@@ -110,10 +110,10 @@ class _LocationSetupScreenState
         );
       }
 
-      // Onboarding pick is canonical — wipe any stale entries from earlier
-      // testing/installs so this is the only verified neighborhood.
-      await ref.read(verifiedNeighborhoodsProvider.notifier).clear();
-      await ref.read(verifiedNeighborhoodsProvider.notifier).add(
+      // Karrot two-neighborhood model — onboarding picks the FIRST entry,
+      // user can add a second later via /change-city. FIFO-evict if user
+      // somehow has stale entries from earlier installs.
+      await ref.read(verifiedNeighborhoodsProvider.notifier).addEvictingOldest(
             VerifiedNeighborhood(
               neighborhood: neighborhood,
               verifiedAt: DateTime.now(),
@@ -121,7 +121,11 @@ class _LocationSetupScreenState
               lowConfidence: true,
             ),
           );
-      ref.read(activeNeighborhoodIndexProvider.notifier).state = 0;
+      final list = ref.read(verifiedNeighborhoodsProvider);
+      final newIdx =
+          list.indexWhere((v) => v.neighborhood.id == neighborhood!.id);
+      ref.read(activeNeighborhoodIndexProvider.notifier).state =
+          newIdx >= 0 ? newIdx : list.length - 1;
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('userLocation');

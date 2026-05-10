@@ -68,6 +68,31 @@ class VerifiedNeighborhoodsNotifier
     await _persist();
   }
 
+  /// Karrot-style "always-room-for-one-more": replaces by id if it exists,
+  /// otherwise appends — evicting the oldest (FIFO) when already at maxCount.
+  /// Used by the /change-city + /location-setup map-pick flows where the
+  /// user expects their newest pick to win without an exception.
+  Future<void> addEvictingOldest(VerifiedNeighborhood entry) async {
+    final existingIdx =
+        state.indexWhere((v) => v.neighborhood.id == entry.neighborhood.id);
+    if (existingIdx >= 0) {
+      final next = [...state];
+      next[existingIdx] = entry;
+      state = next;
+      await _persist();
+      return;
+    }
+    if (state.length >= maxCount) {
+      // Drop the oldest entry by verifiedAt to make room.
+      final sorted = [...state]
+        ..sort((a, b) => a.verifiedAt.compareTo(b.verifiedAt));
+      final oldest = sorted.first;
+      state = state.where((v) => v.neighborhood.id != oldest.neighborhood.id).toList();
+    }
+    state = [...state, entry];
+    await _persist();
+  }
+
   Future<void> remove(String neighborhoodId) async {
     state = state.where((v) => v.neighborhood.id != neighborhoodId).toList();
     await _persist();
