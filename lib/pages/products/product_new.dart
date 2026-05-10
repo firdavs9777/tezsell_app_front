@@ -372,6 +372,13 @@ class _ProductNewState extends ConsumerState<ProductNew> {
         Navigator.of(context).pop();
       }
         } catch (e) {
+      // Surface the actual backend response body so we know which field
+      // the server rejected. Without this, DioException prints just
+      // "Failed to create product" with no useful detail.
+      if (e is DioException) {
+        AppLogger.error(
+            '[ProductNew] backend ${e.response?.statusCode} body=${e.response?.data}');
+      }
       AppErrorHandler.logError('ProductNew._submitProduct', e);
       if (mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
