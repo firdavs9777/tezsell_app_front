@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:app/pages/authentication/forget_password.dart';
-import 'package:app/pages/authentication/register.dart';
+import 'package:app/pages/authentication/map_register.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
@@ -37,6 +37,8 @@ class _LoginState extends ConsumerState<Login> {
   // Google Sign-In instance
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
+    // Web Client ID from google-services.json (client_type: 3)
+    serverClientId: '523279655368-uk4gjtc06j4q5g602k7ourdspbl7q85b.apps.googleusercontent.com',
   );
 
   // Apple credential cache keys
@@ -142,14 +144,15 @@ class _LoginState extends ConsumerState<Login> {
       final validationTimer = Stopwatch()..start();
 
       final email = _emailController.text.trim();
+      final localizations = AppLocalizations.of(context);
       if (email.isEmpty) {
-        _showError('Please enter your email');
+        _showError(localizations?.email_required ?? 'Please enter your email');
         return;
       }
 
       // Basic email validation
       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-        _showError('Please enter a valid email address');
+        _showError(localizations?.email_invalid ?? 'Please enter a valid email address');
         return;
       }
 
@@ -257,10 +260,10 @@ class _LoginState extends ConsumerState<Login> {
   }
 
   /// Start the automatic token refresh service
-  void _startTokenRefreshService() {
+  void _startTokenRefreshService({bool skipInitialCheck = false}) {
     try {
       final tokenRefreshService = TokenRefreshService(_authService);
-      tokenRefreshService.start();
+      tokenRefreshService.start(skipInitialCheck: skipInitialCheck);
       AppLogger.info('Token refresh service started after login');
     } catch (e) {
       AppLogger.error('Error starting token refresh service: $e');
@@ -309,9 +312,12 @@ class _LoginState extends ConsumerState<Login> {
   }
 
   /// Navigate after successful social auth, checking if location setup is needed
-  void _handleSocialAuthSuccess(SocialAuthResponse response) {
-    // Start token refresh service
-    _startTokenRefreshService();
+  Future<void> _handleSocialAuthSuccess(SocialAuthResponse response) async {
+    // Refresh token BEFORE navigating so WebSocket connects with the final token
+    await _refreshTokenBeforeNavigating();
+
+    // Start periodic token refresh service (skip initial check — we just refreshed)
+    _startTokenRefreshService(skipInitialCheck: true);
 
     // Check if user needs to set up location
     final needsLocationSetup = response.isNewUser ||
@@ -335,6 +341,27 @@ class _LoginState extends ConsumerState<Login> {
     }
   }
 
+  /// Refresh token before navigating to avoid WebSocket 403 race condition
+  Future<void> _refreshTokenBeforeNavigating() async {
+    try {
+      final refreshToken = await _authService.getStoredRefreshToken();
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        if (kDebugMode) {
+          print('🔐 Refreshing token before navigation...');
+        }
+        await _authService.refreshToken();
+        if (kDebugMode) {
+          print('🔐 Token refreshed, safe to navigate now');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ Pre-navigation token refresh failed (non-fatal): $e');
+      }
+      // Non-fatal — the existing token should still work
+    }
+  }
+
   /// Handle Google Sign-In
   Future<void> _handleGoogleSignIn() async {
     if (_isGoogleLoading || _isLoading) return;
@@ -344,13 +371,22 @@ class _LoginState extends ConsumerState<Login> {
     });
 
     try {
+      if (kDebugMode) {
+        print('🔐 [Google Sign-In] Step 1: Signing out previous session...');
+      }
       // Sign out first to ensure fresh login
       await _googleSignIn.signOut();
 
+      if (kDebugMode) {
+        print('🔐 [Google Sign-In] Step 2: Opening Google sign-in dialog...');
+      }
       // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
+        if (kDebugMode) {
+          print('🔐 [Google Sign-In] User cancelled sign-in');
+        }
         // User cancelled the sign-in
         if (mounted) {
           setState(() {
@@ -360,14 +396,29 @@ class _LoginState extends ConsumerState<Login> {
         return;
       }
 
+      if (kDebugMode) {
+        print('🔐 [Google Sign-In] Step 3: Got Google account: ${googleUser.email}');
+        print('🔐 [Google Sign-In] Step 4: Getting authentication tokens...');
+      }
+
       // Get authentication tokens
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
       final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      if (kDebugMode) {
+        print('🔐 [Google Sign-In] idToken: ${idToken != null ? "${idToken.substring(0, 20)}..." : "NULL"}');
+        print('🔐 [Google Sign-In] accessToken: ${accessToken != null ? "${accessToken.substring(0, 20)}..." : "NULL"}');
+      }
 
       if (idToken == null) {
-        _showError('Failed to get Google authentication token');
+        if (kDebugMode) {
+          print('❌ [Google Sign-In] FAILED: idToken is null!');
+          print('   serverClientId: ${_googleSignIn.serverClientId}');
+        }
+        _showError('Failed to get Google authentication token. Check serverClientId config.');
         if (mounted) {
           setState(() {
             _isGoogleLoading = false;
@@ -377,28 +428,46 @@ class _LoginState extends ConsumerState<Login> {
       }
 
       if (kDebugMode) {
-        print('🔐 Google Sign-In successful');
+        print('🔐 [Google Sign-In] Step 5: Sending to backend...');
         print('   Email: ${googleUser.email}');
         print('   Name: ${googleUser.displayName}');
+        print('   PhotoUrl: ${googleUser.photoUrl}');
       }
 
       // Send idToken to backend via social auth provider
       final socialAuthNotifier = ref.read(socialAuthProvider.notifier);
-      final response = await socialAuthNotifier.loginWithGoogle(idToken);
+      final response = await socialAuthNotifier.loginWithGoogle(
+        idToken,
+        photoUrl: googleUser.photoUrl,
+      );
 
       if (!mounted) return;
+
+      if (kDebugMode) {
+        print('🔐 [Google Sign-In] Step 6: Backend response:');
+        print('   success: ${response.success}');
+        print('   error: ${response.error}');
+        print('   isNewUser: ${response.isNewUser}');
+        print('   hasTokens: ${response.tokens != null}');
+      }
 
       if (response.success) {
         _handleSocialAuthSuccess(response);
       } else {
         _showError(response.error ?? 'Google sign-in failed');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (kDebugMode) {
-        print('❌ Google Sign-In error: $e');
+        print('❌ [Google Sign-In] EXCEPTION: $e');
+        print('❌ [Google Sign-In] Type: ${e.runtimeType}');
+        print('❌ [Google Sign-In] Stack: $stackTrace');
       }
       if (mounted) {
-        _showError('Google sign-in failed. Please try again.');
+        // Show actual error in debug, generic in release
+        final errorMsg = kDebugMode
+            ? 'Google sign-in failed: $e'
+            : 'Google sign-in failed. Please try again.';
+        _showError(errorMsg);
       }
     } finally {
       if (mounted) {
@@ -848,7 +917,8 @@ class _LoginState extends ConsumerState<Login> {
                           : () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const Register(),
+                                  builder: (context) =>
+                                      const MapRegisterPage(),
                                 ),
                               );
                             },

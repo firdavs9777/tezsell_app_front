@@ -1,3 +1,4 @@
+import 'package:app/providers/provider_root/locale_provider.dart';
 import 'package:app/widgets/branding/tezsell_wordmark.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
@@ -72,9 +73,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         context.go('/tabs');
       }
     } else {
-      AppLogger.info('User is not logged in, navigating to language selection');
+      // Skip the manual /language picker if the device locale is already one
+      // of our 15 supported locales OR the user has previously made a manual
+      // override — both cases mean the localeProvider is already correct.
+      // The user can still change language later from profile.
+      final hasManual =
+          await ref.read(localeProvider.notifier).hasManualOverride();
+      final detected = ref.read(localeProvider);
+      final detectedSupported =
+          detected != null && supportedLocaleCodes.contains(detected.languageCode);
+
       if (context.mounted) {
-        context.go('/language');
+        if (hasManual || detectedSupported) {
+          AppLogger.info(
+              'Locale resolved (${detected?.languageCode}) — skipping language picker');
+          context.go('/welcome');
+        } else {
+          AppLogger.info('Locale not auto-resolvable — showing language picker');
+          context.go('/language');
+        }
       }
     }
   }
