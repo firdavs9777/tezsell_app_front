@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/pages/authentication/map_register.dart';
 import 'package:app/providers/provider_root/social_auth_provider.dart';
 import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/service/token_refresh_service.dart';
@@ -23,7 +24,11 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   bool _isGoogleLoading = false;
   bool _isAppleLoading = false;
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+    // Web Client ID from google-services.json (client_type: 3)
+    serverClientId: '523279655368-uk4gjtc06j4q5g602k7ourdspbl7q85b.apps.googleusercontent.com',
+  );
 
   // Apple credential cache keys
   static const String _appleEmailKey = 'apple_cached_email';
@@ -290,7 +295,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Continue with Email Button
+              // Continue with Email Button (sign-in path)
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -315,7 +320,38 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
+
+              // New user? — map-first registration entry (Carrot pattern)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    localizations?.dontHaveAccount ?? "Don't have an account?",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                  TextButton(
+                    onPressed: !_isGoogleLoading && !_isAppleLoading
+                        ? () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const MapRegisterPage(),
+                              ),
+                            )
+                        : null,
+                    child: Text(
+                      localizations?.register ?? 'Sign up',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
             ],
           ),
         ),
