@@ -2,6 +2,8 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/services/maps/maps_exceptions.dart';
+import 'package:app/services/maps/verify_neighborhood_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -104,19 +106,36 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
   Future<void> _confirm() async {
     if (_resolved == null || _position == null) return;
     setState(() => _stage = _Stage.submitting);
+    final lowConfidence =
+        _position!.accuracy > NeighborhoodVerifier.accuracyThresholdM;
     try {
-      // TODO(integrate): once backend verify endpoint is wired, call it here
-      // and only update local state on backend success.
+      // Backend is authoritative — server validates GPS, reverse-geocodes
+      // independently (anti-spoof), and persists to the user's profile.
+      // Local state only updates on backend success.
+      final serverNeighborhood =
+          await VerifyNeighborhoodService().verify(
+        lat: _position!.latitude,
+        lng: _position!.longitude,
+        gpsAccuracyM: _position!.accuracy,
+        lowConfidence: lowConfidence,
+      );
       await ref.read(verifiedNeighborhoodsProvider.notifier).add(
             VerifiedNeighborhood(
-              neighborhood: _resolved!,
+              neighborhood: serverNeighborhood,
               verifiedAt: DateTime.now(),
               gpsAccuracyM: _position!.accuracy,
-              lowConfidence: _position!.accuracy >
-                  NeighborhoodVerifier.accuracyThresholdM,
+              lowConfidence: lowConfidence,
             ),
           );
-      setState(() => _stage = _Stage.done);
+      setState(() {
+        _resolved = serverNeighborhood;
+        _stage = _Stage.done;
+      });
+    } on MapsException catch (e) {
+      setState(() {
+        _stage = _Stage.error;
+        _error = e.message;
+      });
     } catch (e) {
       setState(() {
         _stage = _Stage.error;
