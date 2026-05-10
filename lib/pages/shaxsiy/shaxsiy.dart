@@ -1,5 +1,5 @@
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/pages/change_city/change_city.dart';
+import 'package:app/pages/change_city/map_location_filter.dart';
 import 'package:app/pages/shaxsiy/customer_center/customer_center.dart';
 import 'package:app/pages/shaxsiy/inquires/main_inquiries.dart';
 import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
@@ -278,7 +278,8 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     iconColor: const Color(0xFF4CAF50),
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const MyHomeTown()),
+                      MaterialPageRoute(
+                          builder: (context) => const MapLocationFilterPage()),
                     ),
                   ),
                   ProfileMenuCard(
