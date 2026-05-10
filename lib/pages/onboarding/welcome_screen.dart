@@ -203,23 +203,16 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             children: [
               const Spacer(flex: 2),
 
-              // Brand wordmark
+              // Brand wordmark + meaningful tagline
               const TezSellWordmark(size: TezSellWordmarkSize.medium),
-              const SizedBox(height: 32),
-
-              // Welcome text
+              const SizedBox(height: 20),
               Text(
-                localizations?.welcome ?? 'Welcome to TezSell',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                localizations?.home_welcome_subtitle ?? 'Buy and sell with people nearby.\nSafe, simple, and local.',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                localizations?.home_welcome_subtitle ??
+                    'Buy and sell with people nearby.\nSafe, simple, and local.',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.75),
+                      height: 1.5,
+                      letterSpacing: 0.1,
                     ),
                 textAlign: TextAlign.center,
               ),
