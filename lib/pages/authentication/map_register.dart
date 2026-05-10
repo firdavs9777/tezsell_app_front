@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:app/l10n/app_localizations.dart';
@@ -29,10 +30,12 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
   String? _error;
 
   Future<void> _openPicker() async {
+    final initial = await _detectInitialCenter();
+    if (!mounted) return;
     final result = await Navigator.of(context).push<Place>(
       MaterialPageRoute(
         builder: (_) => LocationPicker(
-          initialCenter: const LatLng(41.3, 69.24),
+          initialCenter: initial,
           onConfirmed: (p) => Navigator.of(context).pop(p),
         ),
       ),
@@ -52,42 +55,41 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
     });
 
     try {
-      // 1) Match country.
+      // Best-effort country/region/district matching against the backend's
+      // existing tables. International users (e.g. picking a US/EU/JP/KR
+      // location) can fall through with the place's reverse-geocoded
+      // country_code + region/city strings — backend stores those phase-1
+      // fields anyway. No hard gate by supportedCountries.
       final country = _matchCountry(place.countryCode);
-      final l = AppLocalizations.of(context);
-      if (country == null) {
-        _fallback(l?.country_not_supported(place.countryCode ?? 'this country') ??
-            "We don't support ${place.countryCode ?? 'this country'} yet.");
-        return;
+      final countryCode =
+          country?.code ?? (place.countryCode ?? '').toUpperCase();
+
+      Regions? region;
+      Districts? district;
+      if (country != null) {
+        final regions = await _service.getRegions(country.code);
+        region = _bestMatchRegion(regions, place);
+        if (region != null) {
+          final districts = await _service.getDistricts(region.id);
+          district = _bestMatchDistrict(districts, place);
+        }
       }
 
-      // 2) Fetch and match region.
-      final regions = await _service.getRegions(country.code);
-      final region = _bestMatchRegion(regions, place);
-      if (region == null) {
-        _fallback(l?.region_not_auto_detected ??
-            "Couldn't auto-detect your region — pick it manually.");
-        return;
-      }
+      // Use real DB ids if matched; else fall through with the picked place's
+      // human-readable strings so the user can still register.
+      final regionName = region?.region ?? place.region ?? place.city ?? '';
+      final districtName =
+          district?.district ?? place.city ?? place.region ?? '';
+      final districtId = district?.id.toString() ?? '';
 
-      // 3) Fetch and match district.
-      final districts = await _service.getDistricts(region.id);
-      final district = _bestMatchDistrict(districts, place);
-      if (district == null) {
-        _fallback(l?.district_not_auto_detected ??
-            "Couldn't auto-detect your district — pick it manually.");
-        return;
-      }
-
-      // 4) Hand off to phone-auth with all four resolved fields.
       if (!mounted) return;
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => MobileAuthentication(
-            countryCode: country.code,
-            regionName: region.region,
-            districtName: district.district,
-            districtId: district.id.toString(),
+            countryCode: countryCode,
+            regionName: regionName,
+            districtName: districtName,
+            districtId: districtId,
           ),
         ),
       );
@@ -98,6 +100,25 @@ class _MapRegisterPageState extends State<MapRegisterPage> {
     } finally {
       if (mounted) setState(() => _resolving = false);
     }
+  }
+
+  /// Try GPS first; fall back to a neutral default if denied/unavailable.
+  /// International users see their actual location centered, not Tashkent.
+  Future<LatLng> _detectInitialCenter() async {
+    try {
+      final perm = await Geolocator.requestPermission();
+      if (perm == LocationPermission.always ||
+          perm == LocationPermission.whileInUse) {
+        final pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+          timeLimit: const Duration(seconds: 6),
+        );
+        return LatLng(pos.latitude, pos.longitude);
+      }
+    } catch (_) {
+      // permissions denied / GPS off / timeout — fall through
+    }
+    return const LatLng(41.3, 69.24);
   }
 
   CountryModel? _matchCountry(String? code) {

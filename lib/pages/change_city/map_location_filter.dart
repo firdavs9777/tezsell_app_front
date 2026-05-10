@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,10 +31,12 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
   String? _error;
 
   Future<void> _openPicker() async {
+    final initial = await _detectInitialCenter();
+    if (!mounted) return;
     final result = await Navigator.of(context).push<Place>(
       MaterialPageRoute(
         builder: (_) => LocationPicker(
-          initialCenter: const LatLng(41.3, 69.24),
+          initialCenter: initial,
           onConfirmed: (p) => Navigator.of(context).pop(p),
         ),
       ),
@@ -51,37 +54,43 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
       _resolving = true;
       _error = null;
     });
-    final l = AppLocalizations.of(context);
 
     try {
+      // Best-effort match against backend tables. International users (US/EU/
+      // JP/KR/etc) fall through with the place's reverse-geocoded strings —
+      // any country picked on the map should be browseable. Carrot-style.
       final country = _matchCountry(place.countryCode);
-      if (country == null) {
-        _fail(l?.country_not_supported(place.countryCode ?? '?') ??
-            "We don't support ${place.countryCode ?? 'this country'} yet.");
-        return;
-      }
-      final regions = await _service.getRegions(country.code);
-      final region = _bestMatchRegion(regions, place);
-      if (region == null) {
-        _fail(l?.region_not_auto_detected ??
-            "Couldn't auto-detect your region — pick again.");
-        return;
-      }
-      final districts = await _service.getDistricts(region.id);
-      final district = _bestMatchDistrict(districts, place);
-      if (district == null) {
-        _fail(l?.district_not_auto_detected ??
-            "Couldn't auto-detect your district — pick again.");
-        return;
+      final countryCode =
+          country?.code ?? (place.countryCode ?? '').toUpperCase();
+
+      Regions? region;
+      Districts? district;
+      if (country != null) {
+        final regions = await _service.getRegions(country.code);
+        region = _bestMatchRegion(regions, place);
+        if (region != null) {
+          final districts = await _service.getDistricts(region.id);
+          district = _bestMatchDistrict(districts, place);
+        }
       }
 
-      // Persist using the same keys the legacy ChangeCity page wrote, so
-      // existing callers (products_list, main_service, tab_bar) keep working.
+      final regionName = region?.region ?? place.region ?? place.city ?? '';
+      final districtName =
+          district?.district ?? place.city ?? place.region ?? '';
+
+      // Persist using the same keys legacy ChangeCity wrote so callers
+      // (products_list, main_service, tab_bar) refresh as before. districtId
+      // may be empty for off-grid countries — backend filter will fall back
+      // to lat/lng radius via the verified-neighborhood path.
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('userLocation', district.id.toString());
-      await prefs.setString('localRegionName', region.region);
-      await prefs.setString('localDistrictName', district.district);
-      await prefs.setString('localCountryCode', country.code);
+      if (district != null) {
+        await prefs.setString('userLocation', district.id.toString());
+      } else {
+        await prefs.remove('userLocation');
+      }
+      await prefs.setString('localRegionName', regionName);
+      await prefs.setString('localDistrictName', districtName);
+      await prefs.setString('localCountryCode', countryCode);
 
       if (!mounted) return;
       Navigator.of(context).pop(true);
@@ -90,6 +99,25 @@ class _MapLocationFilterPageState extends State<MapLocationFilterPage> {
     } finally {
       if (mounted) setState(() => _resolving = false);
     }
+  }
+
+  /// Try GPS first; fall back to last-saved coords if available; finally to a
+  /// neutral Tashkent default. Avoids dropping users into the wrong country.
+  Future<LatLng> _detectInitialCenter() async {
+    try {
+      final perm = await Geolocator.requestPermission();
+      if (perm == LocationPermission.always ||
+          perm == LocationPermission.whileInUse) {
+        final pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium,
+          timeLimit: const Duration(seconds: 6),
+        );
+        return LatLng(pos.latitude, pos.longitude);
+      }
+    } catch (_) {
+      // permissions denied / GPS off / timeout — fall through
+    }
+    return const LatLng(41.3, 69.24);
   }
 
   void _fail(String msg) {
