@@ -11,8 +11,9 @@ import 'package:app/services/maps/maps_exceptions.dart';
 /// Server validates GPS accuracy, reverse-geocodes via Nominatim, and persists
 /// the user's verified neighborhood list (capped at 2 by backend).
 class VerifyNeighborhoodService {
-  static const _verifyPath = '/locations/users/me/verify_neighborhood';
-  static const _deletePath = '/locations/users/me/verified_neighborhoods/';
+  // Backend mounts the locations app at /api/locations/ (see myproject/urls.py).
+  static const _verifyPath = '/api/locations/users/me/verify_neighborhood';
+  static const _deletePath = '/api/locations/users/me/verified_neighborhoods/';
 
   Future<Map<String, String>> _authHeaders() async {
     final prefs = await SharedPreferences.getInstance();
