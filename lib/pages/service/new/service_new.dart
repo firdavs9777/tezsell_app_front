@@ -1,6 +1,7 @@
 import 'package:app/pages/service/new/widgets/service_new_image_picker.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/place.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
@@ -32,6 +33,22 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
   void initState() {
     super.initState();
     _fetchCategories();
+    // Pre-fill from the user's active map pick (Karrot pattern).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final active = ref.read(activeNeighborhoodProvider);
+      if (active != null) {
+        setState(() => _pickedPlace = Place(
+              lat: active.neighborhood.centroidLat,
+              lng: active.neighborhood.centroidLng,
+              placeId: active.neighborhood.id,
+              formattedAddress: active.neighborhood.displayName,
+              countryCode: active.neighborhood.countryCode,
+              region: active.neighborhood.region,
+              city: active.neighborhood.city,
+            ));
+      }
+    });
   }
 
   @override

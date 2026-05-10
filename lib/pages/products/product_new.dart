@@ -7,6 +7,7 @@ import 'package:app/pages/products/widgets/product_new_image_picker.dart';
 import 'package:app/pages/products/widgets/product_new_pricing_card.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/place.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/widgets/maps/location_picker.dart';
@@ -49,6 +50,24 @@ class _ProductNewState extends ConsumerState<ProductNew> {
     super.initState();
     _fetchCategories();
     _loadCurrencies();
+    // Pre-fill the listing's location from the user's active map pick so
+    // uploads default to the right place (Karrot pattern). User can still
+    // tap "Pick location" to override.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final active = ref.read(activeNeighborhoodProvider);
+      if (active != null) {
+        setState(() => _pickedPlace = Place(
+              lat: active.neighborhood.centroidLat,
+              lng: active.neighborhood.centroidLng,
+              placeId: active.neighborhood.id,
+              formattedAddress: active.neighborhood.displayName,
+              countryCode: active.neighborhood.countryCode,
+              region: active.neighborhood.region,
+              city: active.neighborhood.city,
+            ));
+      }
+    });
   }
 
   @override

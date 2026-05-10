@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/pages/real_estate/widgets/property_detail_grid.dart';
 import 'package:app/pages/real_estate/widgets/property_form_widgets.dart';
 import 'package:app/pages/real_estate/widgets/property_image_picker.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
@@ -103,6 +104,29 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     _fetchRegions();
     _loadUserLocationsCache();
     _loadCurrencies();
+    // Pre-fill from the user's active map pick (Karrot pattern).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final active = ref.read(activeNeighborhoodProvider);
+      if (active != null) {
+        setState(() {
+          _pickedPlace = Place(
+            lat: active.neighborhood.centroidLat,
+            lng: active.neighborhood.centroidLng,
+            placeId: active.neighborhood.id,
+            formattedAddress: active.neighborhood.displayName,
+            countryCode: active.neighborhood.countryCode,
+            region: active.neighborhood.region,
+            city: active.neighborhood.city,
+          );
+          _latitude = active.neighborhood.centroidLat.toStringAsFixed(6);
+          _longitude = active.neighborhood.centroidLng.toStringAsFixed(6);
+          if (_addressController.text.isEmpty) {
+            _addressController.text = active.neighborhood.displayName;
+          }
+        });
+      }
+    });
   }
 
   /// Load available currencies based on user's country
