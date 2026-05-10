@@ -37,7 +37,9 @@ class Location {
       country: json['country'] ?? '',
       region: json['region'] ?? '',
       district: json['district'] ?? '',
-      fullAddress: json['full_address'],
+      // Backend's phase-1 serializer returns the OSM Nominatim string under
+      // `formatted_address`; legacy callers used `full_address`. Accept both.
+      fullAddress: json['formatted_address'] ?? json['full_address'],
     );
   }
 
