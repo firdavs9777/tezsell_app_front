@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "आप कहाँ रहते हैं?",
+  "map_register_headline": "मानचित्र पर अपना पड़ोस चुनें",
+  "map_register_subtitle": "हम इसका उपयोग आपको आस-पास के खरीदार और विक्रेता दिखाने के लिए करते हैं। आप बाद में अपना दायरा समायोजित कर सकते हैं.",
+  "pick_on_map": "मानचित्र पर चुनें",
+  "pick_again": "फिर से चुनें",
+  "resolving_location": "स्थान का समाधान किया जा रहा है...",
+  "use_dropdown_instead": "इसके बजाय ड्रॉपडाउन का उपयोग करें",
+  "country_not_supported": "हम अभी तक {country} का समर्थन नहीं करते हैं।",
+  "region_not_auto_detected": "आपके क्षेत्र का स्वत: पता नहीं लगाया जा सका - इसे मैन्युअल रूप से चुनें।",
+  "district_not_auto_detected": "आपके जिले का स्वत: पता नहीं लगाया जा सका - इसे मैन्युअल रूप से चुनें।",
+  "browse_no_items_with_location": "इस क्षेत्र में अभी तक स्थान डेटा वाला कोई आइटम नहीं है।",
+  "location_picker_title": "स्थान निर्धारित करें",
+  "location_picker_confirm": "स्थान की पुष्टि करें",
+  "location_picker_resolve_failed": "पता हल नहीं किया जा सका - दोबारा चुनें या केवल निर्देशांक से पुष्टि करें",
+  "location_picker_selected_fallback": "चयनित स्थान",
+  "location_permission_denied": "स्थान की अनुमति अस्वीकृत",
+  "location_permission_denied_settings": "स्थान की अनुमति अस्वीकृत - कृपया सेटिंग्स में सक्षम करें",
+  "location_permission_permanent": "स्थान स्थायी रूप से अस्वीकृत - सक्षम करने के लिए सेटिंग्स खोलें",
+  "gps_error": "जीपीएस त्रुटि: {error}",
+  "verify_neighborhood_title": "अपने पड़ोस का सत्यापन करें",
+  "verify_neighborhood_subtitle": "अपने पड़ोस में खड़े हो जाओ. हम आपके जीपीएस की जांच करेंगे और आपसे पुष्टि करने के लिए कहेंगे।",
+  "verify_neighborhood_button": "पड़ोस सत्यापित करें",
+  "verify_neighborhood_low_confidence": "कम आत्मविश्वास के साथ जारी रखें",
+  "verify_neighborhood_retry": "पुन: प्रयास करें",
+  "verify_neighborhood_youre_in": "आप रहेंगे:",
+  "verify_neighborhood_done": "सत्यापित! {name}",
+  "gps_accuracy_too_low": "जीपीएस सटीकता {meters}m है (≤100m की आवश्यकता है)। किसी खुले क्षेत्र में जाएँ और पुनः प्रयास करें।",
+  "neighborhood_not_identified": "आपके स्थान के लिए पड़ोस की पहचान नहीं की जा सकी.",
+  "unknown_error": "अज्ञात त्रुटि",
+  "place_search_hint": "कोई पता या स्थान खोजें",
+  "place_search_unavailable": "खोज अनुपलब्ध है - इसके बजाय एक पिन डालें",
+  "radius_slider_city": "शहर",
+  "radius_slider_km": "{value} किमी",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

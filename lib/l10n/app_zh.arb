@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "你住在哪里？",
+  "map_register_headline": "在地图上选择您的街区",
+  "map_register_subtitle": "我们用它来向您展示附近的买家和卖家。您可以稍后调整半径。",
+  "pick_on_map": "在地图上选择",
+  "pick_again": "再次选择",
+  "resolving_location": "正在解决位置...",
+  "use_dropdown_instead": "使用下拉菜单代替",
+  "country_not_supported": "我们还不支持 {country}。",
+  "region_not_auto_detected": "无法自动检测您的区域 - 手动选择。",
+  "district_not_auto_detected": "无法自动检测您的地区 - 请手动选择。",
+  "browse_no_items_with_location": "该区域还没有包含位置数据的项目。",
+  "location_picker_title": "设置位置",
+  "location_picker_confirm": "确认位置",
+  "location_picker_resolve_failed": "无法解析地址 - 请重新选择或仅使用坐标进行确认",
+  "location_picker_selected_fallback": "所选地点",
+  "location_permission_denied": "位置权限被拒绝",
+  "location_permission_denied_settings": "位置权限被拒绝 - 请在“设置”中启用",
+  "location_permission_permanent": "位置永久被拒绝 — 打开“设置”以启用",
+  "gps_error": "GPS 错误：{error}",
+  "verify_neighborhood_title": "验证您的邻居",
+  "verify_neighborhood_subtitle": "站在你家附近。我们将检查您的 GPS 并要求您确认。",
+  "verify_neighborhood_button": "验证邻居",
+  "verify_neighborhood_low_confidence": "继续低信心",
+  "verify_neighborhood_retry": "重试",
+  "verify_neighborhood_youre_in": "你在：",
+  "verify_neighborhood_done": "已验证！ {name}",
+  "gps_accuracy_too_low": "GPS精度为{meters}m（需要≤100m）。移至空旷区域并重试。",
+  "neighborhood_not_identified": "无法识别您所在位置的街区。",
+  "unknown_error": "未知错误",
+  "place_search_hint": "搜索地址或地点",
+  "place_search_unavailable": "搜索不可用 — 改为放置图钉",
+  "radius_slider_city": "城市",
+  "radius_slider_km": "{value}公里",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

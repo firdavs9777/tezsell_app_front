@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "Bạn sống ở đâu?",
+  "map_register_headline": "Chọn vùng lân cận của bạn trên bản đồ",
+  "map_register_subtitle": "Chúng tôi sử dụng nó để hiển thị cho bạn người mua và người bán gần đó. Bạn có thể điều chỉnh bán kính của mình sau.",
+  "pick_on_map": "Chọn trên bản đồ",
+  "pick_again": "Chọn lại",
+  "resolving_location": "Đang giải quyết vị trí…",
+  "use_dropdown_instead": "Thay vào đó hãy sử dụng menu thả xuống",
+  "country_not_supported": "Chúng tôi chưa hỗ trợ {country}.",
+  "region_not_auto_detected": "Không thể tự động phát hiện khu vực của bạn - hãy chọn khu vực đó theo cách thủ công.",
+  "district_not_auto_detected": "Không thể tự động phát hiện quận của bạn — hãy chọn quận theo cách thủ công.",
+  "browse_no_items_with_location": "Chưa có mục nào có dữ liệu vị trí trong khu vực này.",
+  "location_picker_title": "Đặt vị trí",
+  "location_picker_confirm": "Xác nhận vị trí",
+  "location_picker_resolve_failed": "Không thể giải quyết địa chỉ — chỉ chọn lại hoặc xác nhận bằng tọa độ",
+  "location_picker_selected_fallback": "Vị trí đã chọn",
+  "location_permission_denied": "Quyền vị trí bị từ chối",
+  "location_permission_denied_settings": "Quyền vị trí bị từ chối - vui lòng bật trong Cài đặt",
+  "location_permission_permanent": "Vị trí bị từ chối vĩnh viễn — mở Cài đặt để bật",
+  "gps_error": "Lỗi GPS: {error}",
+  "verify_neighborhood_title": "Xác minh vùng lân cận của bạn",
+  "verify_neighborhood_subtitle": "Đứng trong khu phố của bạn. Chúng tôi sẽ kiểm tra GPS của bạn và yêu cầu bạn xác nhận.",
+  "verify_neighborhood_button": "Xác minh vùng lân cận",
+  "verify_neighborhood_low_confidence": "Tiếp tục với độ tin cậy thấp",
+  "verify_neighborhood_retry": "Thử lại",
+  "verify_neighborhood_youre_in": "Bạn đang ở:",
+  "verify_neighborhood_done": "Đã xác minh! {name}",
+  "gps_accuracy_too_low": "Độ chính xác của GPS là {meters}m (cần 100m). Di chuyển đến một khu vực mở và thử lại.",
+  "neighborhood_not_identified": "Không thể xác định vùng lân cận cho vị trí của bạn.",
+  "unknown_error": "Lỗi không xác định",
+  "place_search_hint": "Tìm kiếm địa chỉ hoặc địa điểm",
+  "place_search_unavailable": "Tìm kiếm không có sẵn — thay vào đó hãy ghim",
+  "radius_slider_city": "Thành phố",
+  "radius_slider_km": "{value} km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

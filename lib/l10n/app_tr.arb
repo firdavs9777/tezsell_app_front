@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "Nerede yaşıyorsun",
+  "map_register_headline": "Haritadan mahallenizi seçin",
+  "map_register_subtitle": "Size yakındaki alıcıları ve satıcıları göstermek için kullanıyoruz. Yarıçapınızı daha sonra ayarlayabilirsiniz.",
+  "pick_on_map": "Haritada seç",
+  "pick_again": "Tekrar seç",
+  "resolving_location": "Konum çözümleniyor…",
+  "use_dropdown_instead": "Bunun yerine açılır menüyü kullanın",
+  "country_not_supported": "Henüz {country}'ı desteklemiyoruz.",
+  "region_not_auto_detected": "Bölgeniz otomatik olarak algılanamadı; manuel olarak seçin.",
+  "district_not_auto_detected": "Bölgeniz otomatik olarak algılanamadı; manuel olarak seçin.",
+  "browse_no_items_with_location": "Bu alanda henüz konum verisi olan öğe yok.",
+  "location_picker_title": "Konumu ayarla",
+  "location_picker_confirm": "Konumu onayla",
+  "location_picker_resolve_failed": "Adres çözülemedi; tekrar seçin veya yalnızca koordinatlarla onaylayın",
+  "location_picker_selected_fallback": "Seçilen konum",
+  "location_permission_denied": "Konum izni reddedildi",
+  "location_permission_denied_settings": "Konum izni reddedildi — lütfen Ayarlar'dan etkinleştirin",
+  "location_permission_permanent": "Konum kalıcı olarak reddedildi; etkinleştirmek için Ayarlar'ı açın",
+  "gps_error": "GPS hatası: {error}",
+  "verify_neighborhood_title": "Mahallenizi doğrulayın",
+  "verify_neighborhood_subtitle": "Mahallenizde durun. GPS'inizi kontrol edip onaylamanızı isteyeceğiz.",
+  "verify_neighborhood_button": "Mahalleyi Doğrula",
+  "verify_neighborhood_low_confidence": "Düşük güvenle devam edin",
+  "verify_neighborhood_retry": "Yeniden dene",
+  "verify_neighborhood_youre_in": "Şuradasınız:",
+  "verify_neighborhood_done": "Doğrulandı! {name}",
+  "gps_accuracy_too_low": "GPS doğruluğu {meters}m'dir (≤100m gerekir). Açık bir alana geçin ve tekrar deneyin.",
+  "neighborhood_not_identified": "Bulunduğunuz yerin mahallesi belirlenemedi.",
+  "unknown_error": "Bilinmeyen hata",
+  "place_search_hint": "Bir adres veya yer arayın",
+  "place_search_unavailable": "Arama kullanılamıyor; bunun yerine bir raptiye bırakın",
+  "radius_slider_city": "Şehir",
+  "radius_slider_km": "{value} km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

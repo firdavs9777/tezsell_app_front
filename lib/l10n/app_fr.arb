@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "Où  habites-tu?",
+  "map_register_headline": "Choisissez votre quartier sur la carte",
+  "map_register_subtitle": "Nous l'utilisons pour vous montrer les acheteurs et les vendeurs à proximité. Vous pourrez ajuster votre rayon plus tard.",
+  "pick_on_map": "Choisir sur la carte",
+  "pick_again": "Choisissez à nouveau",
+  "resolving_location": "Résolution de l'emplacement…",
+  "use_dropdown_instead": "Utilisez plutôt la liste déroulante",
+  "country_not_supported": "Nous ne prenons pas encore en charge {country}.",
+  "region_not_auto_detected": "Impossible de détecter automatiquement votre région : sélectionnez-la manuellement.",
+  "district_not_auto_detected": "Impossible de détecter automatiquement votre district : sélectionnez-le manuellement.",
+  "browse_no_items_with_location": "Aucun élément avec des données de localisation dans cette zone pour l'instant.",
+  "location_picker_title": "Définir l'emplacement",
+  "location_picker_confirm": "Confirmer l'emplacement",
+  "location_picker_resolve_failed": "Impossible de résoudre l'adresse : choisissez à nouveau ou confirmez avec les coordonnées uniquement",
+  "location_picker_selected_fallback": "Emplacement sélectionné",
+  "location_permission_denied": "Autorisation de localisation refusée",
+  "location_permission_denied_settings": "Autorisation de localisation refusée – veuillez l'activer dans Paramètres",
+  "location_permission_permanent": "Localisation définitivement refusée : ouvrez les paramètres pour l'activer.",
+  "gps_error": "Erreur GPS : {error}",
+  "verify_neighborhood_title": "Vérifiez votre quartier",
+  "verify_neighborhood_subtitle": "Tenez-vous dans votre quartier. Nous vérifierons votre GPS et vous demanderons de confirmer.",
+  "verify_neighborhood_button": "Vérifier le quartier",
+  "verify_neighborhood_low_confidence": "Continuer avec une faible confiance",
+  "verify_neighborhood_retry": "Réessayer",
+  "verify_neighborhood_youre_in": "Vous êtes dans :",
+  "verify_neighborhood_done": "Vérifié ! {name}",
+  "gps_accuracy_too_low": "La précision du GPS est de {meters}m (besoin ≤100m). Déplacez-vous vers une zone dégagée et réessayez.",
+  "neighborhood_not_identified": "Impossible d'identifier le quartier correspondant à votre emplacement.",
+  "unknown_error": "Erreur inconnue",
+  "place_search_hint": "Rechercher une adresse ou un lieu",
+  "place_search_unavailable": "Recherche indisponible : déposez une épingle à la place",
+  "radius_slider_city": "Ville",
+  "radius_slider_km": "{value}km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "어디 살아요?",
+  "map_register_headline": "지도에서 당신의 동네를 선택하세요",
+  "map_register_subtitle": "근처의 구매자와 판매자를 보여주기 위해 사용합니다. 나중에 반경을 조정할 수 있습니다.",
+  "pick_on_map": "지도에서 선택",
+  "pick_again": "다시 선택",
+  "resolving_location": "위치 확인 중…",
+  "use_dropdown_instead": "대신 드롭다운을 사용하세요",
+  "country_not_supported": "아직 {country}은 지원되지 않습니다.",
+  "region_not_auto_detected": "지역을 자동 감지할 수 없습니다. 수동으로 선택하세요.",
+  "district_not_auto_detected": "지역을 자동 감지할 수 없습니다. 수동으로 선택하세요.",
+  "browse_no_items_with_location": "이 지역에는 아직 위치 데이터가 포함된 항목이 없습니다.",
+  "location_picker_title": "위치 설정",
+  "location_picker_confirm": "위치 확인",
+  "location_picker_resolve_failed": "주소를 확인할 수 없습니다. 다시 선택하거나 좌표로만 확인하세요.",
+  "location_picker_selected_fallback": "선택한 위치",
+  "location_permission_denied": "위치 권한이 거부되었습니다.",
+  "location_permission_denied_settings": "위치 권한이 거부되었습니다. 설정에서 활성화하세요.",
+  "location_permission_permanent": "위치가 영구적으로 거부되었습니다. 설정을 열어 활성화하세요.",
+  "gps_error": "GPS 오류: {error}",
+  "verify_neighborhood_title": "주변 지역을 인증하세요",
+  "verify_neighborhood_subtitle": "당신의 이웃에 서십시오. GPS를 확인하고 확인을 요청하겠습니다.",
+  "verify_neighborhood_button": "이웃 확인",
+  "verify_neighborhood_low_confidence": "낮은 신뢰도로 계속",
+  "verify_neighborhood_retry": "다시 해 보다",
+  "verify_neighborhood_youre_in": "현재 위치:",
+  "verify_neighborhood_done": "확인되었습니다! {name}",
+  "gps_accuracy_too_low": "GPS 정확도는 {meters}m입니다(100m 이하 필요). 열린 공간으로 이동한 후 다시 시도하세요.",
+  "neighborhood_not_identified": "현재 위치에 해당하는 동네를 식별할 수 없습니다.",
+  "unknown_error": "알 수 없는 오류",
+  "place_search_hint": "주소 또는 장소 검색",
+  "place_search_unavailable": "검색할 수 없음 — 대신 핀을 고정하세요",
+  "radius_slider_city": "도시",
+  "radius_slider_km": "{value}km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

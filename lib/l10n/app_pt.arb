@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "Onde você mora?",
+  "map_register_headline": "Escolha seu bairro no mapa",
+  "map_register_subtitle": "Nós o usamos para mostrar compradores e vendedores próximos. Você pode ajustar seu raio mais tarde.",
+  "pick_on_map": "Escolha no mapa",
+  "pick_again": "Escolha novamente",
+  "resolving_location": "Resolvendo localização…",
+  "use_dropdown_instead": "Use o menu suspenso",
+  "country_not_supported": "Ainda não oferecemos suporte a {country}.",
+  "region_not_auto_detected": "Não foi possível detectar automaticamente sua região. Escolha-a manualmente.",
+  "district_not_auto_detected": "Não foi possível detectar automaticamente seu distrito. Escolha-o manualmente.",
+  "browse_no_items_with_location": "Ainda não há itens com dados de localização nesta área.",
+  "location_picker_title": "Definir localização",
+  "location_picker_confirm": "Confirmar localização",
+  "location_picker_resolve_failed": "Não foi possível resolver o endereço. Escolha novamente ou confirme apenas com as coordenadas",
+  "location_picker_selected_fallback": "Local selecionado",
+  "location_permission_denied": "Permissão de localização negada",
+  "location_permission_denied_settings": "Permissão de localização negada – ative em Configurações",
+  "location_permission_permanent": "Localização permanentemente negada – abra Configurações para ativar",
+  "gps_error": "Erro de GPS: {error}",
+  "verify_neighborhood_title": "Verifique seu bairro",
+  "verify_neighborhood_subtitle": "Fique na sua vizinhança. Verificaremos seu GPS e pediremos que você confirme.",
+  "verify_neighborhood_button": "Verifique a vizinhança",
+  "verify_neighborhood_low_confidence": "Continue com baixa confiança",
+  "verify_neighborhood_retry": "Tentar novamente",
+  "verify_neighborhood_youre_in": "Você está em:",
+  "verify_neighborhood_done": "Verificado! {name}",
+  "gps_accuracy_too_low": "A precisão do GPS é {meters}m (precisa de ≤100m). Vá para uma área aberta e tente novamente.",
+  "neighborhood_not_identified": "Não foi possível identificar o bairro para sua localização.",
+  "unknown_error": "Erro desconhecido",
+  "place_search_hint": "Pesquise um endereço ou local",
+  "place_search_unavailable": "Pesquisa indisponível – coloque um alfinete",
+  "radius_slider_city": "Cidade",
+  "radius_slider_km": "{value}km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

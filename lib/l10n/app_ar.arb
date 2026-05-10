@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "أين تعيش؟",
+  "map_register_headline": "اختر الحي الخاص بك على الخريطة",
+  "map_register_subtitle": "نستخدمها لتظهر لك المشترين والبائعين القريبين. يمكنك ضبط نصف القطر الخاص بك لاحقًا.",
+  "pick_on_map": "اختر على الخريطة",
+  "pick_again": "اختر مرة أخرى",
+  "resolving_location": "جارٍ حل الموقع…",
+  "use_dropdown_instead": "استخدم القائمة المنسدلة بدلاً من ذلك",
+  "country_not_supported": "نحن لا ندعم {country} حتى الآن.",
+  "region_not_auto_detected": "تعذر اكتشاف منطقتك تلقائيًا — اخترها يدويًا.",
+  "district_not_auto_detected": "تعذر اكتشاف منطقتك تلقائيًا — اخترها يدويًا.",
+  "browse_no_items_with_location": "لا توجد عناصر تحتوي على بيانات الموقع في هذه المنطقة حتى الآن.",
+  "location_picker_title": "تحديد الموقع",
+  "location_picker_confirm": "تأكيد الموقع",
+  "location_picker_resolve_failed": "تعذر حل العنوان — اختر مرة أخرى أو أكد باستخدام الإحداثيات فقط",
+  "location_picker_selected_fallback": "الموقع المحدد",
+  "location_permission_denied": "تم رفض إذن تحديد الموقع",
+  "location_permission_denied_settings": "تم رفض إذن الموقع - يرجى تمكينه في الإعدادات",
+  "location_permission_permanent": "تم رفض الموقع نهائيًا - افتح الإعدادات للتمكين",
+  "gps_error": "خطأ نظام تحديد المواقع العالمي (GPS): {error}",
+  "verify_neighborhood_title": "التحقق من منطقتك",
+  "verify_neighborhood_subtitle": "قف في حيك. سوف نتحقق من نظام تحديد المواقع العالمي (GPS) الخاص بك ونطلب منك التأكيد.",
+  "verify_neighborhood_button": "التحقق من الحي",
+  "verify_neighborhood_low_confidence": "استمر بثقة منخفضة",
+  "verify_neighborhood_retry": "أعد المحاولة",
+  "verify_neighborhood_youre_in": "أنت في:",
+  "verify_neighborhood_done": "تم التحقق! {name}",
+  "gps_accuracy_too_low": "دقة نظام تحديد المواقع العالمي (GPS) هي {meters}m (تحتاج إلى ≥100m). انتقل إلى منطقة مفتوحة وحاول مرة أخرى.",
+  "neighborhood_not_identified": "لا يمكن تحديد الحي لموقعك.",
+  "unknown_error": "خطأ غير معروف",
+  "place_search_hint": "ابحث عن عنوان أو مكان",
+  "place_search_unavailable": "البحث غير متاح — أسقط دبوسًا بدلاً من ذلك",
+  "radius_slider_city": "مدينة",
+  "radius_slider_km": "{value} كم",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

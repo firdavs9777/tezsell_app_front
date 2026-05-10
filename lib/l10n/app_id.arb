@@ -2995,5 +2995,105 @@
   },
   "@verification_code_length": {
     "description": "Error when verification code is not 6 digits"
+  },
+  "map_register_title": "Kamu tinggal di mana?",
+  "map_register_headline": "Pilih lingkungan Anda di peta",
+  "map_register_subtitle": "Kami menggunakannya untuk menunjukkan kepada Anda pembeli dan penjual terdekat. Anda dapat menyesuaikan radius Anda nanti.",
+  "pick_on_map": "Pilih di peta",
+  "pick_again": "Pilih lagi",
+  "resolving_location": "Menyelesaikan lokasi…",
+  "use_dropdown_instead": "Gunakan tarik-turun sebagai gantinya",
+  "country_not_supported": "Kami belum mendukung {country}.",
+  "region_not_auto_detected": "Tidak dapat mendeteksi wilayah Anda secara otomatis — pilih secara manual.",
+  "district_not_auto_detected": "Tidak dapat mendeteksi distrik Anda secara otomatis — pilih secara manual.",
+  "browse_no_items_with_location": "Belum ada item dengan data lokasi di area ini.",
+  "location_picker_title": "Tetapkan lokasi",
+  "location_picker_confirm": "Konfirmasikan lokasi",
+  "location_picker_resolve_failed": "Tidak dapat menentukan alamat — pilih lagi atau konfirmasi dengan koordinat saja",
+  "location_picker_selected_fallback": "Lokasi yang dipilih",
+  "location_permission_denied": "Izin lokasi ditolak",
+  "location_permission_denied_settings": "Izin lokasi ditolak — harap aktifkan di Pengaturan",
+  "location_permission_permanent": "Lokasi ditolak secara permanen — buka Pengaturan untuk mengaktifkan",
+  "gps_error": "Kesalahan GPS: {error}",
+  "verify_neighborhood_title": "Verifikasi lingkungan Anda",
+  "verify_neighborhood_subtitle": "Berdirilah di lingkungan Anda. Kami akan memeriksa GPS Anda dan meminta Anda untuk mengonfirmasi.",
+  "verify_neighborhood_button": "Verifikasi Lingkungan",
+  "verify_neighborhood_low_confidence": "Lanjutkan dengan rasa percaya diri yang rendah",
+  "verify_neighborhood_retry": "Mencoba kembali",
+  "verify_neighborhood_youre_in": "Anda berada di:",
+  "verify_neighborhood_done": "Terverifikasi! {name}",
+  "gps_accuracy_too_low": "Akurasi GPS adalah {meters}m (membutuhkan ≤100m). Pindah ke area terbuka dan coba lagi.",
+  "neighborhood_not_identified": "Tidak dapat mengidentifikasi lingkungan untuk lokasi Anda.",
+  "unknown_error": "Kesalahan tidak diketahui",
+  "place_search_hint": "Cari alamat atau tempat",
+  "place_search_unavailable": "Pencarian tidak tersedia — ganti pin",
+  "radius_slider_city": "Kota",
+  "radius_slider_km": "{value} km",
+  "@map_register_title": {
+    "description": "AppBar title on map-first registration"
+  },
+  "@map_register_headline": {},
+  "@map_register_subtitle": {},
+  "@pick_on_map": {},
+  "@pick_again": {},
+  "@resolving_location": {},
+  "@use_dropdown_instead": {},
+  "@country_not_supported": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "@region_not_auto_detected": {},
+  "@district_not_auto_detected": {},
+  "@browse_no_items_with_location": {
+    "description": "Empty-state message in map browse mode"
+  },
+  "@location_picker_title": {},
+  "@location_picker_confirm": {},
+  "@location_picker_resolve_failed": {},
+  "@location_picker_selected_fallback": {},
+  "@location_permission_denied": {},
+  "@location_permission_denied_settings": {},
+  "@location_permission_permanent": {},
+  "@gps_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@verify_neighborhood_title": {},
+  "@verify_neighborhood_subtitle": {},
+  "@verify_neighborhood_button": {},
+  "@verify_neighborhood_low_confidence": {},
+  "@verify_neighborhood_retry": {},
+  "@verify_neighborhood_youre_in": {},
+  "@verify_neighborhood_done": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@gps_accuracy_too_low": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "@neighborhood_not_identified": {},
+  "@unknown_error": {},
+  "@place_search_hint": {},
+  "@place_search_unavailable": {},
+  "@radius_slider_city": {},
+  "@radius_slider_km": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }
