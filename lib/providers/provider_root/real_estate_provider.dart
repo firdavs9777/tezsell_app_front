@@ -133,6 +133,10 @@ class RealEstateService {
     required String districtName,
     required String minPrice,
     required String maxPrice,
+    int? districtId,
+    double? centerLat,
+    double? centerLng,
+    double? radiusKm,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -142,8 +146,29 @@ class RealEstateService {
 
       if (propertyType.isNotEmpty) queryParams['property_type'] = propertyType;
       if (listingType.isNotEmpty) queryParams['listing_type'] = listingType;
-      if (regionName.isNotEmpty) queryParams['city'] = regionName;
-      if (districtName.isNotEmpty) queryParams['district'] = districtName;
+
+      // Karrot geo-radius takes precedence over district/name filters.
+      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+        queryParams['center_lat'] = centerLat.toStringAsFixed(6);
+        queryParams['center_lng'] = centerLng.toStringAsFixed(6);
+        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        if (kDebugMode) {
+          print('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${radiusKm}km');
+        }
+      } else if (districtId != null && districtId > 0) {
+        queryParams['district_id'] = districtId.toString();
+        if (kDebugMode) {
+          print('🏠 [RealEstateAPI] Filtering by district_id: $districtId');
+        }
+      } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
+        // Fallback to name-based filtering
+        if (regionName.isNotEmpty) queryParams['city'] = regionName;
+        if (districtName.isNotEmpty) queryParams['district'] = districtName;
+        if (kDebugMode) {
+          print('🏠 [RealEstateAPI] Filtering by names: region=$regionName, district=$districtName');
+        }
+      }
+
       if (minPrice.isNotEmpty) queryParams['min_price'] = minPrice;
       if (maxPrice.isNotEmpty) queryParams['max_price'] = maxPrice;
 
@@ -178,16 +203,23 @@ class RealEstateService {
     required String propertyId,
   }) async {
     try {
+      debugPrint('[RealEstateService] fetchSingleFilteredProperty: $REAL_ESTATE_PROPERTIES$propertyId/');
       final response = await dio.get('$REAL_ESTATE_PROPERTIES$propertyId/');
+      debugPrint('[RealEstateService] Response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = response.data;
+        // API returns {success, data: {property: {...}, related_properties: [...]}}
+        final propertyData = data['property'] ?? data['data']?['property'];
+        debugPrint('[RealEstateService] success=${data['success']}, hasProperty=${propertyData != null}, keys=${data.keys.toList()}');
 
-        if (kDebugMode) {}
-
-        if (data['success'] == true && data['property'] != null) {
-          return RealEstate.fromJson(data['property']);
+        if (data['success'] == true && propertyData != null) {
+          debugPrint('[RealEstateService] Parsing property JSON, id type: ${propertyData['id'].runtimeType}');
+          final property = RealEstate.fromJson(propertyData);
+          debugPrint('[RealEstateService] Parsed OK: id=${property.id}, title=${property.title}');
+          return property;
         } else {
+          debugPrint('[RealEstateService] Invalid structure: ${data.keys.toList()}');
           throw DioException(
             requestOptions: response.requestOptions,
             response: response,
@@ -195,14 +227,16 @@ class RealEstateService {
           );
         }
       } else {
+        debugPrint('[RealEstateService] Non-200: ${response.statusCode}');
         throw DioException(
           requestOptions: response.requestOptions,
           response: response,
           message: 'Failed to load property: ${response.statusCode}',
         );
       }
-    } catch (e) {
-      if (kDebugMode) {}
+    } catch (e, stackTrace) {
+      debugPrint('[RealEstateService] ERROR: $e');
+      debugPrint('[RealEstateService] Stack: $stackTrace');
       rethrow;
     }
   }
@@ -216,9 +250,13 @@ class RealEstateService {
     String districtName = "",
     String minPrice = "",
     String maxPrice = "",
+    int? districtId,
+    double? centerLat,
+    double? centerLng,
+    double? radiusKm,
   }) async {
     final cacheKey =
-        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${minPrice}_$maxPrice';
+        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${minPrice}_$maxPrice';
 
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {}
@@ -236,6 +274,10 @@ class RealEstateService {
       districtName: districtName,
       minPrice: minPrice,
       maxPrice: maxPrice,
+      districtId: districtId,
+      centerLat: centerLat,
+      centerLng: centerLng,
+      radiusKm: radiusKm,
     );
 
     _pendingRequests[cacheKey] = future;

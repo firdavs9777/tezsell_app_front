@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
+import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class RealEstateMain extends ConsumerStatefulWidget {
   final String regionName;
   final String districtName;
+  final int? districtId;
 
   const RealEstateMain({
     super.key,
     required this.regionName,
     required this.districtName,
+    this.districtId,
   });
 
   @override
@@ -117,6 +121,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   }
 
   Future<void> _loadInitialProperties() async {
+    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
+    print('🏠 [RealEstateMain] Loading properties with districtId: ${widget.districtId}, filter active: $hasLocationFilter');
+
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -125,14 +132,26 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
     });
 
     try {
+      // Karrot priority: active map pick wins over backend district.
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final properties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
                 currentPage: 1,
                 pageSize: 12,
                 propertyType: _selectedPropertyType,
                 listingType: _selectedListingType,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
+                radiusKm: useNeighborhood ? radius : null,
               );
 
       setState(() {
@@ -157,14 +176,25 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
     try {
       final nextPage = _currentPage + 1;
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final newProperties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
                 currentPage: nextPage,
                 pageSize: 12,
                 propertyType: _selectedPropertyType,
                 listingType: _selectedListingType,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
+                radiusKm: useNeighborhood ? radius : null,
               );
 
       setState(() {
@@ -178,16 +208,11 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
         _isLoadingMore = false;
       });
     } catch (error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading more properties: $error'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        setState(() {
+          _isLoadingMore = false;
+          _hasMoreData = false;
+        });
       }
     }
   }
@@ -248,28 +273,26 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    color: theme.primaryColor.withOpacity(0.1),
+                    color: theme.colorScheme.primary.withOpacity(0.1),
                     child: Row(
                       children: [
                         Icon(
                           Icons.location_on,
                           size: 16,
-                          color: theme.primaryColor,
+                          color: theme.colorScheme.primary,
                         ),
                         SizedBox(width: 4),
                         Text(
-                          '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.primaryColor,
+                          widget.districtName.isNotEmpty ? widget.districtName : widget.regionName,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Spacer(),
                         Text(
-                          '${_allProperties.length} ta mulk',
-                          style: TextStyle(
-                            fontSize: 11,
+                          localizations?.n_properties(_allProperties.length) ?? '${_allProperties.length} properties',
+                          style: theme.textTheme.labelSmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -285,18 +308,16 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
                     indicator: BoxDecoration(
-                      color: theme.primaryColor,
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelColor: theme.colorScheme.onPrimary,
                     unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
-                    labelStyle: TextStyle(
-                      fontSize: 12,
+                    labelStyle: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 12,
+                    unselectedLabelStyle: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
                     tabs: _propertyTypes.map((type) {
@@ -342,8 +363,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
         icon: const Icon(Icons.add_rounded, size: 24),
         label: Text(
           localizations?.general_create_property ?? 'Create Property',
-          style: const TextStyle(
-            fontSize: 16,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -363,20 +384,20 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   }
 
   Widget _buildPropertiesList({AppLocalizations? localizations}) {
+    final theme = Theme.of(context);
     if (_isInitialLoading) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
+              color: theme.colorScheme.primary,
             ),
             SizedBox(height: 16),
             Text(
-              'Mulklar yuklanmoqda...',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 14,
+              localizations?.properties_loading ?? 'Loading properties...',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -396,32 +417,29 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 Container(
                   padding: EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.apartment,
                     size: 48,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 SizedBox(height: 24),
                 Text(
                   localizations?.no_properties_found ??
-                      'Hech qanday mulk topilmadi',
-                  style: TextStyle(
-                    fontSize: 18,
+                      'No properties found',
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 SizedBox(height: 8),
                 Text(
                   localizations?.no_category_properties ??
-                      'Bu kategoriyada mulklar mavjud emas',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      'No properties in this category',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 if (widget.regionName.isNotEmpty ||
@@ -430,15 +448,14 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.blue[50],
+                      color: theme.colorScheme.primaryContainer.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.blue[200]!),
+                      border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
                     ),
                     child: Text(
-                      '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName} hududida',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blue[700],
+                      '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName} ${localizations?.in_area ?? 'in area'}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -468,7 +485,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
             child: Center(
               child: _isLoadingMore
                   ? CircularProgressIndicator(
-                      color: Theme.of(context).primaryColor,
+                      color: theme.colorScheme.primary,
                     )
                   : SizedBox.shrink(),
             ),
@@ -479,10 +496,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           padding: EdgeInsets.all(16.0),
           child: Center(
             child: Text(
-              localizations?.all_properties_loaded ?? 'Barcha mulklar yuklandi',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
+              localizations?.all_properties_loaded ?? 'All properties loaded',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -510,13 +526,16 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PropertyDetail(
-                    propertyId: property.id,
-                  )),
-        ),
+        onTap: () {
+          debugPrint('[RealEstateMain] Tapped property: id=${property.id}, title=${property.title}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PropertyDetail(
+                      propertyId: property.id,
+                    )),
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -561,14 +580,13 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: theme.primaryColor,
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       property.listingTypeDisplay,
-                      style: TextStyle(
-                        color: theme.colorScheme.onPrimary,
-                        fontSize: 11,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -596,9 +614,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                         SizedBox(width: 4),
                         Text(
                           '${property.viewsCount}',
-                          style: TextStyle(
+                          style: theme.textTheme.labelSmall?.copyWith(
                             color: Colors.white,
-                            fontSize: 11,
                           ),
                         ),
                       ],
@@ -616,10 +633,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 children: [
                   Text(
                     property.title,
-                    style: TextStyle(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: theme.colorScheme.onSurface,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -632,15 +647,14 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                       Icon(
                         Icons.location_on,
                         size: 16,
-                        color: Colors.red[400],
+                        color: theme.colorScheme.error,
                       ),
                       SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           '${property.city}, ${property.district}',
-                          style: TextStyle(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
-                            fontSize: 14,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -666,10 +680,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   // Price
                   Text(
                     '${property.price} ${property.currency}',
-                    style: TextStyle(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: isDark ? theme.colorScheme.primary : const Color(0xFF43A047),
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ],
@@ -693,9 +706,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
         SizedBox(width: 4),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 14,
-            color: theme.colorScheme.onSurface,
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w500,
           ),
         ),
