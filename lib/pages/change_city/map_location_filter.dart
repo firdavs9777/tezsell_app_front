@@ -131,14 +131,21 @@ class _MapLocationFilterPageState
           );
       ref.read(activeNeighborhoodIndexProvider.notifier).state = 0;
 
-      // Clear legacy district keys so browse pages take the
-      // neighborhood + radius path (Karrot) instead of district-only.
+      // Mirror the pick into the legacy local prefs the rest of the app
+      // (search, filtered_products page, profile chip) still reads. Geo-
+      // radius filter takes precedence in product/service queries via
+      // center_lat/center_lng anyway, but the names give the user
+      // something readable everywhere else in the UI.
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('userLocation');
-      await prefs.remove('localRegionName');
-      await prefs.remove('localDistrictName');
+      await prefs.setString(
+          'localRegionName', place.region ?? place.city ?? '');
+      await prefs.setString(
+          'localDistrictName', place.city ?? place.region ?? '');
       await prefs.setString(
           'localCountryCode', (place.countryCode ?? '').toUpperCase());
+      // Wipe district FK — the picked spot is rarely a known district id.
+      // The geo-radius query path doesn't need it.
+      await prefs.remove('userLocation');
 
       if (!mounted) return;
       Navigator.of(context).pop(true);

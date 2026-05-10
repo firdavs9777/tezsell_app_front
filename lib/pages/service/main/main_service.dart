@@ -156,6 +156,10 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
             neighborhoodId:
                 useNeighborhood ? activeNbhd.neighborhood.id : null,
             radiusKm: useNeighborhood ? radius : null,
+            centerLat:
+                useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
+            centerLng:
+                useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
           );
 
       if (mounted && !_isDisposed) {

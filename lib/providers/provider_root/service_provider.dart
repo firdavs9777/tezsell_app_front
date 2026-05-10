@@ -375,6 +375,8 @@ class ServiceProvider {
     int? districtId,
     String? neighborhoodId,
     double? radiusKm,
+    double? centerLat,
+    double? centerLng,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -382,11 +384,18 @@ class ServiceProvider {
         'page_size': pageSize.toString(),
       };
 
-      if (neighborhoodId != null) {
-        queryParams['neighborhood_id'] = neighborhoodId;
-      }
-      if (radiusKm != null && radiusKm.isFinite) {
+      // Geo-radius takes precedence over neighborhood_id (Karrot pattern).
+      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+        queryParams['center_lat'] = centerLat.toStringAsFixed(6);
+        queryParams['center_lng'] = centerLng.toStringAsFixed(6);
         queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+      } else {
+        if (neighborhoodId != null) {
+          queryParams['neighborhood_id'] = neighborhoodId;
+        }
+        if (radiusKm != null && radiusKm.isFinite) {
+          queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        }
       }
 
       // Prefer district_id over name strings (avoids locale mismatch issues)
@@ -445,9 +454,11 @@ class ServiceProvider {
     int? districtId,
     String? neighborhoodId,
     double? radiusKm,
+    double? centerLat,
+    double? centerLng,
   }) async {
     final cacheKey =
-        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_$serviceName';
+        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_$serviceName';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -468,6 +479,8 @@ class ServiceProvider {
       districtId: districtId,
       neighborhoodId: neighborhoodId,
       radiusKm: radiusKm,
+      centerLat: centerLat,
+      centerLng: centerLng,
     );
 
     _pendingRequests[cacheKey] = future;

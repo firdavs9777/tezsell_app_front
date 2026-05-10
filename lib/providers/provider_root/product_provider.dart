@@ -269,9 +269,11 @@ class ProductsService {
     int? districtId,  // Added for locale-independent filtering
     String? neighborhoodId,
     double? radiusKm,
+    double? centerLat,
+    double? centerLng,
   }) async {
     final cacheKey =
-        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_$productTitle';
+        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_$productTitle';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -292,6 +294,8 @@ class ProductsService {
       districtId: districtId,
       neighborhoodId: neighborhoodId,
       radiusKm: radiusKm,
+      centerLat: centerLat,
+      centerLng: centerLng,
     );
 
     _pendingRequests[cacheKey] = future;
@@ -318,6 +322,8 @@ class ProductsService {
     int? districtId,
     String? neighborhoodId,
     double? radiusKm,
+    double? centerLat,
+    double? centerLng,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -325,11 +331,21 @@ class ProductsService {
         'page_size': pageSize.toString(),
       };
 
-      if (neighborhoodId != null) {
-        queryParams['neighborhood_id'] = neighborhoodId;
-      }
-      if (radiusKm != null && radiusKm.isFinite) {
+      // Geo-radius: backend's mixin reads center_lat/center_lng/radius_km
+      // and applies a Haversine-style bounding-box filter on listings'
+      // latitude/longitude (Karrot pattern). Takes precedence over
+      // neighborhood_id (which the backend doesn't filter on directly).
+      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+        queryParams['center_lat'] = centerLat.toStringAsFixed(6);
+        queryParams['center_lng'] = centerLng.toStringAsFixed(6);
         queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+      } else {
+        if (neighborhoodId != null) {
+          queryParams['neighborhood_id'] = neighborhoodId;
+        }
+        if (radiusKm != null && radiusKm.isFinite) {
+          queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        }
       }
 
       // Prefer district_id over name strings (avoids locale mismatch issues)

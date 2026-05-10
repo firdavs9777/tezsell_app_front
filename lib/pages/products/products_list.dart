@@ -175,6 +175,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 neighborhoodId:
                     useNeighborhood ? activeNbhd.neighborhood.id : null,
                 radiusKm: useNeighborhood ? radius : null,
+                centerLat:
+                    useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
+                centerLng:
+                    useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
               );
 
       // Ignore if a newer load was triggered while this was in-flight
@@ -226,6 +230,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 neighborhoodId:
                     useNeighborhood ? activeNbhd.neighborhood.id : null,
                 radiusKm: useNeighborhood ? radius : null,
+                centerLat:
+                    useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
+                centerLng:
+                    useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
               );
 
       if (mounted && !_isDisposed) {
