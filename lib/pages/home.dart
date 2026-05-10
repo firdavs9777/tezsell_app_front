@@ -1,5 +1,5 @@
 import 'package:app/pages/authentication/login.dart';
-import 'package:app/pages/authentication/register.dart';
+import 'package:app/pages/authentication/map_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -246,7 +246,7 @@ class Home extends ConsumerWidget {
               HapticFeedback.mediumImpact();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Register()),
+                MaterialPageRoute(builder: (context) => const MapRegisterPage()),
               );
             },
             style: FilledButton.styleFrom(

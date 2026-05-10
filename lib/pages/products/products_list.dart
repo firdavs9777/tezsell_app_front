@@ -7,8 +7,10 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +33,8 @@ class ProductsList extends ConsumerStatefulWidget {
   ConsumerState<ProductsList> createState() => _ProductsListState();
 }
 
+enum _BrowseMode { list, map }
+
 class _ProductsListState extends ConsumerState<ProductsList> {
   final ScrollController _scrollController = ScrollController();
   List<Products> _allProducts = [];
@@ -43,6 +47,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   bool _isDisposed = false;
   bool _isCategoriesLoading = true;
   int _loadGeneration = 0; // Prevents stale requests from overwriting newer ones
+  _BrowseMode _browseMode = _BrowseMode.list;
 
   @override
   void initState() {
@@ -334,7 +339,13 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
+                      _ProductBrowseModeToggle(
+                        mode: _browseMode,
+                        onChanged: (m) =>
+                            setState(() => _browseMode = m),
+                      ),
+                      const SizedBox(width: 8),
                       // Location Badge
                       if (widget.regionName.isNotEmpty ||
                           widget.districtName.isNotEmpty)
@@ -625,6 +636,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       );
     }
 
+    if (_browseMode == _BrowseMode.map) {
+      return _buildProductsMap();
+    }
+
     return ListView.builder(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -661,6 +676,91 @@ class _ProductsListState extends ConsumerState<ProductsList> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildProductsMap() {
+    final theme = Theme.of(context);
+
+    final mapped = <MappedItem>[];
+    for (final p in _allProducts) {
+      if (p.latitude == null || p.longitude == null) continue;
+      mapped.add(MappedItem(
+        id: p.id.toString(),
+        lat: p.latitude!,
+        lng: p.longitude!,
+        title: p.title,
+        subtitle: '${p.price} ${p.currency}',
+        imageUrl: p.images.isNotEmpty ? p.images.first.image : null,
+        onTap: () => context.push('/product/${p.id}'),
+      ));
+    }
+
+    if (mapped.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'No products with location data in this area yet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          ),
+        ),
+      );
+    }
+
+    final active = ref.read(activeNeighborhoodProvider);
+    final center = active != null
+        ? LatLng(active.neighborhood.centroidLat,
+            active.neighborhood.centroidLng)
+        : LatLng(mapped.first.lat, mapped.first.lng);
+
+    return ItemsMapView(items: mapped, initialCenter: center);
+  }
+}
+
+class _ProductBrowseModeToggle extends StatelessWidget {
+  const _ProductBrowseModeToggle(
+      {required this.mode, required this.onChanged});
+
+  final _BrowseMode mode;
+  final ValueChanged<_BrowseMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget btn(IconData icon, _BrowseMode m) {
+      final active = mode == m;
+      return InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onChanged(m),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: active ? colorScheme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon,
+              size: 18,
+              color: active ? colorScheme.onPrimary : colorScheme.primary),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceVariant.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          btn(Icons.list, _BrowseMode.list),
+          btn(Icons.map_outlined, _BrowseMode.map),
+        ],
+      ),
     );
   }
 }

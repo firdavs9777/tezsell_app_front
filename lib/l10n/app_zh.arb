@@ -1,0 +1,2999 @@
+{
+  "@@locale": "zh",
+  "@@x-machine-translated": true,
+  "welcome": "欢迎",
+  "welcomeBack": "欢迎回来！",
+  "loginToYourAccount": "登录以继续",
+  "or": "或者",
+  "dontHaveAccount": "没有帐户？",
+  "chooseLanguage": "选择您的语言",
+  "selectPreferredLanguage": "选择您的应用程序首选语言",
+  "continueButton": "继续",
+  "continueWithGoogle": "继续使用谷歌",
+  "continueWithApple": "继续使用苹果",
+  "continueWithEmail": "继续使用电子邮件",
+  "sellAndBuyProducts": "仅通过我们销售和购买您的任何产品",
+  "usedProductsMarket": "二手产品或二手市场",
+  "home_welcome_title": "您附近的市场",
+  "home_welcome_subtitle": "与附近的人一起买卖。\n安全、简单、本地化。",
+  "home_get_started": "开始使用",
+  "home_sign_in": "我已经有一个帐户",
+  "home_terms_notice": "继续即表示您同意我们的服务条款和隐私政策",
+  "register": "登记",
+  "alreadyHaveAccount": "已有账户",
+  "login": "登录",
+  "loginToAccount": "登录帐户",
+  "enterPhoneNumber": "输入电话号码",
+  "password": "密码",
+  "enterPassword": "输入密码",
+  "forgotPassword": "忘记密码？",
+  "registerNow": "立即注册",
+  "loading": "加载中...",
+  "pleaseEnterPhoneNumber": "请输入您的电话号码",
+  "pleaseEnterPassword": "请输入您的密码",
+  "unexpectedError": "发生意外错误。请再试一次。",
+  "forgotPasswordComingSoon": "忘记密码功能即将推出",
+  "selectedCountryLabel": "已选择：",
+  "fullPhoneLabel": "满的：",
+  "home": "家",
+  "settings": "设置",
+  "profile": "轮廓",
+  "search": "搜索",
+  "notifications": "通知",
+  "error": "错误",
+  "retry": "重试",
+  "cancel": "取消",
+  "save": "节省",
+  "appTitle": "特泽尔",
+  "selectRegion": "请选择您所在的地区",
+  "searchHint": "搜索地区或城市",
+  "apiError": "调用API时出现问题",
+  "ok": "好的",
+  "emptyList": "空列表",
+  "dataLoadingError": "加载数据时出错",
+  "confirm": "确认",
+  "yes": "是的",
+  "no": "不",
+  "confirmRegionSelection": "您要选择{regionName}区域吗？",
+  "selectDistrictOrCity": "请选择您所在的地区或城市",
+  "confirmDistrictSelection": "您要选择 {regionName} 区域 - {districtName} 吗？",
+  "noResultsFound": "没有找到结果。",
+  "errorWithCode": "错误：{errorCode}",
+  "failedToLoadData": "加载数据失败。错误：{error}",
+  "phoneVerification": "电话号码验证",
+  "enterPhonePrompt": "请输入您的电话号码",
+  "enterPhoneNumberHint": "输入电话号码",
+  "selectedCountry": "已选择：{countryName} ({countryCode})",
+  "selectCountry": "选择您所在的国家/地区",
+  "changeCountry": "更改国家/地区",
+  "country": "国家",
+  "allCountries": "所有国家",
+  "currencyRUB": "俄罗斯卢布",
+  "currencyUAH": "乌克兰格里夫纳",
+  "currencyBYN": "白俄罗斯卢布",
+  "currencyMDL": "摩尔多瓦列伊",
+  "currencyGEL": "格鲁吉亚拉里",
+  "currencyAMD": "亚美尼亚德拉姆",
+  "currencyAZN": "阿塞拜疆马纳特",
+  "currencyKZT": "哈萨克斯坦坚戈",
+  "currencyTMT": "土库曼马纳特",
+  "currencyKGS": "吉尔吉斯斯坦索姆",
+  "currencyTJS": "塔吉克斯坦索莫尼",
+  "currencyUZS": "乌兹别克索姆",
+  "currencyUSD": "美元",
+  "currencyEUR": "欧元",
+  "fullNumber": "完整号码：{phoneNumber}",
+  "sendCode": "发送代码",
+  "enterVerificationCode": "输入验证码",
+  "verificationCodeHint": "123456",
+  "resendCode": "重新发送代码",
+  "expires": "过期时间：{time}",
+  "verifyAndContinue": "验证并继续",
+  "invalidVerificationCode": "验证码无效",
+  "verificationCodeSent": "验证码发送成功",
+  "failedToSendCode": "发送验证码失败",
+  "verificationCodeResent": "验证码重新发送成功",
+  "failedToResendCode": "重新发送验证码失败",
+  "passwordVerification": "密码验证",
+  "completeRegistrationPrompt": "输入用户名和密码完成注册",
+  "username": "用户名",
+  "username_required": "用户名是必需的",
+  "username_min_length": "用户名必须至少有 2 个字符",
+  "usernameHint": "用户名123",
+  "confirmPassword": "确认密码",
+  "profileImage": "个人资料图片",
+  "imageInstructions": "图片将出现在这里，请按个人资料图片",
+  "finish": "结束",
+  "passwordsDoNotMatch": "密码不匹配",
+  "registrationError": "注册错误",
+  "about": "关于我们",
+  "chat": "聊天",
+  "realEstate": "房地产",
+  "language": "英语",
+  "languageEn": "英语",
+  "languageRu": "俄语",
+  "languageUz": "乌兹别克语",
+  "serviceLiked": "服务很喜欢",
+  "support": "支持",
+  "service": "商业服务",
+  "aboutContent": "TezSell 是一个快速、简单的市场，用于购买和销售新产品和二手产品。我们的使命是为每个用户创建最便捷、最高效的平台，确保交易顺畅和用户友好的体验。无论您是想出售还是购买，TezSell 都可以让您只需几个步骤即可轻松连接并完成交易。我们优先考虑用户的安全和隐私。所有交易都经过仔细监控，以确保安全性和合规性，让买家和卖家都安心。我们简单直观的界面允许用户快速列出产品并找到他们需要的东西。我们还通过 Telegram 促进实时沟通，使买卖过程更加顺畅。",
+  "errorMessage": "发生错误，请检查服务器",
+  "searchLocation": "地点",
+  "searchCategory": "类别",
+  "searchProductPlaceholder": "搜索产品",
+  "searchServicePlaceholder": "搜索服务",
+  "search_products_subtitle": "寻找您附近的超值优惠",
+  "search_services_subtitle": "寻找您附近的专业人士",
+  "search_products_error": "搜索产品时出错",
+  "search_services_error": "搜索服务时出错",
+  "load_more_products_error": "加载更多产品时出错",
+  "load_more_services_error": "加载更多服务时出错",
+  "try_different_keywords": "尝试不同的关键词",
+  "searchText": "搜索",
+  "selectedCategory": "所选类别：",
+  "selectedLocation": "选定地点：",
+  "productError": "没有可用的产品",
+  "serviceError": "无可用服务",
+  "locationHeader": "选择地点",
+  "locationPlaceholder": "在这里搜索区域",
+  "categoryHeader": "选择类别",
+  "categoryPlaceholder": "搜索类别",
+  "categoryError": "没有可用的类别",
+  "paginationFirst": "第一的",
+  "paginationPrevious": "以前的",
+  "pageInfo": "页数",
+  "pageNext": "下一个",
+  "pageLast": "最后的",
+  "loadingMessageProduct": "正在加载产品...",
+  "loadingMessageError": "加载时出错",
+  "likeProductError": "喜欢产品时发生错误",
+  "dislikeProductError": "不喜欢产品时发生错误",
+  "loadingMessageLocation": "加载位置...",
+  "loadingLocationError": "加载位置时出错",
+  "loadingMessageCategory": "正在加载类别...",
+  "loadingCategoryError": "加载类别时出错：",
+  "profileUpdateSuccessMessage": "个人资料更新成功",
+  "profileUpdateFailMessage": "更新个人资料失败",
+  "seeMoreBtn": "查看更多",
+  "profilePageTitle": "个人资料页",
+  "editProfileModalTitle": "编辑个人资料",
+  "usernameLabel": "用户名",
+  "locationLabel": "当前位置",
+  "profileImageLabel": "个人资料图片",
+  "chooseFileLabel": "选择一个文件",
+  "uploadBtnLabel": "更新",
+  "uploadingBtnLabel": "正在更新...",
+  "cancelBtnLabel": "取消",
+  "productsTitle": "产品",
+  "servicesTitle": "服务",
+  "myProductsTitle": "我的产品",
+  "myServicesTitle": "我的服务",
+  "favoriteProductsTitle": "最喜欢的产品",
+  "favoriteServicesTitle": "最喜欢的服务",
+  "noFavorites": "没有收藏夹",
+  "addNewProductBtn": "添加新产品",
+  "addNew": "新的",
+  "addNewServiceBtn": "添加新服务",
+  "downloadMobileApp": "下载移动应用程序",
+  "registerPhoneNumberSuccess": "电话号码已验证！您可以继续下一步。",
+  "regionSelectedMessage": "所选地区：",
+  "districtSelectMessage": "所选地区：",
+  "phoneNumberEmptyMessage": "请先验证您的电话号码，然后再继续",
+  "regionEmptyMessage": "请先选择地区",
+  "districtEmptyMessage": "请选择地区",
+  "usernamePasswordEmptyMessage": "请输入用户名和密码",
+  "registerTitle": "登记",
+  "previousButton": "以前的",
+  "nextButton": "下一个",
+  "completeButton": "完全的",
+  "stepIndicator": "第 {currentStep} 步（共 4 步）",
+  "districtSelectTitle": "地区列表",
+  "districtSelectParagraph": "选择一个地区：",
+  "phoneNumber": "电话号码",
+  "sendOtp": "发送一次性密码",
+  "sendAgain": "再次发送",
+  "verify": "核实",
+  "failedToSendOtp": "发送 OTP 失败。服务器返回错误。",
+  "errorSendingOtp": "发送 OTP 时发生错误。",
+  "invalidPhoneNumber": "请输入有效的电话号码。",
+  "verificationSuccess": "验证成功",
+  "verificationError": "发生错误。请稍后重试。",
+  "regionsList": "地区列表",
+  "enterUsername": "输入您的用户名",
+  "welcomeMessage": "欢迎来到 Tezsell，使用您的电话号码登录",
+  "noAccount": "还没有帐户？在此注册",
+  "successLogin": "登录成功",
+  "myProfile": "我的个人资料",
+  "logout": "注销",
+  "newProductTitle": "标题",
+  "newProductDescription": "描述",
+  "newProductPrice": "价格",
+  "newProductCondition": "健康）状况",
+  "newProductCategory": "类别",
+  "newProductImages": "图片",
+  "addNewService": "添加新服务",
+  "creating": "创造...",
+  "serviceName": "服务名称",
+  "serviceNamePlaceholder": "输入服务名称",
+  "serviceDescription": "服务说明",
+  "serviceDescriptionPlaceholder": "输入服务描述",
+  "serviceCategory": "服务类别",
+  "selectCategory": "选择类别",
+  "loadingCategories": "加载中...",
+  "errorLoadingCategories": "加载类别时出错",
+  "serviceImages": "服务图片",
+  "imageUploadHelper": "单击 + 图标添加图像（最多 10 个）",
+  "maxImagesError": "您最多可以上传 10 张图片",
+  "categoryNotFound": "未找到类别",
+  "productCreatedSuccess": "产品创建成功",
+  "productLikeSuccess": "产品喜欢成功",
+  "productDislikeSuccess": "产品成功被拒",
+  "errorCreatingService": "创建服务时出错",
+  "errorCreatingProduct": "创建产品时出错",
+  "unknownError": "创建服务时发生未知错误",
+  "submit": "提交",
+  "selectCategoryAction": "选择类别",
+  "selectCondition": "选择条件",
+  "sum": "和",
+  "noComments": "还没有评论。成为第一个发表评论的人！",
+  "commentLikeSuccess": "评论点赞成功",
+  "commentLikeError": "点赞评论时出错",
+  "unknownErrorMessage": "发生未知错误",
+  "commentDislikeSuccess": "评论点赞成功",
+  "commentDislikeError": "不喜欢评论时出错",
+  "replyInfo": "请先输入回复",
+  "replySuccessMessage": "回复添加成功",
+  "replyErrorMessage": "创建回复期间发生错误",
+  "commentUpdateSuccess": "评论更新成功",
+  "commentUpdateError": "更新评论项时出错",
+  "deleteConfirmationMessage": "您确定要删除此评论吗？",
+  "commentDeleteSuccess": "评论删除成功",
+  "commentDeleteError": "删除评论时出错",
+  "editLabel": "编辑",
+  "deleteLabel": "删除",
+  "saveLabel": "节省",
+  "replyLabel": "回复",
+  "replyTitle": "回复",
+  "replyPlaceholder": "写一个回复...",
+  "chatLoginMessage": "您必须登录才能开始聊天",
+  "chatYourselfMessage": "你无法与自己聊天。",
+  "chatRoomMessage": "聊天室创建！",
+  "chatRoomError": "创建聊天失败！",
+  "chatCreationError": "聊天创建失败！",
+  "productsTotal": "产品总数",
+  "perPage": "项目",
+  "clearAllFilters": "清除所有过滤器",
+  "clickToUpload": "点击上传",
+  "productInStock": "有存货",
+  "productOutStock": "缺货",
+  "productBack": "返回产品",
+  "messageSeller": "聊天",
+  "recommendedProducts": "推荐产品",
+  "deleteConfirmationProduct": "您确定要删除该产品吗？",
+  "productDeleteSuccess": "产品删除成功",
+  "productDeleteError": "删除产品时出错",
+  "newCondition": "新的",
+  "used": "用过的",
+  "imageValidType": "有些文件没有添加。请使用 5MB 以下的 JPG、PNG、GIF 或 WebP 文件。",
+  "imageConfirmMessage": "您确定要删除该图像吗？",
+  "titleRequiredMessage": "标题为必填项",
+  "descRequiredMessage": "描述为必填项",
+  "priceRequiredMessage": "价格为必填项",
+  "conditionRequiredMessage": "需要条件",
+  "pleaseFillAllRequired": "请填写必填字段",
+  "oneImageConfirmMessage": "至少需要一张产品图片",
+  "categoryRequiredMessage": "类别为必填项",
+  "locationInfoError": "用户位置信息缺失",
+  "editProductTitle": "编辑产品",
+  "imageUploadRequirements": "至少需要一张图像。您最多可以上传 10 张图片（JPG、PNG、GIF、WebP，每张小于 5MB）。",
+  "productUpdatedSuccess": "产品更新成功",
+  "productUpdateFailed": "产品更新失败",
+  "errorUpdatingProduct": "更新产品时出错",
+  "serviceBack": "返回服务",
+  "likeLabel": "喜欢",
+  "commentsLabel": "评论",
+  "writeComment": "写评论...",
+  "postingLabel": "发布...",
+  "commentCreated": "评论已创建",
+  "postCommentLabel": "发表评论",
+  "loginPrompt": "请登录查看并发表评论。",
+  "recommendedServices": "推荐服务",
+  "commentsVisibilityNotice": "评论仅对登录用户可见。",
+  "comingSoon": "即将推出",
+  "serviceUpdateSuccess": "服务更新成功",
+  "serviceUpdateError": "更新服务项目时出错",
+  "editServiceModalTitle": "编辑服务",
+  "enterPhoneNumberWithoutCode": "输入不带密码的电话号码",
+  "heroTitle": "特兹塞尔",
+  "heroSubtitle": "您的乌兹别克斯坦快速便捷的市场",
+  "startSelling": "开始销售",
+  "browseProducts": "浏览产品",
+  "featuresTitle": "为什么选择 TezSell？",
+  "listingTitle": "简单的产品列表",
+  "listingDescription": "只需点击几下即可列出您的物品。添加照片、设置价格并立即与买家联系。",
+  "locationTitle": "基于位置的浏览",
+  "locationDescription": "查找您附近的优惠。我们的基于位置的系统可以帮助您发现附近的物品。",
+  "location_subtitle": "选择您所在的地区和地区以查看附近的列表",
+  "categoryTitle": "类别过滤",
+  "categoryDescription": "轻松浏览不同的类别，准确找到您想要的内容。",
+  "inspirationTitle": "受到韩国胡萝卜市场的启发",
+  "inspirationDescription1": "我们从韩国成功的胡萝卜市场 (당근마켓) 中汲取灵感，打造了 TezSell，但专门针对乌兹别克斯坦当地社区的独特需求进行了定制。",
+  "inspirationDescription2": "我们的使命是创建一个值得信赖的平台，让邻居可以轻松地进行买卖和相互联系。",
+  "comingSoonTitle": "即将推出 TezSell",
+  "inAppChat": "应用内聊天",
+  "secureTransactions": "安全交易",
+  "realEstateListings": "房地产清单",
+  "stayUpdated": "保持更新",
+  "comingSoonBadge": "即将推出",
+  "ctaTitle": "立即加入 TezSell 社区！",
+  "ctaDescription": "参与为乌兹别克斯坦打造更好的市场体验。分享您的反馈并帮助我们成长！",
+  "createAccount": "创建账户",
+  "learnMore": "了解更多",
+  "replyUpdateSuccess": "回复更新成功",
+  "replyUpdateError": "无法更新回复",
+  "replyDeleteSuccess": "回复删除成功",
+  "replyDeleteError": "删除回复失败",
+  "replyDeleteConfirmation": "您确定要删除此回复吗？",
+  "authenticationRequired": "需要身份验证",
+  "enterValidReply": "请输入有效的回复文字",
+  "saving": "保存...",
+  "deleting": "正在删除...",
+  "properties": "特性",
+  "agents": "代理商",
+  "becomeAgent": "成为代理",
+  "main": "主要的",
+  "upload": "上传",
+  "filtered_products": "过滤产品",
+  "filtered_services": "过滤服务",
+  "productDetail": "产品详情",
+  "unknownUser": "未知用户",
+  "locationNotAvailable": "位置不可用",
+  "noTitle": "无标题",
+  "noCategory": "没有类别",
+  "noDescription": "无描述",
+  "som": "索姆",
+  "about_me": "关于我",
+  "my_name": "我的名字",
+  "customer_support": "客户支持",
+  "customer_center": "客户中心",
+  "customer_inquiries": "查询",
+  "customer_terms": "条款和条件",
+  "region": "地区",
+  "district": "区",
+  "tap_change_profile": "点击即可更改照片",
+  "language_settings": "语言设置",
+  "selectLanguage": "选择语言",
+  "select_theme": "选择主题",
+  "theme": "主题",
+  "location_settings": "位置设置",
+  "security": "安全",
+  "data_storage": "数据与存储",
+  "accessibility": "无障碍",
+  "privacy": "隐私",
+  "light_theme": "光",
+  "dark_theme": "黑暗的",
+  "system_theme": "系统默认值",
+  "my_products": "我的产品",
+  "refresh": "刷新",
+  "delete_product": "删除产品",
+  "delete_confirmation": "您确定要删除该产品吗？",
+  "delete": "删除",
+  "error_loading_products": "加载产品时出错：{error}",
+  "product_deleted_success": "产品删除成功",
+  "error_deleting_product": "删除产品时出错：{error}",
+  "no_products_found": "没有找到产品",
+  "add_first_product": "首先添加您的第一个产品",
+  "no_title": "无标题",
+  "no_description": "无描述",
+  "in_stock": "有存货",
+  "out_of_stock": "缺货",
+  "new_condition": "新的",
+  "edit_product": "编辑产品",
+  "delete_product_tooltip": "删除产品",
+  "sum_currency": "和",
+  "edit_product_title": "编辑产品",
+  "product_name": "产品名称",
+  "product_description": "产品描述",
+  "price": "价格",
+  "condition": "健康）状况",
+  "condition_new": "新的",
+  "condition_used": "用过的",
+  "condition_refurbished": "翻新",
+  "currency": "货币",
+  "category": "类别",
+  "images": "图片",
+  "existing_images": "现有图像",
+  "new_images": "新图像",
+  "image_instructions": "图像将出现在这里。请按上面的上传图标。",
+  "update_button": "更新",
+  "loading_category_error": "加载类别时出错：{error}",
+  "error_picking_images": "选取图像时出错：{error}",
+  "please_fill_all_required": "请填写所有字段",
+  "invalid_price_message": "输入的价格无效。请输入有效的号码。",
+  "category_required_message": "请选择一个有效的类别。",
+  "one_image_required_message": "至少需要一张产品图片",
+  "product_updated_success": "产品更新成功",
+  "error_updating_product": "更新产品时出错：{error}",
+  "my_services": "我的服务",
+  "delete_service": "删除服务",
+  "delete_service_confirmation": "您确定要删除此服务吗？",
+  "no_services_found": "没有找到服务",
+  "add_first_service": "首先添加您的第一个服务",
+  "edit_service": "编辑服务",
+  "delete_service_tooltip": "删除服务",
+  "service_deleted_successfully": "服务删除成功",
+  "error_deleting_service": "删除服务时出错",
+  "error_loading_services": "加载服务时出错",
+  "service_name": "服务名称",
+  "enter_service_name": "输入服务名称",
+  "service_name_required": "服务名称为必填项",
+  "service_name_min_length": "服务名称必须至少 3 个字符",
+  "enter_service_description": "输入服务描述",
+  "service_description_required": "需要提供服务描述",
+  "service_description_min_length": "描述必须至少 10 个字符",
+  "category_required": "请选择一个类别",
+  "no_categories_available": "没有可用的类别",
+  "location": "地点",
+  "select_location": "选择地点",
+  "location_required": "请选择地点",
+  "no_locations_available": "没有可用的位置",
+  "add_images": "添加图片",
+  "current_images": "当前图像",
+  "no_images_selected": "未选择图像",
+  "save_changes": "保存更改",
+  "map_main": "地图和属性",
+  "agent_status": "代理状态",
+  "admin_panel": "管理面板",
+  "propertiesFound": "找到的属性",
+  "propertiesSaved": "属性已保存",
+  "saved": "已保存",
+  "loadingProperties": "正在加载属性...",
+  "failedToLoad": "无法加载属性。请再试一次。",
+  "noPropertiesFound": "未找到属性",
+  "tryAdjusting": "尝试调整您的搜索条件",
+  "search_placeholder": "按标题或位置搜索...",
+  "search_filters": "过滤器",
+  "search_button": "搜索",
+  "search_clear_filters": "清除过滤器",
+  "filter_options_sale_and_rent": "出售和出租",
+  "filter_options_for_sale": "出售",
+  "filter_options_for_rent": "出租",
+  "filter_options_all_types": "所有类型",
+  "filter_options_apartment": "公寓",
+  "filter_options_house": "房子",
+  "filter_options_townhouse": "联排别墅",
+  "filter_options_villa": "别墅",
+  "filter_options_commercial": "商业的",
+  "filter_options_office": "办公室",
+  "property_card_featured": "精选",
+  "property_card_bed": "卧室",
+  "property_card_bath": "浴室",
+  "property_card_parking": "停車處",
+  "property_card_view_details": "查看详情",
+  "property_card_contact": "接触",
+  "property_card_balcony": "阳台",
+  "property_card_garage": "车库",
+  "property_card_garden": "花园",
+  "property_card_pool": "水池",
+  "property_card_elevator": "电梯",
+  "property_card_furnished": "家具齐全",
+  "property_card_sales": "销售量",
+  "pricing_month": "/月",
+  "results_properties_found": "找到的属性",
+  "results_properties_saved": "属性已保存",
+  "results_saved": "已保存",
+  "results_loading_properties": "正在加载属性...",
+  "results_failed_to_load": "无法加载属性。请再试一次。",
+  "results_no_properties_found": "未找到属性",
+  "results_try_adjusting": "尝试调整您的搜索条件",
+  "no_properties_found": "未找到属性",
+  "no_category_properties": "该类别中没有房产",
+  "properties_loading": "正在加载属性...",
+  "all_properties_loaded": "已加载所有属性",
+  "n_properties": "{count} 属性",
+  "in_area": "在地区",
+  "pagination_previous": "以前的",
+  "pagination_next": "下一个",
+  "pagination_page": "页",
+  "pagination_page_of": "第 1 页",
+  "contact_modal_title": "联系信息",
+  "contact_modal_agent_contact": "代理联系方式",
+  "contact_modal_property_owner": "业主",
+  "contact_modal_agent_phone_number": "代理电话号码",
+  "contact_modal_owner_phone_number": "业主电话号码",
+  "contact_modal_license": "执照",
+  "contact_modal_rating": "等级",
+  "contact_modal_call_now": "立即致电",
+  "contact_modal_copy_number": "拷贝数",
+  "contact_modal_close": "关闭",
+  "contact_modal_contact_hours": "联系时间：上午 9:00 - 晚上 8:00",
+  "contact_modal_agent": "代理人",
+  "errors_toggle_save_failed": "无法切换属性保存：",
+  "errors_copy_failed": "复制电话号码失败：",
+  "errors_phone_copied": "电话号码已复制到剪贴板",
+  "errors_error_occurred_regions": "区域发生错误",
+  "errors_error_occurred_districts": "地区发生错误",
+  "errors_please_fill_all_required_fields": "请填写所有必填字段",
+  "errors_authentication_required": "需要身份验证",
+  "errors_user_info_missing": "用户信息缺失",
+  "errors_validation_error": "请检查您输入的数据",
+  "errors_permission_denied": "没有权限",
+  "errors_server_error": "服务器发生错误",
+  "errors_network_error": "网络连接错误",
+  "errors_timeout_error": "请求超时",
+  "errors_custom_error": "发生错误",
+  "errors_error_creating_property": "创建属性时出错",
+  "errors_unknown_error_message": "发生未知错误",
+  "errors_coordinates_not_found": "找不到该地址的坐标。请手动输入。",
+  "errors_coordinates_error": "获取坐标时出错。请手动输入。",
+  "property_info_views": "意见",
+  "property_info_listed": "上市",
+  "property_info_price_per_sqm": "/平方米",
+  "property_info_saved": "已保存",
+  "property_info_save": "节省",
+  "property_info_share": "分享",
+  "loading_loading": "加载中...",
+  "loading_loading_details": "正在加载属性详细信息...",
+  "loading_property_not_found": "未找到财产",
+  "loading_property_not_found_message": "您要查找的资源不存在或已被删除。",
+  "loading_back_to_properties": "返回属性",
+  "loading_title": "正在加载代理...",
+  "loading_message": "我们正在加载代理列表，请稍候。",
+  "loading_agent_not_found": "未找到代理",
+  "property_details_title": "物业详情",
+  "property_details_bedrooms": "卧室",
+  "property_details_bathrooms": "浴室",
+  "property_details_floor_area": "建筑面积",
+  "property_details_parking": "停車處",
+  "property_details_basic_information": "基本信息",
+  "property_details_property_type": "房产类型：",
+  "property_details_listing_type": "列表类型：",
+  "property_details_for_sale": "出售",
+  "property_details_for_rent": "出租",
+  "property_details_year_built": "建成年份：",
+  "property_details_floor": "地面：",
+  "property_details_of": "的",
+  "property_details_features_amenities": "特色与便利设施",
+  "sections_description": "描述",
+  "sections_nearby_amenities": "附近设施",
+  "sections_similar_properties": "类似的属性",
+  "amenities_metro": "地铁",
+  "amenities_school": "学校",
+  "amenities_hospital": "医院",
+  "amenities_shopping": "购物",
+  "amenities_away": "离开",
+  "contact_title": "联系信息",
+  "contact_professional_listing": "专业列表",
+  "contact_listed_by_agent": "由经过验证的代理列出",
+  "contact_by_owner": "按业主",
+  "contact_direct_contact": "直接联系业主",
+  "contact_property_owner": "业主",
+  "contact_call_agent": "呼叫代理",
+  "contact_email_agent": "邮件代理",
+  "contact_call_owner": "致电业主",
+  "contact_email_owner": "电子邮件所有者",
+  "contact_send_inquiry": "发送询问",
+  "property_status_title": "物业状况",
+  "property_status_availability": "可用性：",
+  "property_status_available": "可用的",
+  "property_status_not_available": "无法使用",
+  "property_status_featured": "特色：",
+  "property_status_featured_property": "特色物业",
+  "property_status_property_id": "物业编号：",
+  "inquiry_title": "发送询问",
+  "inquiry_inquiry_type": "查询类型",
+  "inquiry_request_info": "索取信息",
+  "inquiry_schedule_viewing": "预约观看",
+  "inquiry_make_offer": "提出报价",
+  "inquiry_request_callback": "请求回电",
+  "inquiry_message": "信息",
+  "inquiry_message_placeholder": "告诉我们您对此房产的兴趣...",
+  "inquiry_offered_price": "报价",
+  "inquiry_enter_offer": "输入您的报价",
+  "inquiry_preferred_contact_time": "首选联系时间（可选）",
+  "inquiry_contact_time_placeholder": "例如，工作日上午 9:00 - 下午 5:00",
+  "inquiry_cancel": "取消",
+  "inquiry_sending": "正在发送...",
+  "inquiry_send_inquiry": "发送询问",
+  "inquiry_inquiry_sent_success": "询盘发送成功！",
+  "inquiry_inquiry_sent_error": "发送询问失败。请再试一次。",
+  "alerts_link_copied": "属性链接已复制到剪贴板！",
+  "alerts_phone_copied": "电话号码已复制到剪贴板！",
+  "alerts_save_property_failed": "保存财产失败：",
+  "alerts_email_subject": "查询：",
+  "alerts_email_body": "您好，\\n\\n我对您位于 {address} 的房产“{title}”感兴趣。\\n\\n请与我联系以获取更多信息。\\n\\n此致",
+  "related_properties_view_details": "查看详情",
+  "header_property": "寻找您梦想的房产",
+  "header_sub_property": "在塔什干最令人向往的社区发现优质房地产机会",
+  "header_title": "房地产经纪人",
+  "header_subtitle": "寻找经验丰富的经纪人来帮助满足您的房地产需求",
+  "header_agents_found": "找到代理",
+  "filters_all_specializations": "所有专业",
+  "filters_residential": "住宅",
+  "filters_commercial": "商业的",
+  "filters_luxury": "奢华",
+  "filters_investment": "投资",
+  "filters_any_rating": "任意评级",
+  "filters_four_stars": "4+ 星",
+  "filters_four_half_stars": "4.5+ 星",
+  "filters_five_stars": "5 星",
+  "filters_highest_rated": "最高评价",
+  "filters_lowest_rated": "最低评分",
+  "filters_most_sales": "销量最多",
+  "filters_most_experience": "最有经验",
+  "agent_card_verified_agent": "已验证代理",
+  "agent_card_years_experience": "年经验",
+  "agent_card_years": "年",
+  "agent_card_license": "执照",
+  "agent_card_specialization": "专业化",
+  "agent_card_view_profile": "查看资料",
+  "agent_card_contact": "接触",
+  "agent_card_verified": "已验证",
+  "no_results_title": "没有找到代理",
+  "no_results_message": "尝试调整您的搜索条件或过滤器。",
+  "error_title": "加载代理时出错",
+  "error_message": "无法加载代理列表。请再试一次。",
+  "error_retry": "重试",
+  "error_default_message": "无法加载代理详细信息",
+  "error_try_again": "再试一次",
+  "notifications_phone_copied": "电话号码已复制到剪贴板",
+  "notifications_copy_failed": "复制电话号码失败：",
+  "fallback_agent_name": "代理人",
+  "fallback_default_phone": "+998 90 123 45 67",
+  "navigation_submit_property": "提交财产",
+  "navigation_submitting": "正在提交...",
+  "navigation_back_to_agents": "返回代理",
+  "agent_profile_verified_agent": "已验证代理",
+  "agent_profile_contact_agent": "联系代理",
+  "agent_profile_send_message": "发送消息",
+  "agent_profile_years_experience": "年经验",
+  "agent_profile_properties_sold": "已售物业",
+  "agent_profile_active_listings": "活跃列表",
+  "agent_profile_total_properties": "总资产",
+  "tabs_overview": "概述",
+  "tabs_properties": "特性",
+  "tabs_reviews": "评论",
+  "about_agent_title": "关于代理",
+  "about_agent_agency": "机构",
+  "about_agent_license_number": "执照号码",
+  "about_agent_specialization": "专业化",
+  "about_agent_member_since": "会员自",
+  "about_agent_verified_since": "验证时间自",
+  "performance_metrics_title": "绩效指标",
+  "performance_metrics_average_rating": "平均评分",
+  "performance_metrics_properties_sold": "已售物业",
+  "performance_metrics_active_listings": "活跃列表",
+  "performance_metrics_years_experience": "年经验",
+  "contact_info_title": "联系信息",
+  "contact_info_contact_via_platform": "通过平台联系",
+  "verification_status_title": "验证状态",
+  "verification_status_verified_agent": "已验证代理",
+  "verification_status_pending_verification": "待验证",
+  "verification_status_licensed_professional": "持证专业人士",
+  "verification_status_registered_agency": "注册代理机构",
+  "quick_actions_title": "快速行动",
+  "quick_actions_call_now": "立即致电",
+  "quick_actions_send_message": "发送消息",
+  "quick_actions_view_properties": "查看属性",
+  "properties_title": "代理属性",
+  "properties_loading_properties": "正在加载属性...",
+  "properties_no_properties_title": "未找到房产",
+  "properties_no_properties_message": "该代理的属性将出现在此处。",
+  "properties_recent_properties_note": "显示最近的属性。检查所有代理属性的完整列表。",
+  "properties_listed": "上市",
+  "properties_bed": "床",
+  "properties_bath": "洗澡",
+  "properties_for_sale": "出售",
+  "properties_for_rent": "出租",
+  "reviews_title": "客户评价",
+  "reviews_no_reviews_title": "还没有评论",
+  "reviews_no_reviews_message": "客户的评论和建议将出现在这里。",
+  "fallbacks_agent_name": "代理人",
+  "fallbacks_default_profile_image": "/默认头像.png",
+  "saved_properties_title": "已保存的属性",
+  "saved_properties_subtitle": "您最喜欢的房产集中在一处",
+  "saved_properties_no_saved_properties": "尚未保存属性",
+  "saved_properties_start_saving": "开始探索并保存您喜欢的房产",
+  "saved_properties_browse_properties": "浏览房产",
+  "saved_properties_saved_on": "保存于",
+  "auth_login_required": "请登录查看已保存的属性",
+  "auth_login": "登录",
+  "success_property_unsaved": "属性已从保存的列表中删除",
+  "success_property_saved": "属性保存成功",
+  "success_phone_copied": "电话号码已复制！",
+  "success_property_created_success": "属性创建成功！",
+  "success_agent_approved": "代理审核成功",
+  "success_agent_rejected": "代理拒绝成功",
+  "steps_step": "步",
+  "steps_basic_information": "基本信息",
+  "steps_location_details": "地点详情",
+  "steps_property_details": "物业详情",
+  "steps_property_images": "财产图片",
+  "basic_info_tell_us_about_property": "告诉我们您的财产",
+  "basic_info_property_type": "物业类型",
+  "basic_info_listing_type": "列表类型",
+  "basic_info_property_title": "产权",
+  "basic_info_title_placeholder": "输入您的财产的描述性标题",
+  "basic_info_description": "描述",
+  "basic_info_description_placeholder": "详细描述您的财产...",
+  "property_types_apartment": "公寓",
+  "property_types_house": "房子",
+  "property_types_townhouse": "联排别墅",
+  "property_types_villa": "别墅",
+  "property_types_commercial": "商业的",
+  "property_types_office": "办公室",
+  "property_types_land": "土地",
+  "property_types_warehouse": "仓库",
+  "listing_types_for_sale": "出售",
+  "listing_types_for_rent": "出租",
+  "location_where_is_property": "您的房产位于哪里？",
+  "location_full_address": "完整地址",
+  "location_address_placeholder": "输入完整地址",
+  "location_region": "地区",
+  "location_select_region": "选择地区",
+  "location_district": "区",
+  "location_select_district": "选择地区",
+  "location_city": "城市",
+  "location_city_placeholder": "城市",
+  "location_loading_regions": "加载区域...",
+  "location_loading_districts": "正在加载地区...",
+  "location_map_coordinates": "地图坐标",
+  "location_get_coordinates": "获取坐标",
+  "location_latitude": "纬度",
+  "location_longitude": "经度",
+  "location_coordinates_set": "坐标设定",
+  "location_location_tips": "位置提示",
+  "location_location_tip_1": "• 先填写地址，然后点击“获取坐标”即可自动获取地图位置",
+  "location_location_tip_2": "• 如果您知道确切位置，也可以手动输入坐标",
+  "location_location_tip_3": "• 准确的坐标帮助买家在地图上找到您的房产",
+  "property_details_provide_detailed_info": "提供有关您的财产的详细信息",
+  "property_details_total_floors": "总楼层数",
+  "property_details_area_m2": "面积（平方米）",
+  "property_details_parking_spaces": "停车位",
+  "property_details_price": "价格",
+  "property_details_features": "特征",
+  "images_add_photos_showcase": "添加照片以展示您的财产",
+  "images_click_to_upload": "点击上传图片",
+  "images_max_images_info": "最多 10 张图像，JPG、PNG 或 WEBP",
+  "images_main": "主要的",
+  "images_maximum_images_allowed": "最多允许 10 张图像",
+  "admin_dashboard_title": "管理仪表板",
+  "admin_dashboard_subtitle": "实时概览您的房地产平台",
+  "admin_last_update": "最后更新",
+  "admin_total_properties": "总资产",
+  "admin_total_agents": "代理总数",
+  "admin_total_users": "用户总数",
+  "admin_total_views": "总观看次数",
+  "admin_error_loading_dashboard": "加载仪表板时出错",
+  "admin_failed_to_load_data": "无法加载仪表板数据",
+  "admin_avg_sale_price": "平均销售价格",
+  "admin_avg_sale_price_subtitle": "所有活跃列表",
+  "admin_total_portfolio_value": "投资组合总价值",
+  "admin_total_portfolio_value_subtitle": "综合财产价值",
+  "admin_avg_price_per_sqm": "每平方米平均价格",
+  "admin_avg_price_per_sqm_subtitle": "市场利率指标",
+  "admin_property_types_distribution": "物业类型分布",
+  "admin_properties_by_city": "各城市的房产",
+  "admin_properties_by_district": "按地区划分的房产",
+  "admin_inquiry_types_distribution": "询价类型分布",
+  "admin_agent_verification_rate": "代理验证率",
+  "admin_agent_verification_rate_subtitle": "质量控制",
+  "admin_inquiry_response_rate": "询问回复率",
+  "admin_inquiry_response_rate_subtitle": "客户服务",
+  "admin_avg_views_per_property": "每个房产的平均浏览量",
+  "admin_avg_views_per_property_subtitle": "楼盘人气",
+  "admin_featured_properties": "特色房产",
+  "admin_featured_properties_subtitle": "高级列表",
+  "admin_most_viewed_properties": "最受浏览的房产",
+  "admin_top_performing_agents": "表现最佳的代理商",
+  "admin_system_health": "系统健康状况",
+  "admin_properties_without_images": "没有图像的属性",
+  "admin_missing_location_data": "缺少位置数据",
+  "admin_pending_agent_verification": "等待代理验证",
+  "admin_active": "积极的",
+  "admin_verified": "已验证",
+  "admin_active_7d": "活跃（7天）",
+  "admin_this_month": "本月",
+  "agents_loading_pending_applications": "正在加载待处理的申请...",
+  "agents_error_loading_applications": "加载应用程序时出错",
+  "agents_pending_agents": "待定代理",
+  "agents_total_pending_applications": "待处理申请总数：",
+  "agents_pending_verification": "待验证",
+  "agents_applied_date": "应用：",
+  "agents_contact_info": "联系信息",
+  "agents_license_number": "执照号码",
+  "agents_years_experience": "年经验",
+  "agents_years_suffix": "年",
+  "agents_total_sales": "总销售额",
+  "agents_specialization": "专业化",
+  "agents_approve": "批准",
+  "agents_reject": "拒绝",
+  "agents_no_pending_applications": "没有待处理的申请",
+  "agents_all_applications_processed": "所有代理申请均已处理",
+  "general_previous": "以前的",
+  "general_page": "页",
+  "general_next": "下一个",
+  "general_views": "意见",
+  "general_sales": "销售量",
+  "general_language_uz": "奥兹别克恰",
+  "general_language_ru": "俄罗斯",
+  "general_language_en": "英语",
+  "general_super_admin": "超级管理员",
+  "general_staff": "职员",
+  "general_verified_agent": "已验证代理",
+  "general_pending_agent": "待定代理",
+  "general_regular_user": "普通用户",
+  "general_admin": "行政",
+  "general_dashboard": "仪表板",
+  "general_manage_users": "管理用户",
+  "general_verified_agents": "已验证代理",
+  "general_agent_panel": "代理面板",
+  "general_create_property": "创建财产",
+  "general_my_properties": "我的房产",
+  "general_inquiries": "查询",
+  "general_agent_profile": "代理简介",
+  "general_live": "居住",
+  "general_logged_out_successfully": "退出成功",
+  "general_logout_completed_with_errors": "注销完成（有错误）",
+  "general_application_under_review": "申请正在审核中",
+  "general_check_status": "检查状态 →",
+  "general_last_updated": "最后更新：",
+  "general_permissions_may_be_outdated": "权限可能已过时",
+  "general_permissions_up_to_date": "权限已更新",
+  "general_never": "绝不",
+  "general_properties_found": "找到的属性",
+  "general_properties_saved": "属性已保存",
+  "general_saved": "已保存",
+  "general_loading_properties": "正在加载属性...",
+  "general_failed_to_load": "无法加载属性。请再试一次。",
+  "general_no_properties_found": "未找到属性",
+  "general_try_adjusting": "尝试调整您的搜索条件",
+  "select_category": "选择类别",
+  "service_description": "服务说明",
+  "product_search_placeholder": "输入搜索词来查找产品",
+  "privacy_policy": "隐私政策",
+  "terms_subtitle": "隐私政策和条款",
+  "last_updated": "最后更新",
+  "contact_information": "联系信息",
+  "accept_terms": "我接受条款和条件",
+  "read_terms": "请阅读我们的条款和条件",
+  "inquiries": "查询与支持",
+  "inquiries_subtitle": "联系我们寻求帮助",
+  "help_center": "我们能为您提供什么帮助？",
+  "help_subtitle": "我们随时为您解答任何问题",
+  "contact_us": "联系我们",
+  "email_support": "电子邮件支持",
+  "call_support": "致电支持",
+  "send_message": "发送消息",
+  "fill_contact_form": "填写联系表",
+  "contact_form": "联系表",
+  "name": "你的名字",
+  "name_required": "请输入您的姓名",
+  "email": "电子邮件",
+  "email_required": "请输入您的电子邮件",
+  "email_invalid": "请输入有效的电子邮件",
+  "subject": "主题",
+  "subject_required": "请输入主题",
+  "message": "信息",
+  "message_required": "请输入您的留言",
+  "message_too_short": "消息长度必须至少为 10 个字符",
+  "faq": "常见问题解答",
+  "follow_us": "跟着我们",
+  "faq_how_to_sell": "如何在 Tezsell 上销售商品？",
+  "faq_how_to_sell_answer": "出售物品：1) 创建帐户，2) 点击“+”按钮，3) 选择类别（产品/服务/房地产），4) 添加照片和描述，5) 设置价格，6) 发布！您所在地区的买家将可以看到您的列表。",
+  "faq_is_free": "Tezsell 可以免费使用吗？",
+  "faq_is_free_answer": "是的！ Tezsell 目前 100% 免费。无上市费、无销售佣金、无订阅费。我们将来可能会推出高级功能，但会提前 30 天通知用户。",
+  "faq_safety": "买卖时如何保证安全？",
+  "faq_safety_answer": "安全提示：1) 在公共场所见面，2) 付款前检查物品，3) 切勿向陌生人汇款，4) 相信自己的直觉，5) 报告可疑用户，6) 不要过早分享个人信息，7) 带朋友进行大额交易。",
+  "faq_payment": "付款如何进行？",
+  "faq_payment_answer": "Tezsell 不处理付款。买家和卖家直接安排付款（现金、银行转账等）。我们只是一个连接人们的平台——你自己处理交易。",
+  "faq_prohibited": "哪些物品是禁止携带的？",
+  "faq_prohibited_answer": "违禁物品包括：武器、毒品、赃物、假冒物品、成人内容、活体动物（未经许可）、政府身份证件和危险材料。请参阅我们的条款和条件以获取完整列表。",
+  "faq_account_delete": "如何删除我的帐户？",
+  "faq_account_delete_answer": "前往个人资料 → 设置 → 帐户设置 → 删除帐户。注意：这是永久性的，无法撤消。您的所有列表都将被删除。",
+  "faq_report_user": "如何举报用户或列表？",
+  "faq_report_user_answer": "点击任何列表或用户个人资料上的三个点 (•••)，然后选择“报告”。选择原因并提交。我们会在 24-48 小时内审核所有报告。",
+  "faq_change_location": "如何更改我的位置？",
+  "faq_change_location_answer": "点击主屏幕左上角的位置按钮。您可以选择您所在的地区和地区来查看您所在地区的列表。",
+  "welcome_customer_center": "欢迎来到客户中心",
+  "customer_center_subtitle": "我们 24/7 随时为您提供帮助",
+  "quick_actions": "快速行动",
+  "live_chat": "实时聊天",
+  "chat_with_us": "与我们聊天",
+  "find_answers": "寻找答案",
+  "my_tickets": "我的门票",
+  "view_tickets": "查看门票",
+  "feedback": "反馈",
+  "share_feedback": "分享反馈",
+  "contact_methods": "联系方式",
+  "phone_support": "电话支持",
+  "available_247": "24/7 可用",
+  "response_24h": "24小时内回复",
+  "telegram_support": "电报支持",
+  "instant_replies": "即时回复",
+  "whatsapp_support": "WhatsApp 支持",
+  "quick_response": "快速响应",
+  "popular_topics": "热门话题",
+  "account_management": "账户管理",
+  "reset_password": "重置密码",
+  "update_profile": "更新个人资料",
+  "verify_account": "验证账户",
+  "delete_account": "删除账户",
+  "buying_selling": "买卖",
+  "how_to_post": "如何发布广告",
+  "payment_methods": "付款方式",
+  "shipping_delivery": "运输与交付",
+  "return_policy": "退货政策",
+  "safety_security": "安全与安保",
+  "report_scam": "举报诈骗",
+  "safe_trading": "安全交易技巧",
+  "privacy_settings": "隐私设置",
+  "blocked_users": "被阻止的用户",
+  "technical_issues": "技术问题",
+  "app_not_working": "应用程序不工作",
+  "upload_failed": "上传失败",
+  "login_problems": "登录问题",
+  "support_hours": "支持时间",
+  "mon_fri_9_6": "周一至周五：上午 9:00 - 下午 6:00",
+  "how_are_we_doing": "我们怎么样？",
+  "rate_experience": "评价您的客户服务体验",
+  "poor": "贫穷的",
+  "okay": "好的",
+  "good": "好的",
+  "excellent": "出色的",
+  "account_secure": "您的帐户是安全的",
+  "password_security": "密码与认证",
+  "change_password": "更改密码",
+  "two_factor_auth": "双因素身份验证",
+  "biometric_login": "生物识别登录",
+  "login_activity": "登录活动",
+  "active_sessions": "活跃会话",
+  "login_alerts": "登录提醒",
+  "account_protection": "账户保护",
+  "recovery_email": "恢复电子邮件",
+  "backup_codes": "备份代码",
+  "danger_zone": "危险区",
+  "improve_security": "提高安全性",
+  "security_score": "安全分数",
+  "last_changed_days": "最后更改时间为 30 天前",
+  "logout_all_devices": "注销所有设备",
+  "end_all_sessions": "结束所有会话",
+  "permanently_delete": "永久删除",
+  "verification_code_message": "我们将发送验证码以确认您的身份。",
+  "send_code": "发送代码",
+  "enter_verification_code": "输入验证码",
+  "verification_code": "验证码",
+  "new_password": "新密码",
+  "confirm_password": "确认密码",
+  "resend_code": "重新发送代码",
+  "code_sent_to": "输入发送至的验证码",
+  "enter_code": "输入验证码",
+  "code_must_be_6_digits": "代码必须是 6 位数字",
+  "enter_new_password": "输入新密码",
+  "minimum_8_characters": "最少 8 个字符",
+  "passwords_do_not_match": "密码不匹配",
+  "close": "关闭",
+  "current": "当前的",
+  "session_ended": "会议结束",
+  "update_recovery_email": "更新恢复电子邮件",
+  "new_email": "新电子邮件",
+  "update": "更新",
+  "verification_email_sent": "验证邮件已发送",
+  "generate_emergency_codes": "生成紧急代码",
+  "copy_all": "全部复制",
+  "code_copied": "复制代码",
+  "all_codes_copied": "复制所有代码",
+  "logout_all_devices_confirm": "注销所有设备？",
+  "logout_all_devices_message": "这将结束所有设备上的所有活动会话。",
+  "logout_all": "全部注销",
+  "delete_account_confirm": "删除帐户？",
+  "delete_account_warning": "此操作是永久性的且无法撤消。您的所有数据将被永久删除。",
+  "what_will_be_deleted": "将删除的内容：",
+  "profile_and_account_info": "• 您的个人资料和帐户信息",
+  "all_listings_and_posts": "• 您的所有列表和帖子",
+  "messages_and_conversations": "留言",
+  "saved_items_and_preferences": "• 保存的项目和首选项",
+  "enter_password_to_continue": "输入您的密码以继续",
+  "continue_val": "继续",
+  "please_enter_password": "请输入您的密码",
+  "enter_confirmation_code": "输入验证码",
+  "deletion_confirmation_message": "我们向您的手机发送了确认码。在下面输入它以永久删除您的帐户。",
+  "confirmation_code": "验证码",
+  "please_enter_6_digit_code": "请输入6位数字代码",
+  "account_deleted": "您的帐户已被删除",
+  "deletion_cancelled": "删除已取消",
+  "failed_to_load_user_info": "加载用户信息失败",
+  "auth_login_to_view_saved": "请登录查看您保存的属性",
+  "authLoginRequired": "需要登录",
+  "authLoginToViewSaved": "请登录查看您保存的属性",
+  "authLogin": "登录",
+  "savedPropertiesTitle": "已保存的属性",
+  "loadingSavedProperties": "正在加载保存的属性...",
+  "errorsFailedToLoadSaved": "无法加载已保存的属性",
+  "actionsRetry": "重试",
+  "savedPropertiesNoSaved": "没有保存的属性",
+  "savedPropertiesStartSaving": "开始探索并保存您喜欢的房产",
+  "savedPropertiesBrowse": "浏览房产",
+  "resultsSavedProperties": "保存的属性",
+  "actionsRefresh": "刷新",
+  "resultsNoMoreProperties": "没有更多属性",
+  "propertyCardFeatured": "精选",
+  "successPropertyUnsaved": "属性已从保存的列表中删除",
+  "alertsUnsavePropertyFailed": "删除财产失败",
+  "propertyCardBed": "床",
+  "propertyCardBath": "洗澡",
+  "savedPropertiesSavedOn": "保存于",
+  "propertyCardViewDetails": "查看详情",
+  "serviceDetailTitle": "服务详情",
+  "errorLoadingFavorites": "加载收藏夹项目时出错",
+  "noFavoritesFound": "没有找到喜欢的物品。",
+  "commentUpdatedSuccess": "评论更新成功！",
+  "errorUpdatingComment": "更新评论时出错",
+  "replyAddedSuccess": "回复添加成功！",
+  "errorAddingReply": "添加回复时出错",
+  "commentDeletedSuccess": "评论删除成功！",
+  "errorDeletingComment": "删除评论时出错",
+  "serviceLikedSuccess": "服务点赞成功！",
+  "errorLikingService": "喜欢服务时出错",
+  "serviceDislikedSuccess": "服务拒赞成功！",
+  "errorDislikingService": "不喜欢服务时出错",
+  "writeYourReply": "写下你的回复...",
+  "postReply": "发表回复",
+  "anonymous": "匿名的",
+  "editComment": "编辑评论",
+  "editYourComment": "编辑您的评论...",
+  "saveChanges": "保存更改",
+  "propertyOwner": "业主",
+  "errorLoadingServices": "加载服务时出错",
+  "noRecommendedServicesFound": "未找到推荐服务。",
+  "passwordRequired": "需要密码",
+  "passwordTooShort": "密码必须至少为 8 个字符",
+  "passwordRequirements": "密码必须包含字母和数字",
+  "usernameRequired": "用户名是必需的",
+  "usernameTooShort": "用户名必须至少 3 个字符",
+  "confirmPasswordRequired": "需要确认密码",
+  "passwordHelp": "至少 8 个字符、字母和数字",
+  "usernameExists": "该用户名已存在",
+  "phoneExists": "该电话号码已被注册",
+  "networkError": "网络连接错误。请检查您的连接",
+  "contactSeller": "联系卖家",
+  "callToReveal": "点击“通话”即可显示",
+  "camera": "相机",
+  "gallery": "画廊",
+  "selectImageSource": "选择图像源",
+  "uploading": "正在上传...",
+  "acceptTermsRequired": "您必须接受条款和条件才能继续",
+  "iAgreeToTerms": "我同意",
+  "termsAndConditions": "条款和条件",
+  "zeroToleranceStatement": "并了解对令人反感的内容或滥用行为的用户零容忍。",
+  "viewTerms": "查看条款和条件",
+  "reportContent": "报告内容",
+  "selectReportReason": "请选择举报原因：",
+  "additionalDetails": "其他详细信息（可选）",
+  "reportDetailsHint": "提供任何附加信息...",
+  "reportSubmitted": "感谢您的报告。我们将在 24 小时内审核。",
+  "reportProduct": "报告产品",
+  "reportService": "报告服务",
+  "reportMessage": "举报留言",
+  "reportUser": "举报用户",
+  "reportErrorNotImplemented": "报告功能尚不可用。请联系支持人员或稍后重试。",
+  "reportAlreadySubmitted": "您已举报此内容。我们正在审查您之前的报告。",
+  "reportFailedGeneric": "未能提交报告。请再试一次。",
+  "reportFailedNetwork": "发生网络错误。请检查您的连接并重试。",
+  "becomeAgentTitle": "加入成为房地产经纪人",
+  "becomeAgentSubtitle": "列出房产并帮助客户找到他们的梦想家园",
+  "agentBenefits": "好处：",
+  "agentBenefitVerified": "经过验证的代理徽章",
+  "agentBenefitAnalytics": "获取分析和见解",
+  "agentBenefitClients": "与潜在客户直接联系",
+  "agentBenefitReputation": "建立您的专业声誉",
+  "agentApplicationForm": "申请表",
+  "agentAgencyName": "机构名称",
+  "agentAgencyNameHint": "输入您的房地产经纪公司名称",
+  "agentAgencyNameRequired": "机构名称为必填项",
+  "agentLicenceNumber": "执照号码",
+  "agentLicenceNumberHint": "输入您的房地产许可证号码",
+  "agentLicenceNumberRequired": "需要许可证号码",
+  "agentYearsExperience": "多年经验",
+  "agentYearsExperienceHint": "输入年数",
+  "agentYearsExperienceRequired": "需要多年经验",
+  "agentYearsExperienceInvalid": "请输入有效号码",
+  "agentSpecialization": "专业化",
+  "agentApplicationNote": "您的申请将由我们的团队审核。一旦您的申请获得批准，您将收到通知。",
+  "agentSubmitApplication": "提交申请",
+  "agentApplicationSubmitted": "申请提交成功！我们将尽快审查。",
+  "agentApplicationStatus": "申请状态",
+  "agentViewProfile": "查看您的代理资料",
+  "agentDashboardComingSoon": "代理仪表板即将推出！",
+  "property_create_basic_information": "基本信息",
+  "property_create_property_title": "产权 *",
+  "property_create_property_title_hint": "例如，市中心的现代三卧室公寓",
+  "property_create_property_title_required": "请输入房产名称",
+  "property_create_description": "描述 *",
+  "property_create_description_hint": "详细描述您的财产...",
+  "property_create_description_required": "请输入描述",
+  "property_create_property_type": "物业类型",
+  "property_create_property_type_required": "房产类型 *",
+  "property_create_listing_type_required": "列表类型 *",
+  "property_create_pricing": "定价",
+  "property_create_price": "价格 *",
+  "property_create_price_hint": "输入价格",
+  "property_create_price_required": "请输入价格",
+  "property_create_currency": "货币",
+  "property_create_property_details": "物业详情",
+  "property_create_square_meters": "平方。米 *",
+  "property_create_bedrooms": "卧室 *",
+  "property_create_bathrooms": "浴室 *",
+  "property_create_floor": "地面",
+  "property_create_total_floors": "总楼层数",
+  "property_create_parking": "停車處",
+  "property_create_year_built": "建成年份",
+  "property_create_location": "地点",
+  "property_create_address": "地址 *",
+  "property_create_address_hint": "输入房产地址",
+  "property_create_address_required": "请输入地址",
+  "property_create_location_detected": "检测到位置",
+  "property_create_get_location": "获取当前位置",
+  "property_create_features": "特征",
+  "property_create_feature_balcony": "阳台",
+  "property_create_feature_garage": "车库",
+  "property_create_feature_garden": "花园",
+  "property_create_feature_pool": "水池",
+  "property_create_feature_elevator": "电梯",
+  "property_create_feature_furnished": "家具齐全",
+  "property_create_images": "财产图片",
+  "property_create_tap_to_add_images": "点击即可添加图像",
+  "property_create_at_least_one_image": "至少需要 1 张图片",
+  "property_create_add_more": "添加更多",
+  "property_create_required": "必需的",
+  "property_create_location_required": "请启用定位服务以创建房产",
+  "property_create_image_required": "至少需要一张房产图片",
+  "emailVerification": "电子邮件验证",
+  "pleaseEnterYourEmailAddress": "请输入您的电子邮件地址",
+  "enterEmailAddress": "输入电子邮件地址",
+  "resetYourPassword": "重置您的密码",
+  "resetPasswordDescription": "输入您的电子邮件地址，我们将向您发送验证码以重置您的密码。",
+  "sendVerificationCode": "发送验证码",
+  "backToLogin": "返回登录",
+  "resetPassword": "重置密码",
+  "enterVerificationCodeSentTo": "输入发送至{email}的验证码",
+  "codeMustBe6Digits": "代码必须是 6 位数字",
+  "enterNewPassword": "输入新密码",
+  "minimum8Characters": "最少 8 个字符",
+  "sending": "正在发送...",
+  "verifying": "正在验证...",
+  "new_message": "新消息",
+  "messages": "留言",
+  "please_log_in": "请登录查看留言",
+  "pin": "别针",
+  "unpin": "取消固定",
+  "delete_chat": "删除聊天记录",
+  "delete_chat_confirm": "您确定要删除与 {name} 的聊天记录吗？此操作无法撤消。",
+  "chat_deleted": "与 {name} 的聊天已删除",
+  "delete_failed": "删除聊天记录失败",
+  "no_conversations": "还没有对话",
+  "start_conversation_hint": "点击 + 按钮开始对话",
+  "start_conversation": "开始对话",
+  "yesterday": "昨天",
+  "unknown": "未知",
+  "no_messages_yet": "还没有消息",
+  "unblock_user": "解除阻止用户",
+  "block_user": "阻止用户",
+  "no_blocked_users": "没有被阻止的用户",
+  "blocked_users_hint": "您阻止的用户将显示在此处",
+  "unblock_user_confirm": "您确定要解锁 {username} 吗？您将能够再次收到他们的消息。",
+  "user_unblocked": "{username} 已解锁",
+  "user_blocked": "{username} 已被阻止",
+  "failed_to_unblock": "无法解锁用户",
+  "failed_to_block": "阻止用户失败",
+  "chat_info": "聊天信息",
+  "delete_message": "删除留言",
+  "delete_message_confirm": "您确定要删除此消息吗？",
+  "typing": "打字...",
+  "online": "在线的",
+  "offline": "离线",
+  "last_seen_at": "最后一次见到 {time}",
+  "participants": "{count} 参与者",
+  "you_are_blocked": "你被屏蔽了",
+  "user_blocked_you": "{username} 已阻止您。您无法发送消息。",
+  "you_blocked_user": "您已屏蔽 {username}",
+  "cannot_send_messages_blocked": "您无法发送消息。您已被阻止。",
+  "this_message_was_deleted": "此消息已被删除",
+  "edit": "编辑",
+  "reply": "回复",
+  "add_reaction": "添加反应",
+  "editing_message": "编辑消息",
+  "replying_to": "回复{username}",
+  "voice": "嗓音",
+  "emoji": "表情符号",
+  "photo": "📷 照片",
+  "voice_message": "🎤 语音留言",
+  "searching": "正在寻找...",
+  "loading_users": "正在加载用户...",
+  "search_failed": "搜索失败：{error}",
+  "invalid_user_data": "用户数据无效",
+  "failed_to_start_chat": "无法开始聊天：{error}",
+  "audio_file_not_available": "音频文件不可用",
+  "failed_to_play_audio": "音频播放失败：{error}",
+  "image_unavailable": "图片不可用",
+  "image_too_large": "❌ 图片太大。最大大小为 10MB",
+  "image_file_not_found": "❌ 找不到图像文件",
+  "uploading_image": "正在上传图片...",
+  "image_sent": "✅ 图片已发送！",
+  "failed_to_send_image": "❌ 发送图片失败",
+  "uploading_voice_message": "正在上传语音留言...",
+  "voice_message_sent": "✅ 语音消息已发送！",
+  "failed_to_send_voice_message": "❌ 发送语音消息失败",
+  "recording": "🎙️录制中...",
+  "microphone_permission_denied": "麦克风权限被拒绝",
+  "starting_chat": "开始聊天...",
+  "refresh_users": "刷新用户",
+  "search_by_username_or_phone": "按用户名或电话号码搜索",
+  "no_users_found": "没有找到用户",
+  "try_different_search_term": "尝试不同的搜索词",
+  "no_users_available": "没有可用的用户",
+  "chat_exists": "聊天已存在",
+  "block_user_confirm": "您确定要阻止 {username} 吗？您将不会收到他们的消息，并且他们将从您的聊天列表中删除。",
+  "chat_room_label": "聊天室：{name}",
+  "id_label": "编号：{id}",
+  "participants_label": "参加者：",
+  "type_a_message": "输入消息...",
+  "edit_message_hint": "编辑留言...",
+  "error_label": "错误：{error}",
+  "copy": "复制",
+  "comments_title": "评论 ({count})",
+  "reply_button": "回复",
+  "replies_count": "{count} 回复",
+  "you_label": "你",
+  "delete_reply_title": "删除回复",
+  "delete_comment_title": "删除评论",
+  "unknown_date": "日期未知",
+  "press_enter_to_send": "按 Enter 发送",
+  "comment_add_error": "添加评论失败",
+  "service_provider": "服务提供商",
+  "opening_chat": "正在打开聊天...",
+  "failed_to_refresh": "刷新失败",
+  "cannot_chat_with_yourself": "你无法与自己聊天",
+  "opening_chat_with": "打开与 {username} 的聊天...",
+  "this_will_only_take_a_moment": "这只需要一点时间",
+  "unable_to_start_chat": "无法开始聊天。请再试一次。",
+  "profile_listings": "房源",
+  "profile_followers": "追随者",
+  "profile_following": "下列的",
+  "profile_no_products": "没有产品",
+  "profile_no_services": "无服务",
+  "profile_no_properties": "无属性",
+  "profile_user_no_products": "该用户尚未发布任何产品",
+  "profile_user_no_services": "该用户尚未发布任何服务",
+  "profile_user_no_properties": "该用户尚未发布任何房产",
+  "profile_error_occurred": "发生错误",
+  "profile_error_loading_products": "加载产品时出错",
+  "profile_error_loading_services": "加载服务时出错",
+  "profile_no_followers_yet": "还没有关注者",
+  "profile_no_following_yet": "尚未关注任何人",
+  "profile_follow": "跟随",
+  "profile_following_btn": "下列的",
+  "profile_message": "信息",
+  "profile_member_since": "会员自",
+  "profile_loading_error": "加载配置文件时出错",
+  "profile_retry": "再试一次",
+  "profile_share": "分享",
+  "profile_copy_link": "复制链接",
+  "profile_report": "报告",
+  "linkCopied": "链接已复制到剪贴板",
+  "checkOutProfile": "查看",
+  "onTezsell": "在 TezSell 上",
+  "selectCountryFirst": "首先选择国家",
+  "countrySelectionHint": "然后你可以选择你的地区",
+  "something_went_wrong": "出了点问题",
+  "check_connection_and_retry": "请检查您的互联网连接并重试",
+  "sold_badge": "卖",
+  "more_categories": "更多的",
+  "no_products_in_location": "在 {location} 中找不到产品",
+  "no_more_products": "没有更多产品可加载",
+  "time_days_ago": "{count} 天前",
+  "time_hours_ago": "{count}小时前",
+  "time_minutes_ago": "{count}分钟前",
+  "time_just_now": "现在",
+  "no_services_in_location": "在 {location} 中找不到服务",
+  "no_more_services": "无需加载更多服务",
+  "error_loading_more_services": "加载更多服务时出错",
+  "verification_code_length": "验证码必须为6位",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "@chooseLanguage": {
+    "description": "Title for language selection screen"
+  },
+  "@selectPreferredLanguage": {
+    "description": "Subtitle for language selection screen"
+  },
+  "@continueButton": {
+    "description": "Text for continue button"
+  },
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
+  "@sellAndBuyProducts": {
+    "description": "Main heading text on home screen"
+  },
+  "@usedProductsMarket": {
+    "description": "Subtitle text on home screen"
+  },
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
+  "@register": {
+    "description": "Register button text"
+  },
+  "@alreadyHaveAccount": {
+    "description": "Login button text"
+  },
+  "@login": {
+    "description": "Login screen title and button"
+  },
+  "@loginToAccount": {
+    "description": "Login screen header text"
+  },
+  "@enterPhoneNumber": {
+    "description": "Phone number input placeholder"
+  },
+  "@password": {
+    "description": "Password input label"
+  },
+  "@enterPassword": {
+    "description": "Password input placeholder"
+  },
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "@registerNow": {
+    "description": "Register link text on login screen"
+  },
+  "@loading": {
+    "description": "Loading text"
+  },
+  "@pleaseEnterPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "@unexpectedError": {
+    "description": "Generic error message"
+  },
+  "@forgotPasswordComingSoon": {
+    "description": "Forgot password placeholder message"
+  },
+  "@selectedCountryLabel": {
+    "description": "Selected country label"
+  },
+  "@fullPhoneLabel": {
+    "description": "Full phone number label"
+  },
+  "@home": {
+    "description": "Home tab label"
+  },
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  "@profile": {
+    "description": "Profile tab label"
+  },
+  "@search": {
+    "description": "Search tab label"
+  },
+  "@notifications": {
+    "description": "Notifications tab label"
+  },
+  "@error": {
+    "description": "Error text"
+  },
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "@save": {
+    "description": "Save button text"
+  },
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "@selectRegion": {
+    "description": "Instruction to select region"
+  },
+  "@searchHint": {
+    "description": "Search input hint text"
+  },
+  "@apiError": {
+    "description": "API error message"
+  },
+  "@ok": {
+    "description": "OK button text"
+  },
+  "@emptyList": {
+    "description": "Message shown when list is empty"
+  },
+  "@dataLoadingError": {
+    "description": "Error message when data fails to load"
+  },
+  "@selectDistrictOrCity": {
+    "description": "Instruction to select district or city"
+  },
+  "@confirmDistrictSelection": {
+    "description": "Confirmation message for district selection",
+    "placeholders": {
+      "regionName": {
+        "type": "String"
+      },
+      "districtName": {
+        "type": "String"
+      }
+    }
+  },
+  "@noResultsFound": {
+    "description": "Message when search returns no results"
+  },
+  "@errorWithCode": {
+    "description": "Error message with error code",
+    "placeholders": {
+      "errorCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToLoadData": {
+    "description": "Data loading failure message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@phoneVerification": {
+    "description": "Title for phone verification screen"
+  },
+  "@enterPhonePrompt": {
+    "description": "Prompt to enter phone number"
+  },
+  "@enterPhoneNumberHint": {
+    "description": "Hint text for phone number input"
+  },
+  "@selectedCountry": {
+    "description": "Shows selected country and code",
+    "placeholders": {
+      "countryName": {
+        "type": "String"
+      },
+      "countryCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "@country": {
+    "description": "Country label"
+  },
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "@fullNumber": {
+    "description": "Shows complete phone number",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendCode": {
+    "description": "Button text to send verification code"
+  },
+  "@enterVerificationCode": {
+    "description": "Label for verification code input"
+  },
+  "@verificationCodeHint": {
+    "description": "Hint for verification code format"
+  },
+  "@resendCode": {
+    "description": "Button text to resend verification code"
+  },
+  "@expires": {
+    "description": "Shows expiration time",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@verifyAndContinue": {
+    "description": "Button text to verify and continue"
+  },
+  "@invalidVerificationCode": {
+    "description": "Error message for invalid verification code"
+  },
+  "@verificationCodeSent": {
+    "description": "Success message when code is sent"
+  },
+  "@failedToSendCode": {
+    "description": "Error message when code sending fails"
+  },
+  "@verificationCodeResent": {
+    "description": "Success message when code is resent"
+  },
+  "@failedToResendCode": {
+    "description": "Error message when code resending fails"
+  },
+  "@passwordVerification": {
+    "description": "Title for password verification screen"
+  },
+  "@completeRegistrationPrompt": {
+    "description": "Instruction text for completing registration"
+  },
+  "@username": {
+    "description": "Label for username input field"
+  },
+  "@usernameHint": {
+    "description": "Hint text for username input"
+  },
+  "@confirmPassword": {
+    "description": "Label for password confirmation field"
+  },
+  "@profileImage": {
+    "description": "Label for profile image selection"
+  },
+  "@imageInstructions": {
+    "description": "Instructions for image selection"
+  },
+  "@finish": {
+    "description": "Button text to complete registration"
+  },
+  "@passwordsDoNotMatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "@registrationError": {
+    "description": "Error message when registration fails"
+  },
+  "@about": {
+    "description": "About us menu item"
+  },
+  "@chat": {
+    "description": "Chat functionality"
+  },
+  "@realEstate": {
+    "description": "Real estate section"
+  },
+  "@language": {
+    "description": "Language selector display"
+  },
+  "@languageEn": {
+    "description": "English language option"
+  },
+  "@languageRu": {
+    "description": "Russian language option"
+  },
+  "@languageUz": {
+    "description": "Uzbek language option"
+  },
+  "@serviceLiked": {
+    "description": "Service liked message"
+  },
+  "@support": {
+    "description": "Support menu item"
+  },
+  "@service": {
+    "description": "Business services section"
+  },
+  "@aboutContent": {
+    "description": "About us content description"
+  },
+  "@errorMessage": {
+    "description": "Generic error message"
+  },
+  "@searchLocation": {
+    "description": "Location search label"
+  },
+  "@searchCategory": {
+    "description": "Category search label"
+  },
+  "@searchProductPlaceholder": {
+    "description": "Product search placeholder"
+  },
+  "@searchServicePlaceholder": {
+    "description": "Service search placeholder"
+  },
+  "@searchText": {
+    "description": "Search button text"
+  },
+  "@selectedCategory": {
+    "description": "Selected category prefix"
+  },
+  "@selectedLocation": {
+    "description": "Selected location prefix"
+  },
+  "@productError": {
+    "description": "No products error message"
+  },
+  "@serviceError": {
+    "description": "No services error message"
+  },
+  "@locationHeader": {
+    "description": "Location selection header"
+  },
+  "@locationPlaceholder": {
+    "description": "Location search placeholder"
+  },
+  "@categoryHeader": {
+    "description": "Category selection header"
+  },
+  "@categoryPlaceholder": {
+    "description": "Category search placeholder"
+  },
+  "@categoryError": {
+    "description": "No categories error message"
+  },
+  "@paginationFirst": {
+    "description": "First page button"
+  },
+  "@paginationPrevious": {
+    "description": "Previous page button"
+  },
+  "@pageInfo": {
+    "description": "Page information text"
+  },
+  "@pageNext": {
+    "description": "Next page button"
+  },
+  "@pageLast": {
+    "description": "Last page button"
+  },
+  "@loadingMessageProduct": {
+    "description": "Loading products message"
+  },
+  "@loadingMessageError": {
+    "description": "Loading error message"
+  },
+  "@likeProductError": {
+    "description": "Product like error message"
+  },
+  "@dislikeProductError": {
+    "description": "Product dislike error message"
+  },
+  "@loadingMessageLocation": {
+    "description": "Loading location message"
+  },
+  "@loadingLocationError": {
+    "description": "Location loading error"
+  },
+  "@loadingMessageCategory": {
+    "description": "Loading categories message"
+  },
+  "@loadingCategoryError": {
+    "description": "Category loading error"
+  },
+  "@profileUpdateSuccessMessage": {
+    "description": "Profile update success message"
+  },
+  "@profileUpdateFailMessage": {
+    "description": "Profile update failure message"
+  },
+  "@seeMoreBtn": {
+    "description": "See more button text"
+  },
+  "@profilePageTitle": {
+    "description": "Profile page title"
+  },
+  "@editProfileModalTitle": {
+    "description": "Edit profile modal title"
+  },
+  "@usernameLabel": {
+    "description": "Username field label"
+  },
+  "@locationLabel": {
+    "description": "Location field label"
+  },
+  "@profileImageLabel": {
+    "description": "Profile image field label"
+  },
+  "@chooseFileLabel": {
+    "description": "File chooser label"
+  },
+  "@uploadBtnLabel": {
+    "description": "Upload button label"
+  },
+  "@uploadingBtnLabel": {
+    "description": "Uploading button label"
+  },
+  "@cancelBtnLabel": {
+    "description": "Cancel button label"
+  },
+  "@productsTitle": {
+    "description": "Products section title"
+  },
+  "@servicesTitle": {
+    "description": "Services section title"
+  },
+  "@myProductsTitle": {
+    "description": "My products section title"
+  },
+  "@myServicesTitle": {
+    "description": "My services section title"
+  },
+  "@favoriteProductsTitle": {
+    "description": "Favorite products section title"
+  },
+  "@favoriteServicesTitle": {
+    "description": "Favorite services section title"
+  },
+  "@noFavorites": {
+    "description": "No favorites message"
+  },
+  "@addNewProductBtn": {
+    "description": "Add new product button"
+  },
+  "@addNew": {
+    "description": "Add new item button"
+  },
+  "@addNewServiceBtn": {
+    "description": "Add new service button"
+  },
+  "@downloadMobileApp": {
+    "description": "Download mobile app message"
+  },
+  "@registerPhoneNumberSuccess": {
+    "description": "Phone verification success message"
+  },
+  "@regionSelectedMessage": {
+    "description": "Region selected message"
+  },
+  "@districtSelectMessage": {
+    "description": "District selected message"
+  },
+  "@phoneNumberEmptyMessage": {
+    "description": "Phone number empty error"
+  },
+  "@regionEmptyMessage": {
+    "description": "Region empty error"
+  },
+  "@districtEmptyMessage": {
+    "description": "District empty error"
+  },
+  "@usernamePasswordEmptyMessage": {
+    "description": "Username password empty error"
+  },
+  "@registerTitle": {
+    "description": "Register screen title"
+  },
+  "@previousButton": {
+    "description": "Previous button text"
+  },
+  "@nextButton": {
+    "description": "Next button text"
+  },
+  "@completeButton": {
+    "description": "Complete button text"
+  },
+  "@stepIndicator": {
+    "description": "Step indicator text",
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      }
+    }
+  },
+  "@districtSelectTitle": {
+    "description": "District selection title"
+  },
+  "@districtSelectParagraph": {
+    "description": "District selection instruction"
+  },
+  "@phoneNumber": {
+    "description": "Phone number label"
+  },
+  "@sendOtp": {
+    "description": "Send OTP button"
+  },
+  "@sendAgain": {
+    "description": "Send again button"
+  },
+  "@verify": {
+    "description": "Verify button"
+  },
+  "@failedToSendOtp": {
+    "description": "OTP send failure message"
+  },
+  "@errorSendingOtp": {
+    "description": "OTP send error message"
+  },
+  "@invalidPhoneNumber": {
+    "description": "Invalid phone number error"
+  },
+  "@verificationSuccess": {
+    "description": "Verification success message"
+  },
+  "@verificationError": {
+    "description": "Verification error message"
+  },
+  "@regionsList": {
+    "description": "Regions list title"
+  },
+  "@enterUsername": {
+    "description": "Username input placeholder"
+  },
+  "@welcomeMessage": {
+    "description": "Welcome login message"
+  },
+  "@noAccount": {
+    "description": "Register link text"
+  },
+  "@successLogin": {
+    "description": "Login success message"
+  },
+  "@myProfile": {
+    "description": "My profile menu item"
+  },
+  "@logout": {
+    "description": "Logout button"
+  },
+  "@newProductTitle": {
+    "description": "Product title field"
+  },
+  "@newProductDescription": {
+    "description": "Product description field"
+  },
+  "@newProductPrice": {
+    "description": "Product price field"
+  },
+  "@newProductCondition": {
+    "description": "Product condition field"
+  },
+  "@newProductCategory": {
+    "description": "Product category field"
+  },
+  "@newProductImages": {
+    "description": "Product images field"
+  },
+  "@addNewService": {
+    "description": "Add new service title"
+  },
+  "@creating": {
+    "description": "Creating text"
+  },
+  "@serviceName": {
+    "description": "Service name field"
+  },
+  "@serviceNamePlaceholder": {
+    "description": "Service name placeholder"
+  },
+  "@serviceDescription": {
+    "description": "Service description field"
+  },
+  "@serviceDescriptionPlaceholder": {
+    "description": "Service description placeholder"
+  },
+  "@serviceCategory": {
+    "description": "Service category field"
+  },
+  "@selectCategory": {
+    "description": "Category selection instruction"
+  },
+  "@loadingCategories": {
+    "description": "Loading categories text"
+  },
+  "@errorLoadingCategories": {
+    "description": "Category loading error"
+  },
+  "@serviceImages": {
+    "description": "Service images field"
+  },
+  "@imageUploadHelper": {
+    "description": "Image upload help text"
+  },
+  "@maxImagesError": {
+    "description": "Maximum images error"
+  },
+  "@categoryNotFound": {
+    "description": "Category not found error"
+  },
+  "@productCreatedSuccess": {
+    "description": "Product creation success"
+  },
+  "@productLikeSuccess": {
+    "description": "Product like success"
+  },
+  "@productDislikeSuccess": {
+    "description": "Product dislike success"
+  },
+  "@errorCreatingService": {
+    "description": "Service creation error"
+  },
+  "@errorCreatingProduct": {
+    "description": "Product creation error"
+  },
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "@submit": {
+    "description": "Submit button"
+  },
+  "@selectCategoryAction": {
+    "description": "Select category action"
+  },
+  "@selectCondition": {
+    "description": "Select condition action"
+  },
+  "@sum": {
+    "description": "Sum/Total label"
+  },
+  "@noComments": {
+    "description": "No comments message"
+  },
+  "@commentLikeSuccess": {
+    "description": "Comment like success"
+  },
+  "@commentLikeError": {
+    "description": "Comment like error"
+  },
+  "@unknownErrorMessage": {
+    "description": "Unknown error message generic"
+  },
+  "@commentDislikeSuccess": {
+    "description": "Comment dislike success"
+  },
+  "@commentDislikeError": {
+    "description": "Comment dislike error"
+  },
+  "@replyInfo": {
+    "description": "Reply validation message"
+  },
+  "@replySuccessMessage": {
+    "description": "Reply success message"
+  },
+  "@replyErrorMessage": {
+    "description": "Reply error message"
+  },
+  "@commentUpdateSuccess": {
+    "description": "Comment update success"
+  },
+  "@commentUpdateError": {
+    "description": "Comment update error"
+  },
+  "@deleteConfirmationMessage": {
+    "description": "Delete confirmation message"
+  },
+  "@commentDeleteSuccess": {
+    "description": "Comment delete success"
+  },
+  "@commentDeleteError": {
+    "description": "Comment delete error"
+  },
+  "@editLabel": {
+    "description": "Edit button label"
+  },
+  "@deleteLabel": {
+    "description": "Delete button label"
+  },
+  "@saveLabel": {
+    "description": "Save button label"
+  },
+  "@replyLabel": {
+    "description": "Reply button label"
+  },
+  "@replyTitle": {
+    "description": "Replies section title"
+  },
+  "@replyPlaceholder": {
+    "description": "Reply input placeholder"
+  },
+  "@chatLoginMessage": {
+    "description": "Chat login required message"
+  },
+  "@chatYourselfMessage": {
+    "description": "Can't chat with yourself message"
+  },
+  "@chatRoomMessage": {
+    "description": "Chat room created message"
+  },
+  "@chatRoomError": {
+    "description": "Chat room creation error"
+  },
+  "@chatCreationError": {
+    "description": "Chat creation error"
+  },
+  "@productsTotal": {
+    "description": "Products total count"
+  },
+  "@perPage": {
+    "description": "Items per page"
+  },
+  "@clearAllFilters": {
+    "description": "Clear filters button"
+  },
+  "@clickToUpload": {
+    "description": "Upload instruction"
+  },
+  "@productInStock": {
+    "description": "Product in stock status"
+  },
+  "@productOutStock": {
+    "description": "Product out of stock status"
+  },
+  "@productBack": {
+    "description": "Back to products button"
+  },
+  "@messageSeller": {
+    "description": "Message seller button"
+  },
+  "@recommendedProducts": {
+    "description": "Recommended products section"
+  },
+  "@deleteConfirmationProduct": {
+    "description": "Product delete confirmation"
+  },
+  "@productDeleteSuccess": {
+    "description": "Product delete success"
+  },
+  "@productDeleteError": {
+    "description": "Product delete error"
+  },
+  "@newCondition": {
+    "description": "New condition"
+  },
+  "@used": {
+    "description": "Used condition"
+  },
+  "@imageValidType": {
+    "description": "Image validation error"
+  },
+  "@imageConfirmMessage": {
+    "description": "Image removal confirmation"
+  },
+  "@titleRequiredMessage": {
+    "description": "Title required validation"
+  },
+  "@descRequiredMessage": {
+    "description": "Description required validation"
+  },
+  "@priceRequiredMessage": {
+    "description": "Price required validation"
+  },
+  "@conditionRequiredMessage": {
+    "description": "Condition required validation"
+  },
+  "@pleaseFillAllRequired": {
+    "description": "Fill required fields message"
+  },
+  "@oneImageConfirmMessage": {
+    "description": "One image required validation"
+  },
+  "@categoryRequiredMessage": {
+    "description": "Category required validation"
+  },
+  "@locationInfoError": {
+    "description": "Location info missing error"
+  },
+  "@editProductTitle": {
+    "description": "Edit product title"
+  },
+  "@imageUploadRequirements": {
+    "description": "Image upload requirements"
+  },
+  "@productUpdatedSuccess": {
+    "description": "Product update success"
+  },
+  "@productUpdateFailed": {
+    "description": "Product update failed"
+  },
+  "@errorUpdatingProduct": {
+    "description": "Product update error"
+  },
+  "@serviceBack": {
+    "description": "Back to services button"
+  },
+  "@likeLabel": {
+    "description": "Like button label"
+  },
+  "@commentsLabel": {
+    "description": "Comments section label"
+  },
+  "@writeComment": {
+    "description": "Write comment placeholder"
+  },
+  "@postingLabel": {
+    "description": "Posting comment text"
+  },
+  "@commentCreated": {
+    "description": "Comment created success"
+  },
+  "@postCommentLabel": {
+    "description": "Post comment button"
+  },
+  "@loginPrompt": {
+    "description": "Login required for comments"
+  },
+  "@recommendedServices": {
+    "description": "Recommended services section"
+  },
+  "@commentsVisibilityNotice": {
+    "description": "Comments visibility notice"
+  },
+  "@comingSoon": {
+    "description": "Coming soon text"
+  },
+  "@serviceUpdateSuccess": {
+    "description": "Service update success"
+  },
+  "@serviceUpdateError": {
+    "description": "Service update error"
+  },
+  "@editServiceModalTitle": {
+    "description": "Edit service modal title"
+  },
+  "@enterPhoneNumberWithoutCode": {
+    "description": "Phone number input instruction without country code"
+  },
+  "@heroTitle": {
+    "description": "Hero section title"
+  },
+  "@heroSubtitle": {
+    "description": "Hero section subtitle"
+  },
+  "@startSelling": {
+    "description": "Start selling button"
+  },
+  "@browseProducts": {
+    "description": "Browse products button"
+  },
+  "@featuresTitle": {
+    "description": "Features section title"
+  },
+  "@listingTitle": {
+    "description": "Listing feature title"
+  },
+  "@listingDescription": {
+    "description": "Listing feature description"
+  },
+  "@locationTitle": {
+    "description": "Location feature title"
+  },
+  "@locationDescription": {
+    "description": "Location feature description"
+  },
+  "@location_subtitle": {
+    "description": "Location page subtitle"
+  },
+  "@categoryTitle": {
+    "description": "Category feature title"
+  },
+  "@categoryDescription": {
+    "description": "Category feature description"
+  },
+  "@inspirationTitle": {
+    "description": "Inspiration section title"
+  },
+  "@inspirationDescription1": {
+    "description": "Inspiration description 1"
+  },
+  "@inspirationDescription2": {
+    "description": "Inspiration description 2"
+  },
+  "@comingSoonTitle": {
+    "description": "Coming soon section title"
+  },
+  "@inAppChat": {
+    "description": "In-app chat feature"
+  },
+  "@secureTransactions": {
+    "description": "Secure transactions feature"
+  },
+  "@realEstateListings": {
+    "description": "Real estate listings feature"
+  },
+  "@stayUpdated": {
+    "description": "Stay updated text"
+  },
+  "@comingSoonBadge": {
+    "description": "Coming soon badge"
+  },
+  "@ctaTitle": {
+    "description": "CTA section title"
+  },
+  "@ctaDescription": {
+    "description": "CTA section description"
+  },
+  "@createAccount": {
+    "description": "Create account button"
+  },
+  "@learnMore": {
+    "description": "Learn more button"
+  },
+  "@replyUpdateSuccess": {
+    "description": "Reply update success"
+  },
+  "@replyUpdateError": {
+    "description": "Reply update error"
+  },
+  "@replyDeleteSuccess": {
+    "description": "Reply delete success"
+  },
+  "@replyDeleteError": {
+    "description": "Reply delete error"
+  },
+  "@replyDeleteConfirmation": {
+    "description": "Reply delete confirmation"
+  },
+  "@authenticationRequired": {
+    "description": "Authentication required message"
+  },
+  "@enterValidReply": {
+    "description": "Valid reply text required"
+  },
+  "@saving": {
+    "description": "Saving text"
+  },
+  "@deleting": {
+    "description": "Deleting text"
+  },
+  "@properties": {
+    "description": "Properties section"
+  },
+  "@agents": {
+    "description": "Agents section"
+  },
+  "@becomeAgent": {
+    "description": "Become agent button"
+  },
+  "@main": {
+    "description": "Main/Primary label"
+  },
+  "@upload": {
+    "description": "Upload button text for main product"
+  },
+  "@filtered_products": {
+    "description": "Title for filtered products"
+  },
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
+  "@about_me": {
+    "description": "About me menu item"
+  },
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "@error_loading_products": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_deleting_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@loading_category_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_picking_images": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_updating_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@n_properties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "@uploading": {
+    "description": "Uploading state text"
+  },
+  "@acceptTermsRequired": {
+    "description": "Error message when user hasn't accepted terms"
+  },
+  "@iAgreeToTerms": {
+    "description": "Terms acceptance checkbox text prefix"
+  },
+  "@termsAndConditions": {
+    "description": "Terms and Conditions text"
+  },
+  "@zeroToleranceStatement": {
+    "description": "Zero tolerance statement for terms acceptance"
+  },
+  "@viewTerms": {
+    "description": "Button to view terms"
+  },
+  "@reportContent": {
+    "description": "Title for report content dialog"
+  },
+  "@selectReportReason": {
+    "description": "Prompt to select report reason"
+  },
+  "@additionalDetails": {
+    "description": "Label for additional details field in report dialog"
+  },
+  "@reportDetailsHint": {
+    "description": "Hint text for report details field"
+  },
+  "@reportSubmitted": {
+    "description": "Success message after submitting report"
+  },
+  "@reportProduct": {
+    "description": "Menu option to report a product"
+  },
+  "@reportService": {
+    "description": "Menu option to report a service"
+  },
+  "@reportMessage": {
+    "description": "Menu option to report a message"
+  },
+  "@reportUser": {
+    "description": "Menu option to report a user"
+  },
+  "@reportErrorNotImplemented": {
+    "description": "Error message when reporting endpoint is not implemented"
+  },
+  "@reportAlreadySubmitted": {
+    "description": "Message shown when user tries to report content they've already reported"
+  },
+  "@reportFailedGeneric": {
+    "description": "Generic error message when report submission fails"
+  },
+  "@reportFailedNetwork": {
+    "description": "Error message when network error occurs during report submission"
+  },
+  "@becomeAgentTitle": {
+    "description": "Title for become agent page"
+  },
+  "@becomeAgentSubtitle": {
+    "description": "Subtitle for become agent page"
+  },
+  "@agentBenefits": {
+    "description": "Label for agent benefits section"
+  },
+  "@agentBenefitVerified": {
+    "description": "Agent benefit - verified badge"
+  },
+  "@agentBenefitAnalytics": {
+    "description": "Agent benefit - analytics"
+  },
+  "@agentBenefitClients": {
+    "description": "Agent benefit - client contact"
+  },
+  "@agentBenefitReputation": {
+    "description": "Agent benefit - reputation"
+  },
+  "@agentApplicationForm": {
+    "description": "Title for agent application form"
+  },
+  "@agentAgencyName": {
+    "description": "Label for agency name field"
+  },
+  "@agentAgencyNameHint": {
+    "description": "Hint for agency name field"
+  },
+  "@agentAgencyNameRequired": {
+    "description": "Error message for required agency name"
+  },
+  "@agentLicenceNumber": {
+    "description": "Label for license number field"
+  },
+  "@agentLicenceNumberHint": {
+    "description": "Hint for license number field"
+  },
+  "@agentLicenceNumberRequired": {
+    "description": "Error message for required license number"
+  },
+  "@agentYearsExperience": {
+    "description": "Label for years of experience field"
+  },
+  "@agentYearsExperienceHint": {
+    "description": "Hint for years of experience field"
+  },
+  "@agentYearsExperienceRequired": {
+    "description": "Error message for required years of experience"
+  },
+  "@agentYearsExperienceInvalid": {
+    "description": "Error message for invalid years of experience"
+  },
+  "@agentSpecialization": {
+    "description": "Label for specialization field"
+  },
+  "@agentApplicationNote": {
+    "description": "Note about application review process"
+  },
+  "@agentSubmitApplication": {
+    "description": "Button text to submit agent application"
+  },
+  "@agentApplicationSubmitted": {
+    "description": "Success message after submitting agent application"
+  },
+  "@agentApplicationStatus": {
+    "description": "Title for application status dialog"
+  },
+  "@agentViewProfile": {
+    "description": "Subtitle for verified agent menu item"
+  },
+  "@agentDashboardComingSoon": {
+    "description": "Message when agent dashboard is not yet implemented"
+  },
+  "@property_create_basic_information": {
+    "description": "Section title for basic information in property creation"
+  },
+  "@property_create_property_title": {
+    "description": "Label for property title field"
+  },
+  "@property_create_property_title_hint": {
+    "description": "Hint text for property title field"
+  },
+  "@property_create_property_title_required": {
+    "description": "Validation error for property title"
+  },
+  "@property_create_description": {
+    "description": "Label for description field"
+  },
+  "@property_create_description_hint": {
+    "description": "Hint text for description field"
+  },
+  "@property_create_description_required": {
+    "description": "Validation error for description"
+  },
+  "@property_create_property_type": {
+    "description": "Label for property type field"
+  },
+  "@property_create_property_type_required": {
+    "description": "Label for required property type field"
+  },
+  "@property_create_listing_type_required": {
+    "description": "Label for required listing type field"
+  },
+  "@property_create_pricing": {
+    "description": "Section title for pricing"
+  },
+  "@property_create_price": {
+    "description": "Label for price field"
+  },
+  "@property_create_price_hint": {
+    "description": "Hint text for price field"
+  },
+  "@property_create_price_required": {
+    "description": "Validation error for price"
+  },
+  "@property_create_currency": {
+    "description": "Label for currency field"
+  },
+  "@property_create_property_details": {
+    "description": "Section title for property details"
+  },
+  "@property_create_square_meters": {
+    "description": "Label for square meters field"
+  },
+  "@property_create_bedrooms": {
+    "description": "Label for bedrooms field"
+  },
+  "@property_create_bathrooms": {
+    "description": "Label for bathrooms field"
+  },
+  "@property_create_floor": {
+    "description": "Label for floor field"
+  },
+  "@property_create_total_floors": {
+    "description": "Label for total floors field"
+  },
+  "@property_create_parking": {
+    "description": "Label for parking spaces field"
+  },
+  "@property_create_year_built": {
+    "description": "Label for year built field"
+  },
+  "@property_create_location": {
+    "description": "Section title for location"
+  },
+  "@property_create_address": {
+    "description": "Label for address field"
+  },
+  "@property_create_address_hint": {
+    "description": "Hint text for address field"
+  },
+  "@property_create_address_required": {
+    "description": "Validation error for address"
+  },
+  "@property_create_location_detected": {
+    "description": "Text shown when location is detected"
+  },
+  "@property_create_get_location": {
+    "description": "Button text to get current location"
+  },
+  "@property_create_features": {
+    "description": "Section title for features"
+  },
+  "@property_create_feature_balcony": {
+    "description": "Feature name: Balcony"
+  },
+  "@property_create_feature_garage": {
+    "description": "Feature name: Garage"
+  },
+  "@property_create_feature_garden": {
+    "description": "Feature name: Garden"
+  },
+  "@property_create_feature_pool": {
+    "description": "Feature name: Pool"
+  },
+  "@property_create_feature_elevator": {
+    "description": "Feature name: Elevator"
+  },
+  "@property_create_feature_furnished": {
+    "description": "Feature name: Furnished"
+  },
+  "@property_create_images": {
+    "description": "Section title for property images"
+  },
+  "@property_create_tap_to_add_images": {
+    "description": "Text shown in empty image picker"
+  },
+  "@property_create_at_least_one_image": {
+    "description": "Text shown below image picker"
+  },
+  "@property_create_add_more": {
+    "description": "Button text to add more images"
+  },
+  "@property_create_required": {
+    "description": "Generic required field validation message"
+  },
+  "@property_create_location_required": {
+    "description": "Error message when location is not available"
+  },
+  "@property_create_image_required": {
+    "description": "Error message when no images are selected"
+  },
+  "@emailVerification": {
+    "description": "Title for email verification screen"
+  },
+  "@pleaseEnterYourEmailAddress": {
+    "description": "Instruction text for email input"
+  },
+  "@enterEmailAddress": {
+    "description": "Placeholder text for email input field"
+  },
+  "@resetYourPassword": {
+    "description": "Title for password reset screen"
+  },
+  "@resetPasswordDescription": {
+    "description": "Description text for password reset"
+  },
+  "@sendVerificationCode": {
+    "description": "Button text to send verification code"
+  },
+  "@backToLogin": {
+    "description": "Link text to go back to login screen"
+  },
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "@verifying": {
+    "description": "Loading text for verifying code"
+  },
+  "@new_message": {
+    "description": "Tooltip text for new message"
+  },
+  "@delete_chat_confirm": {
+    "description": "Delete chat confirmation message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_deleted": {
+    "description": "Chat deleted success message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@unblock_user_confirm": {
+    "description": "Unblock user confirmation",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_unblocked": {
+    "description": "User unblocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_blocked": {
+    "description": "User blocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@last_seen_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@participants": {
+    "description": "Number of participants in group chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@user_blocked_you": {
+    "description": "Message when user is blocked by another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@you_blocked_user": {
+    "description": "Message when current user has blocked another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@replying_to": {
+    "description": "Reply header text",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@search_failed": {
+    "description": "Search error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_start_chat": {
+    "description": "Failed to start chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_play_audio": {
+    "description": "Failed to play audio error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@block_user_confirm": {
+    "description": "Block user confirmation message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_room_label": {
+    "description": "Chat room label with name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@id_label": {
+    "description": "ID label with value",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "@error_label": {
+    "description": "Error label with error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@comments_title": {
+    "description": "Comments section title with count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@reply_button": {
+    "description": "Reply button text"
+  },
+  "@replies_count": {
+    "description": "Replies count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@you_label": {
+    "description": "You label for current user"
+  },
+  "@delete_reply_title": {
+    "description": "Delete reply dialog title"
+  },
+  "@delete_comment_title": {
+    "description": "Delete comment dialog title"
+  },
+  "@unknown_date": {
+    "description": "Unknown date text"
+  },
+  "@press_enter_to_send": {
+    "description": "Hint text for sending comment"
+  },
+  "@comment_add_error": {
+    "description": "Error message when comment creation fails"
+  },
+  "@service_provider": {
+    "description": "Service provider label"
+  },
+  "@opening_chat": {
+    "description": "Opening chat message"
+  },
+  "@failed_to_refresh": {
+    "description": "Failed to refresh error message"
+  },
+  "@cannot_chat_with_yourself": {
+    "description": "Error message when trying to chat with yourself"
+  },
+  "@opening_chat_with": {
+    "description": "Opening chat message with username",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@this_will_only_take_a_moment": {
+    "description": "Loading message for chat"
+  },
+  "@unable_to_start_chat": {
+    "description": "Error message when chat fails to start"
+  },
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
+  },
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
+  },
+  "@something_went_wrong": {
+    "description": "Error title when something goes wrong"
+  },
+  "@check_connection_and_retry": {
+    "description": "Error message asking user to check connection"
+  },
+  "@sold_badge": {
+    "description": "Badge text for sold products"
+  },
+  "@more_categories": {
+    "description": "Button to show more categories"
+  },
+  "@no_products_in_location": {
+    "description": "Message when no products are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_products": {
+    "description": "Message at end of product list"
+  },
+  "@time_days_ago": {
+    "description": "Time ago in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_hours_ago": {
+    "description": "Time ago in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_minutes_ago": {
+    "description": "Time ago in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_just_now": {
+    "description": "Time for recent moments"
+  },
+  "@no_services_in_location": {
+    "description": "Message when no services are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_services": {
+    "description": "Message at end of service list"
+  },
+  "@error_loading_more_services": {
+    "description": "Error message when loading more services fails"
+  },
+  "@verification_code_length": {
+    "description": "Error when verification code is not 6 digits"
+  }
+}

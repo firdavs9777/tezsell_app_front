@@ -5,9 +5,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_hi.dart';
+import 'app_localizations_id.dart';
+import 'app_localizations_ja.dart';
+import 'app_localizations_ko.dart';
+import 'app_localizations_pt.dart';
 import 'app_localizations_ru.dart';
+import 'app_localizations_tr.dart';
 import 'app_localizations_uz.dart';
+import 'app_localizations_vi.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,9 +107,21 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('de'),
     Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('hi'),
+    Locale('id'),
+    Locale('ja'),
+    Locale('ko'),
+    Locale('pt'),
     Locale('ru'),
+    Locale('tr'),
     Locale('uz'),
+    Locale('vi'),
+    Locale('zh'),
   ];
 
   /// Welcome message
@@ -3033,6 +3057,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All properties loaded'**
   String get all_properties_loaded;
+
+  /// No description provided for @n_properties.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} properties'**
+  String n_properties(int count);
+
+  /// No description provided for @in_area.
+  ///
+  /// In en, this message translates to:
+  /// **'in area'**
+  String get in_area;
 
   /// No description provided for @pagination_previous.
   ///
@@ -7072,6 +7108,18 @@ abstract class AppLocalizations {
   /// **'Please log in to view messages'**
   String get please_log_in;
 
+  /// No description provided for @pin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pin;
+
+  /// No description provided for @unpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpin;
+
   /// No description provided for @delete_chat.
   ///
   /// In en, this message translates to:
@@ -7215,6 +7263,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'online'**
   String get online;
+
+  /// No description provided for @offline.
+  ///
+  /// In en, this message translates to:
+  /// **'offline'**
+  String get offline;
+
+  /// No description provided for @last_seen_at.
+  ///
+  /// In en, this message translates to:
+  /// **'last seen {time}'**
+  String last_seen_at(String time);
 
   /// Number of participants in group chat
   ///
@@ -7767,6 +7827,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Then you can choose your region'**
   String get countrySelectionHint;
+
+  /// Error title when something goes wrong
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get something_went_wrong;
+
+  /// Error message asking user to check connection
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again'**
+  String get check_connection_and_retry;
+
+  /// Badge text for sold products
+  ///
+  /// In en, this message translates to:
+  /// **'SOLD'**
+  String get sold_badge;
+
+  /// Button to show more categories
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more_categories;
+
+  /// Message when no products are available in a location
+  ///
+  /// In en, this message translates to:
+  /// **'No products found in {location}'**
+  String no_products_in_location(String location);
+
+  /// Message at end of product list
+  ///
+  /// In en, this message translates to:
+  /// **'No more products to load'**
+  String get no_more_products;
+
+  /// Time ago in days
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String time_days_ago(int count);
+
+  /// Time ago in hours
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String time_hours_ago(int count);
+
+  /// Time ago in minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m ago'**
+  String time_minutes_ago(int count);
+
+  /// Time for recent moments
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get time_just_now;
+
+  /// Message when no services are available in a location
+  ///
+  /// In en, this message translates to:
+  /// **'No services found in {location}'**
+  String no_services_in_location(String location);
+
+  /// Message at end of service list
+  ///
+  /// In en, this message translates to:
+  /// **'No more services to load'**
+  String get no_more_services;
+
+  /// Error message when loading more services fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading more services'**
+  String get error_loading_more_services;
+
+  /// Error when verification code is not 6 digits
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code must be 6 digits'**
+  String get verification_code_length;
 }
 
 class _AppLocalizationsDelegate
@@ -7779,8 +7923,23 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'ru', 'uz'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'ar',
+    'de',
+    'en',
+    'es',
+    'fr',
+    'hi',
+    'id',
+    'ja',
+    'ko',
+    'pt',
+    'ru',
+    'tr',
+    'uz',
+    'vi',
+    'zh',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -7789,12 +7948,36 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'hi':
+      return AppLocalizationsHi();
+    case 'id':
+      return AppLocalizationsId();
+    case 'ja':
+      return AppLocalizationsJa();
+    case 'ko':
+      return AppLocalizationsKo();
+    case 'pt':
+      return AppLocalizationsPt();
     case 'ru':
       return AppLocalizationsRu();
+    case 'tr':
+      return AppLocalizationsTr();
     case 'uz':
       return AppLocalizationsUz();
+    case 'vi':
+      return AppLocalizationsVi();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(

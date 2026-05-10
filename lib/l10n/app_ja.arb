@@ -1,0 +1,2999 @@
+{
+  "@@locale": "ja",
+  "@@x-machine-translated": true,
+  "welcome": "いらっしゃいませ",
+  "welcomeBack": "おかえり！",
+  "loginToYourAccount": "続行するにはログインしてください",
+  "or": "または",
+  "dontHaveAccount": "アカウントをお持ちでない場合は、",
+  "chooseLanguage": "言語を選択してください",
+  "selectPreferredLanguage": "アプリの優先言語を選択してください",
+  "continueButton": "続く",
+  "continueWithGoogle": "Google を続ける",
+  "continueWithApple": "Apple で続行",
+  "continueWithEmail": "メールで続行",
+  "sellAndBuyProducts": "貴社の製品の販売および購入は当社でのみ行ってください",
+  "usedProductsMarket": "中古品または中古市場",
+  "home_welcome_title": "あなたの近所のマーケットプレイス",
+  "home_welcome_subtitle": "近くの人と一緒に売買しましょう。\n安全、シンプル、そしてローカル。",
+  "home_get_started": "始めましょう",
+  "home_sign_in": "すでにアカウントを持っています",
+  "home_terms_notice": "続行すると、サービス利用規約とプライバシー ポリシーに同意したことになります。",
+  "register": "登録する",
+  "alreadyHaveAccount": "すでにアカウントをお持ちです",
+  "login": "ログイン",
+  "loginToAccount": "アカウントにログイン",
+  "enterPhoneNumber": "電話番号を入力してください",
+  "password": "パスワード",
+  "enterPassword": "パスワードを入力してください",
+  "forgotPassword": "パスワードをお忘れですか？",
+  "registerNow": "今すぐ登録",
+  "loading": "読み込み中...",
+  "pleaseEnterPhoneNumber": "電話番号を入力してください",
+  "pleaseEnterPassword": "パスワードを入力してください",
+  "unexpectedError": "予期しないエラーが発生しました。もう一度試してください。",
+  "forgotPasswordComingSoon": "パスワードを忘れた場合の機能は近日公開予定",
+  "selectedCountryLabel": "選択済み:",
+  "fullPhoneLabel": "満杯：",
+  "home": "家",
+  "settings": "設定",
+  "profile": "プロフィール",
+  "search": "検索",
+  "notifications": "通知",
+  "error": "エラー",
+  "retry": "リトライ",
+  "cancel": "キャンセル",
+  "save": "保存",
+  "appTitle": "テッセル",
+  "selectRegion": "地域を選択してください",
+  "searchHint": "地区または都市を検索する",
+  "apiError": "APIの呼び出し中に問題が発生しました",
+  "ok": "わかりました",
+  "emptyList": "空のリスト",
+  "dataLoadingError": "データの読み込み中にエラーが発生しました",
+  "confirm": "確認する",
+  "yes": "はい",
+  "no": "いいえ",
+  "confirmRegionSelection": "{regionName} 地域を選択しますか?",
+  "selectDistrictOrCity": "あなたの地区または都市を選択してください",
+  "confirmDistrictSelection": "{regionName} 領域 - {districtName} を選択しますか?",
+  "noResultsFound": "結果が見つかりませんでした。",
+  "errorWithCode": "エラー: {errorCode}",
+  "failedToLoadData": "データのロードに失敗しました。エラー: {error}",
+  "phoneVerification": "電話番号認証",
+  "enterPhonePrompt": "電話番号を入力してください",
+  "enterPhoneNumberHint": "電話番号を入力してください",
+  "selectedCountry": "選択済み: {countryName} ({countryCode})",
+  "selectCountry": "あなたの国を選択してください",
+  "changeCountry": "国を変更する",
+  "country": "国",
+  "allCountries": "すべての国",
+  "currencyRUB": "ロシアルーブル",
+  "currencyUAH": "ウクライナ・グリブナ",
+  "currencyBYN": "ベラルーシルーブル",
+  "currencyMDL": "モルドバ・レウ",
+  "currencyGEL": "グルジアラリ",
+  "currencyAMD": "アルメニアン ドラム",
+  "currencyAZN": "アゼルバイジャン マナト",
+  "currencyKZT": "カザフスタン テンゲ",
+  "currencyTMT": "トルクメンマナト",
+  "currencyKGS": "キルギスタンのソム",
+  "currencyTJS": "タジキスタンのソモニ",
+  "currencyUZS": "ウズベキスタン・ソム",
+  "currencyUSD": "米ドル",
+  "currencyEUR": "ユーロ",
+  "fullNumber": "完全な番号: {phoneNumber}",
+  "sendCode": "コードを送信する",
+  "enterVerificationCode": "確認コードを入力してください",
+  "verificationCodeHint": "123456",
+  "resendCode": "コードを再送信する",
+  "expires": "有効期限: {time}",
+  "verifyAndContinue": "確認して続行",
+  "invalidVerificationCode": "無効な確認コード",
+  "verificationCodeSent": "確認コードが正常に送信されました",
+  "failedToSendCode": "確認コードの送信に失敗しました",
+  "verificationCodeResent": "確認コードが正常に再送信されました",
+  "failedToResendCode": "確認コードの再送信に失敗しました",
+  "passwordVerification": "パスワードの検証",
+  "completeRegistrationPrompt": "ユーザー名とパスワードを入力して登録を完了します",
+  "username": "ユーザー名",
+  "username_required": "ユーザー名は必須です",
+  "username_min_length": "ユーザー名は少なくとも 2 文字である必要があります",
+  "usernameHint": "ユーザー名123",
+  "confirmPassword": "パスワードを認証する",
+  "profileImage": "プロフィール画像",
+  "imageInstructions": "ここに画像が表示されます。プロフィール画像を押してください",
+  "finish": "仕上げる",
+  "passwordsDoNotMatch": "パスワードが一致しません",
+  "registrationError": "登録エラー",
+  "about": "私たちについて",
+  "chat": "チャット",
+  "realEstate": "不動産",
+  "language": "英語",
+  "languageEn": "英語",
+  "languageRu": "ロシア",
+  "languageUz": "ウズベク語",
+  "serviceLiked": "気に入ったサービス",
+  "support": "サポート",
+  "service": "ビジネスサービス",
+  "aboutContent": "TezSell は、新品および中古製品を売買できる迅速かつ簡単なマーケットプレイスです。私たちの使命は、すべてのユーザーにとって最も便利で効率的なプラットフォームを作成し、スムーズな取引とユーザーフレンドリーなエクスペリエンスを保証することです。販売する場合でも購入する場合でも、TezSell を使用すると、わずか数ステップで簡単に接続して取引を完了できます。当社はユーザーのセキュリティとプライバシーを優先します。すべての取引は安全性とコンプライアンスを確保するために注意深く監視されており、買い手と売り手の両方に安心感を提供します。シンプルで直感的なインターフェイスにより、ユーザーは製品をすばやくリストし、必要なものを見つけることができます。また、Telegram を介したリアルタイムのコミュニケーションも促進し、売買プロセスをさらにスムーズにします。",
+  "errorMessage": "エラーが発生しました。サーバーを確認してください",
+  "searchLocation": "位置",
+  "searchCategory": "カテゴリー",
+  "searchProductPlaceholder": "製品を探す",
+  "searchServicePlaceholder": "サービスを探す",
+  "search_products_subtitle": "近所のお得な情報を見つける",
+  "search_services_subtitle": "近所の専門家を探す",
+  "search_products_error": "製品検索エラー",
+  "search_services_error": "サービス検索エラー",
+  "load_more_products_error": "さらに製品を読み込むときにエラーが発生しました",
+  "load_more_services_error": "さらにサービスをロード中にエラーが発生しました",
+  "try_different_keywords": "別のキーワードを試してください",
+  "searchText": "検索",
+  "selectedCategory": "選択したカテゴリ:",
+  "selectedLocation": "選択した場所:",
+  "productError": "利用可能な製品はありません",
+  "serviceError": "利用できるサービスはありません",
+  "locationHeader": "場所を選択してください",
+  "locationPlaceholder": "地域検索はこちらから",
+  "categoryHeader": "カテゴリを選択してください",
+  "categoryPlaceholder": "検索カテゴリ",
+  "categoryError": "利用可能なカテゴリがありません",
+  "paginationFirst": "初め",
+  "paginationPrevious": "前の",
+  "pageInfo": "のページ",
+  "pageNext": "次",
+  "pageLast": "最後",
+  "loadingMessageProduct": "製品を読み込み中...",
+  "loadingMessageError": "読み込み中のエラー",
+  "likeProductError": "製品をお気に入りに登録中にエラーが発生しました",
+  "dislikeProductError": "製品が嫌いなときにエラーが発生しました",
+  "loadingMessageLocation": "場所を読み込んでいます...",
+  "loadingLocationError": "場所の読み込み中にエラーが発生しました",
+  "loadingMessageCategory": "カテゴリを読み込んでいます...",
+  "loadingCategoryError": "カテゴリの読み込みエラー:",
+  "profileUpdateSuccessMessage": "プロファイルが正常に更新されました",
+  "profileUpdateFailMessage": "プロフィールの更新に失敗しました",
+  "seeMoreBtn": "もっと見る",
+  "profilePageTitle": "プロフィールページ",
+  "editProfileModalTitle": "プロフィールの編集",
+  "usernameLabel": "ユーザー名",
+  "locationLabel": "現在地",
+  "profileImageLabel": "プロフィール画像",
+  "chooseFileLabel": "ファイルを選択してください",
+  "uploadBtnLabel": "アップデート",
+  "uploadingBtnLabel": "更新中...",
+  "cancelBtnLabel": "キャンセル",
+  "productsTitle": "製品",
+  "servicesTitle": "サービス",
+  "myProductsTitle": "私の製品",
+  "myServicesTitle": "私のサービス",
+  "favoriteProductsTitle": "お気に入りの製品",
+  "favoriteServicesTitle": "お気に入りのサービス",
+  "noFavorites": "お気に入りがありません",
+  "addNewProductBtn": "新しい製品を追加",
+  "addNew": "新しい",
+  "addNewServiceBtn": "新しいサービスを追加する",
+  "downloadMobileApp": "モバイルアプリをダウンロードする",
+  "registerPhoneNumberSuccess": "電話番号認証されました！次のステップに進むことができます。",
+  "regionSelectedMessage": "選択された地域:",
+  "districtSelectMessage": "選択された地区:",
+  "phoneNumberEmptyMessage": "続行する前に電話番号を確認してください",
+  "regionEmptyMessage": "最初に地域を選択してください",
+  "districtEmptyMessage": "地区を選択してください",
+  "usernamePasswordEmptyMessage": "ユーザー名とパスワードを入力してください",
+  "registerTitle": "登録する",
+  "previousButton": "前の",
+  "nextButton": "次",
+  "completeButton": "完了",
+  "stepIndicator": "ステップ {currentStep} (4 つ中)",
+  "districtSelectTitle": "地区リスト",
+  "districtSelectParagraph": "地区を選択してください:",
+  "phoneNumber": "電話番号",
+  "sendOtp": "OTPを送信する",
+  "sendAgain": "再送信",
+  "verify": "確認する",
+  "failedToSendOtp": "OTPの送信に失敗しました。サーバーは false を返しました。",
+  "errorSendingOtp": "OTP の送信中にエラーが発生しました。",
+  "invalidPhoneNumber": "有効な電話番号を入力してください。",
+  "verificationSuccess": "正常に検証されました",
+  "verificationError": "エラーが発生しました。後でもう一度試してください。",
+  "regionsList": "地域リスト",
+  "enterUsername": "ユーザー名を入力してください",
+  "welcomeMessage": "Tezsell へようこそ。電話番号でログインしてください",
+  "noAccount": "まだアカウントをお持ちですか?ここに登録してください",
+  "successLogin": "正常にログに記録されました",
+  "myProfile": "私のプロフィール",
+  "logout": "ログアウト",
+  "newProductTitle": "タイトル",
+  "newProductDescription": "説明",
+  "newProductPrice": "価格",
+  "newProductCondition": "状態",
+  "newProductCategory": "カテゴリ",
+  "newProductImages": "画像",
+  "addNewService": "新しいサービスを追加する",
+  "creating": "作成...",
+  "serviceName": "サービス名",
+  "serviceNamePlaceholder": "サービスタイトルを入力してください",
+  "serviceDescription": "サービスの説明",
+  "serviceDescriptionPlaceholder": "サービスの説明を入力してください",
+  "serviceCategory": "サービスカテゴリー",
+  "selectCategory": "カテゴリを選択してください",
+  "loadingCategories": "読み込み中...",
+  "errorLoadingCategories": "カテゴリの読み込みエラー",
+  "serviceImages": "サービスイメージ",
+  "imageUploadHelper": "+ アイコンをクリックして画像を追加します (最大 10 件)",
+  "maxImagesError": "最大10枚の画像をアップロードできます",
+  "categoryNotFound": "カテゴリが見つかりません",
+  "productCreatedSuccess": "製品が正常に作成されました",
+  "productLikeSuccess": "製品が正常に気に入りました",
+  "productDislikeSuccess": "製品は正常に嫌われました",
+  "errorCreatingService": "サービスの作成中にエラーが発生しました",
+  "errorCreatingProduct": "製品作成中にエラーが発生しました",
+  "unknownError": "サービスの作成中に不明なエラーが発生しました",
+  "submit": "提出する",
+  "selectCategoryAction": "カテゴリの選択",
+  "selectCondition": "条件の選択",
+  "sum": "和",
+  "noComments": "コメントはまだありません。最初にコメントしてみませんか!",
+  "commentLikeSuccess": "コメントが正常に気に入りました",
+  "commentLikeError": "コメントにいいねをするときにエラーが発生しました",
+  "unknownErrorMessage": "不明なエラーが発生しました",
+  "commentDislikeSuccess": "コメントが正常に拒否されました",
+  "commentDislikeError": "コメントを嫌う際のエラー",
+  "replyInfo": "最初に返信を入力してください",
+  "replySuccessMessage": "返信が正常に追加されました",
+  "replyErrorMessage": "返信の作成中にエラーが発生しました",
+  "commentUpdateSuccess": "コメントが正常に更新されました",
+  "commentUpdateError": "コメント項目の更新中にエラーが発生しました",
+  "deleteConfirmationMessage": "このコメントを削除してもよろしいですか?",
+  "commentDeleteSuccess": "コメントは正常に削除されました",
+  "commentDeleteError": "コメント削除エラー",
+  "editLabel": "編集",
+  "deleteLabel": "消去",
+  "saveLabel": "保存",
+  "replyLabel": "返事",
+  "replyTitle": "返信する",
+  "replyPlaceholder": "返信を書いてください...",
+  "chatLoginMessage": "チャットを開始するにはログインする必要があります",
+  "chatYourselfMessage": "自分自身とチャットすることはできません。",
+  "chatRoomMessage": "チャットルームができました！",
+  "chatRoomError": "チャットの作成に失敗しました!",
+  "chatCreationError": "チャットの作成に失敗しました!",
+  "productsTotal": "製品合計",
+  "perPage": "アイテム",
+  "clearAllFilters": "すべてのフィルターをクリア",
+  "clickToUpload": "クリックしてアップロード",
+  "productInStock": "在庫あり",
+  "productOutStock": "在庫切れ",
+  "productBack": "製品に戻る",
+  "messageSeller": "チャット",
+  "recommendedProducts": "おすすめ商品",
+  "deleteConfirmationProduct": "この商品を削除してもよろしいですか?",
+  "productDeleteSuccess": "製品は正常に削除されました",
+  "productDeleteError": "製品の削除中にエラーが発生しました",
+  "newCondition": "新しい",
+  "used": "使用済み",
+  "imageValidType": "一部のファイルが追加されませんでした。 5MB以下のJPG、PNG、GIF、またはWebPファイルを使用してください。",
+  "imageConfirmMessage": "この画像を削除してもよろしいですか?",
+  "titleRequiredMessage": "タイトルは必須です",
+  "descRequiredMessage": "説明は必須です",
+  "priceRequiredMessage": "価格は必須です",
+  "conditionRequiredMessage": "条件は必須です",
+  "pleaseFillAllRequired": "必須フィールドに入力してください",
+  "oneImageConfirmMessage": "少なくとも 1 つの製品画像が必要です",
+  "categoryRequiredMessage": "カテゴリは必須です",
+  "locationInfoError": "ユーザーの位置情報が欠落しています",
+  "editProductTitle": "製品の編集",
+  "imageUploadRequirements": "少なくとも 1 つの画像が必要です。最大 10 枚の画像 (それぞれ 5MB 未満の JPG、PNG、GIF、WebP) をアップロードできます。",
+  "productUpdatedSuccess": "製品が正常に更新されました",
+  "productUpdateFailed": "製品のアップデートに失敗しました",
+  "errorUpdatingProduct": "製品のアップデート中にエラーが発生しました",
+  "serviceBack": "サービスに戻る",
+  "likeLabel": "のように",
+  "commentsLabel": "コメント",
+  "writeComment": "コメントを書いてください...",
+  "postingLabel": "投稿中...",
+  "commentCreated": "コメントが作成されました",
+  "postCommentLabel": "コメントを投稿する",
+  "loginPrompt": "コメントを表示および投稿するにはログインしてください。",
+  "recommendedServices": "おすすめサービス",
+  "commentsVisibilityNotice": "コメントはログインしたユーザーのみに表示されます。",
+  "comingSoon": "近日公開",
+  "serviceUpdateSuccess": "サービスが正常に更新されました",
+  "serviceUpdateError": "サービス項目の更新中にエラーが発生しました",
+  "editServiceModalTitle": "サービスの編集",
+  "enterPhoneNumberWithoutCode": "コードなしの電話番号を入力してください",
+  "heroTitle": "テズセル",
+  "heroSubtitle": "ウズベキスタン向けの迅速かつ簡単なマーケットプレイス",
+  "startSelling": "販売を開始する",
+  "browseProducts": "製品を閲覧する",
+  "featuresTitle": "TezSell を選ぶ理由",
+  "listingTitle": "シンプルな商品リスト",
+  "listingDescription": "数回クリックするだけでアイテムをリストできます。写真を追加し、価格を設定すれば、すぐに購入者とつながります。",
+  "locationTitle": "位置ベースのブラウジング",
+  "locationDescription": "お近くのお買い得品を見つけてください。当社の位置ベースのシステムは、近所のアイテムを見つけるのに役立ちます。",
+  "location_subtitle": "地域と地区を選択すると、近くのリストが表示されます",
+  "categoryTitle": "カテゴリフィルタリング",
+  "categoryDescription": "さまざまなカテゴリを簡単に移動して、探しているものを正確に見つけます。",
+  "inspirationTitle": "韓国のニンジン市場からインスピレーションを得た",
+  "inspirationDescription1": "私たちは、韓国の成功したニンジン市場 (당근마켓) からインスピレーションを得て TezSell を構築しましたが、特にウズベキスタンの地元コミュニティの固有のニーズを満たすように調整しました。",
+  "inspirationDescription2": "私たちの使命は、隣人同士が簡単に売買し、つながりを持てる、信頼できるプラットフォームを作成することです。",
+  "comingSoonTitle": "TezSell に近日登場予定",
+  "inAppChat": "アプリ内チャット",
+  "secureTransactions": "安全なトランザクション",
+  "realEstateListings": "不動産物件情報",
+  "stayUpdated": "最新情報を入手",
+  "comingSoonBadge": "近日公開",
+  "ctaTitle": "今すぐ TezSell コミュニティに参加してください!",
+  "ctaDescription": "ウズベキスタンのより良いマーケットプレイス体験の構築に参加してください。フィードバックを共有して、当社の成長にご協力ください。",
+  "createAccount": "アカウントを作成する",
+  "learnMore": "もっと詳しく知る",
+  "replyUpdateSuccess": "返信が正常に更新されました",
+  "replyUpdateError": "返信を更新できませんでした",
+  "replyDeleteSuccess": "返信は正常に削除されました",
+  "replyDeleteError": "返信の削除に失敗しました",
+  "replyDeleteConfirmation": "この返信を削除してもよろしいですか?",
+  "authenticationRequired": "認証が必要です",
+  "enterValidReply": "有効な返信テキストを入力してください",
+  "saving": "保存中...",
+  "deleting": "削除中...",
+  "properties": "プロパティ",
+  "agents": "エージェント",
+  "becomeAgent": "エージェントになる",
+  "main": "主要",
+  "upload": "アップロード",
+  "filtered_products": "フィルタリングされた製品",
+  "filtered_services": "フィルタリングされたサービス",
+  "productDetail": "製品詳細",
+  "unknownUser": "不明なユーザー",
+  "locationNotAvailable": "場所が利用できません",
+  "noTitle": "タイトルなし",
+  "noCategory": "カテゴリなし",
+  "noDescription": "説明なし",
+  "som": "ソム",
+  "about_me": "私について",
+  "my_name": "私の名前",
+  "customer_support": "カスタマーサポート",
+  "customer_center": "カスタマーセンター",
+  "customer_inquiries": "お問い合わせ",
+  "customer_terms": "利用規約",
+  "region": "地域",
+  "district": "地区",
+  "tap_change_profile": "タップして写真を変更します",
+  "language_settings": "言語設定",
+  "selectLanguage": "言語を選択してください",
+  "select_theme": "テーマの選択",
+  "theme": "テーマ",
+  "location_settings": "位置情報の設定",
+  "security": "安全",
+  "data_storage": "データとストレージ",
+  "accessibility": "アクセシビリティ",
+  "privacy": "プライバシー",
+  "light_theme": "ライト",
+  "dark_theme": "暗い",
+  "system_theme": "システムのデフォルト",
+  "my_products": "私の製品",
+  "refresh": "リフレッシュ",
+  "delete_product": "製品の削除",
+  "delete_confirmation": "この商品を削除してもよろしいですか?",
+  "delete": "消去",
+  "error_loading_products": "製品のロード中にエラーが発生しました: {error}",
+  "product_deleted_success": "製品は正常に削除されました",
+  "error_deleting_product": "製品削除エラー: {error}",
+  "no_products_found": "製品が見つかりませんでした",
+  "add_first_product": "最初の製品を追加することから始めます",
+  "no_title": "タイトルなし",
+  "no_description": "説明なし",
+  "in_stock": "在庫あり",
+  "out_of_stock": "在庫切れ",
+  "new_condition": "新しい",
+  "edit_product": "製品の編集",
+  "delete_product_tooltip": "製品の削除",
+  "sum_currency": "和",
+  "edit_product_title": "製品の編集",
+  "product_name": "製品名",
+  "product_description": "製品説明",
+  "price": "価格",
+  "condition": "状態",
+  "condition_new": "新しい",
+  "condition_used": "使用済み",
+  "condition_refurbished": "改装済み",
+  "currency": "通貨",
+  "category": "カテゴリ",
+  "images": "画像",
+  "existing_images": "既存のイメージ",
+  "new_images": "新しい画像",
+  "image_instructions": "ここに画像が表示されます。上のアップロードアイコンを押してください。",
+  "update_button": "アップデート",
+  "loading_category_error": "カテゴリの読み込みエラー: {error}",
+  "error_picking_images": "画像選択エラー: {error}",
+  "please_fill_all_required": "すべてのフィールドに入力してください",
+  "invalid_price_message": "無効な価格が入力されました。有効な番号を入力してください。",
+  "category_required_message": "有効なカテゴリを選択してください。",
+  "one_image_required_message": "少なくとも 1 つの製品画像が必要です",
+  "product_updated_success": "製品が正常に更新されました",
+  "error_updating_product": "製品の更新中にエラーが発生しました: {error}",
+  "my_services": "私のサービス",
+  "delete_service": "サービスの削除",
+  "delete_service_confirmation": "このサービスを削除してもよろしいですか?",
+  "no_services_found": "サービスが見つかりませんでした",
+  "add_first_service": "最初のサービスを追加することから始めます",
+  "edit_service": "サービスの編集",
+  "delete_service_tooltip": "サービスの削除",
+  "service_deleted_successfully": "サービスが正常に削除されました",
+  "error_deleting_service": "サービスの削除中にエラーが発生しました",
+  "error_loading_services": "サービスの読み込みエラー",
+  "service_name": "サービス名",
+  "enter_service_name": "サービス名を入力してください",
+  "service_name_required": "サービス名は必須です",
+  "service_name_min_length": "サービス名は 3 文字以上である必要があります",
+  "enter_service_description": "サービスの説明を入力してください",
+  "service_description_required": "サービスの説明は必須です",
+  "service_description_min_length": "説明は 10 文字以上である必要があります",
+  "category_required": "カテゴリを選択してください",
+  "no_categories_available": "利用可能なカテゴリがありません",
+  "location": "位置",
+  "select_location": "場所を選択してください",
+  "location_required": "場所を選択してください",
+  "no_locations_available": "利用できる場所がありません",
+  "add_images": "画像の追加",
+  "current_images": "現在の画像",
+  "no_images_selected": "画像が選択されていません",
+  "save_changes": "変更を保存",
+  "map_main": "マップとプロパティ",
+  "agent_status": "エージェントのステータス",
+  "admin_panel": "管理者パネル",
+  "propertiesFound": "見つかったプロパティ",
+  "propertiesSaved": "保存されたプロパティ",
+  "saved": "保存されました",
+  "loadingProperties": "プロパティを読み込んでいます...",
+  "failedToLoad": "プロパティの読み込みに失敗しました。もう一度試してください。",
+  "noPropertiesFound": "プロパティが見つかりませんでした",
+  "tryAdjusting": "検索条件を調整してみてください",
+  "search_placeholder": "タイトルや場所で検索...",
+  "search_filters": "フィルター",
+  "search_button": "検索",
+  "search_clear_filters": "フィルターをクリアする",
+  "filter_options_sale_and_rent": "販売とレンタル",
+  "filter_options_for_sale": "販売用",
+  "filter_options_for_rent": "賃貸用",
+  "filter_options_all_types": "全種類",
+  "filter_options_apartment": "アパート",
+  "filter_options_house": "家",
+  "filter_options_townhouse": "タウンハウス",
+  "filter_options_villa": "ヴィラ",
+  "filter_options_commercial": "コマーシャル",
+  "filter_options_office": "オフィス",
+  "property_card_featured": "注目の",
+  "property_card_bed": "寝室",
+  "property_card_bath": "バスルーム",
+  "property_card_parking": "駐車場",
+  "property_card_view_details": "詳細を見る",
+  "property_card_contact": "接触",
+  "property_card_balcony": "バルコニー",
+  "property_card_garage": "ガレージ",
+  "property_card_garden": "庭",
+  "property_card_pool": "プール",
+  "property_card_elevator": "エレベーター",
+  "property_card_furnished": "家具付き",
+  "property_card_sales": "販売",
+  "pricing_month": "/月",
+  "results_properties_found": "見つかったプロパティ",
+  "results_properties_saved": "保存されたプロパティ",
+  "results_saved": "保存されました",
+  "results_loading_properties": "プロパティを読み込んでいます...",
+  "results_failed_to_load": "プロパティの読み込みに失敗しました。もう一度試してください。",
+  "results_no_properties_found": "プロパティが見つかりませんでした",
+  "results_try_adjusting": "検索条件を調整してみてください",
+  "no_properties_found": "プロパティが見つかりませんでした",
+  "no_category_properties": "このカテゴリにはプロパティがありません",
+  "properties_loading": "プロパティを読み込んでいます...",
+  "all_properties_loaded": "すべてのプロパティがロードされました",
+  "n_properties": "{count} プロパティ",
+  "in_area": "エリア内",
+  "pagination_previous": "前の",
+  "pagination_next": "次",
+  "pagination_page": "ページ",
+  "pagination_page_of": "1ページ目",
+  "contact_modal_title": "連絡先",
+  "contact_modal_agent_contact": "エージェントの連絡先",
+  "contact_modal_property_owner": "不動産所有者",
+  "contact_modal_agent_phone_number": "エージェントの電話番号",
+  "contact_modal_owner_phone_number": "所有者の電話番号",
+  "contact_modal_license": "ライセンス",
+  "contact_modal_rating": "評価",
+  "contact_modal_call_now": "今すぐ電話してください",
+  "contact_modal_copy_number": "コピー番号",
+  "contact_modal_close": "近い",
+  "contact_modal_contact_hours": "お問い合わせ時間: 9:00 AM - 8:00 PM",
+  "contact_modal_agent": "エージェント",
+  "errors_toggle_save_failed": "プロパティの保存を切り替えることができませんでした:",
+  "errors_copy_failed": "電話番号をコピーできませんでした:",
+  "errors_phone_copied": "電話番号をクリップボードにコピーしました",
+  "errors_error_occurred_regions": "リージョンでエラーが発生しました",
+  "errors_error_occurred_districts": "地区でエラーが発生しました",
+  "errors_please_fill_all_required_fields": "必須フィールドをすべて入力してください",
+  "errors_authentication_required": "認証が必要です",
+  "errors_user_info_missing": "ユーザー情報が不足しています",
+  "errors_validation_error": "入力データを確認してください",
+  "errors_permission_denied": "許可が拒否されました",
+  "errors_server_error": "サーバーエラーが発生しました",
+  "errors_network_error": "ネットワーク接続エラー",
+  "errors_timeout_error": "リクエストのタイムアウトを超えました",
+  "errors_custom_error": "エラーが発生しました",
+  "errors_error_creating_property": "プロパティの作成中にエラーが発生しました",
+  "errors_unknown_error_message": "不明なエラーが発生しました",
+  "errors_coordinates_not_found": "この住所の座標が見つかりませんでした。手動で入力してください。",
+  "errors_coordinates_error": "座標の取得中にエラーが発生しました。手動で入力してください。",
+  "property_info_views": "ビュー",
+  "property_info_listed": "上場",
+  "property_info_price_per_sqm": "/平方メートル",
+  "property_info_saved": "保存されました",
+  "property_info_save": "保存",
+  "property_info_share": "共有",
+  "loading_loading": "読み込み中...",
+  "loading_loading_details": "物件の詳細を読み込み中...",
+  "loading_property_not_found": "プロパティが見つかりません",
+  "loading_property_not_found_message": "お探しの物件は存在しないか、削除されました。",
+  "loading_back_to_properties": "プロパティに戻る",
+  "loading_title": "エージェントをロード中...",
+  "loading_message": "エージェントのリストをロードするまでお待ちください。",
+  "loading_agent_not_found": "エージェントが見つかりません",
+  "property_details_title": "物件詳細",
+  "property_details_bedrooms": "寝室",
+  "property_details_bathrooms": "バスルーム",
+  "property_details_floor_area": "床面積",
+  "property_details_parking": "駐車場",
+  "property_details_basic_information": "基本情報",
+  "property_details_property_type": "プロパティの種類:",
+  "property_details_listing_type": "リストの種類:",
+  "property_details_for_sale": "販売用",
+  "property_details_for_rent": "賃貸用",
+  "property_details_year_built": "築年数:",
+  "property_details_floor": "床：",
+  "property_details_of": "の",
+  "property_details_features_amenities": "特徴とアメニティ",
+  "sections_description": "説明",
+  "sections_nearby_amenities": "近隣の施設",
+  "sections_similar_properties": "類似のプロパティ",
+  "amenities_metro": "地下鉄",
+  "amenities_school": "学校",
+  "amenities_hospital": "病院",
+  "amenities_shopping": "買い物",
+  "amenities_away": "離れて",
+  "contact_title": "連絡先",
+  "contact_professional_listing": "プロフェッショナルリスト",
+  "contact_listed_by_agent": "認証済みエージェントによってリストされています",
+  "contact_by_owner": "所有者による",
+  "contact_direct_contact": "不動産オーナーとの直接コンタクト",
+  "contact_property_owner": "不動産所有者",
+  "contact_call_agent": "エージェントに電話をかける",
+  "contact_email_agent": "電子メールエージェント",
+  "contact_call_owner": "所有者に電話をかける",
+  "contact_email_owner": "電子メールの所有者",
+  "contact_send_inquiry": "お問い合わせを送信",
+  "property_status_title": "物件のステータス",
+  "property_status_availability": "可用性：",
+  "property_status_available": "利用可能",
+  "property_status_not_available": "利用不可",
+  "property_status_featured": "注目:",
+  "property_status_featured_property": "注目の物件",
+  "property_status_property_id": "プロパティID:",
+  "inquiry_title": "お問い合わせを送信",
+  "inquiry_inquiry_type": "お問い合わせの種類",
+  "inquiry_request_info": "情報のリクエスト",
+  "inquiry_schedule_viewing": "スケジュールの閲覧",
+  "inquiry_make_offer": "オファーをする",
+  "inquiry_request_callback": "リクエストコールバック",
+  "inquiry_message": "メッセージ",
+  "inquiry_message_placeholder": "この物件へのご興味についてお知らせください...",
+  "inquiry_offered_price": "提示価格",
+  "inquiry_enter_offer": "オファーを入力してください",
+  "inquiry_preferred_contact_time": "ご希望の連絡時間 (オプション)",
+  "inquiry_contact_time_placeholder": "例：平日 9:00 AM - 5:00 PM",
+  "inquiry_cancel": "キャンセル",
+  "inquiry_sending": "送信中...",
+  "inquiry_send_inquiry": "お問い合わせを送信",
+  "inquiry_inquiry_sent_success": "お問い合わせは正常に送信されました。",
+  "inquiry_inquiry_sent_error": "お問い合わせの送信に失敗しました。もう一度試してください。",
+  "alerts_link_copied": "プロパティ リンクがクリップボードにコピーされました。",
+  "alerts_phone_copied": "電話番号がクリップボードにコピーされました!",
+  "alerts_save_property_failed": "プロパティを保存できませんでした:",
+  "alerts_email_subject": "に関するお問い合わせ:",
+  "alerts_email_body": "こんにちは。\\n\\n{address} にある貴社の物件「{title}」に興味があります。\\n\\n詳細についてはお問い合わせください。\\n\\nよろしくお願いいたします。",
+  "related_properties_view_details": "詳細を見る",
+  "header_property": "夢の物件を見つけよう",
+  "header_sub_property": "タシケントの最も魅力的な地域でプレミアム不動産の機会を見つけてください",
+  "header_title": "不動産業者",
+  "header_subtitle": "不動産のニーズに応える経験豊富なエージェントを見つける",
+  "header_agents_found": "エージェントが見つかりました",
+  "filters_all_specializations": "すべての専門分野",
+  "filters_residential": "居住の",
+  "filters_commercial": "コマーシャル",
+  "filters_luxury": "贅沢",
+  "filters_investment": "投資",
+  "filters_any_rating": "任意の評価",
+  "filters_four_stars": "星4つ以上",
+  "filters_four_half_stars": "4.5 つ星以上",
+  "filters_five_stars": "5つ星",
+  "filters_highest_rated": "最高評価",
+  "filters_lowest_rated": "最低評価",
+  "filters_most_sales": "最多販売数",
+  "filters_most_experience": "最も多くの経験",
+  "agent_card_verified_agent": "認証済みエージェント",
+  "agent_card_years_experience": "年の経験",
+  "agent_card_years": "年",
+  "agent_card_license": "ライセンス",
+  "agent_card_specialization": "専門分野",
+  "agent_card_view_profile": "プロフィールを見る",
+  "agent_card_contact": "接触",
+  "agent_card_verified": "確認済み",
+  "no_results_title": "エージェントが見つかりませんでした",
+  "no_results_message": "検索条件やフィルターを調整してみてください。",
+  "error_title": "エージェントの読み込みエラー",
+  "error_message": "エージェントリストの読み込みに失敗しました。もう一度試してください。",
+  "error_retry": "リトライ",
+  "error_default_message": "エージェントの詳細をロードできませんでした",
+  "error_try_again": "もう一度やり直してください",
+  "notifications_phone_copied": "電話番号をクリップボードにコピーしました",
+  "notifications_copy_failed": "電話番号をコピーできませんでした:",
+  "fallback_agent_name": "エージェント",
+  "fallback_default_phone": "+998 90 123 45 67",
+  "navigation_submit_property": "プロパティの送信",
+  "navigation_submitting": "送信中...",
+  "navigation_back_to_agents": "エージェントに戻る",
+  "agent_profile_verified_agent": "認証済みエージェント",
+  "agent_profile_contact_agent": "エージェントに連絡する",
+  "agent_profile_send_message": "メッセージを送信する",
+  "agent_profile_years_experience": "長年の経験",
+  "agent_profile_properties_sold": "販売物件",
+  "agent_profile_active_listings": "アクティブなリスト",
+  "agent_profile_total_properties": "総特性",
+  "tabs_overview": "概要",
+  "tabs_properties": "プロパティ",
+  "tabs_reviews": "レビュー",
+  "about_agent_title": "エージェントについて",
+  "about_agent_agency": "代理店",
+  "about_agent_license_number": "ライセンス番号",
+  "about_agent_specialization": "専門分野",
+  "about_agent_member_since": "メンバー歴",
+  "about_agent_verified_since": "検証日",
+  "performance_metrics_title": "パフォーマンス指標",
+  "performance_metrics_average_rating": "平均評価",
+  "performance_metrics_properties_sold": "販売物件",
+  "performance_metrics_active_listings": "アクティブなリスト",
+  "performance_metrics_years_experience": "長年の経験",
+  "contact_info_title": "連絡先",
+  "contact_info_contact_via_platform": "プラットフォーム経由で連絡する",
+  "verification_status_title": "検証ステータス",
+  "verification_status_verified_agent": "認証済みエージェント",
+  "verification_status_pending_verification": "検証保留中",
+  "verification_status_licensed_professional": "認定プロフェッショナル",
+  "verification_status_registered_agency": "登録代理店",
+  "quick_actions_title": "クイックアクション",
+  "quick_actions_call_now": "今すぐ電話してください",
+  "quick_actions_send_message": "メッセージを送信する",
+  "quick_actions_view_properties": "プロパティの表示",
+  "properties_title": "エージェントのプロパティ",
+  "properties_loading_properties": "プロパティを読み込んでいます...",
+  "properties_no_properties_title": "プロパティが見つかりません",
+  "properties_no_properties_message": "このエージェントのプロパティがここに表示されます。",
+  "properties_recent_properties_note": "最近の物件を表示しています。すべてのエージェントのプロパティの完全なリストを確認してください。",
+  "properties_listed": "上場",
+  "properties_bed": "ベッド",
+  "properties_bath": "バス",
+  "properties_for_sale": "販売用",
+  "properties_for_rent": "賃貸用",
+  "reviews_title": "お客様のレビュー",
+  "reviews_no_reviews_title": "まだレビューはありません",
+  "reviews_no_reviews_message": "クライアントのレビューと推奨事項がここに表示されます。",
+  "fallbacks_agent_name": "エージェント",
+  "fallbacks_default_profile_image": "/デフォルト-アバター.png",
+  "saved_properties_title": "保存されたプロパティ",
+  "saved_properties_subtitle": "お気に入りの物件を 1 か所に",
+  "saved_properties_no_saved_properties": "保存されたプロパティはまだありません",
+  "saved_properties_start_saving": "探索を開始し、気に入った物件を保存します",
+  "saved_properties_browse_properties": "プロパティを参照する",
+  "saved_properties_saved_on": "保存日",
+  "auth_login_required": "保存されたプロパティを表示するにはログインしてください",
+  "auth_login": "ログイン",
+  "success_property_unsaved": "保存されたリストからプロパティが削除されました",
+  "success_property_saved": "プロパティが正常に保存されました",
+  "success_phone_copied": "電話番号をコピーしました！",
+  "success_property_created_success": "プロパティが正常に作成されました。",
+  "success_agent_approved": "エージェントは正常に承認されました",
+  "success_agent_rejected": "エージェントは正常に拒否されました",
+  "steps_step": "ステップ",
+  "steps_basic_information": "基本情報",
+  "steps_location_details": "場所の詳細",
+  "steps_property_details": "物件詳細",
+  "steps_property_images": "物件画像",
+  "basic_info_tell_us_about_property": "あなたの物件について教えてください",
+  "basic_info_property_type": "プロパティの種類",
+  "basic_info_listing_type": "リストタイプ",
+  "basic_info_property_title": "物件のタイトル",
+  "basic_info_title_placeholder": "物件のわかりやすいタイトルを入力してください",
+  "basic_info_description": "説明",
+  "basic_info_description_placeholder": "物件を詳しく説明して...",
+  "property_types_apartment": "アパート",
+  "property_types_house": "家",
+  "property_types_townhouse": "タウンハウス",
+  "property_types_villa": "ヴィラ",
+  "property_types_commercial": "コマーシャル",
+  "property_types_office": "オフィス",
+  "property_types_land": "土地",
+  "property_types_warehouse": "倉庫",
+  "listing_types_for_sale": "販売用",
+  "listing_types_for_rent": "賃貸用",
+  "location_where_is_property": "あなたの物件はどこにありますか?",
+  "location_full_address": "完全な住所",
+  "location_address_placeholder": "完全な住所を入力してください",
+  "location_region": "地域",
+  "location_select_region": "地域を選択してください",
+  "location_district": "地区",
+  "location_select_district": "地区を選択してください",
+  "location_city": "市",
+  "location_city_placeholder": "市",
+  "location_loading_regions": "リージョンをロード中...",
+  "location_loading_districts": "地区を読み込んでいます...",
+  "location_map_coordinates": "地図座標",
+  "location_get_coordinates": "座標を取得する",
+  "location_latitude": "緯度",
+  "location_longitude": "経度",
+  "location_coordinates_set": "座標セット",
+  "location_location_tips": "場所のヒント",
+  "location_location_tip_1": "• 最初に住所を入力し、次に「座標を取得」をクリックすると、地図の位置が自動的に取得されます。",
+  "location_location_tip_2": "• 正確な位置がわかっている場合は、手動で座標を入力することもできます。",
+  "location_location_tip_3": "• 正確な座標により、購入者は地図上であなたの不動産を見つけることができます",
+  "property_details_provide_detailed_info": "物件に関する詳しい情報を提供する",
+  "property_details_total_floors": "総階数",
+  "property_details_area_m2": "面積(㎡)",
+  "property_details_parking_spaces": "駐車スペース",
+  "property_details_price": "価格",
+  "property_details_features": "特徴",
+  "images_add_photos_showcase": "写真を追加して物件を紹介します",
+  "images_click_to_upload": "クリックして画像をアップロードします",
+  "images_max_images_info": "最大 10 枚の画像、JPG、PNG、または WEBP",
+  "images_main": "主要",
+  "images_maximum_images_allowed": "最大 10 枚の画像が許可されます",
+  "admin_dashboard_title": "管理者ダッシュボード",
+  "admin_dashboard_subtitle": "不動産プラットフォームのリアルタイム概要",
+  "admin_last_update": "最終更新",
+  "admin_total_properties": "総特性",
+  "admin_total_agents": "総エージェント数",
+  "admin_total_users": "総ユーザー数",
+  "admin_total_views": "合計視聴数",
+  "admin_error_loading_dashboard": "ダッシュボードの読み込みエラー",
+  "admin_failed_to_load_data": "ダッシュボードデータのロードに失敗しました",
+  "admin_avg_sale_price": "平均販売価格",
+  "admin_avg_sale_price_subtitle": "すべてのアクティブなリスト",
+  "admin_total_portfolio_value": "ポートフォリオ総額",
+  "admin_total_portfolio_value_subtitle": "結合されたプロパティ値",
+  "admin_avg_price_per_sqm": "平方メートルあたりの平均価格",
+  "admin_avg_price_per_sqm_subtitle": "市場レート指標",
+  "admin_property_types_distribution": "プロパティの種類の分布",
+  "admin_properties_by_city": "都市別の物件",
+  "admin_properties_by_district": "地区別の物件",
+  "admin_inquiry_types_distribution": "お問い合わせの種類の分布",
+  "admin_agent_verification_rate": "エージェント検証率",
+  "admin_agent_verification_rate_subtitle": "品質管理",
+  "admin_inquiry_response_rate": "問い合わせ対応率",
+  "admin_inquiry_response_rate_subtitle": "顧客サービス",
+  "admin_avg_views_per_property": "プロパティごとの平均ビュー数",
+  "admin_avg_views_per_property_subtitle": "物件の人気",
+  "admin_featured_properties": "注目の物件",
+  "admin_featured_properties_subtitle": "プレミアムリスト",
+  "admin_most_viewed_properties": "最も閲覧されている物件",
+  "admin_top_performing_agents": "成績上位のエージェント",
+  "admin_system_health": "システムの健全性",
+  "admin_properties_without_images": "画像のないプロパティ",
+  "admin_missing_location_data": "位置データがありません",
+  "admin_pending_agent_verification": "エージェントの確認待ち",
+  "admin_active": "アクティブ",
+  "admin_verified": "検証済み",
+  "admin_active_7d": "アクティブ (7d)",
+  "admin_this_month": "今月",
+  "agents_loading_pending_applications": "保留中のアプリケーションをロードしています...",
+  "agents_error_loading_applications": "アプリケーションの読み込みエラー",
+  "agents_pending_agents": "保留中のエージェント",
+  "agents_total_pending_applications": "保留中のアプリケーションの合計:",
+  "agents_pending_verification": "検証保留中",
+  "agents_applied_date": "適用済み：",
+  "agents_contact_info": "連絡先",
+  "agents_license_number": "ライセンス番号",
+  "agents_years_experience": "長年の経験",
+  "agents_years_suffix": "年",
+  "agents_total_sales": "総売上高",
+  "agents_specialization": "専門分野",
+  "agents_approve": "承認する",
+  "agents_reject": "拒否する",
+  "agents_no_pending_applications": "保留中の申請はありません",
+  "agents_all_applications_processed": "すべてのエージェント申請が処理されました",
+  "general_previous": "前の",
+  "general_page": "ページ",
+  "general_next": "次",
+  "general_views": "ビュー",
+  "general_sales": "販売",
+  "general_language_uz": "オズベクチャ",
+  "general_language_ru": "Русский",
+  "general_language_en": "英語",
+  "general_super_admin": "スーパー管理者",
+  "general_staff": "スタッフ",
+  "general_verified_agent": "認証済みエージェント",
+  "general_pending_agent": "保留中のエージェント",
+  "general_regular_user": "一般ユーザー",
+  "general_admin": "管理者",
+  "general_dashboard": "ダッシュボード",
+  "general_manage_users": "ユーザーの管理",
+  "general_verified_agents": "検証済みエージェント",
+  "general_agent_panel": "エージェントパネル",
+  "general_create_property": "プロパティの作成",
+  "general_my_properties": "私のプロパティ",
+  "general_inquiries": "お問い合わせ",
+  "general_agent_profile": "エージェントプロフィール",
+  "general_live": "ライブ",
+  "general_logged_out_successfully": "正常にログアウトされました",
+  "general_logout_completed_with_errors": "ログアウト完了（エラーあり）",
+  "general_application_under_review": "申請は審査中です",
+  "general_check_status": "ステータスを確認 →",
+  "general_last_updated": "最終更新日:",
+  "general_permissions_may_be_outdated": "権限が古い可能性があります",
+  "general_permissions_up_to_date": "最新の権限",
+  "general_never": "一度もない",
+  "general_properties_found": "見つかったプロパティ",
+  "general_properties_saved": "保存されたプロパティ",
+  "general_saved": "保存されました",
+  "general_loading_properties": "プロパティを読み込んでいます...",
+  "general_failed_to_load": "プロパティの読み込みに失敗しました。もう一度試してください。",
+  "general_no_properties_found": "プロパティが見つかりませんでした",
+  "general_try_adjusting": "検索条件を調整してみてください",
+  "select_category": "カテゴリを選択してください",
+  "service_description": "サービスの説明",
+  "product_search_placeholder": "検索語を入力して製品を検索します",
+  "privacy_policy": "プライバシーポリシー",
+  "terms_subtitle": "プライバシーポリシーと規約",
+  "last_updated": "最終更新日",
+  "contact_information": "連絡先",
+  "accept_terms": "利用規約に同意します",
+  "read_terms": "当社の利用規約をお読みください",
+  "inquiries": "お問い合わせ＆サポート",
+  "inquiries_subtitle": "サポートが必要な場合はお問い合わせください",
+  "help_center": "どのようにお手伝いできるでしょうか?",
+  "help_subtitle": "ご質問がございましたらお気軽にお問い合わせください",
+  "contact_us": "お問い合わせ",
+  "email_support": "電子メールサポート",
+  "call_support": "サポートに電話する",
+  "send_message": "メッセージを送信する",
+  "fill_contact_form": "お問い合わせフォームに記入してください",
+  "contact_form": "お問い合わせフォーム",
+  "name": "あなたの名前",
+  "name_required": "あなたの名前を入力してください",
+  "email": "電子メールアドレス",
+  "email_required": "メールアドレスを入力してください",
+  "email_invalid": "有効なメールアドレスを入力してください",
+  "subject": "主題",
+  "subject_required": "件名を入力してください",
+  "message": "メッセージ",
+  "message_required": "メッセージを入力してください",
+  "message_too_short": "メッセージは 10 文字以上である必要があります",
+  "faq": "よくある質問",
+  "follow_us": "私たちに従ってください",
+  "faq_how_to_sell": "Tezsell でアイテムを販売するにはどうすればよいですか?",
+  "faq_how_to_sell_answer": "アイテムを販売するには: 1) アカウントを作成、2) 「+」ボタンをタップ、3) カテゴリ (製品/サービス/不動産) を選択、4) 写真と説明を追加、5) 価格を設定、6) 公開!あなたのリストはあなたの地域の購入者に表示されます。",
+  "faq_is_free": "テッセルは無料で使用できますか?",
+  "faq_is_free_answer": "はい！ Tezsell は現在完全に無料です。掲載料、販売手数料、購読料はかかりません。将来的にプレミアム機能を導入する可能性がありますが、30 日前にユーザーに通知します。",
+  "faq_safety": "売買時に安全を保つにはどうすればよいですか?",
+  "faq_safety_answer": "安全に関するヒント: 1) 公共の場所で会う、2) 支払う前に品物を検査する、3) 見知らぬ人には決して送金しない、4) 自分の直感を信じる、5) 不審なユーザーは報告する、6) あまり早く個人情報を共有しない、7) 高額な取引には友人を連れてくる。",
+  "faq_payment": "支払いはどのように行われますか?",
+  "faq_payment_answer": "Tezsell は支払いを処理しません。買い手と売り手は直接支払いを手配します（現金、銀行振込など）。私たちは人々を結び付ける単なるプラットフォームです。取引はあなた自身が処理します。",
+  "faq_prohibited": "禁止されている物品は何ですか?",
+  "faq_prohibited_answer": "禁止されている品目には、武器、薬物、盗難品、偽造品、アダルト コンテンツ、生きた動物 (許可なし)、政府の身分証明書、危険物が含まれます。完全なリストについては、利用規約をご覧ください。",
+  "faq_account_delete": "アカウントを削除するにはどうすればよいですか?",
+  "faq_account_delete_answer": "「プロフィール」→「設定」→「アカウント設定」→「アカウントの削除」に移動します。注: これは永続的なものであり、元に戻すことはできません。すべての出品は削除されます。",
+  "faq_report_user": "ユーザーまたはリストを報告するにはどうすればよいですか?",
+  "faq_report_user_answer": "リストまたはユーザー プロフィール上の 3 つの点 (•••) をタップし、[レポート] を選択します。理由を選択して送信してください。すべてのレポートは 24 ～ 48 時間以内に確認されます。",
+  "faq_change_location": "現在地を変更するにはどうすればよいですか?",
+  "faq_change_location_answer": "ホーム画面の左上隅にある位置ボタンをタップします。地域と地区を選択すると、その地域のリストが表示されます。",
+  "welcome_customer_center": "カスタマーセンターへようこそ",
+  "customer_center_subtitle": "24時間年中無休でお手伝いいたします",
+  "quick_actions": "クイックアクション",
+  "live_chat": "ライブチャット",
+  "chat_with_us": "チャットしてみよう",
+  "find_answers": "答えを見つける",
+  "my_tickets": "私のチケット",
+  "view_tickets": "チケットを見る",
+  "feedback": "フィードバック",
+  "share_feedback": "フィードバックを共有する",
+  "contact_methods": "連絡方法",
+  "phone_support": "電話サポート",
+  "available_247": "24時間365日利用可能",
+  "response_24h": "24時間以内に返答",
+  "telegram_support": "電報サポート",
+  "instant_replies": "即時返信",
+  "whatsapp_support": "WhatsApp サポート",
+  "quick_response": "素早い対応",
+  "popular_topics": "人気のトピック",
+  "account_management": "アカウント管理",
+  "reset_password": "パスワードのリセット",
+  "update_profile": "プロフィールを更新する",
+  "verify_account": "アカウントの確認",
+  "delete_account": "アカウントの削除",
+  "buying_selling": "売買",
+  "how_to_post": "広告の掲載方法",
+  "payment_methods": "お支払い方法",
+  "shipping_delivery": "配送と配達",
+  "return_policy": "返品規則",
+  "safety_security": "安心・安全",
+  "report_scam": "詐欺を報告する",
+  "safe_trading": "安全な取引のヒント",
+  "privacy_settings": "プライバシー設定",
+  "blocked_users": "ブロックされたユーザー",
+  "technical_issues": "技術的な問題",
+  "app_not_working": "アプリが動作しない",
+  "upload_failed": "アップロードに失敗しました",
+  "login_problems": "ログインの問題",
+  "support_hours": "サポート時間",
+  "mon_fri_9_6": "月曜～金曜: 午前9時～午後6時",
+  "how_are_we_doing": "調子はどうですか？",
+  "rate_experience": "カスタマーサービス体験を評価してください",
+  "poor": "貧しい",
+  "okay": "わかった",
+  "good": "良い",
+  "excellent": "素晴らしい",
+  "account_secure": "あなたのアカウントは安全です",
+  "password_security": "パスワードと認証",
+  "change_password": "パスワードを変更する",
+  "two_factor_auth": "二要素認証",
+  "biometric_login": "生体認証ログイン",
+  "login_activity": "ログインアクティビティ",
+  "active_sessions": "アクティブなセッション",
+  "login_alerts": "ログインアラート",
+  "account_protection": "アカウントの保護",
+  "recovery_email": "回復メール",
+  "backup_codes": "バックアップコード",
+  "danger_zone": "危険地帯",
+  "improve_security": "セキュリティの向上",
+  "security_score": "セキュリティスコア",
+  "last_changed_days": "最後に変更されたのは 30 日前",
+  "logout_all_devices": "すべてのデバイスをログアウトする",
+  "end_all_sessions": "すべてのセッションを終了する",
+  "permanently_delete": "完全に削除",
+  "verification_code_message": "ご本人であることを確認するための確認コードを送信します。",
+  "send_code": "コードを送信する",
+  "enter_verification_code": "認証コードを入力してください",
+  "verification_code": "検証コード",
+  "new_password": "新しいパスワード",
+  "confirm_password": "パスワードを認証する",
+  "resend_code": "コードを再送信する",
+  "code_sent_to": "に送信された確認コードを入力してください",
+  "enter_code": "確認コードを入力してください",
+  "code_must_be_6_digits": "コードは6桁である必要があります",
+  "enter_new_password": "新しいパスワードを入力してください",
+  "minimum_8_characters": "最低 8 文字",
+  "passwords_do_not_match": "パスワードが一致しません",
+  "close": "近い",
+  "current": "現在",
+  "session_ended": "セッションが終了しました",
+  "update_recovery_email": "回復メールを更新する",
+  "new_email": "新しいメール",
+  "update": "アップデート",
+  "verification_email_sent": "確認メールが送信されました",
+  "generate_emergency_codes": "緊急コードを生成する",
+  "copy_all": "すべてコピー",
+  "code_copied": "コードをコピーしました",
+  "all_codes_copied": "すべてのコードがコピーされました",
+  "logout_all_devices_confirm": "すべてのデバイスをログアウトしますか?",
+  "logout_all_devices_message": "これにより、すべてのデバイス上のすべてのアクティブなセッションが終了します。",
+  "logout_all": "すべてログアウト",
+  "delete_account_confirm": "アカウントを削除しますか?",
+  "delete_account_warning": "このアクションは永続的であり、元に戻すことはできません。すべてのデータは完全に削除されます。",
+  "what_will_be_deleted": "削除されるもの:",
+  "profile_and_account_info": "• あなたのプロフィールとアカウント情報",
+  "all_listings_and_posts": "• すべてのリストと投稿",
+  "messages_and_conversations": "メッセージ",
+  "saved_items_and_preferences": "• 保存された項目と設定",
+  "enter_password_to_continue": "続行するにはパスワードを入力してください",
+  "continue_val": "続く",
+  "please_enter_password": "パスワードを入力してください",
+  "enter_confirmation_code": "認証コードを入力",
+  "deletion_confirmation_message": "確認コードをあなたの携帯電話に送信しました。アカウントを完全に削除するには、以下に入力してください。",
+  "confirmation_code": "確認コード",
+  "please_enter_6_digit_code": "6桁のコードを入力してください",
+  "account_deleted": "あなたのアカウントは削除されました",
+  "deletion_cancelled": "削除がキャンセルされました",
+  "failed_to_load_user_info": "ユーザー情報の読み込みに失敗しました",
+  "auth_login_to_view_saved": "保存したプロパティを表示するにはログインしてください",
+  "authLoginRequired": "ログインが必要です",
+  "authLoginToViewSaved": "保存したプロパティを表示するにはログインしてください",
+  "authLogin": "ログイン",
+  "savedPropertiesTitle": "保存されたプロパティ",
+  "loadingSavedProperties": "保存されたプロパティをロードしています...",
+  "errorsFailedToLoadSaved": "保存されたプロパティのロードに失敗しました",
+  "actionsRetry": "リトライ",
+  "savedPropertiesNoSaved": "保存されたプロパティはありません",
+  "savedPropertiesStartSaving": "探索を開始し、気に入った物件を保存します",
+  "savedPropertiesBrowse": "プロパティを参照する",
+  "resultsSavedProperties": "保存されたプロパティ",
+  "actionsRefresh": "リフレッシュ",
+  "resultsNoMoreProperties": "これ以上のプロパティはありません",
+  "propertyCardFeatured": "注目の",
+  "successPropertyUnsaved": "保存されたリストからプロパティが削除されました",
+  "alertsUnsavePropertyFailed": "プロパティの削除に失敗しました",
+  "propertyCardBed": "ベッド",
+  "propertyCardBath": "バス",
+  "savedPropertiesSavedOn": "保存日",
+  "propertyCardViewDetails": "詳細を見る",
+  "serviceDetailTitle": "サービス詳細",
+  "errorLoadingFavorites": "お気に入りアイテムの読み込みエラー",
+  "noFavoritesFound": "お気に入りのアイテムが見つかりませんでした。",
+  "commentUpdatedSuccess": "コメントが正常に更新されました！",
+  "errorUpdatingComment": "コメント更新エラー",
+  "replyAddedSuccess": "返信が正常に追加されました。",
+  "errorAddingReply": "返信の追加中にエラーが発生しました",
+  "commentDeletedSuccess": "コメントは正常に削除されました。",
+  "errorDeletingComment": "コメント削除エラー",
+  "serviceLikedSuccess": "サービスは無事気に入りました！",
+  "errorLikingService": "サービスを気に入っているときにエラーが発生しました",
+  "serviceDislikedSuccess": "サービスは正常に嫌われました!",
+  "errorDislikingService": "サービスが嫌いなエラー",
+  "writeYourReply": "返信を書いてください...",
+  "postReply": "返信を投稿する",
+  "anonymous": "匿名",
+  "editComment": "コメントの編集",
+  "editYourComment": "コメントを編集...",
+  "saveChanges": "変更を保存",
+  "propertyOwner": "不動産所有者",
+  "errorLoadingServices": "サービスの読み込みエラー",
+  "noRecommendedServicesFound": "おすすめのサービスは見つかりませんでした。",
+  "passwordRequired": "パスワードが必要です",
+  "passwordTooShort": "パスワードは8文字以上である必要があります",
+  "passwordRequirements": "パスワードには文字と数字を含める必要があります",
+  "usernameRequired": "ユーザー名は必須です",
+  "usernameTooShort": "ユーザー名は少なくとも 3 文字である必要があります",
+  "confirmPasswordRequired": "パスワードの確認が必要です",
+  "passwordHelp": "少なくとも 8 文字の文字と数字",
+  "usernameExists": "このユーザー名はすでに存在します",
+  "phoneExists": "この電話番号はすでに登録されています",
+  "networkError": "ネットワーク接続エラー。接続を確認してください",
+  "contactSeller": "販売者に連絡する",
+  "callToReveal": "「通話」をタップすると表示されます",
+  "camera": "カメラ",
+  "gallery": "ギャラリー",
+  "selectImageSource": "画像ソースの選択",
+  "uploading": "アップロード中...",
+  "acceptTermsRequired": "続行するには利用規約に同意する必要があります",
+  "iAgreeToTerms": "に同意します",
+  "termsAndConditions": "利用規約",
+  "zeroToleranceStatement": "また、不快なコンテンツや虐待的なユーザーは一切許容されないことを理解してください。",
+  "viewTerms": "利用規約を見る",
+  "reportContent": "報告内容",
+  "selectReportReason": "報告する理由を選択してください:",
+  "additionalDetails": "追加の詳細 (オプション)",
+  "reportDetailsHint": "追加情報があれば提供してください...",
+  "reportSubmitted": "ご報告ありがとうございます。 24時間以内に審査させていただきます。",
+  "reportProduct": "レポート製品",
+  "reportService": "レポートサービス",
+  "reportMessage": "レポートメッセージ",
+  "reportUser": "ユーザーを報告する",
+  "reportErrorNotImplemented": "レポート機能はまだ利用できません。サポートに連絡するか、後でもう一度試してください。",
+  "reportAlreadySubmitted": "この内容はすでに報告済みです。前回のレポートを検討中です。",
+  "reportFailedGeneric": "レポートの提出に失敗しました。もう一度試してください。",
+  "reportFailedNetwork": "ネットワークエラーが発生しました。接続を確認して、もう一度試してください。",
+  "becomeAgentTitle": "不動産業者として参加する",
+  "becomeAgentSubtitle": "物件をリストアップし、顧客が夢のマイホームを見つけるお手伝いをします",
+  "agentBenefits": "利点：",
+  "agentBenefitVerified": "確認済みエージェントバッジ",
+  "agentBenefitAnalytics": "分析と洞察へのアクセス",
+  "agentBenefitClients": "潜在的な顧客との直接コンタクト",
+  "agentBenefitReputation": "専門的な評判を築く",
+  "agentApplicationForm": "申請フォーム",
+  "agentAgencyName": "代理店名",
+  "agentAgencyNameHint": "不動産会社名を入力してください",
+  "agentAgencyNameRequired": "代理店名は必須です",
+  "agentLicenceNumber": "ライセンス番号",
+  "agentLicenceNumberHint": "不動産免許番号を入力してください",
+  "agentLicenceNumberRequired": "ライセンス番号は必須です",
+  "agentYearsExperience": "長年の経験",
+  "agentYearsExperienceHint": "年数を入力してください",
+  "agentYearsExperienceRequired": "長年の経験が必要です",
+  "agentYearsExperienceInvalid": "有効な番号を入力してください",
+  "agentSpecialization": "専門分野",
+  "agentApplicationNote": "あなたの申請は私たちのチームによって審査されます。申請が承認されると通知が届きます。",
+  "agentSubmitApplication": "申請書の提出",
+  "agentApplicationSubmitted": "申請は正常に送信されました。すぐにレビューします。",
+  "agentApplicationStatus": "申請状況",
+  "agentViewProfile": "エージェントのプロフィールを表示する",
+  "agentDashboardComingSoon": "エージェント ダッシュボードは近日公開予定です。",
+  "property_create_basic_information": "基本情報",
+  "property_create_property_title": "物件タイトル *",
+  "property_create_property_title_hint": "例: 市内中心部のモダンな 3 ベッドルーム アパートメント",
+  "property_create_property_title_required": "物件タイトルを入力してください",
+  "property_create_description": "説明 *",
+  "property_create_description_hint": "物件を詳しく説明して...",
+  "property_create_description_required": "説明を入力してください",
+  "property_create_property_type": "プロパティの種類",
+  "property_create_property_type_required": "プロパティの種類 *",
+  "property_create_listing_type_required": "出品タイプ *",
+  "property_create_pricing": "価格設定",
+  "property_create_price": "価格 *",
+  "property_create_price_hint": "価格を入力してください",
+  "property_create_price_required": "価格を入力してください",
+  "property_create_currency": "通貨",
+  "property_create_property_details": "物件詳細",
+  "property_create_square_meters": "平方メートルメートル *",
+  "property_create_bedrooms": "寝室 *",
+  "property_create_bathrooms": "バスルーム *",
+  "property_create_floor": "床",
+  "property_create_total_floors": "総階数",
+  "property_create_parking": "駐車場",
+  "property_create_year_built": "築年数",
+  "property_create_location": "位置",
+  "property_create_address": "住所 *",
+  "property_create_address_hint": "物件の住所を入力してください",
+  "property_create_address_required": "住所を入力してください",
+  "property_create_location_detected": "位置が検出されました",
+  "property_create_get_location": "現在位置を取得する",
+  "property_create_features": "特徴",
+  "property_create_feature_balcony": "バルコニー",
+  "property_create_feature_garage": "ガレージ",
+  "property_create_feature_garden": "庭",
+  "property_create_feature_pool": "プール",
+  "property_create_feature_elevator": "エレベーター",
+  "property_create_feature_furnished": "家具付き",
+  "property_create_images": "物件画像",
+  "property_create_tap_to_add_images": "タップして画像を追加します",
+  "property_create_at_least_one_image": "少なくとも 1 つの画像が必要です",
+  "property_create_add_more": "さらに追加",
+  "property_create_required": "必須",
+  "property_create_location_required": "プロパティを作成するには位置情報サービスを有効にしてください",
+  "property_create_image_required": "少なくとも 1 つのプロパティ画像が必要です",
+  "emailVerification": "メール認証",
+  "pleaseEnterYourEmailAddress": "メールアドレスを入力してください",
+  "enterEmailAddress": "メールアドレスを入力してください",
+  "resetYourPassword": "パスワードをリセットする",
+  "resetPasswordDescription": "メールアドレスを入力してください。パスワードをリセットするための確認コードが送信されます。",
+  "sendVerificationCode": "認証コードを送信する",
+  "backToLogin": "ログインに戻る",
+  "resetPassword": "パスワードのリセット",
+  "enterVerificationCodeSentTo": "{email} に送信された確認コードを入力してください",
+  "codeMustBe6Digits": "コードは6桁である必要があります",
+  "enterNewPassword": "新しいパスワードを入力してください",
+  "minimum8Characters": "最低 8 文字",
+  "sending": "送信中...",
+  "verifying": "確認中...",
+  "new_message": "新しいメッセージ",
+  "messages": "メッセージ",
+  "please_log_in": "メッセージを表示するにはログインしてください",
+  "pin": "ピン",
+  "unpin": "固定を解除する",
+  "delete_chat": "チャットの削除",
+  "delete_chat_confirm": "{name} とのチャットを削除してもよろしいですか?この操作は元に戻すことができません。",
+  "chat_deleted": "{name} とのチャットが削除されました",
+  "delete_failed": "チャットの削除に失敗しました",
+  "no_conversations": "まだ会話はありません",
+  "start_conversation_hint": "+ボタンをタップして会話を開始します",
+  "start_conversation": "会話を始める",
+  "yesterday": "昨日",
+  "unknown": "未知",
+  "no_messages_yet": "まだメッセージはありません",
+  "unblock_user": "ユーザーのブロックを解除する",
+  "block_user": "ユーザーをブロックする",
+  "no_blocked_users": "ブロックされたユーザーはいません",
+  "blocked_users_hint": "ブロックしたユーザーがここに表示されます",
+  "unblock_user_confirm": "Are you sure you want to unblock {username}?再び彼らからのメッセージを受け取ることができるようになります。",
+  "user_unblocked": "{username} のブロックが解除されました",
+  "user_blocked": "{username} はブロックされました",
+  "failed_to_unblock": "ユーザーのブロックを解除できませんでした",
+  "failed_to_block": "ユーザーをブロックできませんでした",
+  "chat_info": "チャット情報",
+  "delete_message": "メッセージの削除",
+  "delete_message_confirm": "このメッセージを削除してもよろしいですか?",
+  "typing": "タイピング...",
+  "online": "オンライン",
+  "offline": "オフライン",
+  "last_seen_at": "最後に見たのは{time}",
+  "participants": "{count} 参加者",
+  "you_are_blocked": "あなたはブロックされています",
+  "user_blocked_you": "{username} があなたをブロックしました。メッセージを送信することはできません。",
+  "you_blocked_user": "{username} をブロックしました",
+  "cannot_send_messages_blocked": "メッセージを送信することはできません。あなたはブロックされました。",
+  "this_message_was_deleted": "このメッセージは削除されました",
+  "edit": "編集",
+  "reply": "返事",
+  "add_reaction": "リアクションを追加",
+  "editing_message": "メッセージの編集",
+  "replying_to": "{username}に返信する",
+  "voice": "声",
+  "emoji": "絵文字",
+  "photo": "📷 写真",
+  "voice_message": "🎤 音声メッセージ",
+  "searching": "検索中...",
+  "loading_users": "ユーザーを読み込んでいます...",
+  "search_failed": "検索に失敗しました: {error}",
+  "invalid_user_data": "無効なユーザーデータ",
+  "failed_to_start_chat": "チャットを開始できませんでした: {error}",
+  "audio_file_not_available": "音声ファイルが利用できません",
+  "failed_to_play_audio": "オーディオの再生に失敗しました: {error}",
+  "image_unavailable": "画像が利用できません",
+  "image_too_large": "❌ 画像が大きすぎます。最大サイズは10MBです",
+  "image_file_not_found": "❌ 画像ファイルが見つかりません",
+  "uploading_image": "画像をアップロードしています...",
+  "image_sent": "✅画像を送信しました！",
+  "failed_to_send_image": "❌ 画像の送信に失敗しました",
+  "uploading_voice_message": "音声メッセージをアップロードしています...",
+  "voice_message_sent": "✅ 音声メッセージが送信されました!",
+  "failed_to_send_voice_message": "❌ 音声メッセージの送信に失敗しました",
+  "recording": "🎙️ 録音中...",
+  "microphone_permission_denied": "マイクの許可が拒否されました",
+  "starting_chat": "チャットを開始しています...",
+  "refresh_users": "ユーザーを更新する",
+  "search_by_username_or_phone": "ユーザー名または電話番号で検索する",
+  "no_users_found": "ユーザーが見つかりませんでした",
+  "try_different_search_term": "別の検索語を試してください",
+  "no_users_available": "利用可能なユーザーがいません",
+  "chat_exists": "チャットが存在します",
+  "block_user_confirm": "{username} をブロックしてもよろしいですか?彼らからメッセージは受信されなくなり、チャット リストから削除されます。",
+  "chat_room_label": "チャット ルーム: {name}",
+  "id_label": "ID: {id}",
+  "participants_label": "参加者：",
+  "type_a_message": "メッセージを入力してください...",
+  "edit_message_hint": "メッセージを編集...",
+  "error_label": "エラー: {error}",
+  "copy": "コピー",
+  "comments_title": "コメント ({count})",
+  "reply_button": "返事",
+  "replies_count": "{count} が返信します",
+  "you_label": "あなた",
+  "delete_reply_title": "返信の削除",
+  "delete_comment_title": "コメントの削除",
+  "unknown_date": "日付不明",
+  "press_enter_to_send": "Enterを押して送信してください",
+  "comment_add_error": "コメントの追加に失敗しました",
+  "service_provider": "サービスプロバイダー",
+  "opening_chat": "チャットを開いています...",
+  "failed_to_refresh": "更新に失敗しました",
+  "cannot_chat_with_yourself": "自分自身とチャットすることはできません",
+  "opening_chat_with": "{username} とのチャットを開始しています...",
+  "this_will_only_take_a_moment": "これには少し時間がかかります",
+  "unable_to_start_chat": "チャットを開始できません。もう一度試してください。",
+  "profile_listings": "リスト",
+  "profile_followers": "フォロワー",
+  "profile_following": "続く",
+  "profile_no_products": "商品がありません",
+  "profile_no_services": "サービスなし",
+  "profile_no_properties": "プロパティがありません",
+  "profile_user_no_products": "このユーザーはまだ商品を投稿していません",
+  "profile_user_no_services": "このユーザーはまだサービスを投稿していません",
+  "profile_user_no_properties": "このユーザーはまだ物件を投稿していません",
+  "profile_error_occurred": "エラーが発生しました",
+  "profile_error_loading_products": "製品の読み込みエラー",
+  "profile_error_loading_services": "サービスの読み込みエラー",
+  "profile_no_followers_yet": "まだフォロワーがいません",
+  "profile_no_following_yet": "まだ誰もフォローしていません",
+  "profile_follow": "フォローする",
+  "profile_following_btn": "続く",
+  "profile_message": "メッセージ",
+  "profile_member_since": "以来のメンバー",
+  "profile_loading_error": "プロファイルの読み込みエラー",
+  "profile_retry": "もう一度やり直してください",
+  "profile_share": "共有",
+  "profile_copy_link": "リンクをコピー",
+  "profile_report": "報告",
+  "linkCopied": "リンクがクリップボードにコピーされました",
+  "checkOutProfile": "チェックアウト",
+  "onTezsell": "TezSell で",
+  "selectCountryFirst": "最初に国を選択してください",
+  "countrySelectionHint": "次に、地域を選択できます",
+  "something_went_wrong": "何か問題が発生しました",
+  "check_connection_and_retry": "インターネット接続を確認して、もう一度お試しください",
+  "sold_badge": "販売済み",
+  "more_categories": "もっと",
+  "no_products_in_location": "{location} には製品が見つかりませんでした",
+  "no_more_products": "これ以上ロードする商品はありません",
+  "time_days_ago": "{count}日前",
+  "time_hours_ago": "{count}時間前",
+  "time_minutes_ago": "{count}分前",
+  "time_just_now": "ちょうど今",
+  "no_services_in_location": "{location} にサービスが見つかりませんでした",
+  "no_more_services": "これ以上ロードするサービスはありません",
+  "error_loading_more_services": "さらにサービスをロード中にエラーが発生しました",
+  "verification_code_length": "認証コードは6桁である必要があります",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "@chooseLanguage": {
+    "description": "Title for language selection screen"
+  },
+  "@selectPreferredLanguage": {
+    "description": "Subtitle for language selection screen"
+  },
+  "@continueButton": {
+    "description": "Text for continue button"
+  },
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
+  "@sellAndBuyProducts": {
+    "description": "Main heading text on home screen"
+  },
+  "@usedProductsMarket": {
+    "description": "Subtitle text on home screen"
+  },
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
+  "@register": {
+    "description": "Register button text"
+  },
+  "@alreadyHaveAccount": {
+    "description": "Login button text"
+  },
+  "@login": {
+    "description": "Login screen title and button"
+  },
+  "@loginToAccount": {
+    "description": "Login screen header text"
+  },
+  "@enterPhoneNumber": {
+    "description": "Phone number input placeholder"
+  },
+  "@password": {
+    "description": "Password input label"
+  },
+  "@enterPassword": {
+    "description": "Password input placeholder"
+  },
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "@registerNow": {
+    "description": "Register link text on login screen"
+  },
+  "@loading": {
+    "description": "Loading text"
+  },
+  "@pleaseEnterPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "@unexpectedError": {
+    "description": "Generic error message"
+  },
+  "@forgotPasswordComingSoon": {
+    "description": "Forgot password placeholder message"
+  },
+  "@selectedCountryLabel": {
+    "description": "Selected country label"
+  },
+  "@fullPhoneLabel": {
+    "description": "Full phone number label"
+  },
+  "@home": {
+    "description": "Home tab label"
+  },
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  "@profile": {
+    "description": "Profile tab label"
+  },
+  "@search": {
+    "description": "Search tab label"
+  },
+  "@notifications": {
+    "description": "Notifications tab label"
+  },
+  "@error": {
+    "description": "Error text"
+  },
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "@save": {
+    "description": "Save button text"
+  },
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "@selectRegion": {
+    "description": "Instruction to select region"
+  },
+  "@searchHint": {
+    "description": "Search input hint text"
+  },
+  "@apiError": {
+    "description": "API error message"
+  },
+  "@ok": {
+    "description": "OK button text"
+  },
+  "@emptyList": {
+    "description": "Message shown when list is empty"
+  },
+  "@dataLoadingError": {
+    "description": "Error message when data fails to load"
+  },
+  "@selectDistrictOrCity": {
+    "description": "Instruction to select district or city"
+  },
+  "@confirmDistrictSelection": {
+    "description": "Confirmation message for district selection",
+    "placeholders": {
+      "regionName": {
+        "type": "String"
+      },
+      "districtName": {
+        "type": "String"
+      }
+    }
+  },
+  "@noResultsFound": {
+    "description": "Message when search returns no results"
+  },
+  "@errorWithCode": {
+    "description": "Error message with error code",
+    "placeholders": {
+      "errorCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToLoadData": {
+    "description": "Data loading failure message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@phoneVerification": {
+    "description": "Title for phone verification screen"
+  },
+  "@enterPhonePrompt": {
+    "description": "Prompt to enter phone number"
+  },
+  "@enterPhoneNumberHint": {
+    "description": "Hint text for phone number input"
+  },
+  "@selectedCountry": {
+    "description": "Shows selected country and code",
+    "placeholders": {
+      "countryName": {
+        "type": "String"
+      },
+      "countryCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "@country": {
+    "description": "Country label"
+  },
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "@fullNumber": {
+    "description": "Shows complete phone number",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendCode": {
+    "description": "Button text to send verification code"
+  },
+  "@enterVerificationCode": {
+    "description": "Label for verification code input"
+  },
+  "@verificationCodeHint": {
+    "description": "Hint for verification code format"
+  },
+  "@resendCode": {
+    "description": "Button text to resend verification code"
+  },
+  "@expires": {
+    "description": "Shows expiration time",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@verifyAndContinue": {
+    "description": "Button text to verify and continue"
+  },
+  "@invalidVerificationCode": {
+    "description": "Error message for invalid verification code"
+  },
+  "@verificationCodeSent": {
+    "description": "Success message when code is sent"
+  },
+  "@failedToSendCode": {
+    "description": "Error message when code sending fails"
+  },
+  "@verificationCodeResent": {
+    "description": "Success message when code is resent"
+  },
+  "@failedToResendCode": {
+    "description": "Error message when code resending fails"
+  },
+  "@passwordVerification": {
+    "description": "Title for password verification screen"
+  },
+  "@completeRegistrationPrompt": {
+    "description": "Instruction text for completing registration"
+  },
+  "@username": {
+    "description": "Label for username input field"
+  },
+  "@usernameHint": {
+    "description": "Hint text for username input"
+  },
+  "@confirmPassword": {
+    "description": "Label for password confirmation field"
+  },
+  "@profileImage": {
+    "description": "Label for profile image selection"
+  },
+  "@imageInstructions": {
+    "description": "Instructions for image selection"
+  },
+  "@finish": {
+    "description": "Button text to complete registration"
+  },
+  "@passwordsDoNotMatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "@registrationError": {
+    "description": "Error message when registration fails"
+  },
+  "@about": {
+    "description": "About us menu item"
+  },
+  "@chat": {
+    "description": "Chat functionality"
+  },
+  "@realEstate": {
+    "description": "Real estate section"
+  },
+  "@language": {
+    "description": "Language selector display"
+  },
+  "@languageEn": {
+    "description": "English language option"
+  },
+  "@languageRu": {
+    "description": "Russian language option"
+  },
+  "@languageUz": {
+    "description": "Uzbek language option"
+  },
+  "@serviceLiked": {
+    "description": "Service liked message"
+  },
+  "@support": {
+    "description": "Support menu item"
+  },
+  "@service": {
+    "description": "Business services section"
+  },
+  "@aboutContent": {
+    "description": "About us content description"
+  },
+  "@errorMessage": {
+    "description": "Generic error message"
+  },
+  "@searchLocation": {
+    "description": "Location search label"
+  },
+  "@searchCategory": {
+    "description": "Category search label"
+  },
+  "@searchProductPlaceholder": {
+    "description": "Product search placeholder"
+  },
+  "@searchServicePlaceholder": {
+    "description": "Service search placeholder"
+  },
+  "@searchText": {
+    "description": "Search button text"
+  },
+  "@selectedCategory": {
+    "description": "Selected category prefix"
+  },
+  "@selectedLocation": {
+    "description": "Selected location prefix"
+  },
+  "@productError": {
+    "description": "No products error message"
+  },
+  "@serviceError": {
+    "description": "No services error message"
+  },
+  "@locationHeader": {
+    "description": "Location selection header"
+  },
+  "@locationPlaceholder": {
+    "description": "Location search placeholder"
+  },
+  "@categoryHeader": {
+    "description": "Category selection header"
+  },
+  "@categoryPlaceholder": {
+    "description": "Category search placeholder"
+  },
+  "@categoryError": {
+    "description": "No categories error message"
+  },
+  "@paginationFirst": {
+    "description": "First page button"
+  },
+  "@paginationPrevious": {
+    "description": "Previous page button"
+  },
+  "@pageInfo": {
+    "description": "Page information text"
+  },
+  "@pageNext": {
+    "description": "Next page button"
+  },
+  "@pageLast": {
+    "description": "Last page button"
+  },
+  "@loadingMessageProduct": {
+    "description": "Loading products message"
+  },
+  "@loadingMessageError": {
+    "description": "Loading error message"
+  },
+  "@likeProductError": {
+    "description": "Product like error message"
+  },
+  "@dislikeProductError": {
+    "description": "Product dislike error message"
+  },
+  "@loadingMessageLocation": {
+    "description": "Loading location message"
+  },
+  "@loadingLocationError": {
+    "description": "Location loading error"
+  },
+  "@loadingMessageCategory": {
+    "description": "Loading categories message"
+  },
+  "@loadingCategoryError": {
+    "description": "Category loading error"
+  },
+  "@profileUpdateSuccessMessage": {
+    "description": "Profile update success message"
+  },
+  "@profileUpdateFailMessage": {
+    "description": "Profile update failure message"
+  },
+  "@seeMoreBtn": {
+    "description": "See more button text"
+  },
+  "@profilePageTitle": {
+    "description": "Profile page title"
+  },
+  "@editProfileModalTitle": {
+    "description": "Edit profile modal title"
+  },
+  "@usernameLabel": {
+    "description": "Username field label"
+  },
+  "@locationLabel": {
+    "description": "Location field label"
+  },
+  "@profileImageLabel": {
+    "description": "Profile image field label"
+  },
+  "@chooseFileLabel": {
+    "description": "File chooser label"
+  },
+  "@uploadBtnLabel": {
+    "description": "Upload button label"
+  },
+  "@uploadingBtnLabel": {
+    "description": "Uploading button label"
+  },
+  "@cancelBtnLabel": {
+    "description": "Cancel button label"
+  },
+  "@productsTitle": {
+    "description": "Products section title"
+  },
+  "@servicesTitle": {
+    "description": "Services section title"
+  },
+  "@myProductsTitle": {
+    "description": "My products section title"
+  },
+  "@myServicesTitle": {
+    "description": "My services section title"
+  },
+  "@favoriteProductsTitle": {
+    "description": "Favorite products section title"
+  },
+  "@favoriteServicesTitle": {
+    "description": "Favorite services section title"
+  },
+  "@noFavorites": {
+    "description": "No favorites message"
+  },
+  "@addNewProductBtn": {
+    "description": "Add new product button"
+  },
+  "@addNew": {
+    "description": "Add new item button"
+  },
+  "@addNewServiceBtn": {
+    "description": "Add new service button"
+  },
+  "@downloadMobileApp": {
+    "description": "Download mobile app message"
+  },
+  "@registerPhoneNumberSuccess": {
+    "description": "Phone verification success message"
+  },
+  "@regionSelectedMessage": {
+    "description": "Region selected message"
+  },
+  "@districtSelectMessage": {
+    "description": "District selected message"
+  },
+  "@phoneNumberEmptyMessage": {
+    "description": "Phone number empty error"
+  },
+  "@regionEmptyMessage": {
+    "description": "Region empty error"
+  },
+  "@districtEmptyMessage": {
+    "description": "District empty error"
+  },
+  "@usernamePasswordEmptyMessage": {
+    "description": "Username password empty error"
+  },
+  "@registerTitle": {
+    "description": "Register screen title"
+  },
+  "@previousButton": {
+    "description": "Previous button text"
+  },
+  "@nextButton": {
+    "description": "Next button text"
+  },
+  "@completeButton": {
+    "description": "Complete button text"
+  },
+  "@stepIndicator": {
+    "description": "Step indicator text",
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      }
+    }
+  },
+  "@districtSelectTitle": {
+    "description": "District selection title"
+  },
+  "@districtSelectParagraph": {
+    "description": "District selection instruction"
+  },
+  "@phoneNumber": {
+    "description": "Phone number label"
+  },
+  "@sendOtp": {
+    "description": "Send OTP button"
+  },
+  "@sendAgain": {
+    "description": "Send again button"
+  },
+  "@verify": {
+    "description": "Verify button"
+  },
+  "@failedToSendOtp": {
+    "description": "OTP send failure message"
+  },
+  "@errorSendingOtp": {
+    "description": "OTP send error message"
+  },
+  "@invalidPhoneNumber": {
+    "description": "Invalid phone number error"
+  },
+  "@verificationSuccess": {
+    "description": "Verification success message"
+  },
+  "@verificationError": {
+    "description": "Verification error message"
+  },
+  "@regionsList": {
+    "description": "Regions list title"
+  },
+  "@enterUsername": {
+    "description": "Username input placeholder"
+  },
+  "@welcomeMessage": {
+    "description": "Welcome login message"
+  },
+  "@noAccount": {
+    "description": "Register link text"
+  },
+  "@successLogin": {
+    "description": "Login success message"
+  },
+  "@myProfile": {
+    "description": "My profile menu item"
+  },
+  "@logout": {
+    "description": "Logout button"
+  },
+  "@newProductTitle": {
+    "description": "Product title field"
+  },
+  "@newProductDescription": {
+    "description": "Product description field"
+  },
+  "@newProductPrice": {
+    "description": "Product price field"
+  },
+  "@newProductCondition": {
+    "description": "Product condition field"
+  },
+  "@newProductCategory": {
+    "description": "Product category field"
+  },
+  "@newProductImages": {
+    "description": "Product images field"
+  },
+  "@addNewService": {
+    "description": "Add new service title"
+  },
+  "@creating": {
+    "description": "Creating text"
+  },
+  "@serviceName": {
+    "description": "Service name field"
+  },
+  "@serviceNamePlaceholder": {
+    "description": "Service name placeholder"
+  },
+  "@serviceDescription": {
+    "description": "Service description field"
+  },
+  "@serviceDescriptionPlaceholder": {
+    "description": "Service description placeholder"
+  },
+  "@serviceCategory": {
+    "description": "Service category field"
+  },
+  "@selectCategory": {
+    "description": "Category selection instruction"
+  },
+  "@loadingCategories": {
+    "description": "Loading categories text"
+  },
+  "@errorLoadingCategories": {
+    "description": "Category loading error"
+  },
+  "@serviceImages": {
+    "description": "Service images field"
+  },
+  "@imageUploadHelper": {
+    "description": "Image upload help text"
+  },
+  "@maxImagesError": {
+    "description": "Maximum images error"
+  },
+  "@categoryNotFound": {
+    "description": "Category not found error"
+  },
+  "@productCreatedSuccess": {
+    "description": "Product creation success"
+  },
+  "@productLikeSuccess": {
+    "description": "Product like success"
+  },
+  "@productDislikeSuccess": {
+    "description": "Product dislike success"
+  },
+  "@errorCreatingService": {
+    "description": "Service creation error"
+  },
+  "@errorCreatingProduct": {
+    "description": "Product creation error"
+  },
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "@submit": {
+    "description": "Submit button"
+  },
+  "@selectCategoryAction": {
+    "description": "Select category action"
+  },
+  "@selectCondition": {
+    "description": "Select condition action"
+  },
+  "@sum": {
+    "description": "Sum/Total label"
+  },
+  "@noComments": {
+    "description": "No comments message"
+  },
+  "@commentLikeSuccess": {
+    "description": "Comment like success"
+  },
+  "@commentLikeError": {
+    "description": "Comment like error"
+  },
+  "@unknownErrorMessage": {
+    "description": "Unknown error message generic"
+  },
+  "@commentDislikeSuccess": {
+    "description": "Comment dislike success"
+  },
+  "@commentDislikeError": {
+    "description": "Comment dislike error"
+  },
+  "@replyInfo": {
+    "description": "Reply validation message"
+  },
+  "@replySuccessMessage": {
+    "description": "Reply success message"
+  },
+  "@replyErrorMessage": {
+    "description": "Reply error message"
+  },
+  "@commentUpdateSuccess": {
+    "description": "Comment update success"
+  },
+  "@commentUpdateError": {
+    "description": "Comment update error"
+  },
+  "@deleteConfirmationMessage": {
+    "description": "Delete confirmation message"
+  },
+  "@commentDeleteSuccess": {
+    "description": "Comment delete success"
+  },
+  "@commentDeleteError": {
+    "description": "Comment delete error"
+  },
+  "@editLabel": {
+    "description": "Edit button label"
+  },
+  "@deleteLabel": {
+    "description": "Delete button label"
+  },
+  "@saveLabel": {
+    "description": "Save button label"
+  },
+  "@replyLabel": {
+    "description": "Reply button label"
+  },
+  "@replyTitle": {
+    "description": "Replies section title"
+  },
+  "@replyPlaceholder": {
+    "description": "Reply input placeholder"
+  },
+  "@chatLoginMessage": {
+    "description": "Chat login required message"
+  },
+  "@chatYourselfMessage": {
+    "description": "Can't chat with yourself message"
+  },
+  "@chatRoomMessage": {
+    "description": "Chat room created message"
+  },
+  "@chatRoomError": {
+    "description": "Chat room creation error"
+  },
+  "@chatCreationError": {
+    "description": "Chat creation error"
+  },
+  "@productsTotal": {
+    "description": "Products total count"
+  },
+  "@perPage": {
+    "description": "Items per page"
+  },
+  "@clearAllFilters": {
+    "description": "Clear filters button"
+  },
+  "@clickToUpload": {
+    "description": "Upload instruction"
+  },
+  "@productInStock": {
+    "description": "Product in stock status"
+  },
+  "@productOutStock": {
+    "description": "Product out of stock status"
+  },
+  "@productBack": {
+    "description": "Back to products button"
+  },
+  "@messageSeller": {
+    "description": "Message seller button"
+  },
+  "@recommendedProducts": {
+    "description": "Recommended products section"
+  },
+  "@deleteConfirmationProduct": {
+    "description": "Product delete confirmation"
+  },
+  "@productDeleteSuccess": {
+    "description": "Product delete success"
+  },
+  "@productDeleteError": {
+    "description": "Product delete error"
+  },
+  "@newCondition": {
+    "description": "New condition"
+  },
+  "@used": {
+    "description": "Used condition"
+  },
+  "@imageValidType": {
+    "description": "Image validation error"
+  },
+  "@imageConfirmMessage": {
+    "description": "Image removal confirmation"
+  },
+  "@titleRequiredMessage": {
+    "description": "Title required validation"
+  },
+  "@descRequiredMessage": {
+    "description": "Description required validation"
+  },
+  "@priceRequiredMessage": {
+    "description": "Price required validation"
+  },
+  "@conditionRequiredMessage": {
+    "description": "Condition required validation"
+  },
+  "@pleaseFillAllRequired": {
+    "description": "Fill required fields message"
+  },
+  "@oneImageConfirmMessage": {
+    "description": "One image required validation"
+  },
+  "@categoryRequiredMessage": {
+    "description": "Category required validation"
+  },
+  "@locationInfoError": {
+    "description": "Location info missing error"
+  },
+  "@editProductTitle": {
+    "description": "Edit product title"
+  },
+  "@imageUploadRequirements": {
+    "description": "Image upload requirements"
+  },
+  "@productUpdatedSuccess": {
+    "description": "Product update success"
+  },
+  "@productUpdateFailed": {
+    "description": "Product update failed"
+  },
+  "@errorUpdatingProduct": {
+    "description": "Product update error"
+  },
+  "@serviceBack": {
+    "description": "Back to services button"
+  },
+  "@likeLabel": {
+    "description": "Like button label"
+  },
+  "@commentsLabel": {
+    "description": "Comments section label"
+  },
+  "@writeComment": {
+    "description": "Write comment placeholder"
+  },
+  "@postingLabel": {
+    "description": "Posting comment text"
+  },
+  "@commentCreated": {
+    "description": "Comment created success"
+  },
+  "@postCommentLabel": {
+    "description": "Post comment button"
+  },
+  "@loginPrompt": {
+    "description": "Login required for comments"
+  },
+  "@recommendedServices": {
+    "description": "Recommended services section"
+  },
+  "@commentsVisibilityNotice": {
+    "description": "Comments visibility notice"
+  },
+  "@comingSoon": {
+    "description": "Coming soon text"
+  },
+  "@serviceUpdateSuccess": {
+    "description": "Service update success"
+  },
+  "@serviceUpdateError": {
+    "description": "Service update error"
+  },
+  "@editServiceModalTitle": {
+    "description": "Edit service modal title"
+  },
+  "@enterPhoneNumberWithoutCode": {
+    "description": "Phone number input instruction without country code"
+  },
+  "@heroTitle": {
+    "description": "Hero section title"
+  },
+  "@heroSubtitle": {
+    "description": "Hero section subtitle"
+  },
+  "@startSelling": {
+    "description": "Start selling button"
+  },
+  "@browseProducts": {
+    "description": "Browse products button"
+  },
+  "@featuresTitle": {
+    "description": "Features section title"
+  },
+  "@listingTitle": {
+    "description": "Listing feature title"
+  },
+  "@listingDescription": {
+    "description": "Listing feature description"
+  },
+  "@locationTitle": {
+    "description": "Location feature title"
+  },
+  "@locationDescription": {
+    "description": "Location feature description"
+  },
+  "@location_subtitle": {
+    "description": "Location page subtitle"
+  },
+  "@categoryTitle": {
+    "description": "Category feature title"
+  },
+  "@categoryDescription": {
+    "description": "Category feature description"
+  },
+  "@inspirationTitle": {
+    "description": "Inspiration section title"
+  },
+  "@inspirationDescription1": {
+    "description": "Inspiration description 1"
+  },
+  "@inspirationDescription2": {
+    "description": "Inspiration description 2"
+  },
+  "@comingSoonTitle": {
+    "description": "Coming soon section title"
+  },
+  "@inAppChat": {
+    "description": "In-app chat feature"
+  },
+  "@secureTransactions": {
+    "description": "Secure transactions feature"
+  },
+  "@realEstateListings": {
+    "description": "Real estate listings feature"
+  },
+  "@stayUpdated": {
+    "description": "Stay updated text"
+  },
+  "@comingSoonBadge": {
+    "description": "Coming soon badge"
+  },
+  "@ctaTitle": {
+    "description": "CTA section title"
+  },
+  "@ctaDescription": {
+    "description": "CTA section description"
+  },
+  "@createAccount": {
+    "description": "Create account button"
+  },
+  "@learnMore": {
+    "description": "Learn more button"
+  },
+  "@replyUpdateSuccess": {
+    "description": "Reply update success"
+  },
+  "@replyUpdateError": {
+    "description": "Reply update error"
+  },
+  "@replyDeleteSuccess": {
+    "description": "Reply delete success"
+  },
+  "@replyDeleteError": {
+    "description": "Reply delete error"
+  },
+  "@replyDeleteConfirmation": {
+    "description": "Reply delete confirmation"
+  },
+  "@authenticationRequired": {
+    "description": "Authentication required message"
+  },
+  "@enterValidReply": {
+    "description": "Valid reply text required"
+  },
+  "@saving": {
+    "description": "Saving text"
+  },
+  "@deleting": {
+    "description": "Deleting text"
+  },
+  "@properties": {
+    "description": "Properties section"
+  },
+  "@agents": {
+    "description": "Agents section"
+  },
+  "@becomeAgent": {
+    "description": "Become agent button"
+  },
+  "@main": {
+    "description": "Main/Primary label"
+  },
+  "@upload": {
+    "description": "Upload button text for main product"
+  },
+  "@filtered_products": {
+    "description": "Title for filtered products"
+  },
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
+  "@about_me": {
+    "description": "About me menu item"
+  },
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "@error_loading_products": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_deleting_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@loading_category_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_picking_images": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_updating_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@n_properties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "@uploading": {
+    "description": "Uploading state text"
+  },
+  "@acceptTermsRequired": {
+    "description": "Error message when user hasn't accepted terms"
+  },
+  "@iAgreeToTerms": {
+    "description": "Terms acceptance checkbox text prefix"
+  },
+  "@termsAndConditions": {
+    "description": "Terms and Conditions text"
+  },
+  "@zeroToleranceStatement": {
+    "description": "Zero tolerance statement for terms acceptance"
+  },
+  "@viewTerms": {
+    "description": "Button to view terms"
+  },
+  "@reportContent": {
+    "description": "Title for report content dialog"
+  },
+  "@selectReportReason": {
+    "description": "Prompt to select report reason"
+  },
+  "@additionalDetails": {
+    "description": "Label for additional details field in report dialog"
+  },
+  "@reportDetailsHint": {
+    "description": "Hint text for report details field"
+  },
+  "@reportSubmitted": {
+    "description": "Success message after submitting report"
+  },
+  "@reportProduct": {
+    "description": "Menu option to report a product"
+  },
+  "@reportService": {
+    "description": "Menu option to report a service"
+  },
+  "@reportMessage": {
+    "description": "Menu option to report a message"
+  },
+  "@reportUser": {
+    "description": "Menu option to report a user"
+  },
+  "@reportErrorNotImplemented": {
+    "description": "Error message when reporting endpoint is not implemented"
+  },
+  "@reportAlreadySubmitted": {
+    "description": "Message shown when user tries to report content they've already reported"
+  },
+  "@reportFailedGeneric": {
+    "description": "Generic error message when report submission fails"
+  },
+  "@reportFailedNetwork": {
+    "description": "Error message when network error occurs during report submission"
+  },
+  "@becomeAgentTitle": {
+    "description": "Title for become agent page"
+  },
+  "@becomeAgentSubtitle": {
+    "description": "Subtitle for become agent page"
+  },
+  "@agentBenefits": {
+    "description": "Label for agent benefits section"
+  },
+  "@agentBenefitVerified": {
+    "description": "Agent benefit - verified badge"
+  },
+  "@agentBenefitAnalytics": {
+    "description": "Agent benefit - analytics"
+  },
+  "@agentBenefitClients": {
+    "description": "Agent benefit - client contact"
+  },
+  "@agentBenefitReputation": {
+    "description": "Agent benefit - reputation"
+  },
+  "@agentApplicationForm": {
+    "description": "Title for agent application form"
+  },
+  "@agentAgencyName": {
+    "description": "Label for agency name field"
+  },
+  "@agentAgencyNameHint": {
+    "description": "Hint for agency name field"
+  },
+  "@agentAgencyNameRequired": {
+    "description": "Error message for required agency name"
+  },
+  "@agentLicenceNumber": {
+    "description": "Label for license number field"
+  },
+  "@agentLicenceNumberHint": {
+    "description": "Hint for license number field"
+  },
+  "@agentLicenceNumberRequired": {
+    "description": "Error message for required license number"
+  },
+  "@agentYearsExperience": {
+    "description": "Label for years of experience field"
+  },
+  "@agentYearsExperienceHint": {
+    "description": "Hint for years of experience field"
+  },
+  "@agentYearsExperienceRequired": {
+    "description": "Error message for required years of experience"
+  },
+  "@agentYearsExperienceInvalid": {
+    "description": "Error message for invalid years of experience"
+  },
+  "@agentSpecialization": {
+    "description": "Label for specialization field"
+  },
+  "@agentApplicationNote": {
+    "description": "Note about application review process"
+  },
+  "@agentSubmitApplication": {
+    "description": "Button text to submit agent application"
+  },
+  "@agentApplicationSubmitted": {
+    "description": "Success message after submitting agent application"
+  },
+  "@agentApplicationStatus": {
+    "description": "Title for application status dialog"
+  },
+  "@agentViewProfile": {
+    "description": "Subtitle for verified agent menu item"
+  },
+  "@agentDashboardComingSoon": {
+    "description": "Message when agent dashboard is not yet implemented"
+  },
+  "@property_create_basic_information": {
+    "description": "Section title for basic information in property creation"
+  },
+  "@property_create_property_title": {
+    "description": "Label for property title field"
+  },
+  "@property_create_property_title_hint": {
+    "description": "Hint text for property title field"
+  },
+  "@property_create_property_title_required": {
+    "description": "Validation error for property title"
+  },
+  "@property_create_description": {
+    "description": "Label for description field"
+  },
+  "@property_create_description_hint": {
+    "description": "Hint text for description field"
+  },
+  "@property_create_description_required": {
+    "description": "Validation error for description"
+  },
+  "@property_create_property_type": {
+    "description": "Label for property type field"
+  },
+  "@property_create_property_type_required": {
+    "description": "Label for required property type field"
+  },
+  "@property_create_listing_type_required": {
+    "description": "Label for required listing type field"
+  },
+  "@property_create_pricing": {
+    "description": "Section title for pricing"
+  },
+  "@property_create_price": {
+    "description": "Label for price field"
+  },
+  "@property_create_price_hint": {
+    "description": "Hint text for price field"
+  },
+  "@property_create_price_required": {
+    "description": "Validation error for price"
+  },
+  "@property_create_currency": {
+    "description": "Label for currency field"
+  },
+  "@property_create_property_details": {
+    "description": "Section title for property details"
+  },
+  "@property_create_square_meters": {
+    "description": "Label for square meters field"
+  },
+  "@property_create_bedrooms": {
+    "description": "Label for bedrooms field"
+  },
+  "@property_create_bathrooms": {
+    "description": "Label for bathrooms field"
+  },
+  "@property_create_floor": {
+    "description": "Label for floor field"
+  },
+  "@property_create_total_floors": {
+    "description": "Label for total floors field"
+  },
+  "@property_create_parking": {
+    "description": "Label for parking spaces field"
+  },
+  "@property_create_year_built": {
+    "description": "Label for year built field"
+  },
+  "@property_create_location": {
+    "description": "Section title for location"
+  },
+  "@property_create_address": {
+    "description": "Label for address field"
+  },
+  "@property_create_address_hint": {
+    "description": "Hint text for address field"
+  },
+  "@property_create_address_required": {
+    "description": "Validation error for address"
+  },
+  "@property_create_location_detected": {
+    "description": "Text shown when location is detected"
+  },
+  "@property_create_get_location": {
+    "description": "Button text to get current location"
+  },
+  "@property_create_features": {
+    "description": "Section title for features"
+  },
+  "@property_create_feature_balcony": {
+    "description": "Feature name: Balcony"
+  },
+  "@property_create_feature_garage": {
+    "description": "Feature name: Garage"
+  },
+  "@property_create_feature_garden": {
+    "description": "Feature name: Garden"
+  },
+  "@property_create_feature_pool": {
+    "description": "Feature name: Pool"
+  },
+  "@property_create_feature_elevator": {
+    "description": "Feature name: Elevator"
+  },
+  "@property_create_feature_furnished": {
+    "description": "Feature name: Furnished"
+  },
+  "@property_create_images": {
+    "description": "Section title for property images"
+  },
+  "@property_create_tap_to_add_images": {
+    "description": "Text shown in empty image picker"
+  },
+  "@property_create_at_least_one_image": {
+    "description": "Text shown below image picker"
+  },
+  "@property_create_add_more": {
+    "description": "Button text to add more images"
+  },
+  "@property_create_required": {
+    "description": "Generic required field validation message"
+  },
+  "@property_create_location_required": {
+    "description": "Error message when location is not available"
+  },
+  "@property_create_image_required": {
+    "description": "Error message when no images are selected"
+  },
+  "@emailVerification": {
+    "description": "Title for email verification screen"
+  },
+  "@pleaseEnterYourEmailAddress": {
+    "description": "Instruction text for email input"
+  },
+  "@enterEmailAddress": {
+    "description": "Placeholder text for email input field"
+  },
+  "@resetYourPassword": {
+    "description": "Title for password reset screen"
+  },
+  "@resetPasswordDescription": {
+    "description": "Description text for password reset"
+  },
+  "@sendVerificationCode": {
+    "description": "Button text to send verification code"
+  },
+  "@backToLogin": {
+    "description": "Link text to go back to login screen"
+  },
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "@verifying": {
+    "description": "Loading text for verifying code"
+  },
+  "@new_message": {
+    "description": "Tooltip text for new message"
+  },
+  "@delete_chat_confirm": {
+    "description": "Delete chat confirmation message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_deleted": {
+    "description": "Chat deleted success message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@unblock_user_confirm": {
+    "description": "Unblock user confirmation",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_unblocked": {
+    "description": "User unblocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_blocked": {
+    "description": "User blocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@last_seen_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@participants": {
+    "description": "Number of participants in group chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@user_blocked_you": {
+    "description": "Message when user is blocked by another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@you_blocked_user": {
+    "description": "Message when current user has blocked another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@replying_to": {
+    "description": "Reply header text",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@search_failed": {
+    "description": "Search error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_start_chat": {
+    "description": "Failed to start chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_play_audio": {
+    "description": "Failed to play audio error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@block_user_confirm": {
+    "description": "Block user confirmation message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_room_label": {
+    "description": "Chat room label with name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@id_label": {
+    "description": "ID label with value",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "@error_label": {
+    "description": "Error label with error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@comments_title": {
+    "description": "Comments section title with count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@reply_button": {
+    "description": "Reply button text"
+  },
+  "@replies_count": {
+    "description": "Replies count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@you_label": {
+    "description": "You label for current user"
+  },
+  "@delete_reply_title": {
+    "description": "Delete reply dialog title"
+  },
+  "@delete_comment_title": {
+    "description": "Delete comment dialog title"
+  },
+  "@unknown_date": {
+    "description": "Unknown date text"
+  },
+  "@press_enter_to_send": {
+    "description": "Hint text for sending comment"
+  },
+  "@comment_add_error": {
+    "description": "Error message when comment creation fails"
+  },
+  "@service_provider": {
+    "description": "Service provider label"
+  },
+  "@opening_chat": {
+    "description": "Opening chat message"
+  },
+  "@failed_to_refresh": {
+    "description": "Failed to refresh error message"
+  },
+  "@cannot_chat_with_yourself": {
+    "description": "Error message when trying to chat with yourself"
+  },
+  "@opening_chat_with": {
+    "description": "Opening chat message with username",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@this_will_only_take_a_moment": {
+    "description": "Loading message for chat"
+  },
+  "@unable_to_start_chat": {
+    "description": "Error message when chat fails to start"
+  },
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
+  },
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
+  },
+  "@something_went_wrong": {
+    "description": "Error title when something goes wrong"
+  },
+  "@check_connection_and_retry": {
+    "description": "Error message asking user to check connection"
+  },
+  "@sold_badge": {
+    "description": "Badge text for sold products"
+  },
+  "@more_categories": {
+    "description": "Button to show more categories"
+  },
+  "@no_products_in_location": {
+    "description": "Message when no products are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_products": {
+    "description": "Message at end of product list"
+  },
+  "@time_days_ago": {
+    "description": "Time ago in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_hours_ago": {
+    "description": "Time ago in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_minutes_ago": {
+    "description": "Time ago in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_just_now": {
+    "description": "Time for recent moments"
+  },
+  "@no_services_in_location": {
+    "description": "Message when no services are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_services": {
+    "description": "Message at end of service list"
+  },
+  "@error_loading_more_services": {
+    "description": "Error message when loading more services fails"
+  },
+  "@verification_code_length": {
+    "description": "Error when verification code is not 6 digits"
+  }
+}

@@ -29,11 +29,7 @@ class Welcome extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('ru'), // Russian
-        Locale('uz'), // Uzbek
-      ],
+      supportedLocales: supportedLocales,
 
       // Theme Configuration
       themeMode: themeMode,

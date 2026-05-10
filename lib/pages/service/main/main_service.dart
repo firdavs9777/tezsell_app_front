@@ -7,8 +7,10 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +33,8 @@ class ServiceMain extends ConsumerStatefulWidget {
   _ServiceMainState createState() => _ServiceMainState();
 }
 
+enum _BrowseMode { list, map }
+
 class _ServiceMainState extends ConsumerState<ServiceMain> {
   final ScrollController _scrollController = ScrollController();
   List<Services> _allServices = [];
@@ -42,6 +46,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
   bool _isInitialLoading = true;
   bool _isDisposed = false;
   bool _isCategoriesLoading = true;
+  _BrowseMode _browseMode = _BrowseMode.list;
 
   @override
   void initState() {
@@ -303,7 +308,12 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
+                      _BrowseModeToggle(
+                        mode: _browseMode,
+                        onChanged: (m) => setState(() => _browseMode = m),
+                      ),
+                      const SizedBox(width: 8),
                       // Location Badge
                       if (widget.regionName.isNotEmpty ||
                           widget.districtName.isNotEmpty)
@@ -620,6 +630,10 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       );
     }
 
+    if (_browseMode == _BrowseMode.map) {
+      return _buildServicesMap();
+    }
+
     return ListView.builder(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -657,6 +671,90 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildServicesMap() {
+    final theme = Theme.of(context);
+
+    final mapped = <MappedItem>[];
+    for (final s in _allServices) {
+      if (s.latitude == null || s.longitude == null) continue;
+      mapped.add(MappedItem(
+        id: s.id.toString(),
+        lat: s.latitude!,
+        lng: s.longitude!,
+        title: s.name,
+        subtitle: s.userName.location.region,
+        imageUrl: s.images.isNotEmpty ? s.images.first.image : null,
+        onTap: () => context.push('/service/${s.id}'),
+      ));
+    }
+
+    if (mapped.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'No services with location data in this area yet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+          ),
+        ),
+      );
+    }
+
+    final active = ref.read(activeNeighborhoodProvider);
+    final center = active != null
+        ? LatLng(active.neighborhood.centroidLat,
+            active.neighborhood.centroidLng)
+        : LatLng(mapped.first.lat, mapped.first.lng);
+
+    return ItemsMapView(items: mapped, initialCenter: center);
+  }
+}
+
+class _BrowseModeToggle extends StatelessWidget {
+  const _BrowseModeToggle({required this.mode, required this.onChanged});
+
+  final _BrowseMode mode;
+  final ValueChanged<_BrowseMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget btn(IconData icon, _BrowseMode m) {
+      final active = mode == m;
+      return InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onChanged(m),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: active ? colorScheme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon,
+              size: 18,
+              color: active ? colorScheme.onPrimary : colorScheme.primary),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          btn(Icons.list, _BrowseMode.list),
+          btn(Icons.map_outlined, _BrowseMode.map),
+        ],
+      ),
     );
   }
 }

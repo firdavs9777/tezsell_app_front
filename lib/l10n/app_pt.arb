@@ -1,0 +1,2999 @@
+{
+  "@@locale": "pt",
+  "@@x-machine-translated": true,
+  "welcome": "Bem-vindo",
+  "welcomeBack": "Bem vindo de volta!",
+  "loginToYourAccount": "Faça login para continuar",
+  "or": "OU",
+  "dontHaveAccount": "Não tem uma conta?",
+  "chooseLanguage": "Escolha seu idioma",
+  "selectPreferredLanguage": "Selecione seu idioma preferido para o aplicativo",
+  "continueButton": "Continuar",
+  "continueWithGoogle": "Continuar com o Google",
+  "continueWithApple": "Continuar com a Apple",
+  "continueWithEmail": "Continuar com e-mail",
+  "sellAndBuyProducts": "Venda e compre qualquer um dos seus produtos somente conosco",
+  "usedProductsMarket": "Produtos usados ​​ou mercado de segunda mão",
+  "home_welcome_title": "O mercado do seu bairro",
+  "home_welcome_subtitle": "Compre e venda com pessoas próximas.\nSeguro, simples e local.",
+  "home_get_started": "Comece",
+  "home_sign_in": "Eu já tenho uma conta",
+  "home_terms_notice": "Ao continuar, você concorda com nossos Termos de Serviço e Política de Privacidade",
+  "register": "Cadastre-se",
+  "alreadyHaveAccount": "Já tem uma conta",
+  "login": "Conecte-se",
+  "loginToAccount": "Faça login na conta",
+  "enterPhoneNumber": "Digite o número de telefone",
+  "password": "Senha",
+  "enterPassword": "Digite a senha",
+  "forgotPassword": "Esqueceu sua senha?",
+  "registerNow": "Cadastre-se agora",
+  "loading": "Carregando...",
+  "pleaseEnterPhoneNumber": "Por favor insira seu número de telefone",
+  "pleaseEnterPassword": "Por favor digite sua senha",
+  "unexpectedError": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+  "forgotPasswordComingSoon": "Esqueci o recurso de senha em breve",
+  "selectedCountryLabel": "Selecionado:",
+  "fullPhoneLabel": "Completo:",
+  "home": "Lar",
+  "settings": "Configurações",
+  "profile": "Perfil",
+  "search": "Procurar",
+  "notifications": "Notificações",
+  "error": "Erro",
+  "retry": "Tentar novamente",
+  "cancel": "Cancelar",
+  "save": "Salvar",
+  "appTitle": "Tezsell",
+  "selectRegion": "Por favor selecione sua região",
+  "searchHint": "Pesquise distrito ou cidade",
+  "apiError": "Ocorreu um problema ao chamar a API",
+  "ok": "OK",
+  "emptyList": "Lista vazia",
+  "dataLoadingError": "Ocorre um erro ao carregar os dados",
+  "confirm": "Confirmar",
+  "yes": "Sim",
+  "no": "Não",
+  "confirmRegionSelection": "Deseja selecionar a região {regionName}?",
+  "selectDistrictOrCity": "Selecione seu bairro ou cidade",
+  "confirmDistrictSelection": "Deseja selecionar a região {regionName} - {districtName}?",
+  "noResultsFound": "Nenhum resultado encontrado.",
+  "errorWithCode": "Erro: {errorCode}",
+  "failedToLoadData": "Falha ao carregar dados. Erro: {error}",
+  "phoneVerification": "Verificação de número de telefone",
+  "enterPhonePrompt": "Por favor insira seu número de telefone",
+  "enterPhoneNumberHint": "Digite o número de telefone",
+  "selectedCountry": "Selecionado: {countryName} ({countryCode})",
+  "selectCountry": "Selecione seu país",
+  "changeCountry": "Alterar país",
+  "country": "País",
+  "allCountries": "Todos os países",
+  "currencyRUB": "Rublo Russo",
+  "currencyUAH": "Hryvnia ucraniana",
+  "currencyBYN": "Rublo Bielorrusso",
+  "currencyMDL": "Leu da Moldávia",
+  "currencyGEL": "Lari georgiano",
+  "currencyAMD": "Dram Armênio",
+  "currencyAZN": "Manat do Azerbaijão",
+  "currencyKZT": "Tenge do Cazaquistão",
+  "currencyTMT": "Manat turcomano",
+  "currencyKGS": "Som do Quirguistão",
+  "currencyTJS": "Somoni tadjique",
+  "currencyUZS": "Som uzbeque",
+  "currencyUSD": "Dólar americano",
+  "currencyEUR": "Euro",
+  "fullNumber": "Número completo: {phoneNumber}",
+  "sendCode": "Enviar código",
+  "enterVerificationCode": "Insira o código de verificação",
+  "verificationCodeHint": "123456",
+  "resendCode": "Reenviar código",
+  "expires": "Expira em: {time}",
+  "verifyAndContinue": "Verifique e continue",
+  "invalidVerificationCode": "Código de verificação inválido",
+  "verificationCodeSent": "Código de verificação enviado com sucesso",
+  "failedToSendCode": "Falha ao enviar o código de verificação",
+  "verificationCodeResent": "Código de verificação reenviado com sucesso",
+  "failedToResendCode": "Falha ao reenviar o código de verificação",
+  "passwordVerification": "Verificação de senha",
+  "completeRegistrationPrompt": "Digite nome de usuário e senha para concluir o registro",
+  "username": "Nome de usuário",
+  "username_required": "O nome de usuário é obrigatório",
+  "username_min_length": "O nome de usuário deve ter pelo menos 2 caracteres",
+  "usernameHint": "Nome de usuário123",
+  "confirmPassword": "Confirme sua senha",
+  "profileImage": "Imagem do perfil",
+  "imageInstructions": "As imagens aparecerão aqui, por favor pressione a imagem do perfil",
+  "finish": "Terminar",
+  "passwordsDoNotMatch": "As senhas não coincidem",
+  "registrationError": "Erro de registro",
+  "about": "Sobre nós",
+  "chat": "Bater papo",
+  "realEstate": "Imobiliária",
+  "language": "POR",
+  "languageEn": "Inglês",
+  "languageRu": "russo",
+  "languageUz": "Usbeque",
+  "serviceLiked": "Serviço apreciado",
+  "support": "Apoiar",
+  "service": "Serviços Empresariais",
+  "aboutContent": "TezSell é um mercado rápido e fácil para compra e venda de produtos novos e usados. Nossa missão é criar a plataforma mais conveniente e eficiente para cada usuário, garantindo transações tranquilas e uma experiência amigável. Esteja você querendo vender ou comprar, o TezSell facilita a conexão e a conclusão de transações em apenas algumas etapas.Priorizamos a segurança e a privacidade de nossos usuários. Todas as transações são monitoradas cuidadosamente para garantir segurança e conformidade, proporcionando tranquilidade tanto aos compradores quanto aos vendedores. Nossa interface simples e intuitiva permite aos usuários listar produtos rapidamente e encontrar o que precisam. Também facilitamos a comunicação em tempo real através do Telegram, tornando o processo de compra e venda ainda mais tranquilo.",
+  "errorMessage": "Ocorreu um erro, verifique o servidor",
+  "searchLocation": "Localização",
+  "searchCategory": "Categorias",
+  "searchProductPlaceholder": "Pesquisar produtos",
+  "searchServicePlaceholder": "Procure por serviços",
+  "search_products_subtitle": "Encontre ótimas ofertas no seu bairro",
+  "search_services_subtitle": "Encontre profissionais no seu bairro",
+  "search_products_error": "Erro ao pesquisar produtos",
+  "search_services_error": "Erro ao pesquisar serviços",
+  "load_more_products_error": "Erro ao carregar mais produtos",
+  "load_more_services_error": "Erro ao carregar mais serviços",
+  "try_different_keywords": "Experimente palavras-chave diferentes",
+  "searchText": "Procurar",
+  "selectedCategory": "Categoria selecionada:",
+  "selectedLocation": "Local selecionado:",
+  "productError": "Nenhum produto disponível",
+  "serviceError": "Nenhum serviço disponível",
+  "locationHeader": "Selecione um local",
+  "locationPlaceholder": "Pesquise região aqui",
+  "categoryHeader": "Selecione uma categoria",
+  "categoryPlaceholder": "Categorias de pesquisa",
+  "categoryError": "Nenhuma categoria disponível",
+  "paginationFirst": "Primeiro",
+  "paginationPrevious": "Anterior",
+  "pageInfo": "Página de",
+  "pageNext": "Próximo",
+  "pageLast": "Durar",
+  "loadingMessageProduct": "Carregando produtos...",
+  "loadingMessageError": "Erro ao carregar",
+  "likeProductError": "Ocorreu um erro ao gostar do produto",
+  "dislikeProductError": "Ocorreu um erro ao não gostar do produto",
+  "loadingMessageLocation": "Carregando local...",
+  "loadingLocationError": "Erro ao carregar localização",
+  "loadingMessageCategory": "Carregando categorias...",
+  "loadingCategoryError": "Erro ao carregar categorias:",
+  "profileUpdateSuccessMessage": "Perfil atualizado com sucesso",
+  "profileUpdateFailMessage": "Falha ao atualizar o perfil",
+  "seeMoreBtn": "Ver mais",
+  "profilePageTitle": "Página de perfil",
+  "editProfileModalTitle": "Editar perfil",
+  "usernameLabel": "Nome de usuário",
+  "locationLabel": "Localização atual",
+  "profileImageLabel": "Imagem do perfil",
+  "chooseFileLabel": "Escolha um arquivo",
+  "uploadBtnLabel": "Atualizar",
+  "uploadingBtnLabel": "Atualizando...",
+  "cancelBtnLabel": "Cancelar",
+  "productsTitle": "Produtos",
+  "servicesTitle": "Serviços",
+  "myProductsTitle": "Meus produtos",
+  "myServicesTitle": "Meus serviços",
+  "favoriteProductsTitle": "Produtos favoritos",
+  "favoriteServicesTitle": "Serviços favoritos",
+  "noFavorites": "Sem favoritos",
+  "addNewProductBtn": "Adicionar novo produto",
+  "addNew": "Novo",
+  "addNewServiceBtn": "Adicionar novo serviço",
+  "downloadMobileApp": "Baixe o aplicativo móvel",
+  "registerPhoneNumberSuccess": "Número de telefone verificado! Você pode prosseguir para a próxima etapa.",
+  "regionSelectedMessage": "Região selecionada:",
+  "districtSelectMessage": "Distrito selecionado:",
+  "phoneNumberEmptyMessage": "Verifique seu número de telefone antes de continuar",
+  "regionEmptyMessage": "Selecione a região primeiro",
+  "districtEmptyMessage": "Selecione o distrito",
+  "usernamePasswordEmptyMessage": "Por favor insira nome de usuário e senha",
+  "registerTitle": "Cadastre-se",
+  "previousButton": "Anterior",
+  "nextButton": "Próximo",
+  "completeButton": "Completo",
+  "stepIndicator": "Etapa {currentStep} de 4",
+  "districtSelectTitle": "Lista Distrital",
+  "districtSelectParagraph": "Selecione um distrito:",
+  "phoneNumber": "Número de telefone",
+  "sendOtp": "Enviar OTP",
+  "sendAgain": "Enviar novamente",
+  "verify": "Verificar",
+  "failedToSendOtp": "Falha ao enviar OTP. O servidor retornou falso.",
+  "errorSendingOtp": "Ocorreu um erro ao enviar OTP.",
+  "invalidPhoneNumber": "Insira um número de telefone válido.",
+  "verificationSuccess": "Verificado com sucesso",
+  "verificationError": "Ocorreu um erro. Por favor, tente novamente mais tarde.",
+  "regionsList": "Lista de regiões",
+  "enterUsername": "Digite seu nome de usuário",
+  "welcomeMessage": "Bem-vindo ao Tezsell, faça login com seu número de telefone",
+  "noAccount": "Ainda não tem conta? Cadastre-se aqui",
+  "successLogin": "Registrado com sucesso",
+  "myProfile": "Meu perfil",
+  "logout": "sair",
+  "newProductTitle": "Título",
+  "newProductDescription": "Descrição",
+  "newProductPrice": "Preço",
+  "newProductCondition": "Doença",
+  "newProductCategory": "Categoria",
+  "newProductImages": "Imagens",
+  "addNewService": "Adicionar novo serviço",
+  "creating": "Criando...",
+  "serviceName": "Nome do serviço",
+  "serviceNamePlaceholder": "Insira o título do serviço",
+  "serviceDescription": "Descrição do serviço",
+  "serviceDescriptionPlaceholder": "Insira a descrição do serviço",
+  "serviceCategory": "Categoria de serviço",
+  "selectCategory": "Selecione a categoria",
+  "loadingCategories": "Carregando...",
+  "errorLoadingCategories": "Erro ao carregar categorias",
+  "serviceImages": "Imagens de serviço",
+  "imageUploadHelper": "Clique no ícone + para adicionar imagens (máximo 10)",
+  "maxImagesError": "Você pode enviar no máximo 10 imagens",
+  "categoryNotFound": "Categoria não encontrada",
+  "productCreatedSuccess": "Produto criado com sucesso",
+  "productLikeSuccess": "Produto curtido com sucesso",
+  "productDislikeSuccess": "Produto não apreciado com sucesso",
+  "errorCreatingService": "Erro ao criar serviço",
+  "errorCreatingProduct": "Erro ao criar produto",
+  "unknownError": "Ocorreu um erro desconhecido ao criar o serviço",
+  "submit": "Enviar",
+  "selectCategoryAction": "Selecione a categoria",
+  "selectCondition": "Selecione a condição",
+  "sum": "Soma",
+  "noComments": "Nenhum comentário ainda. Seja o primeiro a comentar!",
+  "commentLikeSuccess": "Comentário curtido com sucesso",
+  "commentLikeError": "Erro ao curtir o comentário",
+  "unknownErrorMessage": "Ocorreu um erro desconhecido",
+  "commentDislikeSuccess": "Comentário não curtido com sucesso",
+  "commentDislikeError": "Erro ao não gostar do comentário",
+  "replyInfo": "Por favor, digite uma resposta primeiro",
+  "replySuccessMessage": "Resposta adicionada com sucesso",
+  "replyErrorMessage": "Ocorreu um erro durante a criação da resposta",
+  "commentUpdateSuccess": "Comentário atualizado com sucesso",
+  "commentUpdateError": "Erro ao atualizar o item de comentário",
+  "deleteConfirmationMessage": "Tem certeza de que deseja excluir este comentário?",
+  "commentDeleteSuccess": "Comentário excluído com sucesso",
+  "commentDeleteError": "Erro ao excluir comentário",
+  "editLabel": "Editar",
+  "deleteLabel": "Excluir",
+  "saveLabel": "Salvar",
+  "replyLabel": "Responder",
+  "replyTitle": "respostas",
+  "replyPlaceholder": "Escreva uma resposta...",
+  "chatLoginMessage": "Você deve estar logado para iniciar um bate-papo",
+  "chatYourselfMessage": "Você não pode conversar consigo mesmo.",
+  "chatRoomMessage": "Sala de bate-papo criada!",
+  "chatRoomError": "Falha ao criar bate-papo!",
+  "chatCreationError": "Falha na criação do bate-papo!",
+  "productsTotal": "Total de produtos",
+  "perPage": "Unid",
+  "clearAllFilters": "Limpar todos os filtros",
+  "clickToUpload": "Clique para carregar",
+  "productInStock": "Em estoque",
+  "productOutStock": "Fora de estoque",
+  "productBack": "Voltar aos produtos",
+  "messageSeller": "Bater papo",
+  "recommendedProducts": "Produtos recomendados",
+  "deleteConfirmationProduct": "Tem certeza de que deseja excluir este produto?",
+  "productDeleteSuccess": "Produto excluído com sucesso",
+  "productDeleteError": "Erro ao excluir produto",
+  "newCondition": "Novo",
+  "used": "Usado",
+  "imageValidType": "Alguns arquivos não foram adicionados. Use arquivos JPG, PNG, GIF ou WebP com menos de 5 MB.",
+  "imageConfirmMessage": "Tem certeza de que deseja remover esta imagem?",
+  "titleRequiredMessage": "O título é obrigatório",
+  "descRequiredMessage": "A descrição é obrigatória",
+  "priceRequiredMessage": "O preço é obrigatório",
+  "conditionRequiredMessage": "A condição é obrigatória",
+  "pleaseFillAllRequired": "Por favor preencha os campos obrigatórios",
+  "oneImageConfirmMessage": "É necessária pelo menos uma imagem do produto",
+  "categoryRequiredMessage": "A categoria é obrigatória",
+  "locationInfoError": "Faltam informações de localização do usuário",
+  "editProductTitle": "Editar produto",
+  "imageUploadRequirements": "É necessária pelo menos uma imagem. Você pode fazer upload de até 10 imagens (JPG, PNG, GIF, WebP com menos de 5 MB cada).",
+  "productUpdatedSuccess": "Produto atualizado com sucesso",
+  "productUpdateFailed": "Falha na atualização do produto",
+  "errorUpdatingProduct": "Ocorreu um erro ao atualizar o produto",
+  "serviceBack": "Voltar aos serviços",
+  "likeLabel": "Como",
+  "commentsLabel": "Comentários",
+  "writeComment": "Escreva um comentário ...",
+  "postingLabel": "Postando...",
+  "commentCreated": "Comentário criado",
+  "postCommentLabel": "Postar comentário",
+  "loginPrompt": "Faça login para visualizar e postar comentários.",
+  "recommendedServices": "Serviços recomendados",
+  "commentsVisibilityNotice": "Os comentários são visíveis apenas para usuários logados.",
+  "comingSoon": "Em breve",
+  "serviceUpdateSuccess": "Serviço atualizado com sucesso",
+  "serviceUpdateError": "Erro ao atualizar o item de serviço",
+  "editServiceModalTitle": "Editar serviço",
+  "enterPhoneNumberWithoutCode": "Digite o número de telefone sem código",
+  "heroTitle": "TezVender",
+  "heroSubtitle": "Seu mercado rápido e fácil para o Uzbequistão",
+  "startSelling": "Comece a vender",
+  "browseProducts": "Navegar pelos produtos",
+  "featuresTitle": "Por que escolher a TezSell?",
+  "listingTitle": "Lista de produtos simples",
+  "listingDescription": "Liste seus itens com apenas alguns cliques. Adicione fotos, defina seu preço e conecte-se com os compradores instantaneamente.",
+  "locationTitle": "Navegação baseada em localização",
+  "locationDescription": "Encontre ofertas perto de você. Nosso sistema baseado em localização ajuda você a descobrir itens em sua vizinhança.",
+  "location_subtitle": "Escolha sua região e distrito para ver listagens próximas",
+  "categoryTitle": "Filtragem de categoria",
+  "categoryDescription": "Navegue facilmente por diferentes categorias para encontrar exatamente o que procura.",
+  "inspirationTitle": "Inspirado no mercado de cenoura da Coreia",
+  "inspirationDescription1": "Construímos o TezSell inspirados no bem-sucedido Mercado de Cenoura da Coreia (당근마켓), mas o adaptamos especificamente para atender às necessidades exclusivas das comunidades locais do Uzbequistão.",
+  "inspirationDescription2": "Nossa missão é criar uma plataforma confiável onde os vizinhos possam comprar, vender e se conectar facilmente.",
+  "comingSoonTitle": "Em breve no TezSell",
+  "inAppChat": "Bate-papo no aplicativo",
+  "secureTransactions": "Transações seguras",
+  "realEstateListings": "Listagens de imóveis",
+  "stayUpdated": "Fique atualizado",
+  "comingSoonBadge": "Em breve",
+  "ctaTitle": "Junte-se à comunidade TezSell hoje!",
+  "ctaDescription": "Faça parte da construção de uma melhor experiência de mercado para o Uzbequistão. Compartilhe seu feedback e ajude-nos a crescer!",
+  "createAccount": "Criar uma conta",
+  "learnMore": "Saber mais",
+  "replyUpdateSuccess": "Resposta atualizada com sucesso",
+  "replyUpdateError": "Falha ao atualizar a resposta",
+  "replyDeleteSuccess": "Resposta excluída com sucesso",
+  "replyDeleteError": "Falha ao excluir resposta",
+  "replyDeleteConfirmation": "Tem certeza de que deseja excluir esta resposta?",
+  "authenticationRequired": "Autenticação necessária",
+  "enterValidReply": "Insira um texto de resposta válido",
+  "saving": "Salvando...",
+  "deleting": "Excluindo...",
+  "properties": "Propriedades",
+  "agents": "Agentes",
+  "becomeAgent": "Torne-se um agente",
+  "main": "Principal",
+  "upload": "Carregar",
+  "filtered_products": "Produtos Filtrados",
+  "filtered_services": "Serviços filtrados",
+  "productDetail": "Detalhes do produto",
+  "unknownUser": "Usuário desconhecido",
+  "locationNotAvailable": "Local não disponível",
+  "noTitle": "Sem título",
+  "noCategory": "Nenhuma categoria",
+  "noDescription": "Sem descrição",
+  "som": "Som",
+  "about_me": "Sobre mim",
+  "my_name": "O meu nome",
+  "customer_support": "Suporte ao Cliente",
+  "customer_center": "Central do Cliente",
+  "customer_inquiries": "Consultas",
+  "customer_terms": "Termos e Condições",
+  "region": "Região",
+  "district": "Distrito",
+  "tap_change_profile": "Toque para alterar a foto",
+  "language_settings": "Configurações de idioma",
+  "selectLanguage": "Selecione um idioma",
+  "select_theme": "Selecione o tema",
+  "theme": "Tema",
+  "location_settings": "Configurações de localização",
+  "security": "Segurança",
+  "data_storage": "Dados e armazenamento",
+  "accessibility": "Acessibilidade",
+  "privacy": "Privacidade",
+  "light_theme": "Luz",
+  "dark_theme": "Escuro",
+  "system_theme": "Padrão do sistema",
+  "my_products": "Meus produtos",
+  "refresh": "Atualizar",
+  "delete_product": "Excluir produto",
+  "delete_confirmation": "Tem certeza de que deseja excluir este produto?",
+  "delete": "Excluir",
+  "error_loading_products": "Erro ao carregar produtos: {error}",
+  "product_deleted_success": "Produto excluído com sucesso",
+  "error_deleting_product": "Erro ao excluir produto: {error}",
+  "no_products_found": "Nenhum produto encontrado",
+  "add_first_product": "Comece adicionando seu primeiro produto",
+  "no_title": "Sem título",
+  "no_description": "Sem descrição",
+  "in_stock": "Em estoque",
+  "out_of_stock": "Fora de estoque",
+  "new_condition": "NOVO",
+  "edit_product": "Editar produto",
+  "delete_product_tooltip": "Excluir produto",
+  "sum_currency": "Soma",
+  "edit_product_title": "Editar produto",
+  "product_name": "Nome do produto",
+  "product_description": "Descrição do produto",
+  "price": "Preço",
+  "condition": "Doença",
+  "condition_new": "Novo",
+  "condition_used": "Usado",
+  "condition_refurbished": "Remodelado",
+  "currency": "Moeda",
+  "category": "Categoria",
+  "images": "Imagens",
+  "existing_images": "Imagens Existentes",
+  "new_images": "Novas imagens",
+  "image_instructions": "As imagens aparecerão aqui. Por favor, pressione o ícone de upload acima.",
+  "update_button": "Atualizar",
+  "loading_category_error": "Erro ao carregar categorias: {error}",
+  "error_picking_images": "Erro ao escolher imagens: {error}",
+  "please_fill_all_required": "Por favor preencha todos os campos",
+  "invalid_price_message": "Preço inválido inserido. Por favor insira um número válido.",
+  "category_required_message": "Selecione uma categoria válida.",
+  "one_image_required_message": "É necessária pelo menos uma imagem do produto",
+  "product_updated_success": "Produto atualizado com sucesso",
+  "error_updating_product": "Erro ao atualizar o produto: {error}",
+  "my_services": "Meus serviços",
+  "delete_service": "Excluir serviço",
+  "delete_service_confirmation": "Tem certeza de que deseja excluir este serviço?",
+  "no_services_found": "Nenhum serviço encontrado",
+  "add_first_service": "Comece adicionando seu primeiro serviço",
+  "edit_service": "Editar serviço",
+  "delete_service_tooltip": "Excluir serviço",
+  "service_deleted_successfully": "Serviço excluído com sucesso",
+  "error_deleting_service": "Erro ao excluir serviço",
+  "error_loading_services": "Erro ao carregar serviços",
+  "service_name": "Nome do serviço",
+  "enter_service_name": "Digite o nome do serviço",
+  "service_name_required": "O nome do serviço é obrigatório",
+  "service_name_min_length": "O nome do serviço deve ter pelo menos três caracteres",
+  "enter_service_description": "Insira a descrição do serviço",
+  "service_description_required": "A descrição do serviço é obrigatória",
+  "service_description_min_length": "A descrição deve ter pelo menos 10 caracteres",
+  "category_required": "Selecione uma categoria",
+  "no_categories_available": "Nenhuma categoria disponível",
+  "location": "Localização",
+  "select_location": "Selecione o local",
+  "location_required": "Selecione um local",
+  "no_locations_available": "Nenhum local disponível",
+  "add_images": "Adicionar imagens",
+  "current_images": "Imagens atuais",
+  "no_images_selected": "Nenhuma imagem selecionada",
+  "save_changes": "Salvar alterações",
+  "map_main": "Mapa e propriedades",
+  "agent_status": "Status do agente",
+  "admin_panel": "Painel de administração",
+  "propertiesFound": "Propriedades encontradas",
+  "propertiesSaved": "propriedades salvas",
+  "saved": "salvo",
+  "loadingProperties": "Carregando propriedades...",
+  "failedToLoad": "Falha ao carregar propriedades. Por favor, tente novamente.",
+  "noPropertiesFound": "Nenhuma propriedade encontrada",
+  "tryAdjusting": "Tente ajustar seus critérios de pesquisa",
+  "search_placeholder": "Pesquise por título ou localização...",
+  "search_filters": "Filtros",
+  "search_button": "Procurar",
+  "search_clear_filters": "Limpar filtros",
+  "filter_options_sale_and_rent": "Venda e aluguel",
+  "filter_options_for_sale": "À venda",
+  "filter_options_for_rent": "Para alugar",
+  "filter_options_all_types": "Todos os tipos",
+  "filter_options_apartment": "Apartamento",
+  "filter_options_house": "Casa",
+  "filter_options_townhouse": "Moradia",
+  "filter_options_villa": "Vila",
+  "filter_options_commercial": "Comercial",
+  "filter_options_office": "Escritório",
+  "property_card_featured": "Apresentou",
+  "property_card_bed": "quarto",
+  "property_card_bath": "banheiro",
+  "property_card_parking": "estacionamento",
+  "property_card_view_details": "Ver detalhes",
+  "property_card_contact": "Contato",
+  "property_card_balcony": "Sacada",
+  "property_card_garage": "Garagem",
+  "property_card_garden": "Jardim",
+  "property_card_pool": "Piscina",
+  "property_card_elevator": "Elevador",
+  "property_card_furnished": "Mobilado",
+  "property_card_sales": "vendas",
+  "pricing_month": "/mês",
+  "results_properties_found": "Propriedades encontradas",
+  "results_properties_saved": "propriedades salvas",
+  "results_saved": "salvo",
+  "results_loading_properties": "Carregando propriedades...",
+  "results_failed_to_load": "Falha ao carregar propriedades. Por favor, tente novamente.",
+  "results_no_properties_found": "Nenhuma propriedade encontrada",
+  "results_try_adjusting": "Tente ajustar seus critérios de pesquisa",
+  "no_properties_found": "Nenhuma propriedade encontrada",
+  "no_category_properties": "Não há propriedades nesta categoria",
+  "properties_loading": "Carregando propriedades...",
+  "all_properties_loaded": "Todas as propriedades carregadas",
+  "n_properties": "Propriedades {count}",
+  "in_area": "na área",
+  "pagination_previous": "Anterior",
+  "pagination_next": "Próximo",
+  "pagination_page": "Página",
+  "pagination_page_of": "Página 1 de",
+  "contact_modal_title": "Informações de contato",
+  "contact_modal_agent_contact": "Contato do agente",
+  "contact_modal_property_owner": "Proprietário da propriedade",
+  "contact_modal_agent_phone_number": "Número de telefone do agente",
+  "contact_modal_owner_phone_number": "Número de telefone do proprietário",
+  "contact_modal_license": "Licença",
+  "contact_modal_rating": "Avaliação",
+  "contact_modal_call_now": "Ligue agora",
+  "contact_modal_copy_number": "Copiar número",
+  "contact_modal_close": "Fechar",
+  "contact_modal_contact_hours": "Horário de contato: 9h00 - 20h00",
+  "contact_modal_agent": "Agente",
+  "errors_toggle_save_failed": "Falha ao alternar o salvamento da propriedade:",
+  "errors_copy_failed": "Falha ao copiar o número de telefone:",
+  "errors_phone_copied": "Número de telefone copiado para a área de transferência",
+  "errors_error_occurred_regions": "Ocorreu um erro com regiões",
+  "errors_error_occurred_districts": "Ocorreu um erro com os distritos",
+  "errors_please_fill_all_required_fields": "Por favor preencha todos os campos obrigatórios",
+  "errors_authentication_required": "Autenticação necessária",
+  "errors_user_info_missing": "Faltam informações do usuário",
+  "errors_validation_error": "Verifique seus dados de entrada",
+  "errors_permission_denied": "Permissão negada",
+  "errors_server_error": "Ocorreu um erro no servidor",
+  "errors_network_error": "Erro de conexão de rede",
+  "errors_timeout_error": "Tempo limite da solicitação excedido",
+  "errors_custom_error": "Ocorreu um erro",
+  "errors_error_creating_property": "Erro ao criar propriedade",
+  "errors_unknown_error_message": "Ocorreu um erro desconhecido",
+  "errors_coordinates_not_found": "Não foi possível encontrar coordenadas para este endereço. Insira-os manualmente.",
+  "errors_coordinates_error": "Erro ao obter coordenadas. Insira-os manualmente.",
+  "property_info_views": "visualizações",
+  "property_info_listed": "Listado",
+  "property_info_price_per_sqm": "/m²",
+  "property_info_saved": "Salvo",
+  "property_info_save": "Salvar",
+  "property_info_share": "Compartilhar",
+  "loading_loading": "Carregando...",
+  "loading_loading_details": "Carregando detalhes da propriedade...",
+  "loading_property_not_found": "Propriedade não encontrada",
+  "loading_property_not_found_message": "O imóvel que você procura não existe ou foi removido.",
+  "loading_back_to_properties": "Voltar para Propriedades",
+  "loading_title": "Carregando agentes...",
+  "loading_message": "Aguarde enquanto carregamos a lista de agentes.",
+  "loading_agent_not_found": "Agente não encontrado",
+  "property_details_title": "Detalhes da propriedade",
+  "property_details_bedrooms": "Quartos",
+  "property_details_bathrooms": "Banheiros",
+  "property_details_floor_area": "Área útil",
+  "property_details_parking": "Estacionamento",
+  "property_details_basic_information": "Informações Básicas",
+  "property_details_property_type": "Tipo de propriedade:",
+  "property_details_listing_type": "Tipo de listagem:",
+  "property_details_for_sale": "À venda",
+  "property_details_for_rent": "Para alugar",
+  "property_details_year_built": "Ano de construção:",
+  "property_details_floor": "Chão:",
+  "property_details_of": "de",
+  "property_details_features_amenities": "Recursos e comodidades",
+  "sections_description": "Descrição",
+  "sections_nearby_amenities": "Comodidades próximas",
+  "sections_similar_properties": "Propriedades semelhantes",
+  "amenities_metro": "Metrô",
+  "amenities_school": "Escola",
+  "amenities_hospital": "Hospital",
+  "amenities_shopping": "Compras",
+  "amenities_away": "ausente",
+  "contact_title": "Informações de contato",
+  "contact_professional_listing": "Listagem Profissional",
+  "contact_listed_by_agent": "Listado por agente verificado",
+  "contact_by_owner": "Por proprietário",
+  "contact_direct_contact": "Contato direto com proprietário do imóvel",
+  "contact_property_owner": "Proprietário da propriedade",
+  "contact_call_agent": "Agente de chamada",
+  "contact_email_agent": "Agente de e-mail",
+  "contact_call_owner": "Chamar proprietário",
+  "contact_email_owner": "Proprietário do e-mail",
+  "contact_send_inquiry": "Enviar consulta",
+  "property_status_title": "Situação da propriedade",
+  "property_status_availability": "Disponibilidade:",
+  "property_status_available": "Disponível",
+  "property_status_not_available": "Não disponível",
+  "property_status_featured": "Apresentou:",
+  "property_status_featured_property": "Propriedade em destaque",
+  "property_status_property_id": "ID da propriedade:",
+  "inquiry_title": "Enviar consulta",
+  "inquiry_inquiry_type": "Tipo de consulta",
+  "inquiry_request_info": "Solicitar informações",
+  "inquiry_schedule_viewing": "Agendar visualização",
+  "inquiry_make_offer": "Faça uma oferta",
+  "inquiry_request_callback": "Solicitar retorno de chamada",
+  "inquiry_message": "Mensagem",
+  "inquiry_message_placeholder": "Conte-nos sobre o seu interesse neste imóvel...",
+  "inquiry_offered_price": "Preço oferecido",
+  "inquiry_enter_offer": "Insira sua oferta",
+  "inquiry_preferred_contact_time": "Horário de contato preferencial (opcional)",
+  "inquiry_contact_time_placeholder": "por exemplo, dias úteis das 9h00 às 17h00",
+  "inquiry_cancel": "Cancelar",
+  "inquiry_sending": "Enviando...",
+  "inquiry_send_inquiry": "Enviar consulta",
+  "inquiry_inquiry_sent_success": "Consulta enviada com sucesso!",
+  "inquiry_inquiry_sent_error": "Falha ao enviar consulta. Por favor, tente novamente.",
+  "alerts_link_copied": "Link da propriedade copiado para a área de transferência!",
+  "alerts_phone_copied": "Número de telefone copiado para a área de transferência!",
+  "alerts_save_property_failed": "Falha ao salvar a propriedade:",
+  "alerts_email_subject": "Consulta sobre:",
+  "alerts_email_body": "Olá,\\n\\nEstou interessado no seu imóvel \"{title}\" localizado em {address}.\\n\\nEntre em contato comigo para mais informações.\\n\\nAtenciosamente",
+  "related_properties_view_details": "Ver detalhes",
+  "header_property": "Encontre o imóvel dos seus sonhos",
+  "header_sub_property": "Descubra oportunidades imobiliárias premium nos bairros mais desejáveis ​​de Tashkent",
+  "header_title": "Agentes imobiliários",
+  "header_subtitle": "Encontre agentes experientes para ajudar com suas necessidades imobiliárias",
+  "header_agents_found": "agentes encontrados",
+  "filters_all_specializations": "Todas as Especializações",
+  "filters_residential": "residencial",
+  "filters_commercial": "Comercial",
+  "filters_luxury": "Luxo",
+  "filters_investment": "Investimento",
+  "filters_any_rating": "Qualquer classificação",
+  "filters_four_stars": "4+ estrelas",
+  "filters_four_half_stars": "4,5+ estrelas",
+  "filters_five_stars": "5 estrelas",
+  "filters_highest_rated": "Mais bem avaliado",
+  "filters_lowest_rated": "Classificação mais baixa",
+  "filters_most_sales": "Maioria das vendas",
+  "filters_most_experience": "Mais experiência",
+  "agent_card_verified_agent": "Agente verificado",
+  "agent_card_years_experience": "anos de experiência",
+  "agent_card_years": "anos",
+  "agent_card_license": "Licença",
+  "agent_card_specialization": "Especialização",
+  "agent_card_view_profile": "Ver perfil",
+  "agent_card_contact": "Contato",
+  "agent_card_verified": "Verificado",
+  "no_results_title": "Nenhum agente encontrado",
+  "no_results_message": "Tente ajustar seus critérios ou filtros de pesquisa.",
+  "error_title": "Erro ao carregar agentes",
+  "error_message": "Falha ao carregar a lista de agentes. Por favor, tente novamente.",
+  "error_retry": "Tentar novamente",
+  "error_default_message": "Falha ao carregar detalhes do agente",
+  "error_try_again": "Tente novamente",
+  "notifications_phone_copied": "Número de telefone copiado para a área de transferência",
+  "notifications_copy_failed": "Falha ao copiar o número de telefone:",
+  "fallback_agent_name": "Agente",
+  "fallback_default_phone": "+998 90 123 45 67",
+  "navigation_submit_property": "Enviar propriedade",
+  "navigation_submitting": "Enviando...",
+  "navigation_back_to_agents": "Voltar para Agentes",
+  "agent_profile_verified_agent": "Agente verificado",
+  "agent_profile_contact_agent": "Agente de contato",
+  "agent_profile_send_message": "Enviar mensagem",
+  "agent_profile_years_experience": "Anos de experiência",
+  "agent_profile_properties_sold": "Imóveis Vendidos",
+  "agent_profile_active_listings": "Listagens Ativas",
+  "agent_profile_total_properties": "Propriedades totais",
+  "tabs_overview": "visão geral",
+  "tabs_properties": "propriedades",
+  "tabs_reviews": "comentários",
+  "about_agent_title": "Sobre o agente",
+  "about_agent_agency": "Agência",
+  "about_agent_license_number": "Número de licença",
+  "about_agent_specialization": "Especialização",
+  "about_agent_member_since": "Membro desde",
+  "about_agent_verified_since": "Verificado desde",
+  "performance_metrics_title": "Métricas de desempenho",
+  "performance_metrics_average_rating": "Avaliação média",
+  "performance_metrics_properties_sold": "Imóveis Vendidos",
+  "performance_metrics_active_listings": "Listagens Ativas",
+  "performance_metrics_years_experience": "Anos de experiência",
+  "contact_info_title": "Informações de contato",
+  "contact_info_contact_via_platform": "Contato via Plataforma",
+  "verification_status_title": "Status de verificação",
+  "verification_status_verified_agent": "Agente verificado",
+  "verification_status_pending_verification": "Verificação pendente",
+  "verification_status_licensed_professional": "Profissional Licenciado",
+  "verification_status_registered_agency": "Agência Registrada",
+  "quick_actions_title": "Ações rápidas",
+  "quick_actions_call_now": "Ligue agora",
+  "quick_actions_send_message": "Enviar mensagem",
+  "quick_actions_view_properties": "Ver propriedades",
+  "properties_title": "Propriedades do agente",
+  "properties_loading_properties": "Carregando propriedades...",
+  "properties_no_properties_title": "Nenhuma propriedade encontrada",
+  "properties_no_properties_message": "As propriedades deste agente aparecerão aqui.",
+  "properties_recent_properties_note": "Mostrando propriedades recentes. Verifique as listagens completas de todas as propriedades dos agentes.",
+  "properties_listed": "Listado",
+  "properties_bed": "cama",
+  "properties_bath": "banho",
+  "properties_for_sale": "À venda",
+  "properties_for_rent": "Para alugar",
+  "reviews_title": "Avaliações de clientes",
+  "reviews_no_reviews_title": "Ainda não há comentários",
+  "reviews_no_reviews_message": "Avaliações e recomendações de clientes aparecerão aqui.",
+  "fallbacks_agent_name": "Agente",
+  "fallbacks_default_profile_image": "/default-avatar.png",
+  "saved_properties_title": "Propriedades salvas",
+  "saved_properties_subtitle": "Suas propriedades favoritas em um só lugar",
+  "saved_properties_no_saved_properties": "Nenhuma propriedade salva ainda",
+  "saved_properties_start_saving": "Comece a explorar e salve as propriedades que você gosta",
+  "saved_properties_browse_properties": "Navegar pelas propriedades",
+  "saved_properties_saved_on": "Salvo em",
+  "auth_login_required": "Faça login para ver as propriedades salvas",
+  "auth_login": "Conecte-se",
+  "success_property_unsaved": "Propriedade removida da lista salva",
+  "success_property_saved": "Propriedade salva com sucesso",
+  "success_phone_copied": "Número de telefone copiado!",
+  "success_property_created_success": "Imóvel criado com sucesso!",
+  "success_agent_approved": "Agente aprovado com sucesso",
+  "success_agent_rejected": "Agente rejeitado com sucesso",
+  "steps_step": "Etapa",
+  "steps_basic_information": "Informações Básicas",
+  "steps_location_details": "Detalhes do local",
+  "steps_property_details": "Detalhes da propriedade",
+  "steps_property_images": "Imagens de propriedades",
+  "basic_info_tell_us_about_property": "Conte-nos sobre seu imóvel",
+  "basic_info_property_type": "Tipo de propriedade",
+  "basic_info_listing_type": "Tipo de listagem",
+  "basic_info_property_title": "Título da propriedade",
+  "basic_info_title_placeholder": "Insira um título descritivo para sua propriedade",
+  "basic_info_description": "Descrição",
+  "basic_info_description_placeholder": "Descreva detalhadamente o seu imóvel...",
+  "property_types_apartment": "Apartamento",
+  "property_types_house": "Casa",
+  "property_types_townhouse": "Moradia",
+  "property_types_villa": "Vila",
+  "property_types_commercial": "Comercial",
+  "property_types_office": "Escritório",
+  "property_types_land": "Terra",
+  "property_types_warehouse": "Armazém",
+  "listing_types_for_sale": "À venda",
+  "listing_types_for_rent": "Para alugar",
+  "location_where_is_property": "Onde está localizado o seu imóvel?",
+  "location_full_address": "Endereço completo",
+  "location_address_placeholder": "Digite o endereço completo",
+  "location_region": "Região",
+  "location_select_region": "Selecione a região",
+  "location_district": "Distrito",
+  "location_select_district": "Selecione o distrito",
+  "location_city": "Cidade",
+  "location_city_placeholder": "Cidade",
+  "location_loading_regions": "Carregando regiões...",
+  "location_loading_districts": "Carregando distritos...",
+  "location_map_coordinates": "Coordenadas do mapa",
+  "location_get_coordinates": "Obtenha coordenadas",
+  "location_latitude": "Latitude",
+  "location_longitude": "Longitude",
+  "location_coordinates_set": "Conjunto de coordenadas",
+  "location_location_tips": "Dicas de localização",
+  "location_location_tip_1": "• Preencha primeiro o endereço e depois clique em \"Obter coordenadas\" para obter automaticamente a localização no mapa",
+  "location_location_tip_2": "• Você também pode inserir coordenadas manualmente se souber a localização exata",
+  "location_location_tip_3": "• Coordenadas precisas ajudam os compradores a encontrar sua propriedade no mapa",
+  "property_details_provide_detailed_info": "Forneça informações detalhadas sobre sua propriedade",
+  "property_details_total_floors": "Total de andares",
+  "property_details_area_m2": "Área (m²)",
+  "property_details_parking_spaces": "Vagas de estacionamento",
+  "property_details_price": "Preço",
+  "property_details_features": "Características",
+  "images_add_photos_showcase": "Adicione fotos para mostrar sua propriedade",
+  "images_click_to_upload": "Clique para fazer upload de imagens",
+  "images_max_images_info": "Máximo de 10 imagens, JPG, PNG ou WEBP",
+  "images_main": "Principal",
+  "images_maximum_images_allowed": "Máximo de 10 imagens permitidas",
+  "admin_dashboard_title": "Painel de administração",
+  "admin_dashboard_subtitle": "Visão geral em tempo real da sua plataforma imobiliária",
+  "admin_last_update": "Última atualização",
+  "admin_total_properties": "Propriedades totais",
+  "admin_total_agents": "Total de Agentes",
+  "admin_total_users": "Total de usuários",
+  "admin_total_views": "Total de visualizações",
+  "admin_error_loading_dashboard": "Erro ao carregar o painel",
+  "admin_failed_to_load_data": "Falha ao carregar dados do painel",
+  "admin_avg_sale_price": "Preço médio de venda",
+  "admin_avg_sale_price_subtitle": "Todas as listagens ativas",
+  "admin_total_portfolio_value": "Valor total do portfólio",
+  "admin_total_portfolio_value_subtitle": "Valor da propriedade combinada",
+  "admin_avg_price_per_sqm": "Preço médio por m²",
+  "admin_avg_price_per_sqm_subtitle": "Indicador de taxa de mercado",
+  "admin_property_types_distribution": "Distribuição de tipos de propriedade",
+  "admin_properties_by_city": "Imóveis por Cidade",
+  "admin_properties_by_district": "Imóveis por Distrito",
+  "admin_inquiry_types_distribution": "Distribuição de tipos de consulta",
+  "admin_agent_verification_rate": "Taxa de verificação do agente",
+  "admin_agent_verification_rate_subtitle": "Controle de qualidade",
+  "admin_inquiry_response_rate": "Taxa de resposta a consultas",
+  "admin_inquiry_response_rate_subtitle": "Atendimento ao Cliente",
+  "admin_avg_views_per_property": "Média de visualizações por propriedade",
+  "admin_avg_views_per_property_subtitle": "Popularidade da propriedade",
+  "admin_featured_properties": "Propriedades em destaque",
+  "admin_featured_properties_subtitle": "Listagens premium",
+  "admin_most_viewed_properties": "Propriedades mais vistas",
+  "admin_top_performing_agents": "Agentes de melhor desempenho",
+  "admin_system_health": "Saúde do sistema",
+  "admin_properties_without_images": "Propriedades sem imagens",
+  "admin_missing_location_data": "Dados de localização ausentes",
+  "admin_pending_agent_verification": "Verificação do agente pendente",
+  "admin_active": "ativo",
+  "admin_verified": "verificado",
+  "admin_active_7d": "ativo (7d)",
+  "admin_this_month": "este mês",
+  "agents_loading_pending_applications": "Carregando inscrições pendentes...",
+  "agents_error_loading_applications": "Erro ao carregar aplicativos",
+  "agents_pending_agents": "Agentes Pendentes",
+  "agents_total_pending_applications": "Total de solicitações pendentes:",
+  "agents_pending_verification": "Verificação pendente",
+  "agents_applied_date": "Aplicado:",
+  "agents_contact_info": "Informações de contato",
+  "agents_license_number": "Número de licença",
+  "agents_years_experience": "Anos de experiência",
+  "agents_years_suffix": "anos",
+  "agents_total_sales": "Vendas totais",
+  "agents_specialization": "Especialização",
+  "agents_approve": "Aprovar",
+  "agents_reject": "Rejeitar",
+  "agents_no_pending_applications": "Não há inscrições pendentes",
+  "agents_all_applications_processed": "Todas as solicitações de agentes foram processadas",
+  "general_previous": "Anterior",
+  "general_page": "Página",
+  "general_next": "Próximo",
+  "general_views": "visualizações",
+  "general_sales": "vendas",
+  "general_language_uz": "O'zbekcha",
+  "general_language_ru": "Russo",
+  "general_language_en": "Inglês",
+  "general_super_admin": "Superadministrador",
+  "general_staff": "Funcionários",
+  "general_verified_agent": "Agente verificado",
+  "general_pending_agent": "Agente Pendente",
+  "general_regular_user": "Usuário regular",
+  "general_admin": "Administrador",
+  "general_dashboard": "Painel",
+  "general_manage_users": "Gerenciar usuários",
+  "general_verified_agents": "Agentes verificados",
+  "general_agent_panel": "Painel do Agente",
+  "general_create_property": "Criar propriedade",
+  "general_my_properties": "Minhas propriedades",
+  "general_inquiries": "Consultas",
+  "general_agent_profile": "Perfil do agente",
+  "general_live": "Ao vivo",
+  "general_logged_out_successfully": "Desconectado com sucesso",
+  "general_logout_completed_with_errors": "Logout concluído (com erros)",
+  "general_application_under_review": "Solicitação em análise",
+  "general_check_status": "Verifique o status →",
+  "general_last_updated": "Última atualização:",
+  "general_permissions_may_be_outdated": "As permissões podem estar desatualizadas",
+  "general_permissions_up_to_date": "Permissões atualizadas",
+  "general_never": "Nunca",
+  "general_properties_found": "Propriedades encontradas",
+  "general_properties_saved": "propriedades salvas",
+  "general_saved": "salvo",
+  "general_loading_properties": "Carregando propriedades...",
+  "general_failed_to_load": "Falha ao carregar propriedades. Por favor, tente novamente.",
+  "general_no_properties_found": "Nenhuma propriedade encontrada",
+  "general_try_adjusting": "Tente ajustar seus critérios de pesquisa",
+  "select_category": "Selecione a categoria",
+  "service_description": "Descrição do serviço",
+  "product_search_placeholder": "Insira um termo de pesquisa para encontrar produtos",
+  "privacy_policy": "política de Privacidade",
+  "terms_subtitle": "Política de privacidade e termos",
+  "last_updated": "Última atualização",
+  "contact_information": "Informações de contato",
+  "accept_terms": "Aceito os Termos e Condições",
+  "read_terms": "Por favor leia nossos termos e condições",
+  "inquiries": "Consultas e suporte",
+  "inquiries_subtitle": "Contate-nos para obter ajuda",
+  "help_center": "Como podemos ajudá-lo?",
+  "help_subtitle": "Estamos aqui para ajudá-lo com qualquer dúvida",
+  "contact_us": "Contate-nos",
+  "email_support": "Suporte por e-mail",
+  "call_support": "Ligue para o suporte",
+  "send_message": "Enviar mensagem",
+  "fill_contact_form": "Preencha o formulário de contato",
+  "contact_form": "Formulário de contato",
+  "name": "Seu nome",
+  "name_required": "Por favor digite seu nome",
+  "email": "Endereço de email",
+  "email_required": "Por favor insira seu e-mail",
+  "email_invalid": "Por favor insira um e-mail válido",
+  "subject": "Assunto",
+  "subject_required": "Por favor insira um assunto",
+  "message": "Mensagem",
+  "message_required": "Por favor digite sua mensagem",
+  "message_too_short": "A mensagem deve ter pelo menos 10 caracteres",
+  "faq": "Perguntas frequentes",
+  "follow_us": "Siga-nos",
+  "faq_how_to_sell": "Como faço para vender itens no Tezsell?",
+  "faq_how_to_sell_answer": "Para vender itens: 1) Crie uma conta, 2) Toque no botão '+', 3) Escolha a categoria (Produtos/Serviços/Imóveis), 4) Adicione fotos e descrição, 5) Defina seu preço, 6) Publique! Sua listagem ficará visível para compradores em sua área.",
+  "faq_is_free": "O uso do Tezsell é gratuito?",
+  "faq_is_free_answer": "Sim! Tezsell é atualmente 100% gratuito. Sem taxas de listagem, sem comissão sobre vendas, sem taxas de assinatura. Poderemos introduzir recursos premium no futuro, mas notificaremos os usuários com 30 dias de antecedência.",
+  "faq_safety": "Como posso ficar seguro ao comprar/vender?",
+  "faq_safety_answer": "Dicas de segurança: 1) Reúna-se em locais públicos, 2) Inspecione itens antes de pagar, 3) Nunca envie dinheiro para estranhos, 4) Confie em seus instintos, 5) Denuncie usuários suspeitos, 6) Não compartilhe informações pessoais muito cedo, 7) Traga um amigo para transações de alto valor.",
+  "faq_payment": "Como funcionam os pagamentos?",
+  "faq_payment_answer": "Tezsell não processa pagamentos. Compradores e vendedores organizam o pagamento diretamente (dinheiro, transferência bancária, etc.). Somos apenas uma plataforma para conectar pessoas – você mesmo cuida da transação.",
+  "faq_prohibited": "Quais itens são proibidos?",
+  "faq_prohibited_answer": "Os itens proibidos incluem: armas, drogas, bens roubados, itens falsificados, conteúdo adulto, animais vivos (sem autorização), identidades governamentais e materiais perigosos. Consulte nossos Termos e Condições para obter a lista completa.",
+  "faq_account_delete": "Como excluo minha conta?",
+  "faq_account_delete_answer": "Vá para Perfil → Configurações → Configurações da conta → Excluir conta. Observação: isso é permanente e não pode ser desfeito. Todas as suas listagens serão removidas.",
+  "faq_report_user": "Como faço para denunciar um usuário ou listagem?",
+  "faq_report_user_answer": "Toque nos três pontos (•••) em qualquer listagem ou perfil de usuário e selecione 'Denunciar'. Escolha o motivo e envie. Analisamos todos os relatórios dentro de 24 a 48 horas.",
+  "faq_change_location": "Como mudo minha localização?",
+  "faq_change_location_answer": "Toque no botão de localização no canto superior esquerdo da tela inicial. Você pode selecionar sua região e distrito para ver listagens em sua área.",
+  "welcome_customer_center": "Bem-vindo à Central do Cliente",
+  "customer_center_subtitle": "Estamos aqui para ajudá-lo 24 horas por dia, 7 dias por semana",
+  "quick_actions": "Ações rápidas",
+  "live_chat": "Bate-papo ao vivo",
+  "chat_with_us": "Converse conosco",
+  "find_answers": "Encontre respostas",
+  "my_tickets": "Meus ingressos",
+  "view_tickets": "Ver ingressos",
+  "feedback": "Opinião",
+  "share_feedback": "Compartilhe comentários",
+  "contact_methods": "Métodos de contato",
+  "phone_support": "Suporte por telefone",
+  "available_247": "Disponível 24 horas por dia, 7 dias por semana",
+  "response_24h": "Resposta dentro de 24 horas",
+  "telegram_support": "Suporte de telegrama",
+  "instant_replies": "Respostas instantâneas",
+  "whatsapp_support": "Suporte WhatsApp",
+  "quick_response": "Resposta rápida",
+  "popular_topics": "Tópicos populares",
+  "account_management": "Gerenciamento de contas",
+  "reset_password": "Redefinir senha",
+  "update_profile": "Atualizar perfil",
+  "verify_account": "Verifique a conta",
+  "delete_account": "Excluir conta",
+  "buying_selling": "Compra e Venda",
+  "how_to_post": "Como postar anúncios",
+  "payment_methods": "Métodos de pagamento",
+  "shipping_delivery": "Envio e entrega",
+  "return_policy": "Política de devolução",
+  "safety_security": "Segurança e proteção",
+  "report_scam": "Denunciar fraude",
+  "safe_trading": "Dicas de negociação segura",
+  "privacy_settings": "Configurações de privacidade",
+  "blocked_users": "Usuários bloqueados",
+  "technical_issues": "Problemas técnicos",
+  "app_not_working": "O aplicativo não funciona",
+  "upload_failed": "Falha no upload",
+  "login_problems": "Problemas de login",
+  "support_hours": "Horário de suporte",
+  "mon_fri_9_6": "Seg-Sex: 9h00 - 18h00",
+  "how_are_we_doing": "Como estamos?",
+  "rate_experience": "Avalie sua experiência de atendimento ao cliente",
+  "poor": "Pobre",
+  "okay": "OK",
+  "good": "Bom",
+  "excellent": "Excelente",
+  "account_secure": "Sua conta está segura",
+  "password_security": "Senha e autenticação",
+  "change_password": "Alterar a senha",
+  "two_factor_auth": "Autenticação de dois fatores",
+  "biometric_login": "Login biométrico",
+  "login_activity": "Atividade de login",
+  "active_sessions": "Sessões ativas",
+  "login_alerts": "Alertas de login",
+  "account_protection": "Proteção de conta",
+  "recovery_email": "E-mail de recuperação",
+  "backup_codes": "Códigos de backup",
+  "danger_zone": "Zona de perigo",
+  "improve_security": "Melhore a segurança",
+  "security_score": "Pontuação de segurança",
+  "last_changed_days": "Última alteração há 30 dias",
+  "logout_all_devices": "Sair de todos os dispositivos",
+  "end_all_sessions": "Encerrar todas as sessões",
+  "permanently_delete": "Excluir permanentemente",
+  "verification_code_message": "Enviaremos um código de verificação para confirmar que é você.",
+  "send_code": "Enviar código",
+  "enter_verification_code": "Insira o código de verificação",
+  "verification_code": "Código de verificação",
+  "new_password": "Nova Senha",
+  "confirm_password": "Confirme sua senha",
+  "resend_code": "Reenviar código",
+  "code_sent_to": "Digite o código de verificação enviado para",
+  "enter_code": "Insira o código de verificação",
+  "code_must_be_6_digits": "O código deve ter 6 dígitos",
+  "enter_new_password": "Digite a nova senha",
+  "minimum_8_characters": "Mínimo 8 caracteres",
+  "passwords_do_not_match": "As senhas não coincidem",
+  "close": "Fechar",
+  "current": "Atual",
+  "session_ended": "Sessão encerrada",
+  "update_recovery_email": "Atualizar e-mail de recuperação",
+  "new_email": "Novo e-mail",
+  "update": "Atualizar",
+  "verification_email_sent": "E-mail de verificação enviado",
+  "generate_emergency_codes": "Gerar códigos de emergência",
+  "copy_all": "Copiar tudo",
+  "code_copied": "Código copiado",
+  "all_codes_copied": "Todos os códigos copiados",
+  "logout_all_devices_confirm": "Sair de todos os dispositivos?",
+  "logout_all_devices_message": "Isso encerrará todas as sessões ativas em todos os dispositivos.",
+  "logout_all": "Sair de tudo",
+  "delete_account_confirm": "Excluir conta?",
+  "delete_account_warning": "Esta ação é PERMANENTE e não pode ser desfeita. Todos os seus dados serão excluídos permanentemente.",
+  "what_will_be_deleted": "O que será excluído:",
+  "profile_and_account_info": "• Seu perfil e informações da conta",
+  "all_listings_and_posts": "• Todas as suas listagens e postagens",
+  "messages_and_conversations": "Mensagens",
+  "saved_items_and_preferences": "• Itens e preferências salvos",
+  "enter_password_to_continue": "Digite sua senha para continuar",
+  "continue_val": "Continuar",
+  "please_enter_password": "Por favor digite sua senha",
+  "enter_confirmation_code": "Introduza o código de confirmação",
+  "deletion_confirmation_message": "Enviamos um código de confirmação para o seu telefone. Insira-o abaixo para excluir permanentemente sua conta.",
+  "confirmation_code": "Código de confirmação",
+  "please_enter_6_digit_code": "Por favor insira o código de 6 dígitos",
+  "account_deleted": "Sua conta foi excluída",
+  "deletion_cancelled": "Exclusão cancelada",
+  "failed_to_load_user_info": "Falha ao carregar informações do usuário",
+  "auth_login_to_view_saved": "Faça login para ver suas propriedades salvas",
+  "authLoginRequired": "Login obrigatório",
+  "authLoginToViewSaved": "Faça login para ver suas propriedades salvas",
+  "authLogin": "Conecte-se",
+  "savedPropertiesTitle": "Propriedades salvas",
+  "loadingSavedProperties": "Carregando propriedades salvas...",
+  "errorsFailedToLoadSaved": "Falha ao carregar propriedades salvas",
+  "actionsRetry": "Tentar novamente",
+  "savedPropertiesNoSaved": "Nenhuma propriedade salva",
+  "savedPropertiesStartSaving": "Comece a explorar e salve as propriedades que você gosta",
+  "savedPropertiesBrowse": "Navegar pelas propriedades",
+  "resultsSavedProperties": "propriedades salvas",
+  "actionsRefresh": "Atualizar",
+  "resultsNoMoreProperties": "Não há mais propriedades",
+  "propertyCardFeatured": "Apresentou",
+  "successPropertyUnsaved": "Propriedade removida da lista salva",
+  "alertsUnsavePropertyFailed": "Falha ao remover propriedade",
+  "propertyCardBed": "cama",
+  "propertyCardBath": "banho",
+  "savedPropertiesSavedOn": "Salvo em",
+  "propertyCardViewDetails": "Ver detalhes",
+  "serviceDetailTitle": "Detalhe do serviço",
+  "errorLoadingFavorites": "Erro ao carregar itens favoritos",
+  "noFavoritesFound": "Nenhum item favorito encontrado.",
+  "commentUpdatedSuccess": "Comentário atualizado com sucesso!",
+  "errorUpdatingComment": "Erro ao atualizar o comentário",
+  "replyAddedSuccess": "Resposta adicionada com sucesso!",
+  "errorAddingReply": "Erro ao adicionar resposta",
+  "commentDeletedSuccess": "Comentário excluído com sucesso!",
+  "errorDeletingComment": "Erro ao excluir comentário",
+  "serviceLikedSuccess": "Serviço curtido com sucesso!",
+  "errorLikingService": "Erro ao gostar do serviço",
+  "serviceDislikedSuccess": "Serviço não apreciado com sucesso!",
+  "errorDislikingService": "Erro ao não gostar do serviço",
+  "writeYourReply": "Escreva sua resposta...",
+  "postReply": "Postar resposta",
+  "anonymous": "Anônimo",
+  "editComment": "Editar comentário",
+  "editYourComment": "Edite seu comentário...",
+  "saveChanges": "Salvar alterações",
+  "propertyOwner": "Proprietário da propriedade",
+  "errorLoadingServices": "Erro ao carregar serviços",
+  "noRecommendedServicesFound": "Nenhum serviço recomendado encontrado.",
+  "passwordRequired": "A senha é obrigatória",
+  "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
+  "passwordRequirements": "A senha deve conter letras e números",
+  "usernameRequired": "O nome de usuário é obrigatório",
+  "usernameTooShort": "O nome de usuário deve ter pelo menos 3 caracteres",
+  "confirmPasswordRequired": "A confirmação da senha é necessária",
+  "passwordHelp": "Pelo menos 8 caracteres, letras e números",
+  "usernameExists": "Este nome de usuário já existe",
+  "phoneExists": "Este número de telefone já está registrado",
+  "networkError": "Erro de conexão de rede. Verifique sua conexão",
+  "contactSeller": "Contate o vendedor",
+  "callToReveal": "Toque em \"Ligar\" para revelar",
+  "camera": "Câmera",
+  "gallery": "Galeria",
+  "selectImageSource": "Selecione a fonte da imagem",
+  "uploading": "Fazendo upload...",
+  "acceptTermsRequired": "Você deve aceitar os Termos e Condições para continuar",
+  "iAgreeToTerms": "Eu concordo com o",
+  "termsAndConditions": "Termos e Condições",
+  "zeroToleranceStatement": "e compreender que existe tolerância zero para conteúdo questionável ou usuários abusivos.",
+  "viewTerms": "Ver Termos e Condições",
+  "reportContent": "Denunciar conteúdo",
+  "selectReportReason": "Selecione um motivo para denunciar:",
+  "additionalDetails": "Detalhes adicionais (opcional)",
+  "reportDetailsHint": "Forneça qualquer informação adicional...",
+  "reportSubmitted": "Obrigado pelo seu relatório. Iremos revisá-lo dentro de 24 horas.",
+  "reportProduct": "Reportar produto",
+  "reportService": "Serviço de relatórios",
+  "reportMessage": "Mensagem de relatório",
+  "reportUser": "Denunciar usuário",
+  "reportErrorNotImplemented": "O recurso de relatório ainda não está disponível. Entre em contato com o suporte ou tente novamente mais tarde.",
+  "reportAlreadySubmitted": "Você já denunciou este conteúdo. Estamos analisando seu relatório anterior.",
+  "reportFailedGeneric": "Falha ao enviar relatório. Por favor, tente novamente.",
+  "reportFailedNetwork": "Ocorreu um erro de rede. Verifique sua conexão e tente novamente.",
+  "becomeAgentTitle": "Junte-se como agente imobiliário",
+  "becomeAgentSubtitle": "Liste propriedades e ajude os clientes a encontrar a casa dos seus sonhos",
+  "agentBenefits": "Benefícios:",
+  "agentBenefitVerified": "Selo de agente verificado",
+  "agentBenefitAnalytics": "Acesso a análises e insights",
+  "agentBenefitClients": "Contato direto com potenciais clientes",
+  "agentBenefitReputation": "Construa sua reputação profissional",
+  "agentApplicationForm": "Formulário de inscrição",
+  "agentAgencyName": "Nome da agência",
+  "agentAgencyNameHint": "Insira o nome da sua agência imobiliária",
+  "agentAgencyNameRequired": "O nome da agência é obrigatório",
+  "agentLicenceNumber": "Número de licença",
+  "agentLicenceNumberHint": "Insira o número da sua licença imobiliária",
+  "agentLicenceNumberRequired": "O número da licença é obrigatório",
+  "agentYearsExperience": "Anos de experiência",
+  "agentYearsExperienceHint": "Insira o número de anos",
+  "agentYearsExperienceRequired": "Anos de experiência são necessários",
+  "agentYearsExperienceInvalid": "Por favor insira um número válido",
+  "agentSpecialization": "Especialização",
+  "agentApplicationNote": "Sua inscrição será analisada por nossa equipe. Você será notificado assim que sua inscrição for aprovada.",
+  "agentSubmitApplication": "Enviar inscrição",
+  "agentApplicationSubmitted": "Candidatura submetida com sucesso! Iremos revisá-lo em breve.",
+  "agentApplicationStatus": "Status do aplicativo",
+  "agentViewProfile": "Veja o perfil do seu agente",
+  "agentDashboardComingSoon": "Painel do agente em breve!",
+  "property_create_basic_information": "Informações Básicas",
+  "property_create_property_title": "Título da propriedade *",
+  "property_create_property_title_hint": "por exemplo, apartamento moderno 3BR no centro da cidade",
+  "property_create_property_title_required": "Por favor insira o título da propriedade",
+  "property_create_description": "Descrição *",
+  "property_create_description_hint": "Descreva detalhadamente o seu imóvel...",
+  "property_create_description_required": "Por favor insira a descrição",
+  "property_create_property_type": "Tipo de propriedade",
+  "property_create_property_type_required": "Tipo de propriedade *",
+  "property_create_listing_type_required": "Tipo de listagem *",
+  "property_create_pricing": "Preços",
+  "property_create_price": "Preço *",
+  "property_create_price_hint": "Insira o preço",
+  "property_create_price_required": "Por favor insira o preço",
+  "property_create_currency": "Moeda",
+  "property_create_property_details": "Detalhes da propriedade",
+  "property_create_square_meters": "Quadrado Metros *",
+  "property_create_bedrooms": "Quartos *",
+  "property_create_bathrooms": "Banheiros *",
+  "property_create_floor": "Chão",
+  "property_create_total_floors": "Total de andares",
+  "property_create_parking": "Estacionamento",
+  "property_create_year_built": "Ano de construção",
+  "property_create_location": "Localização",
+  "property_create_address": "Endereço *",
+  "property_create_address_hint": "Insira o endereço do imóvel",
+  "property_create_address_required": "Por favor insira o endereço",
+  "property_create_location_detected": "Localização detectada",
+  "property_create_get_location": "Obtenha a localização atual",
+  "property_create_features": "Características",
+  "property_create_feature_balcony": "Sacada",
+  "property_create_feature_garage": "Garagem",
+  "property_create_feature_garden": "Jardim",
+  "property_create_feature_pool": "Piscina",
+  "property_create_feature_elevator": "Elevador",
+  "property_create_feature_furnished": "Mobilado",
+  "property_create_images": "Imagens de propriedades",
+  "property_create_tap_to_add_images": "Toque para adicionar imagens",
+  "property_create_at_least_one_image": "É necessária pelo menos uma imagem",
+  "property_create_add_more": "Adicionar mais",
+  "property_create_required": "Obrigatório",
+  "property_create_location_required": "Ative os serviços de localização para criar uma propriedade",
+  "property_create_image_required": "É necessária pelo menos uma imagem de propriedade",
+  "emailVerification": "Verificação de e-mail",
+  "pleaseEnterYourEmailAddress": "Por favor insira seu endereço de e-mail",
+  "enterEmailAddress": "Digite o endereço de e-mail",
+  "resetYourPassword": "Redefinir sua senha",
+  "resetPasswordDescription": "Digite seu endereço de e-mail e enviaremos um código de verificação para redefinir sua senha.",
+  "sendVerificationCode": "Enviar código de verificação",
+  "backToLogin": "Voltar ao login",
+  "resetPassword": "Redefinir senha",
+  "enterVerificationCodeSentTo": "Digite o código de verificação enviado para {email}",
+  "codeMustBe6Digits": "O código deve ter 6 dígitos",
+  "enterNewPassword": "Digite a nova senha",
+  "minimum8Characters": "Mínimo 8 caracteres",
+  "sending": "Enviando...",
+  "verifying": "Verificando...",
+  "new_message": "Nova mensagem",
+  "messages": "Mensagens",
+  "please_log_in": "Faça login para ver as mensagens",
+  "pin": "Alfinete",
+  "unpin": "Liberar",
+  "delete_chat": "Excluir bate-papo",
+  "delete_chat_confirm": "Tem certeza de que deseja excluir o bate-papo com {name}? Esta ação não pode ser desfeita.",
+  "chat_deleted": "Bate-papo com {name} excluído",
+  "delete_failed": "Falha ao excluir bate-papo",
+  "no_conversations": "Ainda não há conversas",
+  "start_conversation_hint": "Inicie uma conversa tocando no botão +",
+  "start_conversation": "Inicie uma conversa",
+  "yesterday": "Ontem",
+  "unknown": "Desconhecido",
+  "no_messages_yet": "Nenhuma mensagem ainda",
+  "unblock_user": "Desbloquear usuário",
+  "block_user": "Bloquear usuário",
+  "no_blocked_users": "Nenhum usuário bloqueado",
+  "blocked_users_hint": "Os usuários que você bloquear aparecerão aqui",
+  "unblock_user_confirm": "Tem certeza de que deseja desbloquear {username}? Você poderá receber mensagens deles novamente.",
+  "user_unblocked": "{username} foi desbloqueado",
+  "user_blocked": "{username} foi bloqueado",
+  "failed_to_unblock": "Falha ao desbloquear usuário",
+  "failed_to_block": "Falha ao bloquear usuário",
+  "chat_info": "Informações do bate-papo",
+  "delete_message": "Excluir mensagem",
+  "delete_message_confirm": "Tem certeza de que deseja excluir esta mensagem?",
+  "typing": "digitando...",
+  "online": "on-line",
+  "offline": "off-line",
+  "last_seen_at": "visto pela última vez {time}",
+  "participants": "{count} participantes",
+  "you_are_blocked": "Você está bloqueado",
+  "user_blocked_you": "{username} bloqueou você. Você não pode enviar mensagens.",
+  "you_blocked_user": "Você bloqueou {username}",
+  "cannot_send_messages_blocked": "Você não pode enviar mensagens. Você foi bloqueado.",
+  "this_message_was_deleted": "Esta mensagem foi excluída",
+  "edit": "Editar",
+  "reply": "Responder",
+  "add_reaction": "Adicionar reação",
+  "editing_message": "Editando mensagem",
+  "replying_to": "Respondendo a {username}",
+  "voice": "Voz",
+  "emoji": "Emoji",
+  "photo": "📷 Foto",
+  "voice_message": "🎤 Mensagem de voz",
+  "searching": "Procurando...",
+  "loading_users": "Carregando usuários...",
+  "search_failed": "Falha na pesquisa: {error}",
+  "invalid_user_data": "Dados de usuário inválidos",
+  "failed_to_start_chat": "Falha ao iniciar o bate-papo: {error}",
+  "audio_file_not_available": "Arquivo de áudio não disponível",
+  "failed_to_play_audio": "Falha ao reproduzir áudio: {error}",
+  "image_unavailable": "Imagem indisponível",
+  "image_too_large": "❌ A imagem é muito grande. O tamanho máximo é 10MB",
+  "image_file_not_found": "❌ Arquivo de imagem não encontrado",
+  "uploading_image": "Carregando imagem...",
+  "image_sent": "✅ Imagem enviada!",
+  "failed_to_send_image": "❌ Falha ao enviar imagem",
+  "uploading_voice_message": "Carregando mensagem de voz...",
+  "voice_message_sent": "✅ Mensagem de voz enviada!",
+  "failed_to_send_voice_message": "❌ Falha ao enviar mensagem de voz",
+  "recording": "🎙️ Gravando...",
+  "microphone_permission_denied": "Permissão de microfone negada",
+  "starting_chat": "Iniciando bate-papo...",
+  "refresh_users": "Atualizar usuários",
+  "search_by_username_or_phone": "Pesquise por nome de usuário ou número de telefone",
+  "no_users_found": "Nenhum usuário encontrado",
+  "try_different_search_term": "Experimente um termo de pesquisa diferente",
+  "no_users_available": "Nenhum usuário disponível",
+  "chat_exists": "O bate-papo existe",
+  "block_user_confirm": "Tem certeza de que deseja bloquear {username}? Você não receberá mensagens deles e eles serão removidos da sua lista de bate-papo.",
+  "chat_room_label": "Sala de bate-papo: {name}",
+  "id_label": "ID: {id}",
+  "participants_label": "Participantes:",
+  "type_a_message": "Digite uma mensagem...",
+  "edit_message_hint": "Editar mensagem...",
+  "error_label": "Erro: {error}",
+  "copy": "Cópia",
+  "comments_title": "Comentários ({count})",
+  "reply_button": "Responder",
+  "replies_count": "{count} responde",
+  "you_label": "Você",
+  "delete_reply_title": "Excluir resposta",
+  "delete_comment_title": "Excluir comentário",
+  "unknown_date": "Data desconhecida",
+  "press_enter_to_send": "Pressione Enter para enviar",
+  "comment_add_error": "Falha ao adicionar comentário",
+  "service_provider": "Provedor de serviços",
+  "opening_chat": "Abrindo bate-papo...",
+  "failed_to_refresh": "Falha ao atualizar",
+  "cannot_chat_with_yourself": "Você não pode conversar consigo mesmo",
+  "opening_chat_with": "Abrindo bate-papo com {username}...",
+  "this_will_only_take_a_moment": "Isso levará apenas um momento",
+  "unable_to_start_chat": "Não foi possível iniciar o bate-papo. Por favor, tente novamente.",
+  "profile_listings": "Listagens",
+  "profile_followers": "Seguidores",
+  "profile_following": "Seguindo",
+  "profile_no_products": "Nenhum produto",
+  "profile_no_services": "Sem serviços",
+  "profile_no_properties": "Nenhuma propriedade",
+  "profile_user_no_products": "Este usuário ainda não postou nenhum produto",
+  "profile_user_no_services": "Este usuário ainda não postou nenhum serviço",
+  "profile_user_no_properties": "Este usuário ainda não postou nenhuma propriedade",
+  "profile_error_occurred": "Ocorreu um erro",
+  "profile_error_loading_products": "Erro ao carregar produtos",
+  "profile_error_loading_services": "Erro ao carregar serviços",
+  "profile_no_followers_yet": "Ainda não há seguidores",
+  "profile_no_following_yet": "Ainda não estou seguindo ninguém",
+  "profile_follow": "Seguir",
+  "profile_following_btn": "Seguindo",
+  "profile_message": "Mensagem",
+  "profile_member_since": "Membro desde",
+  "profile_loading_error": "Erro ao carregar perfil",
+  "profile_retry": "Tente novamente",
+  "profile_share": "Compartilhar",
+  "profile_copy_link": "Copiar link",
+  "profile_report": "Relatório",
+  "linkCopied": "Link copiado para a área de transferência",
+  "checkOutProfile": "Confira",
+  "onTezsell": "no TezSell",
+  "selectCountryFirst": "Selecione o país primeiro",
+  "countrySelectionHint": "Então você pode escolher sua região",
+  "something_went_wrong": "Algo deu errado",
+  "check_connection_and_retry": "Verifique sua conexão com a Internet e tente novamente",
+  "sold_badge": "VENDIDO",
+  "more_categories": "Mais",
+  "no_products_in_location": "Nenhum produto encontrado em {location}",
+  "no_more_products": "Não há mais produtos para carregar",
+  "time_days_ago": "{count}d atrás",
+  "time_hours_ago": "{count}h atrás",
+  "time_minutes_ago": "{count}m atrás",
+  "time_just_now": "Agora mesmo",
+  "no_services_in_location": "Nenhum serviço encontrado em {location}",
+  "no_more_services": "Não há mais serviços para carregar",
+  "error_loading_more_services": "Erro ao carregar mais serviços",
+  "verification_code_length": "O código de verificação deve ter 6 dígitos",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "@chooseLanguage": {
+    "description": "Title for language selection screen"
+  },
+  "@selectPreferredLanguage": {
+    "description": "Subtitle for language selection screen"
+  },
+  "@continueButton": {
+    "description": "Text for continue button"
+  },
+  "@continueWithGoogle": {
+    "description": "Google sign-in button text"
+  },
+  "@continueWithApple": {
+    "description": "Apple sign-in button text"
+  },
+  "@continueWithEmail": {
+    "description": "Email sign-in button text"
+  },
+  "@sellAndBuyProducts": {
+    "description": "Main heading text on home screen"
+  },
+  "@usedProductsMarket": {
+    "description": "Subtitle text on home screen"
+  },
+  "@home_welcome_title": {
+    "description": "Welcome title on home screen"
+  },
+  "@home_welcome_subtitle": {
+    "description": "Welcome subtitle on home screen"
+  },
+  "@home_get_started": {
+    "description": "Get started button on home screen"
+  },
+  "@home_sign_in": {
+    "description": "Sign in button on home screen"
+  },
+  "@home_terms_notice": {
+    "description": "Terms notice on home screen"
+  },
+  "@register": {
+    "description": "Register button text"
+  },
+  "@alreadyHaveAccount": {
+    "description": "Login button text"
+  },
+  "@login": {
+    "description": "Login screen title and button"
+  },
+  "@loginToAccount": {
+    "description": "Login screen header text"
+  },
+  "@enterPhoneNumber": {
+    "description": "Phone number input placeholder"
+  },
+  "@password": {
+    "description": "Password input label"
+  },
+  "@enterPassword": {
+    "description": "Password input placeholder"
+  },
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "@registerNow": {
+    "description": "Register link text on login screen"
+  },
+  "@loading": {
+    "description": "Loading text"
+  },
+  "@pleaseEnterPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "@unexpectedError": {
+    "description": "Generic error message"
+  },
+  "@forgotPasswordComingSoon": {
+    "description": "Forgot password placeholder message"
+  },
+  "@selectedCountryLabel": {
+    "description": "Selected country label"
+  },
+  "@fullPhoneLabel": {
+    "description": "Full phone number label"
+  },
+  "@home": {
+    "description": "Home tab label"
+  },
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  "@profile": {
+    "description": "Profile tab label"
+  },
+  "@search": {
+    "description": "Search tab label"
+  },
+  "@notifications": {
+    "description": "Notifications tab label"
+  },
+  "@error": {
+    "description": "Error text"
+  },
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "@save": {
+    "description": "Save button text"
+  },
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "@selectRegion": {
+    "description": "Instruction to select region"
+  },
+  "@searchHint": {
+    "description": "Search input hint text"
+  },
+  "@apiError": {
+    "description": "API error message"
+  },
+  "@ok": {
+    "description": "OK button text"
+  },
+  "@emptyList": {
+    "description": "Message shown when list is empty"
+  },
+  "@dataLoadingError": {
+    "description": "Error message when data fails to load"
+  },
+  "@selectDistrictOrCity": {
+    "description": "Instruction to select district or city"
+  },
+  "@confirmDistrictSelection": {
+    "description": "Confirmation message for district selection",
+    "placeholders": {
+      "regionName": {
+        "type": "String"
+      },
+      "districtName": {
+        "type": "String"
+      }
+    }
+  },
+  "@noResultsFound": {
+    "description": "Message when search returns no results"
+  },
+  "@errorWithCode": {
+    "description": "Error message with error code",
+    "placeholders": {
+      "errorCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToLoadData": {
+    "description": "Data loading failure message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@phoneVerification": {
+    "description": "Title for phone verification screen"
+  },
+  "@enterPhonePrompt": {
+    "description": "Prompt to enter phone number"
+  },
+  "@enterPhoneNumberHint": {
+    "description": "Hint text for phone number input"
+  },
+  "@selectedCountry": {
+    "description": "Shows selected country and code",
+    "placeholders": {
+      "countryName": {
+        "type": "String"
+      },
+      "countryCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@selectCountry": {
+    "description": "Instruction to select country"
+  },
+  "@changeCountry": {
+    "description": "Button to change selected country"
+  },
+  "@country": {
+    "description": "Country label"
+  },
+  "@allCountries": {
+    "description": "Label for all countries option"
+  },
+  "@fullNumber": {
+    "description": "Shows complete phone number",
+    "placeholders": {
+      "phoneNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "@sendCode": {
+    "description": "Button text to send verification code"
+  },
+  "@enterVerificationCode": {
+    "description": "Label for verification code input"
+  },
+  "@verificationCodeHint": {
+    "description": "Hint for verification code format"
+  },
+  "@resendCode": {
+    "description": "Button text to resend verification code"
+  },
+  "@expires": {
+    "description": "Shows expiration time",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@verifyAndContinue": {
+    "description": "Button text to verify and continue"
+  },
+  "@invalidVerificationCode": {
+    "description": "Error message for invalid verification code"
+  },
+  "@verificationCodeSent": {
+    "description": "Success message when code is sent"
+  },
+  "@failedToSendCode": {
+    "description": "Error message when code sending fails"
+  },
+  "@verificationCodeResent": {
+    "description": "Success message when code is resent"
+  },
+  "@failedToResendCode": {
+    "description": "Error message when code resending fails"
+  },
+  "@passwordVerification": {
+    "description": "Title for password verification screen"
+  },
+  "@completeRegistrationPrompt": {
+    "description": "Instruction text for completing registration"
+  },
+  "@username": {
+    "description": "Label for username input field"
+  },
+  "@usernameHint": {
+    "description": "Hint text for username input"
+  },
+  "@confirmPassword": {
+    "description": "Label for password confirmation field"
+  },
+  "@profileImage": {
+    "description": "Label for profile image selection"
+  },
+  "@imageInstructions": {
+    "description": "Instructions for image selection"
+  },
+  "@finish": {
+    "description": "Button text to complete registration"
+  },
+  "@passwordsDoNotMatch": {
+    "description": "Error message when passwords don't match"
+  },
+  "@registrationError": {
+    "description": "Error message when registration fails"
+  },
+  "@about": {
+    "description": "About us menu item"
+  },
+  "@chat": {
+    "description": "Chat functionality"
+  },
+  "@realEstate": {
+    "description": "Real estate section"
+  },
+  "@language": {
+    "description": "Language selector display"
+  },
+  "@languageEn": {
+    "description": "English language option"
+  },
+  "@languageRu": {
+    "description": "Russian language option"
+  },
+  "@languageUz": {
+    "description": "Uzbek language option"
+  },
+  "@serviceLiked": {
+    "description": "Service liked message"
+  },
+  "@support": {
+    "description": "Support menu item"
+  },
+  "@service": {
+    "description": "Business services section"
+  },
+  "@aboutContent": {
+    "description": "About us content description"
+  },
+  "@errorMessage": {
+    "description": "Generic error message"
+  },
+  "@searchLocation": {
+    "description": "Location search label"
+  },
+  "@searchCategory": {
+    "description": "Category search label"
+  },
+  "@searchProductPlaceholder": {
+    "description": "Product search placeholder"
+  },
+  "@searchServicePlaceholder": {
+    "description": "Service search placeholder"
+  },
+  "@searchText": {
+    "description": "Search button text"
+  },
+  "@selectedCategory": {
+    "description": "Selected category prefix"
+  },
+  "@selectedLocation": {
+    "description": "Selected location prefix"
+  },
+  "@productError": {
+    "description": "No products error message"
+  },
+  "@serviceError": {
+    "description": "No services error message"
+  },
+  "@locationHeader": {
+    "description": "Location selection header"
+  },
+  "@locationPlaceholder": {
+    "description": "Location search placeholder"
+  },
+  "@categoryHeader": {
+    "description": "Category selection header"
+  },
+  "@categoryPlaceholder": {
+    "description": "Category search placeholder"
+  },
+  "@categoryError": {
+    "description": "No categories error message"
+  },
+  "@paginationFirst": {
+    "description": "First page button"
+  },
+  "@paginationPrevious": {
+    "description": "Previous page button"
+  },
+  "@pageInfo": {
+    "description": "Page information text"
+  },
+  "@pageNext": {
+    "description": "Next page button"
+  },
+  "@pageLast": {
+    "description": "Last page button"
+  },
+  "@loadingMessageProduct": {
+    "description": "Loading products message"
+  },
+  "@loadingMessageError": {
+    "description": "Loading error message"
+  },
+  "@likeProductError": {
+    "description": "Product like error message"
+  },
+  "@dislikeProductError": {
+    "description": "Product dislike error message"
+  },
+  "@loadingMessageLocation": {
+    "description": "Loading location message"
+  },
+  "@loadingLocationError": {
+    "description": "Location loading error"
+  },
+  "@loadingMessageCategory": {
+    "description": "Loading categories message"
+  },
+  "@loadingCategoryError": {
+    "description": "Category loading error"
+  },
+  "@profileUpdateSuccessMessage": {
+    "description": "Profile update success message"
+  },
+  "@profileUpdateFailMessage": {
+    "description": "Profile update failure message"
+  },
+  "@seeMoreBtn": {
+    "description": "See more button text"
+  },
+  "@profilePageTitle": {
+    "description": "Profile page title"
+  },
+  "@editProfileModalTitle": {
+    "description": "Edit profile modal title"
+  },
+  "@usernameLabel": {
+    "description": "Username field label"
+  },
+  "@locationLabel": {
+    "description": "Location field label"
+  },
+  "@profileImageLabel": {
+    "description": "Profile image field label"
+  },
+  "@chooseFileLabel": {
+    "description": "File chooser label"
+  },
+  "@uploadBtnLabel": {
+    "description": "Upload button label"
+  },
+  "@uploadingBtnLabel": {
+    "description": "Uploading button label"
+  },
+  "@cancelBtnLabel": {
+    "description": "Cancel button label"
+  },
+  "@productsTitle": {
+    "description": "Products section title"
+  },
+  "@servicesTitle": {
+    "description": "Services section title"
+  },
+  "@myProductsTitle": {
+    "description": "My products section title"
+  },
+  "@myServicesTitle": {
+    "description": "My services section title"
+  },
+  "@favoriteProductsTitle": {
+    "description": "Favorite products section title"
+  },
+  "@favoriteServicesTitle": {
+    "description": "Favorite services section title"
+  },
+  "@noFavorites": {
+    "description": "No favorites message"
+  },
+  "@addNewProductBtn": {
+    "description": "Add new product button"
+  },
+  "@addNew": {
+    "description": "Add new item button"
+  },
+  "@addNewServiceBtn": {
+    "description": "Add new service button"
+  },
+  "@downloadMobileApp": {
+    "description": "Download mobile app message"
+  },
+  "@registerPhoneNumberSuccess": {
+    "description": "Phone verification success message"
+  },
+  "@regionSelectedMessage": {
+    "description": "Region selected message"
+  },
+  "@districtSelectMessage": {
+    "description": "District selected message"
+  },
+  "@phoneNumberEmptyMessage": {
+    "description": "Phone number empty error"
+  },
+  "@regionEmptyMessage": {
+    "description": "Region empty error"
+  },
+  "@districtEmptyMessage": {
+    "description": "District empty error"
+  },
+  "@usernamePasswordEmptyMessage": {
+    "description": "Username password empty error"
+  },
+  "@registerTitle": {
+    "description": "Register screen title"
+  },
+  "@previousButton": {
+    "description": "Previous button text"
+  },
+  "@nextButton": {
+    "description": "Next button text"
+  },
+  "@completeButton": {
+    "description": "Complete button text"
+  },
+  "@stepIndicator": {
+    "description": "Step indicator text",
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      }
+    }
+  },
+  "@districtSelectTitle": {
+    "description": "District selection title"
+  },
+  "@districtSelectParagraph": {
+    "description": "District selection instruction"
+  },
+  "@phoneNumber": {
+    "description": "Phone number label"
+  },
+  "@sendOtp": {
+    "description": "Send OTP button"
+  },
+  "@sendAgain": {
+    "description": "Send again button"
+  },
+  "@verify": {
+    "description": "Verify button"
+  },
+  "@failedToSendOtp": {
+    "description": "OTP send failure message"
+  },
+  "@errorSendingOtp": {
+    "description": "OTP send error message"
+  },
+  "@invalidPhoneNumber": {
+    "description": "Invalid phone number error"
+  },
+  "@verificationSuccess": {
+    "description": "Verification success message"
+  },
+  "@verificationError": {
+    "description": "Verification error message"
+  },
+  "@regionsList": {
+    "description": "Regions list title"
+  },
+  "@enterUsername": {
+    "description": "Username input placeholder"
+  },
+  "@welcomeMessage": {
+    "description": "Welcome login message"
+  },
+  "@noAccount": {
+    "description": "Register link text"
+  },
+  "@successLogin": {
+    "description": "Login success message"
+  },
+  "@myProfile": {
+    "description": "My profile menu item"
+  },
+  "@logout": {
+    "description": "Logout button"
+  },
+  "@newProductTitle": {
+    "description": "Product title field"
+  },
+  "@newProductDescription": {
+    "description": "Product description field"
+  },
+  "@newProductPrice": {
+    "description": "Product price field"
+  },
+  "@newProductCondition": {
+    "description": "Product condition field"
+  },
+  "@newProductCategory": {
+    "description": "Product category field"
+  },
+  "@newProductImages": {
+    "description": "Product images field"
+  },
+  "@addNewService": {
+    "description": "Add new service title"
+  },
+  "@creating": {
+    "description": "Creating text"
+  },
+  "@serviceName": {
+    "description": "Service name field"
+  },
+  "@serviceNamePlaceholder": {
+    "description": "Service name placeholder"
+  },
+  "@serviceDescription": {
+    "description": "Service description field"
+  },
+  "@serviceDescriptionPlaceholder": {
+    "description": "Service description placeholder"
+  },
+  "@serviceCategory": {
+    "description": "Service category field"
+  },
+  "@selectCategory": {
+    "description": "Category selection instruction"
+  },
+  "@loadingCategories": {
+    "description": "Loading categories text"
+  },
+  "@errorLoadingCategories": {
+    "description": "Category loading error"
+  },
+  "@serviceImages": {
+    "description": "Service images field"
+  },
+  "@imageUploadHelper": {
+    "description": "Image upload help text"
+  },
+  "@maxImagesError": {
+    "description": "Maximum images error"
+  },
+  "@categoryNotFound": {
+    "description": "Category not found error"
+  },
+  "@productCreatedSuccess": {
+    "description": "Product creation success"
+  },
+  "@productLikeSuccess": {
+    "description": "Product like success"
+  },
+  "@productDislikeSuccess": {
+    "description": "Product dislike success"
+  },
+  "@errorCreatingService": {
+    "description": "Service creation error"
+  },
+  "@errorCreatingProduct": {
+    "description": "Product creation error"
+  },
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "@submit": {
+    "description": "Submit button"
+  },
+  "@selectCategoryAction": {
+    "description": "Select category action"
+  },
+  "@selectCondition": {
+    "description": "Select condition action"
+  },
+  "@sum": {
+    "description": "Sum/Total label"
+  },
+  "@noComments": {
+    "description": "No comments message"
+  },
+  "@commentLikeSuccess": {
+    "description": "Comment like success"
+  },
+  "@commentLikeError": {
+    "description": "Comment like error"
+  },
+  "@unknownErrorMessage": {
+    "description": "Unknown error message generic"
+  },
+  "@commentDislikeSuccess": {
+    "description": "Comment dislike success"
+  },
+  "@commentDislikeError": {
+    "description": "Comment dislike error"
+  },
+  "@replyInfo": {
+    "description": "Reply validation message"
+  },
+  "@replySuccessMessage": {
+    "description": "Reply success message"
+  },
+  "@replyErrorMessage": {
+    "description": "Reply error message"
+  },
+  "@commentUpdateSuccess": {
+    "description": "Comment update success"
+  },
+  "@commentUpdateError": {
+    "description": "Comment update error"
+  },
+  "@deleteConfirmationMessage": {
+    "description": "Delete confirmation message"
+  },
+  "@commentDeleteSuccess": {
+    "description": "Comment delete success"
+  },
+  "@commentDeleteError": {
+    "description": "Comment delete error"
+  },
+  "@editLabel": {
+    "description": "Edit button label"
+  },
+  "@deleteLabel": {
+    "description": "Delete button label"
+  },
+  "@saveLabel": {
+    "description": "Save button label"
+  },
+  "@replyLabel": {
+    "description": "Reply button label"
+  },
+  "@replyTitle": {
+    "description": "Replies section title"
+  },
+  "@replyPlaceholder": {
+    "description": "Reply input placeholder"
+  },
+  "@chatLoginMessage": {
+    "description": "Chat login required message"
+  },
+  "@chatYourselfMessage": {
+    "description": "Can't chat with yourself message"
+  },
+  "@chatRoomMessage": {
+    "description": "Chat room created message"
+  },
+  "@chatRoomError": {
+    "description": "Chat room creation error"
+  },
+  "@chatCreationError": {
+    "description": "Chat creation error"
+  },
+  "@productsTotal": {
+    "description": "Products total count"
+  },
+  "@perPage": {
+    "description": "Items per page"
+  },
+  "@clearAllFilters": {
+    "description": "Clear filters button"
+  },
+  "@clickToUpload": {
+    "description": "Upload instruction"
+  },
+  "@productInStock": {
+    "description": "Product in stock status"
+  },
+  "@productOutStock": {
+    "description": "Product out of stock status"
+  },
+  "@productBack": {
+    "description": "Back to products button"
+  },
+  "@messageSeller": {
+    "description": "Message seller button"
+  },
+  "@recommendedProducts": {
+    "description": "Recommended products section"
+  },
+  "@deleteConfirmationProduct": {
+    "description": "Product delete confirmation"
+  },
+  "@productDeleteSuccess": {
+    "description": "Product delete success"
+  },
+  "@productDeleteError": {
+    "description": "Product delete error"
+  },
+  "@newCondition": {
+    "description": "New condition"
+  },
+  "@used": {
+    "description": "Used condition"
+  },
+  "@imageValidType": {
+    "description": "Image validation error"
+  },
+  "@imageConfirmMessage": {
+    "description": "Image removal confirmation"
+  },
+  "@titleRequiredMessage": {
+    "description": "Title required validation"
+  },
+  "@descRequiredMessage": {
+    "description": "Description required validation"
+  },
+  "@priceRequiredMessage": {
+    "description": "Price required validation"
+  },
+  "@conditionRequiredMessage": {
+    "description": "Condition required validation"
+  },
+  "@pleaseFillAllRequired": {
+    "description": "Fill required fields message"
+  },
+  "@oneImageConfirmMessage": {
+    "description": "One image required validation"
+  },
+  "@categoryRequiredMessage": {
+    "description": "Category required validation"
+  },
+  "@locationInfoError": {
+    "description": "Location info missing error"
+  },
+  "@editProductTitle": {
+    "description": "Edit product title"
+  },
+  "@imageUploadRequirements": {
+    "description": "Image upload requirements"
+  },
+  "@productUpdatedSuccess": {
+    "description": "Product update success"
+  },
+  "@productUpdateFailed": {
+    "description": "Product update failed"
+  },
+  "@errorUpdatingProduct": {
+    "description": "Product update error"
+  },
+  "@serviceBack": {
+    "description": "Back to services button"
+  },
+  "@likeLabel": {
+    "description": "Like button label"
+  },
+  "@commentsLabel": {
+    "description": "Comments section label"
+  },
+  "@writeComment": {
+    "description": "Write comment placeholder"
+  },
+  "@postingLabel": {
+    "description": "Posting comment text"
+  },
+  "@commentCreated": {
+    "description": "Comment created success"
+  },
+  "@postCommentLabel": {
+    "description": "Post comment button"
+  },
+  "@loginPrompt": {
+    "description": "Login required for comments"
+  },
+  "@recommendedServices": {
+    "description": "Recommended services section"
+  },
+  "@commentsVisibilityNotice": {
+    "description": "Comments visibility notice"
+  },
+  "@comingSoon": {
+    "description": "Coming soon text"
+  },
+  "@serviceUpdateSuccess": {
+    "description": "Service update success"
+  },
+  "@serviceUpdateError": {
+    "description": "Service update error"
+  },
+  "@editServiceModalTitle": {
+    "description": "Edit service modal title"
+  },
+  "@enterPhoneNumberWithoutCode": {
+    "description": "Phone number input instruction without country code"
+  },
+  "@heroTitle": {
+    "description": "Hero section title"
+  },
+  "@heroSubtitle": {
+    "description": "Hero section subtitle"
+  },
+  "@startSelling": {
+    "description": "Start selling button"
+  },
+  "@browseProducts": {
+    "description": "Browse products button"
+  },
+  "@featuresTitle": {
+    "description": "Features section title"
+  },
+  "@listingTitle": {
+    "description": "Listing feature title"
+  },
+  "@listingDescription": {
+    "description": "Listing feature description"
+  },
+  "@locationTitle": {
+    "description": "Location feature title"
+  },
+  "@locationDescription": {
+    "description": "Location feature description"
+  },
+  "@location_subtitle": {
+    "description": "Location page subtitle"
+  },
+  "@categoryTitle": {
+    "description": "Category feature title"
+  },
+  "@categoryDescription": {
+    "description": "Category feature description"
+  },
+  "@inspirationTitle": {
+    "description": "Inspiration section title"
+  },
+  "@inspirationDescription1": {
+    "description": "Inspiration description 1"
+  },
+  "@inspirationDescription2": {
+    "description": "Inspiration description 2"
+  },
+  "@comingSoonTitle": {
+    "description": "Coming soon section title"
+  },
+  "@inAppChat": {
+    "description": "In-app chat feature"
+  },
+  "@secureTransactions": {
+    "description": "Secure transactions feature"
+  },
+  "@realEstateListings": {
+    "description": "Real estate listings feature"
+  },
+  "@stayUpdated": {
+    "description": "Stay updated text"
+  },
+  "@comingSoonBadge": {
+    "description": "Coming soon badge"
+  },
+  "@ctaTitle": {
+    "description": "CTA section title"
+  },
+  "@ctaDescription": {
+    "description": "CTA section description"
+  },
+  "@createAccount": {
+    "description": "Create account button"
+  },
+  "@learnMore": {
+    "description": "Learn more button"
+  },
+  "@replyUpdateSuccess": {
+    "description": "Reply update success"
+  },
+  "@replyUpdateError": {
+    "description": "Reply update error"
+  },
+  "@replyDeleteSuccess": {
+    "description": "Reply delete success"
+  },
+  "@replyDeleteError": {
+    "description": "Reply delete error"
+  },
+  "@replyDeleteConfirmation": {
+    "description": "Reply delete confirmation"
+  },
+  "@authenticationRequired": {
+    "description": "Authentication required message"
+  },
+  "@enterValidReply": {
+    "description": "Valid reply text required"
+  },
+  "@saving": {
+    "description": "Saving text"
+  },
+  "@deleting": {
+    "description": "Deleting text"
+  },
+  "@properties": {
+    "description": "Properties section"
+  },
+  "@agents": {
+    "description": "Agents section"
+  },
+  "@becomeAgent": {
+    "description": "Become agent button"
+  },
+  "@main": {
+    "description": "Main/Primary label"
+  },
+  "@upload": {
+    "description": "Upload button text for main product"
+  },
+  "@filtered_products": {
+    "description": "Title for filtered products"
+  },
+  "@filtered_services": {
+    "description": "Title for filtered services"
+  },
+  "@about_me": {
+    "description": "About me menu item"
+  },
+  "@my_name": {
+    "description": "About my name menu title"
+  },
+  "@error_loading_products": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_deleting_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@loading_category_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_picking_images": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@error_updating_product": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@n_properties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@camera": {
+    "description": "Camera option for image selection"
+  },
+  "@gallery": {
+    "description": "Gallery option for image selection"
+  },
+  "@selectImageSource": {
+    "description": "Title for image source selection dialog"
+  },
+  "@uploading": {
+    "description": "Uploading state text"
+  },
+  "@acceptTermsRequired": {
+    "description": "Error message when user hasn't accepted terms"
+  },
+  "@iAgreeToTerms": {
+    "description": "Terms acceptance checkbox text prefix"
+  },
+  "@termsAndConditions": {
+    "description": "Terms and Conditions text"
+  },
+  "@zeroToleranceStatement": {
+    "description": "Zero tolerance statement for terms acceptance"
+  },
+  "@viewTerms": {
+    "description": "Button to view terms"
+  },
+  "@reportContent": {
+    "description": "Title for report content dialog"
+  },
+  "@selectReportReason": {
+    "description": "Prompt to select report reason"
+  },
+  "@additionalDetails": {
+    "description": "Label for additional details field in report dialog"
+  },
+  "@reportDetailsHint": {
+    "description": "Hint text for report details field"
+  },
+  "@reportSubmitted": {
+    "description": "Success message after submitting report"
+  },
+  "@reportProduct": {
+    "description": "Menu option to report a product"
+  },
+  "@reportService": {
+    "description": "Menu option to report a service"
+  },
+  "@reportMessage": {
+    "description": "Menu option to report a message"
+  },
+  "@reportUser": {
+    "description": "Menu option to report a user"
+  },
+  "@reportErrorNotImplemented": {
+    "description": "Error message when reporting endpoint is not implemented"
+  },
+  "@reportAlreadySubmitted": {
+    "description": "Message shown when user tries to report content they've already reported"
+  },
+  "@reportFailedGeneric": {
+    "description": "Generic error message when report submission fails"
+  },
+  "@reportFailedNetwork": {
+    "description": "Error message when network error occurs during report submission"
+  },
+  "@becomeAgentTitle": {
+    "description": "Title for become agent page"
+  },
+  "@becomeAgentSubtitle": {
+    "description": "Subtitle for become agent page"
+  },
+  "@agentBenefits": {
+    "description": "Label for agent benefits section"
+  },
+  "@agentBenefitVerified": {
+    "description": "Agent benefit - verified badge"
+  },
+  "@agentBenefitAnalytics": {
+    "description": "Agent benefit - analytics"
+  },
+  "@agentBenefitClients": {
+    "description": "Agent benefit - client contact"
+  },
+  "@agentBenefitReputation": {
+    "description": "Agent benefit - reputation"
+  },
+  "@agentApplicationForm": {
+    "description": "Title for agent application form"
+  },
+  "@agentAgencyName": {
+    "description": "Label for agency name field"
+  },
+  "@agentAgencyNameHint": {
+    "description": "Hint for agency name field"
+  },
+  "@agentAgencyNameRequired": {
+    "description": "Error message for required agency name"
+  },
+  "@agentLicenceNumber": {
+    "description": "Label for license number field"
+  },
+  "@agentLicenceNumberHint": {
+    "description": "Hint for license number field"
+  },
+  "@agentLicenceNumberRequired": {
+    "description": "Error message for required license number"
+  },
+  "@agentYearsExperience": {
+    "description": "Label for years of experience field"
+  },
+  "@agentYearsExperienceHint": {
+    "description": "Hint for years of experience field"
+  },
+  "@agentYearsExperienceRequired": {
+    "description": "Error message for required years of experience"
+  },
+  "@agentYearsExperienceInvalid": {
+    "description": "Error message for invalid years of experience"
+  },
+  "@agentSpecialization": {
+    "description": "Label for specialization field"
+  },
+  "@agentApplicationNote": {
+    "description": "Note about application review process"
+  },
+  "@agentSubmitApplication": {
+    "description": "Button text to submit agent application"
+  },
+  "@agentApplicationSubmitted": {
+    "description": "Success message after submitting agent application"
+  },
+  "@agentApplicationStatus": {
+    "description": "Title for application status dialog"
+  },
+  "@agentViewProfile": {
+    "description": "Subtitle for verified agent menu item"
+  },
+  "@agentDashboardComingSoon": {
+    "description": "Message when agent dashboard is not yet implemented"
+  },
+  "@property_create_basic_information": {
+    "description": "Section title for basic information in property creation"
+  },
+  "@property_create_property_title": {
+    "description": "Label for property title field"
+  },
+  "@property_create_property_title_hint": {
+    "description": "Hint text for property title field"
+  },
+  "@property_create_property_title_required": {
+    "description": "Validation error for property title"
+  },
+  "@property_create_description": {
+    "description": "Label for description field"
+  },
+  "@property_create_description_hint": {
+    "description": "Hint text for description field"
+  },
+  "@property_create_description_required": {
+    "description": "Validation error for description"
+  },
+  "@property_create_property_type": {
+    "description": "Label for property type field"
+  },
+  "@property_create_property_type_required": {
+    "description": "Label for required property type field"
+  },
+  "@property_create_listing_type_required": {
+    "description": "Label for required listing type field"
+  },
+  "@property_create_pricing": {
+    "description": "Section title for pricing"
+  },
+  "@property_create_price": {
+    "description": "Label for price field"
+  },
+  "@property_create_price_hint": {
+    "description": "Hint text for price field"
+  },
+  "@property_create_price_required": {
+    "description": "Validation error for price"
+  },
+  "@property_create_currency": {
+    "description": "Label for currency field"
+  },
+  "@property_create_property_details": {
+    "description": "Section title for property details"
+  },
+  "@property_create_square_meters": {
+    "description": "Label for square meters field"
+  },
+  "@property_create_bedrooms": {
+    "description": "Label for bedrooms field"
+  },
+  "@property_create_bathrooms": {
+    "description": "Label for bathrooms field"
+  },
+  "@property_create_floor": {
+    "description": "Label for floor field"
+  },
+  "@property_create_total_floors": {
+    "description": "Label for total floors field"
+  },
+  "@property_create_parking": {
+    "description": "Label for parking spaces field"
+  },
+  "@property_create_year_built": {
+    "description": "Label for year built field"
+  },
+  "@property_create_location": {
+    "description": "Section title for location"
+  },
+  "@property_create_address": {
+    "description": "Label for address field"
+  },
+  "@property_create_address_hint": {
+    "description": "Hint text for address field"
+  },
+  "@property_create_address_required": {
+    "description": "Validation error for address"
+  },
+  "@property_create_location_detected": {
+    "description": "Text shown when location is detected"
+  },
+  "@property_create_get_location": {
+    "description": "Button text to get current location"
+  },
+  "@property_create_features": {
+    "description": "Section title for features"
+  },
+  "@property_create_feature_balcony": {
+    "description": "Feature name: Balcony"
+  },
+  "@property_create_feature_garage": {
+    "description": "Feature name: Garage"
+  },
+  "@property_create_feature_garden": {
+    "description": "Feature name: Garden"
+  },
+  "@property_create_feature_pool": {
+    "description": "Feature name: Pool"
+  },
+  "@property_create_feature_elevator": {
+    "description": "Feature name: Elevator"
+  },
+  "@property_create_feature_furnished": {
+    "description": "Feature name: Furnished"
+  },
+  "@property_create_images": {
+    "description": "Section title for property images"
+  },
+  "@property_create_tap_to_add_images": {
+    "description": "Text shown in empty image picker"
+  },
+  "@property_create_at_least_one_image": {
+    "description": "Text shown below image picker"
+  },
+  "@property_create_add_more": {
+    "description": "Button text to add more images"
+  },
+  "@property_create_required": {
+    "description": "Generic required field validation message"
+  },
+  "@property_create_location_required": {
+    "description": "Error message when location is not available"
+  },
+  "@property_create_image_required": {
+    "description": "Error message when no images are selected"
+  },
+  "@emailVerification": {
+    "description": "Title for email verification screen"
+  },
+  "@pleaseEnterYourEmailAddress": {
+    "description": "Instruction text for email input"
+  },
+  "@enterEmailAddress": {
+    "description": "Placeholder text for email input field"
+  },
+  "@resetYourPassword": {
+    "description": "Title for password reset screen"
+  },
+  "@resetPasswordDescription": {
+    "description": "Description text for password reset"
+  },
+  "@sendVerificationCode": {
+    "description": "Button text to send verification code"
+  },
+  "@backToLogin": {
+    "description": "Link text to go back to login screen"
+  },
+  "@resetPassword": {
+    "description": "Title for reset password dialog and button"
+  },
+  "@enterVerificationCodeSentTo": {
+    "description": "Instruction for entering OTP",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@codeMustBe6Digits": {
+    "description": "Validation error for OTP length"
+  },
+  "@enterNewPassword": {
+    "description": "Validation error for empty new password"
+  },
+  "@minimum8Characters": {
+    "description": "Validation error for password minimum length"
+  },
+  "@sending": {
+    "description": "Loading text for sending code"
+  },
+  "@verifying": {
+    "description": "Loading text for verifying code"
+  },
+  "@new_message": {
+    "description": "Tooltip text for new message"
+  },
+  "@delete_chat_confirm": {
+    "description": "Delete chat confirmation message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_deleted": {
+    "description": "Chat deleted success message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@unblock_user_confirm": {
+    "description": "Unblock user confirmation",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_unblocked": {
+    "description": "User unblocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@user_blocked": {
+    "description": "User blocked success message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@last_seen_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@participants": {
+    "description": "Number of participants in group chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@user_blocked_you": {
+    "description": "Message when user is blocked by another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@you_blocked_user": {
+    "description": "Message when current user has blocked another user",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@replying_to": {
+    "description": "Reply header text",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@search_failed": {
+    "description": "Search error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_start_chat": {
+    "description": "Failed to start chat error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failed_to_play_audio": {
+    "description": "Failed to play audio error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@block_user_confirm": {
+    "description": "Block user confirmation message",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@chat_room_label": {
+    "description": "Chat room label with name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@id_label": {
+    "description": "ID label with value",
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "@error_label": {
+    "description": "Error label with error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@comments_title": {
+    "description": "Comments section title with count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@reply_button": {
+    "description": "Reply button text"
+  },
+  "@replies_count": {
+    "description": "Replies count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@you_label": {
+    "description": "You label for current user"
+  },
+  "@delete_reply_title": {
+    "description": "Delete reply dialog title"
+  },
+  "@delete_comment_title": {
+    "description": "Delete comment dialog title"
+  },
+  "@unknown_date": {
+    "description": "Unknown date text"
+  },
+  "@press_enter_to_send": {
+    "description": "Hint text for sending comment"
+  },
+  "@comment_add_error": {
+    "description": "Error message when comment creation fails"
+  },
+  "@service_provider": {
+    "description": "Service provider label"
+  },
+  "@opening_chat": {
+    "description": "Opening chat message"
+  },
+  "@failed_to_refresh": {
+    "description": "Failed to refresh error message"
+  },
+  "@cannot_chat_with_yourself": {
+    "description": "Error message when trying to chat with yourself"
+  },
+  "@opening_chat_with": {
+    "description": "Opening chat message with username",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "@this_will_only_take_a_moment": {
+    "description": "Loading message for chat"
+  },
+  "@unable_to_start_chat": {
+    "description": "Error message when chat fails to start"
+  },
+  "@profile_listings": {
+    "description": "Listings count label on profile"
+  },
+  "@profile_followers": {
+    "description": "Followers count label on profile"
+  },
+  "@profile_following": {
+    "description": "Following count label on profile"
+  },
+  "@profile_no_products": {
+    "description": "Empty state title for products"
+  },
+  "@profile_no_services": {
+    "description": "Empty state title for services"
+  },
+  "@profile_no_properties": {
+    "description": "Empty state title for properties"
+  },
+  "@profile_user_no_products": {
+    "description": "Empty state subtitle for products"
+  },
+  "@profile_user_no_services": {
+    "description": "Empty state subtitle for services"
+  },
+  "@profile_user_no_properties": {
+    "description": "Empty state subtitle for properties"
+  },
+  "@profile_error_occurred": {
+    "description": "Generic error title"
+  },
+  "@profile_error_loading_products": {
+    "description": "Error loading products message"
+  },
+  "@profile_error_loading_services": {
+    "description": "Error loading services message"
+  },
+  "@profile_no_followers_yet": {
+    "description": "Empty state for followers list"
+  },
+  "@profile_no_following_yet": {
+    "description": "Empty state for following list"
+  },
+  "@profile_follow": {
+    "description": "Follow button text"
+  },
+  "@profile_following_btn": {
+    "description": "Following button text (already following)"
+  },
+  "@profile_message": {
+    "description": "Message button text"
+  },
+  "@profile_member_since": {
+    "description": "Member since label"
+  },
+  "@profile_loading_error": {
+    "description": "Profile loading error message"
+  },
+  "@profile_retry": {
+    "description": "Retry button for profile"
+  },
+  "@profile_share": {
+    "description": "Share profile option"
+  },
+  "@profile_copy_link": {
+    "description": "Copy profile link option"
+  },
+  "@profile_report": {
+    "description": "Report user option"
+  },
+  "@linkCopied": {
+    "description": "Message shown when a link is copied"
+  },
+  "@checkOutProfile": {
+    "description": "Share text prefix for profile"
+  },
+  "@onTezsell": {
+    "description": "Share text suffix for profile"
+  },
+  "@selectCountryFirst": {
+    "description": "Placeholder when country not selected"
+  },
+  "@countrySelectionHint": {
+    "description": "Hint text for country selection"
+  },
+  "@something_went_wrong": {
+    "description": "Error title when something goes wrong"
+  },
+  "@check_connection_and_retry": {
+    "description": "Error message asking user to check connection"
+  },
+  "@sold_badge": {
+    "description": "Badge text for sold products"
+  },
+  "@more_categories": {
+    "description": "Button to show more categories"
+  },
+  "@no_products_in_location": {
+    "description": "Message when no products are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_products": {
+    "description": "Message at end of product list"
+  },
+  "@time_days_ago": {
+    "description": "Time ago in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_hours_ago": {
+    "description": "Time ago in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_minutes_ago": {
+    "description": "Time ago in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@time_just_now": {
+    "description": "Time for recent moments"
+  },
+  "@no_services_in_location": {
+    "description": "Message when no services are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "@no_more_services": {
+    "description": "Message at end of service list"
+  },
+  "@error_loading_more_services": {
+    "description": "Error message when loading more services fails"
+  },
+  "@verification_code_length": {
+    "description": "Error when verification code is not 6 digits"
+  }
+}

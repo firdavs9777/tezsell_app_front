@@ -4,9 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const List<Map<String, String>> _supportedLanguages = [
-  {'code': 'en', 'name': 'English', 'nativeName': 'English', 'flag': '🇺🇸'},
+  {'code': 'en', 'name': 'English', 'nativeName': 'English', 'flag': '🇬🇧'},
   {'code': 'ru', 'name': 'Russian', 'nativeName': 'Русский', 'flag': '🇷🇺'},
   {'code': 'uz', 'name': 'Uzbek', 'nativeName': "O'zbekcha", 'flag': '🇺🇿'},
+  {'code': 'ko', 'name': 'Korean', 'nativeName': '한국어', 'flag': '🇰🇷'},
+  {'code': 'ja', 'name': 'Japanese', 'nativeName': '日本語', 'flag': '🇯🇵'},
+  {'code': 'zh', 'name': 'Chinese', 'nativeName': '中文', 'flag': '🇨🇳'},
+  {'code': 'es', 'name': 'Spanish', 'nativeName': 'Español', 'flag': '🇪🇸'},
+  {'code': 'pt', 'name': 'Portuguese', 'nativeName': 'Português', 'flag': '🇵🇹'},
+  {'code': 'fr', 'name': 'French', 'nativeName': 'Français', 'flag': '🇫🇷'},
+  {'code': 'de', 'name': 'German', 'nativeName': 'Deutsch', 'flag': '🇩🇪'},
+  {'code': 'tr', 'name': 'Turkish', 'nativeName': 'Türkçe', 'flag': '🇹🇷'},
+  {'code': 'ar', 'name': 'Arabic', 'nativeName': 'العربية', 'flag': '🇸🇦'},
+  {'code': 'hi', 'name': 'Hindi', 'nativeName': 'हिन्दी', 'flag': '🇮🇳'},
+  {'code': 'id', 'name': 'Indonesian', 'nativeName': 'Bahasa Indonesia', 'flag': '🇮🇩'},
+  {'code': 'vi', 'name': 'Vietnamese', 'nativeName': 'Tiếng Việt', 'flag': '🇻🇳'},
 ];
 
 String getCurrentLanguageName(WidgetRef ref) {
@@ -53,13 +65,23 @@ void showProfileLanguageDialog(BuildContext context, WidgetRef ref) {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 20),
-            ..._supportedLanguages.map(
-              (language) => _LanguageOption(
-                language: language['nativeName']!,
-                code: language['code']!,
-                flag: language['flag']!,
-                isSelected:
-                    currentLocale?.languageCode == language['code'],
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _DeviceLanguageOption(),
+                    ..._supportedLanguages.map(
+                      (language) => _LanguageOption(
+                        language: language['nativeName']!,
+                        code: language['code']!,
+                        flag: language['flag']!,
+                        isSelected: currentLocale?.languageCode ==
+                            language['code'],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -68,6 +90,45 @@ void showProfileLanguageDialog(BuildContext context, WidgetRef ref) {
       );
     },
   );
+}
+
+class _DeviceLanguageOption extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: () async {
+        await ref.read(localeProvider.notifier).resetToDeviceLocale();
+        if (context.mounted) Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.phone_android, color: colorScheme.primary),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                'Use device language',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+            Icon(Icons.refresh,
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+                size: 20),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _LanguageOption extends ConsumerWidget {
