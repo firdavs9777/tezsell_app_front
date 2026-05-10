@@ -185,13 +185,27 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
                             l?.location_picker_selected_fallback ??
                             'Selected location',
                         style: theme.textTheme.bodyLarge,
+                      )
+                    else
+                      Text(
+                        '${_pin.latitude.toStringAsFixed(5)}, ${_pin.longitude.toStringAsFixed(5)}',
+                        style: theme.textTheme.bodyMedium,
                       ),
                     const SizedBox(height: 8),
                     ElevatedButton(
                       key: const Key('LocationPicker.confirm'),
-                      onPressed: _resolvedPlace == null
+                      // Always enabled once a pin exists: if reverse-geocode
+                      // succeeded use the rich Place; otherwise hand back a
+                      // coords-only Place so the user is never trapped.
+                      onPressed: _resolving
                           ? null
-                          : () => widget.onConfirmed(_resolvedPlace!),
+                          : () => widget.onConfirmed(
+                                _resolvedPlace ??
+                                    Place(
+                                      lat: _pin.latitude,
+                                      lng: _pin.longitude,
+                                    ),
+                              ),
                       child: Text(
                           l?.location_picker_confirm ?? 'Confirm location'),
                     ),
