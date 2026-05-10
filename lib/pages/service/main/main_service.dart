@@ -131,9 +131,6 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
   Future<void> _loadInitialServices() async {
     if (!mounted || _isDisposed) return;
 
-    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
-    print('🔧 [ServiceMain] Loading services with districtId: ${widget.districtId}, filter active: $hasLocationFilter');
-
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -147,6 +144,13 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
+      if (useNeighborhood) {
+        print('🔧 [ServiceMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+      } else if (widget.districtId != null && widget.districtId! > 0) {
+        print('🔧 [ServiceMain] DISTRICT filter: ${widget.districtId}');
+      } else {
+        print('🔧 [ServiceMain] NO filter — loading all services');
+      }
       final services = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
             pageSize: 12,

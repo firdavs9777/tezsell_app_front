@@ -136,19 +136,6 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     // Increment generation so any in-flight older request is ignored
     final thisGeneration = ++_loadGeneration;
 
-    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
-    print('📦 [ProductsList] ═══════════════════════════════════════');
-    print('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
-    print('📦 [ProductsList]   Filter active: $hasLocationFilter');
-    if (hasLocationFilter) {
-      print('📦 [ProductsList]   districtId: ${widget.districtId}');
-      print('📦 [ProductsList]   region: "${widget.regionName}"');
-      print('📦 [ProductsList]   district: "${widget.districtName}"');
-    } else {
-      print('📦 [ProductsList]   Loading ALL products (no location filter)');
-    }
-    print('📦 [ProductsList] ═══════════════════════════════════════');
-
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -165,6 +152,16 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
+      print('📦 [ProductsList] ═══════════════════════════════════════');
+      print('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
+      if (useNeighborhood) {
+        print('📦 [ProductsList]   GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+      } else if (widget.districtId != null && widget.districtId! > 0) {
+        print('📦 [ProductsList]   DISTRICT filter: id=${widget.districtId}');
+      } else {
+        print('📦 [ProductsList]   NO filter — loading all products');
+      }
+      print('📦 [ProductsList] ═══════════════════════════════════════');
       final products =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,

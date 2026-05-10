@@ -121,9 +121,6 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   }
 
   Future<void> _loadInitialProperties() async {
-    final hasLocationFilter = widget.districtId != null && widget.districtId! > 0;
-    print('🏠 [RealEstateMain] Loading properties with districtId: ${widget.districtId}, filter active: $hasLocationFilter');
-
     setState(() {
       _isInitialLoading = true;
       _currentPage = 1;
@@ -136,6 +133,13 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
+      if (useNeighborhood) {
+        print('🏠 [RealEstateMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+      } else if (widget.districtId != null && widget.districtId! > 0) {
+        print('🏠 [RealEstateMain] DISTRICT filter: id=${widget.districtId}');
+      } else {
+        print('🏠 [RealEstateMain] NO filter — loading all properties');
+      }
       final properties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
                 currentPage: 1,
