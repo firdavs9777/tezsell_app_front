@@ -549,15 +549,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       return;
     }
 
-    // Validate region and district are selected
-    if (_selectedRegion == null || _selectedDistrict == null) {
-      AppErrorHandler.showWarning(
-        context,
-        localizations?.property_create_required ?? 'Please select region and district',
-      );
-      return;
-    }
-
     // Content filtering
     final contentError = ContentFilter.validateContent(
       title: _titleController.text.trim(),
@@ -989,8 +980,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // Region Dropdown (Required)
-                    DropdownButtonFormField<String>(
+                    // Region Dropdown removed — map picker above is the
+                    // sole location source for property creation.
+                    if (false) DropdownButtonFormField<String>(
                       initialValue: _selectedRegion,
                       isExpanded: true,
                       decoration: InputDecoration(
@@ -1034,8 +1026,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // District Dropdown (Required)
-                    DropdownButtonFormField<Districts>(
+                    // District Dropdown removed — map picker above is the
+                    // sole location source for property creation.
+                    if (false) DropdownButtonFormField<Districts>(
                       initialValue: _selectedDistrict,
                       isExpanded: true,
                       decoration: InputDecoration(

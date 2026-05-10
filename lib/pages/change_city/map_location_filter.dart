@@ -5,18 +5,21 @@ import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/providers/provider_models/country_model.dart';
-import 'package:app/providers/provider_models/location_model.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_models/place.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
-import 'package:app/service/country_service.dart';
+import 'package:app/providers/provider_root/maps_provider_provider.dart';
+import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/services/maps/maps_exceptions.dart';
+import 'package:app/services/maps/verify_neighborhood_service.dart';
 import 'package:app/widgets/maps/location_picker.dart';
 
-/// Map-first replacement for the legacy /change-city dropdown flow.
-/// Auto-launches the picker on entry; on confirm, persists location to the
-/// SharedPreferences keys legacy ChangeCity wrote AND deactivates any
-/// verified-neighborhood (so a stale US: entry from earlier testing doesn't
-/// override the user's fresh pick). Pops with `true` so callers refresh.
+/// Karrot-style map-first location filter.
+/// Auto-launches the picker; on confirm, server-verifies the pick (with
+/// low_confidence=true since map picks aren't GPS), persists it as the
+/// active browse-neighborhood, and clears legacy district keys so subsequent
+/// browse fetches use the neighborhood_id + radius_km query path.
+/// The radius slider in the browse pages controls the radius.
 class MapLocationFilterPage extends ConsumerStatefulWidget {
   const MapLocationFilterPage({super.key});
 
@@ -27,8 +30,6 @@ class MapLocationFilterPage extends ConsumerStatefulWidget {
 
 class _MapLocationFilterPageState
     extends ConsumerState<MapLocationFilterPage> {
-  final _service = CountryService();
-
   bool _resolving = false;
   String? _error;
   bool _pickerLaunched = false;
@@ -36,8 +37,6 @@ class _MapLocationFilterPageState
   @override
   void initState() {
     super.initState();
-    // Auto-open the picker on entry — the page itself is just the resolution
-    // host. No "Pick on map" button gating, no two-step UX.
     WidgetsBinding.instance.addPostFrameCallback((_) => _openPicker());
   }
 
@@ -56,13 +55,14 @@ class _MapLocationFilterPageState
     );
     if (!mounted) return;
     if (result == null) {
-      // User backed out without picking — pop the wrapper too with no result.
+      // User backed out without picking → pop the wrapper too.
       Navigator.of(context).pop(false);
       return;
     }
     await _resolveAndSave(result);
   }
 
+  /// GPS-first center; fall back to Tashkent only if denied/unavailable.
   Future<LatLng> _detectInitialCenter() async {
     try {
       final perm = await Geolocator.requestPermission();
@@ -74,9 +74,7 @@ class _MapLocationFilterPageState
         );
         return LatLng(pos.latitude, pos.longitude);
       }
-    } catch (_) {
-      // permission / GPS / timeout — fall through
-    }
+    } catch (_) {}
     return const LatLng(41.3, 69.24);
   }
 
@@ -85,43 +83,62 @@ class _MapLocationFilterPageState
       _resolving = true;
       _error = null;
     });
-
     try {
-      final country = _matchCountry(place.countryCode);
-      final countryCode =
-          country?.code ?? (place.countryCode ?? '').toUpperCase();
-
-      Regions? region;
-      Districts? district;
-      if (country != null) {
-        final regions = await _service.getRegions(country.code);
-        region = _bestMatchRegion(regions, place);
-        if (region != null) {
-          final districts = await _service.getDistricts(region.id);
-          district = _bestMatchDistrict(districts, place);
-        }
+      // Try server-verify first so the resulting neighborhood id is one the
+      // backend recognizes. Map picks aren't GPS → low_confidence=true.
+      Neighborhood? neighborhood;
+      try {
+        neighborhood = await VerifyNeighborhoodService().verify(
+          lat: place.lat,
+          lng: place.lng,
+          gpsAccuracyM: 250.0,
+          lowConfidence: true,
+        );
+      } on MapsException catch (_) {
+        // Backend unavailable / rate-limited / out-of-coverage. Synthesize
+        // a Neighborhood locally so the radius filter still works
+        // client-side until a future verify succeeds.
+        neighborhood = await ref
+            .read(mapsProviderProvider)
+            .getNeighborhood(LatLng(place.lat, place.lng));
+        neighborhood ??= Neighborhood(
+          id: '${(place.countryCode ?? 'XX').toUpperCase()}:'
+              '${place.placeId ?? 'pick-${place.lat.toStringAsFixed(4)}-${place.lng.toStringAsFixed(4)}'}',
+          name: place.city ?? place.region ?? 'Picked location',
+          displayName: place.formattedAddress ??
+              '${place.lat.toStringAsFixed(4)}, ${place.lng.toStringAsFixed(4)}',
+          countryCode: (place.countryCode ?? 'XX').toUpperCase(),
+          region: place.region ?? '',
+          city: place.city ?? '',
+          centroidLat: place.lat,
+          centroidLng: place.lng,
+        );
       }
 
-      final regionName = region?.region ?? place.region ?? place.city ?? '';
-      final districtName =
-          district?.district ?? place.city ?? place.region ?? '';
+      // Add to verified-neighborhoods cache (provider replaces by id, so no
+      // duplicates) and set active so the radius slider applies.
+      await ref.read(verifiedNeighborhoodsProvider.notifier).add(
+            VerifiedNeighborhood(
+              neighborhood: neighborhood,
+              verifiedAt: DateTime.now(),
+              gpsAccuracyM: 250.0,
+              lowConfidence: true,
+            ),
+          );
+      final list = ref.read(verifiedNeighborhoodsProvider);
+      final newIdx =
+          list.indexWhere((v) => v.neighborhood.id == neighborhood!.id);
+      ref.read(activeNeighborhoodIndexProvider.notifier).state =
+          newIdx >= 0 ? newIdx : 0;
 
+      // Clear legacy district keys so browse pages take the
+      // neighborhood + radius path (Karrot) instead of district-only.
       final prefs = await SharedPreferences.getInstance();
-      if (district != null) {
-        await prefs.setString('userLocation', district.id.toString());
-      } else {
-        await prefs.remove('userLocation');
-      }
-      await prefs.setString('localRegionName', regionName);
-      await prefs.setString('localDistrictName', districtName);
-      await prefs.setString('localCountryCode', countryCode);
-
-      // Deactivate any verified-neighborhood for browse filter purposes —
-      // otherwise a stale US: entry from earlier testing keeps winning the
-      // first products fetch on app launch. The verified neighborhood itself
-      // remains in profile (user can manage from there); only the active
-      // index is cleared.
-      ref.read(activeNeighborhoodIndexProvider.notifier).state = -1;
+      await prefs.remove('userLocation');
+      await prefs.remove('localRegionName');
+      await prefs.remove('localDistrictName');
+      await prefs.setString(
+          'localCountryCode', (place.countryCode ?? '').toUpperCase());
 
       if (!mounted) return;
       Navigator.of(context).pop(true);
@@ -130,52 +147,10 @@ class _MapLocationFilterPageState
         setState(() {
           _resolving = false;
           _error = '$e';
+          _pickerLaunched = false;
         });
       }
     }
-  }
-
-  CountryModel? _matchCountry(String? code) {
-    if (code == null) return null;
-    final upper = code.toUpperCase();
-    for (final c in CountryModel.supportedCountries) {
-      if (c.code.toUpperCase() == upper) return c;
-    }
-    return null;
-  }
-
-  Regions? _bestMatchRegion(List<Regions> regions, Place place) {
-    if (regions.isEmpty) return null;
-    final candidates = [place.region, place.city, place.formattedAddress]
-        .whereType<String>()
-        .map((s) => s.toLowerCase().trim())
-        .toList();
-    for (final cand in candidates) {
-      for (final r in regions) {
-        final name = r.region.toLowerCase().trim();
-        if (name == cand || cand.contains(name) || name.contains(cand)) {
-          return r;
-        }
-      }
-    }
-    return null;
-  }
-
-  Districts? _bestMatchDistrict(List<Districts> districts, Place place) {
-    if (districts.isEmpty) return null;
-    final candidates = [place.city, place.region, place.formattedAddress]
-        .whereType<String>()
-        .map((s) => s.toLowerCase().trim())
-        .toList();
-    for (final cand in candidates) {
-      for (final d in districts) {
-        final name = d.district.toLowerCase().trim();
-        if (name == cand || cand.contains(name) || name.contains(cand)) {
-          return d;
-        }
-      }
-    }
-    return null;
   }
 
   @override
@@ -184,9 +159,6 @@ class _MapLocationFilterPageState
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
 
-    // The page is mostly invisible — the picker auto-launches on top.
-    // We only show this scaffold while resolving the picked Place or if
-    // resolution errored (user can retry via the AppBar action).
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
@@ -203,8 +175,7 @@ class _MapLocationFilterPageState
                 if (_resolving) ...[
                   const CircularProgressIndicator(),
                   const SizedBox(height: 16),
-                  Text(
-                      localizations?.resolving_location ?? 'Resolving…',
+                  Text(localizations?.resolving_location ?? 'Resolving…',
                       style: theme.textTheme.bodyMedium),
                 ] else if (_error != null) ...[
                   Icon(Icons.error_outline,
@@ -213,13 +184,10 @@ class _MapLocationFilterPageState
                   Text(_error!, textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      _pickerLaunched = false;
-                      _openPicker();
-                    },
+                    onPressed: _openPicker,
                     icon: const Icon(Icons.map_outlined),
-                    label: Text(
-                        localizations?.pick_again ?? 'Pick again'),
+                    label:
+                        Text(localizations?.pick_again ?? 'Pick again'),
                   ),
                 ],
               ],
