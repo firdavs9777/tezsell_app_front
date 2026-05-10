@@ -35,7 +35,7 @@ import '../pages/shaxsiy/favorite_items/favorite_services.dart';
 import '../pages/shaxsiy/my-products/my_products.dart';
 import '../pages/shaxsiy/my-services/my_services.dart';
 import '../pages/shaxsiy/properties/saved_properties.dart';
-import '../pages/change_city/change_city.dart';
+import '../pages/change_city/map_location_filter.dart';
 import '../pages/admin/admin_dashboard.dart';
 import '../pages/profile/user_profile_screen.dart';
 import '../pages/offers/offers_screen.dart';
@@ -143,6 +143,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           final categoryName = state.uri.queryParameters['category'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
+          final districtIdStr = state.uri.queryParameters['districtId'];
+          final districtId = districtIdStr != null ? int.tryParse(districtIdStr) : null;
 
           // If category is specified, show filtered products
           if (categoryName.isNotEmpty) {
@@ -150,10 +152,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               categoryName: categoryName,
               regionName: regionName,
               districtName: districtName,
+              districtId: districtId,
             );
           }
 
-          return ProductsList(regionName: regionName, districtName: districtName);
+          return ProductsList(regionName: regionName, districtName: districtName, districtId: districtId);
         },
       ),
       // Specific routes MUST come before parameterized routes
@@ -179,7 +182,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           final countryCode = state.uri.queryParameters['country'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
-          return ProductFilter(countryCode: countryCode, regionName: regionName, districtName: districtName);
+          final catDistrictIdStr = state.uri.queryParameters['districtId'];
+          final catDistrictId = catDistrictIdStr != null ? int.tryParse(catDistrictIdStr) : null;
+          return ProductFilter(countryCode: countryCode, regionName: regionName, districtName: districtName, districtId: catDistrictId);
         },
       ),
       // Parameterized route MUST come last
@@ -199,6 +204,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           final categoryName = state.uri.queryParameters['category'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
+          final svcDistrictIdStr = state.uri.queryParameters['districtId'];
+          final svcDistrictId = svcDistrictIdStr != null ? int.tryParse(svcDistrictIdStr) : null;
 
           // If category is specified, show filtered services
           if (categoryName.isNotEmpty) {
@@ -206,10 +213,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               categoryName: categoryName,
               regionName: regionName,
               districtName: districtName,
+              districtId: svcDistrictId,
             );
           }
 
-          return ServiceMain(regionName: regionName, districtName: districtName);
+          return ServiceMain(regionName: regionName, districtName: districtName, districtId: svcDistrictId);
         },
       ),
       // Specific routes MUST come before parameterized routes
@@ -338,7 +346,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/change-city',
         name: 'change-city',
-        builder: (context, state) => const MyHomeTown(),
+        builder: (context, state) => const MapLocationFilterPage(),
       ),
       GoRoute(
         path: '/admin',
