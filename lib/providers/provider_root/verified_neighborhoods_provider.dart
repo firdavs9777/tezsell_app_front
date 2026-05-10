@@ -25,7 +25,7 @@ class VerifiedNeighborhoodsNotifier
 
   Future<void> hydrate() async {
     final prefs = await SharedPreferences.getInstance();
-    // Wipe the legacy key on first hydrate so the stale entries are gone.
+    // Wipe the legacy key on first hydrate so old test entries are gone.
     await prefs.remove(_legacyPrefsKey);
     final raw = prefs.getString(_prefsKey);
     if (raw == null) return;
@@ -33,11 +33,6 @@ class VerifiedNeighborhoodsNotifier
       final list = (jsonDecode(raw) as List)
           .map((e) =>
               VerifiedNeighborhood.fromJson(e as Map<String, dynamic>))
-          // low_confidence entries are session-scoped browse picks, not
-          // persistent identity. Don't restore them across launches —
-          // otherwise a US-simulator pick keeps winning the products query
-          // forever.
-          .where((v) => !v.lowConfidence)
           .toList();
       // Don't clobber state if something already populated it while hydrate
       // was awaiting (e.g. an add() in tests, or a /change-city pick before
@@ -50,14 +45,9 @@ class VerifiedNeighborhoodsNotifier
 
   Future<void> _persist() async {
     final prefs = await SharedPreferences.getInstance();
-    // Only persist GPS-verified (non-low_confidence) entries — the Carrot-
-    // style "where I live" identity. Map-pick browse picks live in memory
-    // for the session and disappear on restart so the user always boots
-    // with the canonical backend profile location.
-    final persistable = state.where((v) => !v.lowConfidence).toList();
     await prefs.setString(
       _prefsKey,
-      jsonEncode(persistable.map((v) => v.toJson()).toList()),
+      jsonEncode(state.map((v) => v.toJson()).toList()),
     );
   }
 
