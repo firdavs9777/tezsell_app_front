@@ -123,7 +123,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
   String _resolveLocationLabel() {
     if (_pickedNeighborhoodLabel != null) return _pickedNeighborhoodLabel!;
-    final activeNbhd = ref.read(activeNeighborhoodProvider);
+    final activeNbhd = ref.watch(activeNeighborhoodProvider);
     if (activeNbhd != null) {
       final n = activeNbhd.neighborhood;
       final parts = [n.city, n.region].where((s) => s.isNotEmpty).toList();
