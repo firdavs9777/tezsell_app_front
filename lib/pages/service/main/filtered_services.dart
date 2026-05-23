@@ -4,6 +4,9 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
+import 'package:app/providers/provider_root/radius_provider.dart';
+import 'package:app/widgets/skeleton_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -12,12 +15,14 @@ class FilteredServices extends ConsumerStatefulWidget {
   final String categoryName;
   final String regionName;
   final String districtName;
+  final int? districtId;
 
   const FilteredServices({
     super.key,
     this.categoryName = '',
     this.regionName = '',
     this.districtName = '',
+    this.districtId,
   });
 
   @override
@@ -64,12 +69,25 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
     });
 
     try {
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final services = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
             pageSize: 12,
             categoryName: widget.categoryName,
-            regionName: widget.regionName,
-            districtName: widget.districtName,
+            regionName: useNeighborhood ? '' : widget.regionName,
+            districtName: useNeighborhood ? '' : widget.districtName,
+            districtId: useNeighborhood ? null : widget.districtId,
+            neighborhoodId:
+                useNeighborhood ? activeNbhd.neighborhood.id : null,
+            radiusKm: useNeighborhood ? radius : null,
+            centerLat: useNeighborhood
+                ? activeNbhd.neighborhood.centroidLat
+                : null,
+            centerLng: useNeighborhood
+                ? activeNbhd.neighborhood.centroidLng
+                : null,
           );
 
       setState(() {
@@ -102,13 +120,26 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
 
     try {
       final nextPage = _currentPage + 1;
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final newServices =
           await ref.read(serviceMainProvider).getFilteredServices(
                 currentPage: nextPage,
                 pageSize: 12,
                 categoryName: widget.categoryName,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
               );
 
       setState(() {
@@ -122,16 +153,11 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         _isLoadingMore = false;
       });
     } catch (error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading more services: $error'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        setState(() {
+          _isLoadingMore = false;
+          _hasMoreData = false;
+        });
       }
     }
   }
@@ -191,7 +217,9 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
             Expanded(
               child: Text(
                 displayName,
-                style: TextStyle(fontSize: 12, color: colorScheme.primary),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colorScheme.primary,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -203,7 +231,9 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
           if (widget.districtName.isNotEmpty)
             Text(
               widget.districtName,
-              style: TextStyle(fontSize: 12, color: colorScheme.primary),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.primary,
+              ),
             ),
         ],
       ),
@@ -258,7 +288,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
 
   Widget _buildServicesList() {
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const ServiceListSkeleton(itemCount: 6);
     }
 
     if (_allServices.isEmpty) {
@@ -268,33 +298,80 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.post_add_outlined,
-                  size: 64,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No services available.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: colorScheme.onSurfaceVariant,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.design_services_outlined,
+                      size: 64,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Try changing your filters',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: colorScheme.onSurfaceVariant,
+                  const SizedBox(height: 24),
+                  Text(
+                    AppLocalizations.of(context)?.serviceError ?? 'No services available.',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Try changing your filters or browse all services',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.category_outlined, size: 18),
+                        label: Text(
+                          AppLocalizations.of(context)?.searchCategory ?? 'Categories',
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: colorScheme.primary,
+                          side: BorderSide(color: colorScheme.primary),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FilledButton.icon(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (ctx) => const TabsScreen()),
+                          );
+                        },
+                        icon: const Icon(Icons.home_outlined, size: 18),
+                        label: Text(
+                          AppLocalizations.of(context)?.home ?? 'Home',
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -310,6 +387,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
         if (index < _allServices.length) {
           final service = _allServices[index];
           return ServiceList(
+            key: ValueKey('service_${service.id}'),
             service: service,
             refresh: refresh,
           );
@@ -317,14 +395,9 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
 
         // Show loading indicator at the bottom
         if (_hasMoreData) {
-          return Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: _isLoadingMore
-                  ? const CircularProgressIndicator()
-                  : const SizedBox.shrink(),
-            ),
-          );
+          return _isLoadingMore
+              ? const ServiceSkeletonItem()
+              : const SizedBox.shrink();
         }
 
         // Show "end of list" indicator
@@ -333,9 +406,8 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
           child: Center(
             child: Text(
               'No more services to load',
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontSize: 14,
               ),
             ),
           ),
