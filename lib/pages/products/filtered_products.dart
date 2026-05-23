@@ -5,6 +5,9 @@ import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
+import 'package:app/providers/provider_root/radius_provider.dart';
+import 'package:app/widgets/skeleton_loader.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,11 +17,13 @@ class FilteredProducts extends ConsumerStatefulWidget {
   final String categoryName;
   final String regionName;
   final String districtName;
+  final int? districtId;
   const FilteredProducts({
     super.key,
     required this.categoryName,
     required this.regionName,
     required this.districtName,
+    this.districtId,
   });
 
   @override
@@ -65,13 +70,26 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
     });
 
     try {
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final products =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,
                 pageSize: 12,
                 categoryName: widget.categoryName,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
               );
 
       setState(() {
@@ -105,13 +123,26 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
 
     try {
       final nextPage = _currentPage + 1;
+      final activeNbhd = ref.read(activeNeighborhoodProvider);
+      final radius = ref.read(radiusProvider);
+      final useNeighborhood = activeNbhd != null;
       final newProducts =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: nextPage,
                 pageSize: 12,
                 categoryName: widget.categoryName,
-                regionName: widget.regionName,
-                districtName: widget.districtName,
+                regionName: useNeighborhood ? '' : widget.regionName,
+                districtName: useNeighborhood ? '' : widget.districtName,
+                districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId:
+                    useNeighborhood ? activeNbhd.neighborhood.id : null,
+                radiusKm: useNeighborhood ? radius : null,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
               );
 
       setState(() {
@@ -125,16 +156,11 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         _isLoadingMore = false;
       });
     } catch (error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading more products: $error'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        setState(() {
+          _isLoadingMore = false;
+          _hasMoreData = false;
+        });
       }
     }
   }
@@ -234,7 +260,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
             icon: Icon(Icons.category),
             onPressed: () {
               if (context.mounted) {
-                context.go('/products?region=${widget.regionName}&district=${widget.districtName}');
+                context.go('/products?region=${widget.regionName}&district=${widget.districtName}${widget.districtId != null ? '&districtId=${widget.districtId}' : ''}');
               }
             },
           ),
@@ -262,7 +288,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
 
   Widget _buildProductsList() {
     if (_isInitialLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const ProductListSkeleton(itemCount: 6);
     }
 
     if (_allProducts.isEmpty) {
@@ -272,32 +298,78 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.inventory_2_outlined,
-                  size: 64,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalizations.of(context)?.productError ??
-                      'No products available.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.inventory_2_outlined,
+                      size: 64,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Try changing your filters',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                  const SizedBox(height: 24),
+                  Text(
+                    AppLocalizations.of(context)?.productError ??
+                        'No products available.',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Try changing your filters or browse all products',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          context.go('/products?region=${widget.regionName}&district=${widget.districtName}${widget.districtId != null ? '&districtId=${widget.districtId}' : ''}');
+                        },
+                        icon: const Icon(Icons.category_outlined, size: 18),
+                        label: Text(
+                          AppLocalizations.of(context)?.searchCategory ?? 'Categories',
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: colorScheme.primary,
+                          side: BorderSide(color: colorScheme.primary),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FilledButton.icon(
+                        onPressed: () {
+                          context.go('/tabs');
+                        },
+                        icon: const Icon(Icons.home_outlined, size: 18),
+                        label: Text(
+                          AppLocalizations.of(context)?.home ?? 'Home',
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -312,19 +384,17 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         // Show products
         if (index < _allProducts.length) {
           final product = _allProducts[index];
-          return ProductMain(product: product);
+          return ProductMain(
+            key: ValueKey('product_${product.id}'),
+            product: product,
+          );
         }
 
         // Show loading indicator at the bottom
         if (_hasMoreData) {
-          return Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: _isLoadingMore
-                  ? const CircularProgressIndicator()
-                  : const SizedBox.shrink(),
-            ),
-          );
+          return _isLoadingMore
+              ? const ProductSkeletonItem()
+              : const SizedBox.shrink();
         }
 
         // Show "end of list" indicator
