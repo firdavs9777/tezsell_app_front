@@ -52,7 +52,7 @@ class ProfileService {
 
   Future<UserInfo> updateUserInfo({
     String? username,
-    required int locationId,
+    int? locationId,
     File? profileImage,
     String? countryCode,
   }) async {
@@ -61,10 +61,11 @@ class ProfileService {
     final String? token = prefs.getString('token');
     print('[ProfileService] Token: ${token != null ? "present" : "missing"}');
 
-    // Build form data conditionally - use district_id as per backend API
-    final Map<String, dynamic> formDataMap = {
-      'district_id': locationId,
-    };
+    final Map<String, dynamic> formDataMap = {};
+
+    if (locationId != null) {
+      formDataMap['district_id'] = locationId;
+    }
 
     // Add country_code if provided - helps backend disambiguate districts with same IDs across countries
     if (countryCode != null && countryCode.isNotEmpty) {
@@ -114,8 +115,10 @@ class ProfileService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Update the userLocation in SharedPreferences for future use
-      await prefs.setString('userLocation', locationId.toString());
-      print('[ProfileService] Updated userLocation in SharedPreferences: $locationId');
+      if (locationId != null) {
+        await prefs.setString('userLocation', locationId.toString());
+        print('[ProfileService] Updated userLocation in SharedPreferences: $locationId');
+      }
 
       // Handle different response structures
       try {
