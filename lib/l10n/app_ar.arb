@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "أحيائي",
+  "manage_on_map": "إدارة على الخريطة",
+  "no_neighborhoods_yet": "لا توجد أحياء موثقة بعد. افتح الخريطة للتحقق من مكان وجودك.",
+  "open_map_to_verify": "فتح الخريطة للتحقق من موقع جديد",
+  "verify_here": "التحقق هنا",
+  "verify_new_location": "التحقق من موقع جديد",
+  "eviction_warning": "سيؤدي إضافة هذا الموقع إلى إزالة {name} (الأقدم). لا يمكن التراجع عن ذلك.",
+  "verified_today": "تم التحقق اليوم",
+  "verified_yesterday": "تم التحقق أمس",
+  "verified_n_days_ago": "تم التحقق منذ {days} أيام",
+  "active_neighborhood": "نشط",
+  "switch_neighborhood_success": "تم التبديل إلى {name}"
 }

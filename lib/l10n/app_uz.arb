@@ -1510,6 +1510,15 @@
   "no_category_properties": "Bu kategoriyada mulklar mavjud emas",
   "properties_loading": "Mulklar yuklanmoqda...",
   "all_properties_loaded": "Barcha mulklar yuklandi",
+  "n_properties": "{count} ta mulk",
+  "@n_properties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "in_area": "hududida",
   "pagination_previous": "Oldingi",
   "pagination_next": "Keyingi",
   "pagination_page": "Sahifa",
@@ -2245,7 +2254,9 @@
   "new_message": "Yangi xabar",
   "messages": "Xabarlar",
   "please_log_in": "Xabarlarni ko‘rish uchun tizimga kiring",
-  "delete_chat": "Chatni o‘chirish",
+  "pin": "Biriktirish",
+  "unpin": "Olib tashlash",
+  "delete_chat": "Chatni o’chirish",
   "delete_chat_confirm": "{name} bilan bo‘lgan chatni o‘chirmoqchimisiz? Bu amalni bekor qilib bo‘lmaydi.",
   "chat_deleted": "{name} bilan chat o‘chirildi",
   "delete_failed": "Chatni o‘chirish amalga oshmadi",
@@ -2293,6 +2304,15 @@
   "delete_message_confirm": "Bu xabarni o'chirmoqchimisiz?",
   "typing": "yozmoqda...",
   "online": "onlayn",
+  "offline": "oflayn",
+  "last_seen_at": "oxirgi marta {time}",
+  "@last_seen_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "participants": "{count} ishtirokchi",
   "@participants": {
     "description": "Guruh chatidagi ishtirokchilar soni",
@@ -2640,5 +2660,98 @@
   "countrySelectionHint": "Keyin viloyatni tanlashingiz mumkin",
   "@countrySelectionHint": {
     "description": "Hint text for country selection"
-  }
+  },
+  "something_went_wrong": "Xatolik yuz berdi",
+  "@something_went_wrong": {
+    "description": "Error title when something goes wrong"
+  },
+  "check_connection_and_retry": "Internet ulanishini tekshiring va qaytadan urinib ko'ring",
+  "@check_connection_and_retry": {
+    "description": "Error message asking user to check connection"
+  },
+  "sold_badge": "SOTILGAN",
+  "@sold_badge": {
+    "description": "Badge text for sold products"
+  },
+  "more_categories": "Yana",
+  "@more_categories": {
+    "description": "Button to show more categories"
+  },
+  "no_products_in_location": "{location} da mahsulot topilmadi",
+  "@no_products_in_location": {
+    "description": "Message when no products are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "no_more_products": "Boshqa mahsulot yo'q",
+  "@no_more_products": {
+    "description": "Message at end of product list"
+  },
+  "time_days_ago": "{count} kun oldin",
+  "@time_days_ago": {
+    "description": "Time ago in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hours_ago": "{count} soat oldin",
+  "@time_hours_ago": {
+    "description": "Time ago in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_minutes_ago": "{count} daqiqa oldin",
+  "@time_minutes_ago": {
+    "description": "Time ago in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_just_now": "Hozirgina",
+  "@time_just_now": {
+    "description": "Time for recent moments"
+  },
+  "no_services_in_location": "{location} da xizmat topilmadi",
+  "@no_services_in_location": {
+    "description": "Message when no services are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "no_more_services": "Boshqa xizmat yo'q",
+  "@no_more_services": {
+    "description": "Message at end of service list"
+  },
+  "error_loading_more_services": "Xizmatlarni yuklashda xatolik",
+  "@error_loading_more_services": {
+    "description": "Error message when loading more services fails"
+  },
+  "verification_code_length": "Tasdiqlash kodi 6 raqamdan iborat bo'lishi kerak",
+  "@verification_code_length": {
+    "description": "Error when verification code is not 6 digits"
+  },
+  "my_neighborhoods": "Mening mahallalarim",
+  "manage_on_map": "Xaritada boshqarish",
+  "no_neighborhoods_yet": "Hali tasdiqlanган mahallalar yo'q. Joylashuvingizni tasdiqlash uchun xaritani oching.",
+  "open_map_to_verify": "Yangi joylashuvni tasdiqlash uchun xaritani oching",
+  "verify_here": "Bu yerda tasdiqlash",
+  "verify_new_location": "Yangi joylashuvni tasdiqlash",
+  "eviction_warning": "Bu joylashuvni qo'shish {name} (eng eski)ni o'chiradi. Bu amal bekor qilib bo'lmaydi.",
+  "verified_today": "Bugun tasdiqlangan",
+  "verified_yesterday": "Kecha tasdiqlangan",
+  "verified_n_days_ago": "{days} kun oldin tasdiqlangan",
+  "active_neighborhood": "Faol",
+  "switch_neighborhood_success": "{name}ga o'tildi"
 }

@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "マイエリア",
+  "manage_on_map": "マップで管理",
+  "no_neighborhoods_yet": "まだ認証済みのエリアがありません。マップを開いて現在地を認証してください。",
+  "open_map_to_verify": "マップを開いて新しい場所を認証",
+  "verify_here": "ここで認証",
+  "verify_new_location": "新しい場所を認証",
+  "eviction_warning": "この場所を追加すると{name}（最も古い場所）が削除されます。この操作は元に戻せません。",
+  "verified_today": "今日認証済み",
+  "verified_yesterday": "昨日認証済み",
+  "verified_n_days_ago": "{days}日前に認証済み",
+  "active_neighborhood": "アクティブ",
+  "switch_neighborhood_success": "{name}に切り替えました"
 }

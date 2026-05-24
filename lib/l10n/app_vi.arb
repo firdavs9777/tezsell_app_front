@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "Khu phố của tôi",
+  "manage_on_map": "Quản lý trên bản đồ",
+  "no_neighborhoods_yet": "Chưa có khu phố nào được xác minh. Mở bản đồ để xác minh vị trí của bạn.",
+  "open_map_to_verify": "Mở bản đồ để xác minh vị trí mới",
+  "verify_here": "Xác minh tại đây",
+  "verify_new_location": "Xác minh vị trí mới",
+  "eviction_warning": "Thêm vị trí này sẽ xóa {name} (cũ nhất của bạn). Không thể hoàn tác.",
+  "verified_today": "Đã xác minh hôm nay",
+  "verified_yesterday": "Đã xác minh hôm qua",
+  "verified_n_days_ago": "Đã xác minh {days} ngày trước",
+  "active_neighborhood": "Đang hoạt động",
+  "switch_neighborhood_success": "Đã chuyển sang {name}"
 }

@@ -4132,122 +4132,165 @@ class AppLocalizationsVi extends AppLocalizations {
   String get verification_code_length => 'Mã xác minh phải có 6 chữ số';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Bạn sống ở đâu?';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'Chọn vùng lân cận của bạn trên bản đồ';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Chúng tôi sử dụng nó để hiển thị cho bạn người mua và người bán gần đó. Bạn có thể điều chỉnh bán kính của mình sau.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Chọn trên bản đồ';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Chọn lại';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Đang giải quyết vị trí…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'Thay vào đó hãy sử dụng menu thả xuống';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Chúng tôi chưa hỗ trợ $country.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Không thể tự động phát hiện khu vực của bạn - hãy chọn khu vực đó theo cách thủ công.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Không thể tự động phát hiện quận của bạn — hãy chọn quận theo cách thủ công.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'Chưa có mục nào có dữ liệu vị trí trong khu vực này.';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Đặt vị trí';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Xác nhận vị trí';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Không thể giải quyết địa chỉ — chỉ chọn lại hoặc xác nhận bằng tọa độ';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Vị trí đã chọn';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Quyền vị trí bị từ chối';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Quyền vị trí bị từ chối - vui lòng bật trong Cài đặt';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Vị trí bị từ chối vĩnh viễn — mở Cài đặt để bật';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'Lỗi GPS: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Xác minh vùng lân cận của bạn';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Đứng trong khu phố của bạn. Chúng tôi sẽ kiểm tra GPS của bạn và yêu cầu bạn xác nhận.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Xác minh vùng lân cận';
 
   @override
   String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+      'Tiếp tục với độ tin cậy thấp';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Thử lại';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Bạn đang ở:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Đã xác minh! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'Độ chính xác của GPS là ${meters}m (cần 100m). Di chuyển đến một khu vực mở và thử lại.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Không thể xác định vùng lân cận cho vị trí của bạn.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Lỗi không xác định';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'Tìm kiếm địa chỉ hoặc địa điểm';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'Tìm kiếm không có sẵn — thay vào đó hãy ghim';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Thành phố';
 
   @override
   String radius_slider_km(String value) {
     return '$value km';
+  }
+
+  @override
+  String get my_neighborhoods => 'Khu phố của tôi';
+
+  @override
+  String get manage_on_map => 'Quản lý trên bản đồ';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Chưa có khu phố nào được xác minh. Mở bản đồ để xác minh vị trí của bạn.';
+
+  @override
+  String get open_map_to_verify => 'Mở bản đồ để xác minh vị trí mới';
+
+  @override
+  String get verify_here => 'Xác minh tại đây';
+
+  @override
+  String get verify_new_location => 'Xác minh vị trí mới';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Thêm vị trí này sẽ xóa $name (cũ nhất của bạn). Không thể hoàn tác.';
+  }
+
+  @override
+  String get verified_today => 'Đã xác minh hôm nay';
+
+  @override
+  String get verified_yesterday => 'Đã xác minh hôm qua';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'Đã xác minh $days ngày trước';
+  }
+
+  @override
+  String get active_neighborhood => 'Đang hoạt động';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'Đã chuyển sang $name';
   }
 }

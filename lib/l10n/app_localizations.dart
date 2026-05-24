@@ -8109,6 +8109,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{value} km'**
   String radius_slider_km(String value);
+
+  /// No description provided for @my_neighborhoods.
+  ///
+  /// In en, this message translates to:
+  /// **'My Neighborhoods'**
+  String get my_neighborhoods;
+
+  /// No description provided for @manage_on_map.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage on map'**
+  String get manage_on_map;
+
+  /// No description provided for @no_neighborhoods_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No verified neighborhoods yet. Open the map to verify where you are.'**
+  String get no_neighborhoods_yet;
+
+  /// No description provided for @open_map_to_verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Open map to verify new location'**
+  String get open_map_to_verify;
+
+  /// No description provided for @verify_here.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify here'**
+  String get verify_here;
+
+  /// No description provided for @verify_new_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify new location'**
+  String get verify_new_location;
+
+  /// No description provided for @eviction_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding this location will remove {name} (your oldest). This cannot be undone.'**
+  String eviction_warning(String name);
+
+  /// No description provided for @verified_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified today'**
+  String get verified_today;
+
+  /// No description provided for @verified_yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified yesterday'**
+  String get verified_yesterday;
+
+  /// No description provided for @verified_n_days_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified {days} days ago'**
+  String verified_n_days_ago(int days);
+
+  /// No description provided for @active_neighborhood.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active_neighborhood;
+
+  /// No description provided for @switch_neighborhood_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched to {name}'**
+  String switch_neighborhood_success(String name);
 }
 
 class _AppLocalizationsDelegate

@@ -3996,122 +3996,153 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verification_code_length => '验证码必须为6位';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => '你住在哪里？';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => '在地图上选择您的街区';
 
   @override
-  String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+  String get map_register_subtitle => '我们用它来向您展示附近的买家和卖家。您可以稍后调整半径。';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => '在地图上选择';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => '再次选择';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => '正在解决位置...';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => '使用下拉菜单代替';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return '我们还不支持 $country。';
   }
 
   @override
-  String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+  String get region_not_auto_detected => '无法自动检测您的区域 - 手动选择。';
 
   @override
-  String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+  String get district_not_auto_detected => '无法自动检测您的地区 - 请手动选择。';
 
   @override
-  String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+  String get browse_no_items_with_location => '该区域还没有包含位置数据的项目。';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => '设置位置';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => '确认位置';
 
   @override
-  String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+  String get location_picker_resolve_failed => '无法解析地址 - 请重新选择或仅使用坐标进行确认';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => '所选地点';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => '位置权限被拒绝';
 
   @override
-  String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+  String get location_permission_denied_settings => '位置权限被拒绝 - 请在“设置”中启用';
 
   @override
-  String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+  String get location_permission_permanent => '位置永久被拒绝 — 打开“设置”以启用';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'GPS 错误：$error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => '验证您的邻居';
 
   @override
-  String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+  String get verify_neighborhood_subtitle => '站在你家附近。我们将检查您的 GPS 并要求您确认。';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => '验证邻居';
 
   @override
-  String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+  String get verify_neighborhood_low_confidence => '继续低信心';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => '重试';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => '你在：';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return '已验证！ $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'GPS精度为${meters}m（需要≤100m）。移至空旷区域并重试。';
   }
 
   @override
-  String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+  String get neighborhood_not_identified => '无法识别您所在位置的街区。';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => '未知错误';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => '搜索地址或地点';
 
   @override
-  String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+  String get place_search_unavailable => '搜索不可用 — 改为放置图钉';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => '城市';
 
   @override
   String radius_slider_km(String value) {
-    return '$value km';
+    return '$value公里';
+  }
+
+  @override
+  String get my_neighborhoods => '我的社区';
+
+  @override
+  String get manage_on_map => '在地图上管理';
+
+  @override
+  String get no_neighborhoods_yet => '尚无已验证的社区。打开地图验证您所在的位置。';
+
+  @override
+  String get open_map_to_verify => '打开地图验证新位置';
+
+  @override
+  String get verify_here => '在此验证';
+
+  @override
+  String get verify_new_location => '验证新位置';
+
+  @override
+  String eviction_warning(String name) {
+    return '添加此位置将删除$name（最早的）。此操作无法撤消。';
+  }
+
+  @override
+  String get verified_today => '今天已验证';
+
+  @override
+  String get verified_yesterday => '昨天已验证';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return '$days天前已验证';
+  }
+
+  @override
+  String get active_neighborhood => '活跃';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return '已切换到$name';
   }
 }

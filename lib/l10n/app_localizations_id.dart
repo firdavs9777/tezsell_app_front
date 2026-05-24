@@ -4148,122 +4148,164 @@ class AppLocalizationsId extends AppLocalizations {
   String get verification_code_length => 'Kode verifikasi harus 6 digit';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Kamu tinggal di mana?';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'Pilih lingkungan Anda di peta';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Kami menggunakannya untuk menunjukkan kepada Anda pembeli dan penjual terdekat. Anda dapat menyesuaikan radius Anda nanti.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Pilih di peta';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Pilih lagi';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Menyelesaikan lokasi…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'Gunakan tarik-turun sebagai gantinya';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Kami belum mendukung $country.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Tidak dapat mendeteksi wilayah Anda secara otomatis — pilih secara manual.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Tidak dapat mendeteksi distrik Anda secara otomatis — pilih secara manual.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'Belum ada item dengan data lokasi di area ini.';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Tetapkan lokasi';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Konfirmasikan lokasi';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Tidak dapat menentukan alamat — pilih lagi atau konfirmasi dengan koordinat saja';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Lokasi yang dipilih';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Izin lokasi ditolak';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Izin lokasi ditolak — harap aktifkan di Pengaturan';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Lokasi ditolak secara permanen — buka Pengaturan untuk mengaktifkan';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'Kesalahan GPS: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Verifikasi lingkungan Anda';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Berdirilah di lingkungan Anda. Kami akan memeriksa GPS Anda dan meminta Anda untuk mengonfirmasi.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Verifikasi Lingkungan';
 
   @override
   String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+      'Lanjutkan dengan rasa percaya diri yang rendah';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Mencoba kembali';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Anda berada di:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Terverifikasi! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'Akurasi GPS adalah ${meters}m (membutuhkan ≤100m). Pindah ke area terbuka dan coba lagi.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Tidak dapat mengidentifikasi lingkungan untuk lokasi Anda.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Kesalahan tidak diketahui';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'Cari alamat atau tempat';
 
   @override
-  String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+  String get place_search_unavailable => 'Pencarian tidak tersedia — ganti pin';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Kota';
 
   @override
   String radius_slider_km(String value) {
     return '$value km';
+  }
+
+  @override
+  String get my_neighborhoods => 'Lingkungan Saya';
+
+  @override
+  String get manage_on_map => 'Kelola di peta';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Belum ada lingkungan yang terverifikasi. Buka peta untuk memverifikasi lokasi Anda.';
+
+  @override
+  String get open_map_to_verify => 'Buka peta untuk memverifikasi lokasi baru';
+
+  @override
+  String get verify_here => 'Verifikasi di sini';
+
+  @override
+  String get verify_new_location => 'Verifikasi lokasi baru';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Menambahkan lokasi ini akan menghapus $name (yang terlama). Ini tidak dapat dibatalkan.';
+  }
+
+  @override
+  String get verified_today => 'Diverifikasi hari ini';
+
+  @override
+  String get verified_yesterday => 'Diverifikasi kemarin';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'Diverifikasi $days hari yang lalu';
+  }
+
+  @override
+  String get active_neighborhood => 'Aktif';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'Beralih ke $name';
   }
 }

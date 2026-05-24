@@ -4014,122 +4014,156 @@ class AppLocalizationsJa extends AppLocalizations {
   String get verification_code_length => '認証コードは6桁である必要があります';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'どこに住んでいますか？';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => '地図上で近所を選択してください';
 
   @override
-  String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+  String get map_register_subtitle => '近くの買い手と売り手を紹介するために使用します。半径は後で調整できます。';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => '地図上で選ぶ';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'もう一度選択してください';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => '位置情報を解決中…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => '代わりにドロップダウンを使用してください';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return '$country はまだサポートされていません。';
   }
 
   @override
-  String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+  String get region_not_auto_detected => '地域を自動検出できませんでした。手動で選択してください。';
 
   @override
-  String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+  String get district_not_auto_detected => '地区を自動検出できませんでした。手動で選択してください。';
 
   @override
-  String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+  String get browse_no_items_with_location => 'このエリアには位置データを持つアイテムはまだありません。';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => '場所を設定する';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => '場所を確認する';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      '住所を解決できませんでした - もう一度選択するか、座標のみで確認してください';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => '選択した場所';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => '位置情報の許可が拒否されました';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      '位置情報の許可が拒否されました - 設定で有効にしてください';
 
   @override
-  String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+  String get location_permission_permanent => '位置情報が永久に拒否されました — 設定を開いて有効にします';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'GPS エラー: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => '近所を確認する';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'あなたの近所に立ってください。 GPS をチェックして確認を求めます。';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => '近隣の検証';
 
   @override
-  String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+  String get verify_neighborhood_low_confidence => '低い自信を持って続行する';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'リトライ';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'あなたは次の場所にいます:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return '検証されました！ $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'GPS の精度は ${meters}m (必要 ≤100m) です。開けた場所に移動して、もう一度試してください。';
   }
 
   @override
-  String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+  String get neighborhood_not_identified => 'お住まいの地域の近隣地域を特定できませんでした。';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => '不明なエラー';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => '住所または場所を検索する';
 
   @override
-  String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+  String get place_search_unavailable => '検索は利用できません — 代わりにピンをドロップしてください';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => '市';
 
   @override
   String radius_slider_km(String value) {
-    return '$value km';
+    return '${value}km';
+  }
+
+  @override
+  String get my_neighborhoods => 'マイエリア';
+
+  @override
+  String get manage_on_map => 'マップで管理';
+
+  @override
+  String get no_neighborhoods_yet => 'まだ認証済みのエリアがありません。マップを開いて現在地を認証してください。';
+
+  @override
+  String get open_map_to_verify => 'マップを開いて新しい場所を認証';
+
+  @override
+  String get verify_here => 'ここで認証';
+
+  @override
+  String get verify_new_location => '新しい場所を認証';
+
+  @override
+  String eviction_warning(String name) {
+    return 'この場所を追加すると$name（最も古い場所）が削除されます。この操作は元に戻せません。';
+  }
+
+  @override
+  String get verified_today => '今日認証済み';
+
+  @override
+  String get verified_yesterday => '昨日認証済み';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return '$days日前に認証済み';
+  }
+
+  @override
+  String get active_neighborhood => 'アクティブ';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return '$nameに切り替えました';
   }
 }

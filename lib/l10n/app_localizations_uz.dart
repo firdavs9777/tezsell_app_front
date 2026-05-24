@@ -4282,4 +4282,48 @@ class AppLocalizationsUz extends AppLocalizations {
   String radius_slider_km(String value) {
     return '$value km';
   }
+
+  @override
+  String get my_neighborhoods => 'Mening mahallalarim';
+
+  @override
+  String get manage_on_map => 'Xaritada boshqarish';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Hali tasdiqlanган mahallalar yo\'q. Joylashuvingizni tasdiqlash uchun xaritani oching.';
+
+  @override
+  String get open_map_to_verify =>
+      'Yangi joylashuvni tasdiqlash uchun xaritani oching';
+
+  @override
+  String get verify_here => 'Bu yerda tasdiqlash';
+
+  @override
+  String get verify_new_location => 'Yangi joylashuvni tasdiqlash';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Bu joylashuvni qo\'shish $name (eng eski)ni o\'chiradi. Bu amal bekor qilib bo\'lmaydi.';
+  }
+
+  @override
+  String get verified_today => 'Bugun tasdiqlangan';
+
+  @override
+  String get verified_yesterday => 'Kecha tasdiqlangan';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return '$days kun oldin tasdiqlangan';
+  }
+
+  @override
+  String get active_neighborhood => 'Faol';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return '${name}ga o\'tildi';
+  }
 }

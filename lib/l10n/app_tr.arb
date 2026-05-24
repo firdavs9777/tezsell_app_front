@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "Mahallelerim",
+  "manage_on_map": "Haritada yönet",
+  "no_neighborhoods_yet": "Henüz doğrulanmış mahalle yok. Nerede olduğunuzu doğrulamak için haritayı açın.",
+  "open_map_to_verify": "Yeni konumu doğrulamak için haritayı açın",
+  "verify_here": "Burayı doğrula",
+  "verify_new_location": "Yeni konumu doğrula",
+  "eviction_warning": "Bu konum eklendiğinde {name} (en eskisi) kaldırılacaktır. Bu işlem geri alınamaz.",
+  "verified_today": "Bugün doğrulandı",
+  "verified_yesterday": "Dün doğrulandı",
+  "verified_n_days_ago": "{days} gün önce doğrulandı",
+  "active_neighborhood": "Aktif",
+  "switch_neighborhood_success": "{name} konumuna geçildi"
 }

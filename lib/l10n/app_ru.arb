@@ -1513,6 +1513,15 @@
   "no_category_properties": "В этой категории нет недвижимости",
   "properties_loading": "Загрузка недвижимости...",
   "all_properties_loaded": "Вся недвижимость загружена",
+  "n_properties": "{count} объектов",
+  "@n_properties": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "in_area": "в районе",
   "pagination_previous": "Предыдущая",
   "pagination_next": "Следующая",
   "pagination_page": "Страница",
@@ -2248,6 +2257,8 @@
   "new_message": "Новое сообщение",
   "messages": "Сообщения",
   "please_log_in": "Пожалуйста, войдите, чтобы просматривать сообщения",
+  "pin": "Закрепить",
+  "unpin": "Открепить",
   "delete_chat": "Удалить чат",
   "delete_chat_confirm": "Вы уверены, что хотите удалить чат с {name}? Это действие нельзя отменить.",
   "chat_deleted": "Чат с {name} удалён",
@@ -2296,6 +2307,15 @@
   "delete_message_confirm": "Вы уверены, что хотите удалить это сообщение?",
   "typing": "печатает...",
   "online": "в сети",
+  "offline": "не в сети",
+  "last_seen_at": "был(а) {time}",
+  "@last_seen_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "participants": "{count} участников",
   "@participants": {
     "description": "Количество участников в групповом чате",
@@ -2643,5 +2663,98 @@
   "countrySelectionHint": "Затем вы сможете выбрать регион",
   "@countrySelectionHint": {
     "description": "Hint text for country selection"
-  }
+  },
+  "something_went_wrong": "Что-то пошло не так",
+  "@something_went_wrong": {
+    "description": "Error title when something goes wrong"
+  },
+  "check_connection_and_retry": "Проверьте подключение к интернету и попробуйте снова",
+  "@check_connection_and_retry": {
+    "description": "Error message asking user to check connection"
+  },
+  "sold_badge": "ПРОДАНО",
+  "@sold_badge": {
+    "description": "Badge text for sold products"
+  },
+  "more_categories": "Ещё",
+  "@more_categories": {
+    "description": "Button to show more categories"
+  },
+  "no_products_in_location": "Товары в {location} не найдены",
+  "@no_products_in_location": {
+    "description": "Message when no products are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "no_more_products": "Больше товаров нет",
+  "@no_more_products": {
+    "description": "Message at end of product list"
+  },
+  "time_days_ago": "{count} дн. назад",
+  "@time_days_ago": {
+    "description": "Time ago in days",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hours_ago": "{count} ч. назад",
+  "@time_hours_ago": {
+    "description": "Time ago in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_minutes_ago": "{count} мин. назад",
+  "@time_minutes_ago": {
+    "description": "Time ago in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_just_now": "Только что",
+  "@time_just_now": {
+    "description": "Time for recent moments"
+  },
+  "no_services_in_location": "Услуги в {location} не найдены",
+  "@no_services_in_location": {
+    "description": "Message when no services are available in a location",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "no_more_services": "Больше услуг нет",
+  "@no_more_services": {
+    "description": "Message at end of service list"
+  },
+  "error_loading_more_services": "Ошибка загрузки услуг",
+  "@error_loading_more_services": {
+    "description": "Error message when loading more services fails"
+  },
+  "verification_code_length": "Код подтверждения должен содержать 6 цифр",
+  "@verification_code_length": {
+    "description": "Error when verification code is not 6 digits"
+  },
+  "my_neighborhoods": "Мои районы",
+  "manage_on_map": "Управление на карте",
+  "no_neighborhoods_yet": "Нет подтверждённых районов. Откройте карту, чтобы подтвердить своё местоположение.",
+  "open_map_to_verify": "Открыть карту для подтверждения нового места",
+  "verify_here": "Подтвердить здесь",
+  "verify_new_location": "Подтвердить новое место",
+  "eviction_warning": "Добавление этого места удалит {name} (ваш самый старый район). Это действие нельзя отменить.",
+  "verified_today": "Подтверждено сегодня",
+  "verified_yesterday": "Подтверждено вчера",
+  "verified_n_days_ago": "Подтверждено {days} дней назад",
+  "active_neighborhood": "Активный",
+  "switch_neighborhood_success": "Переключено на {name}"
 }

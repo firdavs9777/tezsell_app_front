@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "我的社区",
+  "manage_on_map": "在地图上管理",
+  "no_neighborhoods_yet": "尚无已验证的社区。打开地图验证您所在的位置。",
+  "open_map_to_verify": "打开地图验证新位置",
+  "verify_here": "在此验证",
+  "verify_new_location": "验证新位置",
+  "eviction_warning": "添加此位置将删除{name}（最早的）。此操作无法撤消。",
+  "verified_today": "今天已验证",
+  "verified_yesterday": "昨天已验证",
+  "verified_n_days_ago": "{days}天前已验证",
+  "active_neighborhood": "活跃",
+  "switch_neighborhood_success": "已切换到{name}"
 }

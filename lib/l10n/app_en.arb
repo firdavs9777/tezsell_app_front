@@ -3109,5 +3109,35 @@
   "radius_slider_km": "{value} km",
   "@radius_slider_km": {
     "placeholders": {"value": {"type": "String"}}
+  },
+  "my_neighborhoods": "My Neighborhoods",
+  "@my_neighborhoods": {},
+  "manage_on_map": "Manage on map",
+  "@manage_on_map": {},
+  "no_neighborhoods_yet": "No verified neighborhoods yet. Open the map to verify where you are.",
+  "@no_neighborhoods_yet": {},
+  "open_map_to_verify": "Open map to verify new location",
+  "@open_map_to_verify": {},
+  "verify_here": "Verify here",
+  "@verify_here": {},
+  "verify_new_location": "Verify new location",
+  "@verify_new_location": {},
+  "eviction_warning": "Adding this location will remove {name} (your oldest). This cannot be undone.",
+  "@eviction_warning": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "verified_today": "Verified today",
+  "@verified_today": {},
+  "verified_yesterday": "Verified yesterday",
+  "@verified_yesterday": {},
+  "verified_n_days_ago": "Verified {days} days ago",
+  "@verified_n_days_ago": {
+    "placeholders": {"days": {"type": "int"}}
+  },
+  "active_neighborhood": "Active",
+  "@active_neighborhood": {},
+  "switch_neighborhood_success": "Switched to {name}",
+  "@switch_neighborhood_success": {
+    "placeholders": {"name": {"type": "String"}}
   }
 }

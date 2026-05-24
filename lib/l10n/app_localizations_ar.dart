@@ -4085,122 +4085,163 @@ class AppLocalizationsAr extends AppLocalizations {
   String get verification_code_length => 'يجب أن يتكون رمز التحقق من 6 أرقام';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'أين تعيش؟';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'اختر الحي الخاص بك على الخريطة';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'نستخدمها لتظهر لك المشترين والبائعين القريبين. يمكنك ضبط نصف القطر الخاص بك لاحقًا.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'اختر على الخريطة';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'اختر مرة أخرى';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'جارٍ حل الموقع…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'استخدم القائمة المنسدلة بدلاً من ذلك';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'نحن لا ندعم $country حتى الآن.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'تعذر اكتشاف منطقتك تلقائيًا — اخترها يدويًا.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'تعذر اكتشاف منطقتك تلقائيًا — اخترها يدويًا.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'لا توجد عناصر تحتوي على بيانات الموقع في هذه المنطقة حتى الآن.';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'تحديد الموقع';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'تأكيد الموقع';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'تعذر حل العنوان — اختر مرة أخرى أو أكد باستخدام الإحداثيات فقط';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'الموقع المحدد';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'تم رفض إذن تحديد الموقع';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'تم رفض إذن الموقع - يرجى تمكينه في الإعدادات';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'تم رفض الموقع نهائيًا - افتح الإعدادات للتمكين';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'خطأ نظام تحديد المواقع العالمي (GPS): $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'التحقق من منطقتك';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'قف في حيك. سوف نتحقق من نظام تحديد المواقع العالمي (GPS) الخاص بك ونطلب منك التأكيد.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'التحقق من الحي';
 
   @override
-  String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+  String get verify_neighborhood_low_confidence => 'استمر بثقة منخفضة';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'أعد المحاولة';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'أنت في:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'تم التحقق! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'دقة نظام تحديد المواقع العالمي (GPS) هي ${meters}m (تحتاج إلى ≥100m). انتقل إلى منطقة مفتوحة وحاول مرة أخرى.';
   }
 
   @override
-  String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+  String get neighborhood_not_identified => 'لا يمكن تحديد الحي لموقعك.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'خطأ غير معروف';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'ابحث عن عنوان أو مكان';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'البحث غير متاح — أسقط دبوسًا بدلاً من ذلك';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'مدينة';
 
   @override
   String radius_slider_km(String value) {
-    return '$value km';
+    return '$value كم';
+  }
+
+  @override
+  String get my_neighborhoods => 'أحيائي';
+
+  @override
+  String get manage_on_map => 'إدارة على الخريطة';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'لا توجد أحياء موثقة بعد. افتح الخريطة للتحقق من مكان وجودك.';
+
+  @override
+  String get open_map_to_verify => 'فتح الخريطة للتحقق من موقع جديد';
+
+  @override
+  String get verify_here => 'التحقق هنا';
+
+  @override
+  String get verify_new_location => 'التحقق من موقع جديد';
+
+  @override
+  String eviction_warning(String name) {
+    return 'سيؤدي إضافة هذا الموقع إلى إزالة $name (الأقدم). لا يمكن التراجع عن ذلك.';
+  }
+
+  @override
+  String get verified_today => 'تم التحقق اليوم';
+
+  @override
+  String get verified_yesterday => 'تم التحقق أمس';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'تم التحقق منذ $days أيام';
+  }
+
+  @override
+  String get active_neighborhood => 'نشط';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'تم التبديل إلى $name';
   }
 }

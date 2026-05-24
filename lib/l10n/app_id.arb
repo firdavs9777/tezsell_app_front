@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "Lingkungan Saya",
+  "manage_on_map": "Kelola di peta",
+  "no_neighborhoods_yet": "Belum ada lingkungan yang terverifikasi. Buka peta untuk memverifikasi lokasi Anda.",
+  "open_map_to_verify": "Buka peta untuk memverifikasi lokasi baru",
+  "verify_here": "Verifikasi di sini",
+  "verify_new_location": "Verifikasi lokasi baru",
+  "eviction_warning": "Menambahkan lokasi ini akan menghapus {name} (yang terlama). Ini tidak dapat dibatalkan.",
+  "verified_today": "Diverifikasi hari ini",
+  "verified_yesterday": "Diverifikasi kemarin",
+  "verified_n_days_ago": "Diverifikasi {days} hari yang lalu",
+  "active_neighborhood": "Aktif",
+  "switch_neighborhood_success": "Beralih ke {name}"
 }

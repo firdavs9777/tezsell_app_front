@@ -4218,4 +4218,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String radius_slider_km(String value) {
     return '$value km';
   }
+
+  @override
+  String get my_neighborhoods => 'My Neighborhoods';
+
+  @override
+  String get manage_on_map => 'Manage on map';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'No verified neighborhoods yet. Open the map to verify where you are.';
+
+  @override
+  String get open_map_to_verify => 'Open map to verify new location';
+
+  @override
+  String get verify_here => 'Verify here';
+
+  @override
+  String get verify_new_location => 'Verify new location';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Adding this location will remove $name (your oldest). This cannot be undone.';
+  }
+
+  @override
+  String get verified_today => 'Verified today';
+
+  @override
+  String get verified_yesterday => 'Verified yesterday';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'Verified $days days ago';
+  }
+
+  @override
+  String get active_neighborhood => 'Active';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'Switched to $name';
+  }
 }

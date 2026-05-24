@@ -4261,4 +4261,48 @@ class AppLocalizationsRu extends AppLocalizations {
   String radius_slider_km(String value) {
     return '$value km';
   }
+
+  @override
+  String get my_neighborhoods => 'Мои районы';
+
+  @override
+  String get manage_on_map => 'Управление на карте';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Нет подтверждённых районов. Откройте карту, чтобы подтвердить своё местоположение.';
+
+  @override
+  String get open_map_to_verify =>
+      'Открыть карту для подтверждения нового места';
+
+  @override
+  String get verify_here => 'Подтвердить здесь';
+
+  @override
+  String get verify_new_location => 'Подтвердить новое место';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Добавление этого места удалит $name (ваш самый старый район). Это действие нельзя отменить.';
+  }
+
+  @override
+  String get verified_today => 'Подтверждено сегодня';
+
+  @override
+  String get verified_yesterday => 'Подтверждено вчера';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'Подтверждено $days дней назад';
+  }
+
+  @override
+  String get active_neighborhood => 'Активный';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'Переключено на $name';
+  }
 }

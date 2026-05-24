@@ -4209,122 +4209,169 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der Bestätigungscode muss 6-stellig sein';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Wo wohnst du?';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline =>
+      'Wählen Sie Ihr Viertel auf der Karte aus';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Wir nutzen es, um Ihnen Käufer und Verkäufer in Ihrer Nähe anzuzeigen. Sie können Ihren Radius später anpassen.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Auf der Karte auswählen';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Wählen Sie noch einmal';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Standort wird aufgelöst...';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead =>
+      'Verwenden Sie stattdessen das Dropdown-Menü';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Wir unterstützen $country noch nicht.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Ihre Region konnte nicht automatisch erkannt werden. Wählen Sie sie manuell aus.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Ihr Bezirk konnte nicht automatisch erkannt werden. Wählen Sie ihn manuell aus.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'In diesem Bereich gibt es noch keine Artikel mit Standortdaten.';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Standort festlegen';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Standort bestätigen';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Adresse konnte nicht aufgelöst werden. Wählen Sie sie erneut aus oder bestätigen Sie nur mit Koordinaten';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Ausgewählter Ort';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Standortberechtigung verweigert';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Standortberechtigung verweigert – bitte in den Einstellungen aktivieren';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Standort dauerhaft verweigert – öffnen Sie die Einstellungen, um ihn zu aktivieren';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'GPS-Fehler: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Überprüfen Sie Ihre Nachbarschaft';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Stehen Sie in Ihrer Nachbarschaft. Wir überprüfen Ihr GPS und bitten Sie um eine Bestätigung.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Nachbarschaft überprüfen';
 
   @override
   String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+      'Fahren Sie mit geringem Selbstvertrauen fort';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Wiederholen';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Sie befinden sich in:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Verifiziert! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'Die GPS-Genauigkeit beträgt ${meters}m (Benötigung ≤100 m). Gehen Sie zu einem freien Bereich und versuchen Sie es erneut.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Die Nachbarschaft für Ihren Standort konnte nicht identifiziert werden.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Unbekannter Fehler';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint =>
+      'Suchen Sie nach einer Adresse oder einem Ort';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'Suche nicht verfügbar – hinterlassen Sie stattdessen eine Stecknadel';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Stadt';
 
   @override
   String radius_slider_km(String value) {
     return '$value km';
+  }
+
+  @override
+  String get my_neighborhoods => 'Meine Stadtteile';
+
+  @override
+  String get manage_on_map => 'Auf Karte verwalten';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Noch keine verifizierten Stadtteile. Öffne die Karte, um deinen Standort zu verifizieren.';
+
+  @override
+  String get open_map_to_verify =>
+      'Karte öffnen, um neuen Standort zu verifizieren';
+
+  @override
+  String get verify_here => 'Hier verifizieren';
+
+  @override
+  String get verify_new_location => 'Neuen Standort verifizieren';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Das Hinzufügen dieses Standorts entfernt $name (deinen ältesten). Dies kann nicht rückgängig gemacht werden.';
+  }
+
+  @override
+  String get verified_today => 'Heute verifiziert';
+
+  @override
+  String get verified_yesterday => 'Gestern verifiziert';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return 'Vor $days Tagen verifiziert';
+  }
+
+  @override
+  String get active_neighborhood => 'Aktiv';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return 'Zu $name gewechselt';
   }
 }

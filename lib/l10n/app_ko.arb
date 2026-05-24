@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "내 동네",
+  "manage_on_map": "지도에서 관리",
+  "no_neighborhoods_yet": "아직 인증된 동네가 없습니다. 지도를 열어 현재 위치를 인증하세요.",
+  "open_map_to_verify": "지도 열어 새 위치 인증",
+  "verify_here": "여기서 인증",
+  "verify_new_location": "새 위치 인증",
+  "eviction_warning": "이 위치를 추가하면 {name}(가장 오래된 동네)이 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+  "verified_today": "오늘 인증됨",
+  "verified_yesterday": "어제 인증됨",
+  "verified_n_days_ago": "{days}일 전 인증됨",
+  "active_neighborhood": "활성",
+  "switch_neighborhood_success": "{name}(으)로 전환되었습니다"
 }

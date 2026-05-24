@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "Meine Stadtteile",
+  "manage_on_map": "Auf Karte verwalten",
+  "no_neighborhoods_yet": "Noch keine verifizierten Stadtteile. Öffne die Karte, um deinen Standort zu verifizieren.",
+  "open_map_to_verify": "Karte öffnen, um neuen Standort zu verifizieren",
+  "verify_here": "Hier verifizieren",
+  "verify_new_location": "Neuen Standort verifizieren",
+  "eviction_warning": "Das Hinzufügen dieses Standorts entfernt {name} (deinen ältesten). Dies kann nicht rückgängig gemacht werden.",
+  "verified_today": "Heute verifiziert",
+  "verified_yesterday": "Gestern verifiziert",
+  "verified_n_days_ago": "Vor {days} Tagen verifiziert",
+  "active_neighborhood": "Aktiv",
+  "switch_neighborhood_success": "Zu {name} gewechselt"
 }

@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "Meus bairros",
+  "manage_on_map": "Gerenciar no mapa",
+  "no_neighborhoods_yet": "Ainda não há bairros verificados. Abra o mapa para verificar onde você está.",
+  "open_map_to_verify": "Abrir mapa para verificar novo local",
+  "verify_here": "Verificar aqui",
+  "verify_new_location": "Verificar novo local",
+  "eviction_warning": "Adicionar este local removerá {name} (o mais antigo). Isso não pode ser desfeito.",
+  "verified_today": "Verificado hoje",
+  "verified_yesterday": "Verificado ontem",
+  "verified_n_days_ago": "Verificado há {days} dias",
+  "active_neighborhood": "Ativo",
+  "switch_neighborhood_success": "Alternado para {name}"
 }

@@ -4118,122 +4118,164 @@ class AppLocalizationsTr extends AppLocalizations {
   String get verification_code_length => 'Doğrulama kodu 6 haneli olmalıdır';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Nerede yaşıyorsun';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'Haritadan mahallenizi seçin';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Size yakındaki alıcıları ve satıcıları göstermek için kullanıyoruz. Yarıçapınızı daha sonra ayarlayabilirsiniz.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Haritada seç';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Tekrar seç';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Konum çözümleniyor…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'Bunun yerine açılır menüyü kullanın';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Henüz $country\'ı desteklemiyoruz.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Bölgeniz otomatik olarak algılanamadı; manuel olarak seçin.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Bölgeniz otomatik olarak algılanamadı; manuel olarak seçin.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'Bu alanda henüz konum verisi olan öğe yok.';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Konumu ayarla';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Konumu onayla';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Adres çözülemedi; tekrar seçin veya yalnızca koordinatlarla onaylayın';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Seçilen konum';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Konum izni reddedildi';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Konum izni reddedildi — lütfen Ayarlar\'dan etkinleştirin';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Konum kalıcı olarak reddedildi; etkinleştirmek için Ayarlar\'ı açın';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'GPS hatası: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Mahallenizi doğrulayın';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Mahallenizde durun. GPS\'inizi kontrol edip onaylamanızı isteyeceğiz.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Mahalleyi Doğrula';
 
   @override
-  String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+  String get verify_neighborhood_low_confidence => 'Düşük güvenle devam edin';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Yeniden dene';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Şuradasınız:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Doğrulandı! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'GPS doğruluğu ${meters}m\'dir (≤100m gerekir). Açık bir alana geçin ve tekrar deneyin.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Bulunduğunuz yerin mahallesi belirlenemedi.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Bilinmeyen hata';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'Bir adres veya yer arayın';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'Arama kullanılamıyor; bunun yerine bir raptiye bırakın';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Şehir';
 
   @override
   String radius_slider_km(String value) {
     return '$value km';
+  }
+
+  @override
+  String get my_neighborhoods => 'Mahallelerim';
+
+  @override
+  String get manage_on_map => 'Haritada yönet';
+
+  @override
+  String get no_neighborhoods_yet =>
+      'Henüz doğrulanmış mahalle yok. Nerede olduğunuzu doğrulamak için haritayı açın.';
+
+  @override
+  String get open_map_to_verify => 'Yeni konumu doğrulamak için haritayı açın';
+
+  @override
+  String get verify_here => 'Burayı doğrula';
+
+  @override
+  String get verify_new_location => 'Yeni konumu doğrula';
+
+  @override
+  String eviction_warning(String name) {
+    return 'Bu konum eklendiğinde $name (en eskisi) kaldırılacaktır. Bu işlem geri alınamaz.';
+  }
+
+  @override
+  String get verified_today => 'Bugün doğrulandı';
+
+  @override
+  String get verified_yesterday => 'Dün doğrulandı';
+
+  @override
+  String verified_n_days_ago(int days) {
+    return '$days gün önce doğrulandı';
+  }
+
+  @override
+  String get active_neighborhood => 'Aktif';
+
+  @override
+  String switch_neighborhood_success(String name) {
+    return '$name konumuna geçildi';
   }
 }

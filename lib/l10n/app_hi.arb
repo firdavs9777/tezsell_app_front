@@ -3095,5 +3095,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "my_neighborhoods": "मेरे मोहल्ले",
+  "manage_on_map": "मानचित्र पर प्रबंधित करें",
+  "no_neighborhoods_yet": "अभी तक कोई सत्यापित मोहल्ला नहीं है। जहाँ आप हैं उसे सत्यापित करने के लिए मानचित्र खोलें।",
+  "open_map_to_verify": "नए स्थान को सत्यापित करने के लिए मानचित्र खोलें",
+  "verify_here": "यहाँ सत्यापित करें",
+  "verify_new_location": "नया स्थान सत्यापित करें",
+  "eviction_warning": "इस स्थान को जोड़ने से {name} (सबसे पुराना) हट जाएगा। यह पूर्ववत नहीं किया जा सकता।",
+  "verified_today": "आज सत्यापित",
+  "verified_yesterday": "कल सत्यापित",
+  "verified_n_days_ago": "{days} दिन पहले सत्यापित",
+  "active_neighborhood": "सक्रिय",
+  "switch_neighborhood_success": "{name} पर स्विच किया"
 }
