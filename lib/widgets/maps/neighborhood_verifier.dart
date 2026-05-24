@@ -13,13 +13,16 @@ class NeighborhoodVerifier extends ConsumerStatefulWidget {
   /// Optional pre-resolved Position to skip GPS read (used by integration tests).
   final Position? injectedPosition;
 
+  /// Called when verification succeeds (stage transitions to done).
+  final VoidCallback? onDone;
+
   /// Maximum acceptable GPS accuracy in meters.
   static const accuracyThresholdM = 100.0;
 
   /// Number of high-accuracy retries before offering "low confidence" path.
   static const maxStrictAttempts = 3;
 
-  const NeighborhoodVerifier({super.key, this.injectedPosition});
+  const NeighborhoodVerifier({super.key, this.injectedPosition, this.onDone});
 
   @override
   ConsumerState<NeighborhoodVerifier> createState() =>
@@ -119,7 +122,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
         gpsAccuracyM: _position!.accuracy,
         lowConfidence: lowConfidence,
       );
-      await ref.read(verifiedNeighborhoodsProvider.notifier).add(
+      await ref.read(verifiedNeighborhoodsProvider.notifier).addEvictingOldest(
             VerifiedNeighborhood(
               neighborhood: serverNeighborhood,
               verifiedAt: DateTime.now(),
@@ -131,6 +134,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
         _resolved = serverNeighborhood;
         _stage = _Stage.done;
       });
+      widget.onDone?.call();
     } on MapsException catch (e) {
       setState(() {
         _stage = _Stage.error;
