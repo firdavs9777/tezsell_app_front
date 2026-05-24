@@ -2,6 +2,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,7 @@ import 'package:go_router/go_router.dart';
 class NeighborhoodSwitcherSheet extends ConsumerWidget {
   const NeighborhoodSwitcherSheet({super.key});
 
-  String _displayName(neighborhood) {
+  String _displayName(Neighborhood neighborhood) {
     return neighborhood.city.isNotEmpty ? neighborhood.city : neighborhood.name;
   }
 
