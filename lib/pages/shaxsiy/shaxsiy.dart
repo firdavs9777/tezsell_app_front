@@ -275,7 +275,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     title: localizations?.location_settings ?? 'Location',
                     subtitle: 'Default area and location services',
                     iconColor: const Color(0xFF4CAF50),
-                    onTap: () => context.push('/change-city'),
+                    onTap: () => context.push('/location/manage'),
                   ),
                   ProfileMenuCard(
                     icon: Icons.security_rounded,
