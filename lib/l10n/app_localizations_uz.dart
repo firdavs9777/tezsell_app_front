@@ -4291,7 +4291,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get no_neighborhoods_yet =>
-      'Hali tasdiqlanган mahallalar yo\'q. Joylashuvingizni tasdiqlash uchun xaritani oching.';
+      'Hali tasdiqlangan mahallalar yo\'q. Joylashuvingizni tasdiqlash uchun xaritani oching.';
 
   @override
   String get open_map_to_verify =>
