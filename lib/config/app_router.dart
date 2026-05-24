@@ -35,13 +35,13 @@ import '../pages/shaxsiy/favorite_items/favorite_services.dart';
 import '../pages/shaxsiy/my-products/my_products.dart';
 import '../pages/shaxsiy/my-services/my_services.dart';
 import '../pages/shaxsiy/properties/saved_properties.dart';
-import '../pages/change_city/map_location_filter.dart';
 import '../pages/admin/admin_dashboard.dart';
 import '../pages/profile/user_profile_screen.dart';
 import '../pages/offers/offers_screen.dart';
 import '../pages/analytics/seller_analytics_screen.dart';
 import '../pages/onboarding/location_setup.dart';
 import '../pages/onboarding/welcome_screen.dart';
+import '../pages/location/neighborhood_management_page.dart';
 
 // Providers
 import '../service/authentication_service.dart';
@@ -344,9 +344,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       // Other routes
       GoRoute(
+        path: '/location/manage',
+        name: 'location-manage',
+        builder: (context, state) => const NeighborhoodManagementPage(),
+      ),
+      GoRoute(
         path: '/change-city',
         name: 'change-city',
-        builder: (context, state) => const MapLocationFilterPage(),
+        redirect: (_, __) => '/location/manage',
       ),
       GoRoute(
         path: '/admin',
