@@ -70,8 +70,12 @@ class _NeighborhoodManagementPageState
       if (!mounted) return;
       setState(() => _currentPosition = pos);
       if (!_cameraFitted) {
-        _fitCamera();
-        _cameraFitted = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_cameraFitted && mounted) {
+            _fitCamera();
+            _cameraFitted = true;
+          }
+        });
       }
     });
   }
@@ -244,8 +248,9 @@ class _NeighborhoodManagementPageState
       }
       ref.invalidate(productsProvider);
       ref.invalidate(servicesProvider);
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _fitCamera());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _fitCamera();
+      });
     });
   }
 
@@ -439,7 +444,7 @@ class _NeighborhoodChip extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 140),
         padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 12, 6),
         decoration: BoxDecoration(
-          color: isActive ? cs.primary : Colors.white,
+          color: isActive ? cs.primary : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: isActive ? cs.primary : cs.outline),
           boxShadow: [
