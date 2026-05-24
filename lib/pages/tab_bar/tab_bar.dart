@@ -11,6 +11,7 @@ import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:app/widgets/notification_bell.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
+import 'package:app/widgets/maps/neighborhood_switcher_sheet.dart';
 import 'package:app/providers/provider_root/notification_provider.dart';
 import 'package:app/service/push_notification_service.dart';
 import 'package:go_router/go_router.dart';
@@ -312,7 +313,13 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     AsyncSnapshot<UserInfo> snapshot,
   ) {
     return GestureDetector(
-      onTap: _navigateToLocationChange,
+      onTap: () => showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (_) => const NeighborhoodSwitcherSheet(),
+      ),
       child: Container(
         margin: const EdgeInsets.only(left: 12, top: 8, bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
