@@ -102,14 +102,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     });
   }
 
-  Future<void> _navigateToLocationChange() async {
-    final result = await context.push<bool>('/change-city');
-    if (result == true) {
-      ref.invalidate(profileServiceProvider);
-      ref.invalidate(productsProvider);
-      ref.invalidate(servicesProvider);
-    }
-  }
+
 
   void _syncLocalLocation(
     int? districtId,
@@ -773,8 +766,10 @@ class _NeedsVerificationView extends StatelessWidget {
               onPressed: () => showModalBottomSheet<void>(
                 context: context,
                 isScrollControlled: true,
-                builder: (_) =>
-                    const SafeArea(child: NeighborhoodVerifier()),
+                builder: (ctx) => SafeArea(
+                    child: NeighborhoodVerifier(
+                      onDone: () => Navigator.of(ctx).pop(),
+                    )),
               ),
               child: const Text('Verify'),
             ),
