@@ -352,8 +352,8 @@ class _MyNeighborhoodsSection extends ConsumerWidget {
             Text(AppLocalizations.of(context)?.my_neighborhoods ?? 'My Neighborhoods', style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             if (list.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(AppLocalizations.of(context)?.no_neighborhoods_yet ?? 'No verified neighborhoods yet.'),
               )
             else
