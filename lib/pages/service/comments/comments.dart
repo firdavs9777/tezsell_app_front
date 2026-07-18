@@ -518,9 +518,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                           const SizedBox(width: 4),
                                           Text(
                                             l10n.likeLabel,
-                                            style: const TextStyle(
+                                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                               color: Colors.white,
-                                              fontSize: 12,
                                             ),
                                           ),
                                         ],
@@ -535,9 +534,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                     },
                                     child: Text(
                                       l10n.reply_button,
-                                      style: TextStyle(
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         color: colorScheme.onSurfaceVariant,
-                                        fontSize: 13,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -552,9 +550,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                         children: [
                                           Text(
                                             l10n.replies_count(repliesCount),
-                                            style: TextStyle(
+                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                               color: colorScheme.onSurfaceVariant,
-                                              fontSize: 13,
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),

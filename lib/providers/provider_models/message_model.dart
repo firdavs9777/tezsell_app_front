@@ -107,7 +107,8 @@ class ChatRoom {
   final String? lastMessagePreview;
   final DateTime? lastMessageTimestamp;
   final int unreadCount;
-  final bool isGroup; // 🔥 NEW: Group chat flag
+  final bool isGroup;
+  final bool isPinned;
 
   ChatRoom({
     required this.id,
@@ -119,6 +120,7 @@ class ChatRoom {
     this.lastMessageTimestamp,
     this.unreadCount = 0,
     this.isGroup = false,
+    this.isPinned = false,
   });
 
   // 🔥 IMPROVED: Fix double-encoded UTF-8 (especially for Korean and emojis)
@@ -288,6 +290,7 @@ class ChatRoom {
       lastMessageTimestamp: lastMessageTimestamp,
       unreadCount: unreadCount,
       isGroup: json['is_group'] as bool? ?? false,
+      isPinned: json['is_pinned'] as bool? ?? false,
     );
 
     return chatRoom;
@@ -304,6 +307,7 @@ class ChatRoom {
       'last_message_timestamp': lastMessageTimestamp?.toIso8601String(),
       'unread_count': unreadCount,
       'is_group': isGroup,
+      'is_pinned': isPinned,
     };
   }
 

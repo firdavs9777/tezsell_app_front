@@ -2,6 +2,7 @@ import 'package:app/pages/service/new/service_new.dart';
 import 'package:app/pages/service/main/services_list.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
@@ -151,7 +152,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       } else {
         print('🔧 [ServiceMain] NO filter — loading all services');
       }
-      final services = await ref.read(serviceMainProvider).getFilteredServices(
+      final rawServices = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
             pageSize: 12,
             regionName: useNeighborhood ? '' : widget.regionName,
@@ -166,12 +167,16 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
           );
 
+      final serverHasMore = rawServices.length >= 12;
+      final services = useNeighborhood
+          ? rawServices.where((s) => _matchesNeighbourhood(s, activeNbhd)).toList()
+          : rawServices;
+
       if (mounted && !_isDisposed) {
         setState(() {
           _allServices = services;
           _currentPage = 1;
-          _hasMoreData =
-              services.length >= 12; // If less than pageSize, no more data
+          _hasMoreData = serverHasMore;
           _isInitialLoading = false;
         });
       }
@@ -196,7 +201,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
-      final newServices =
+      final rawNewServices =
           await ref.read(serviceMainProvider).getFilteredServices(
                 currentPage: nextPage,
                 pageSize: 12,
@@ -208,12 +213,17 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 radiusKm: useNeighborhood ? radius : null,
               );
 
+      final serverHasMore = rawNewServices.length >= 12;
+      final newServices = useNeighborhood
+          ? rawNewServices.where((s) => _matchesNeighbourhood(s, activeNbhd)).toList()
+          : rawNewServices;
+
       if (mounted && !_isDisposed) {
         setState(() {
-          if (newServices.isNotEmpty) {
+          if (rawNewServices.isNotEmpty) {
             _allServices.addAll(newServices);
             _currentPage = nextPage;
-            _hasMoreData = newServices.length >= 12;
+            _hasMoreData = serverHasMore;
           } else {
             _hasMoreData = false;
           }
@@ -228,6 +238,18 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
         });
       }
     }
+  }
+
+  bool _matchesNeighbourhood(Services service, VerifiedNeighborhood nbhd) {
+    final city = nbhd.neighborhood.city.toLowerCase();
+    final region = nbhd.neighborhood.region.toLowerCase();
+    final dist = service.location.district.toLowerCase();
+    final reg = service.location.region.toLowerCase();
+    final addr = (service.location.fullAddress ?? '').toLowerCase();
+    if (dist.isNotEmpty && (dist.contains(city) || city.contains(dist))) return true;
+    if (addr.contains(city)) return true;
+    if (dist.isEmpty && reg.isNotEmpty && (reg.contains(region) || region.contains(reg))) return true;
+    return false;
   }
 
   Future<void> refresh() async {

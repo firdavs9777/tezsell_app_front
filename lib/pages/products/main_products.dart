@@ -5,6 +5,7 @@ import 'package:app/config/app_router.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/utils/currency_utils.dart';
 import 'package:app/utils/image_utils.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -96,7 +97,7 @@ class ProductMain extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  'SOTILGAN',
+                                  AppLocalizations.of(context)?.sold_badge ?? 'SOLD',
                                   style: TextStyle(
                                     color: colorScheme.onError,
                                     fontSize: 12,

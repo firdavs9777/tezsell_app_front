@@ -27,9 +27,6 @@ class PropertyDetail extends ConsumerStatefulWidget {
 }
 
 class _PropertyDetailState extends ConsumerState<PropertyDetail> {
-  // Carrot orange color
-  static const Color carrotOrange = Color(0xFFFF6F0F);
-
   RealEstate? property;
   bool isLoading = true;
   String? errorMessage;
@@ -132,19 +129,27 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         errorMessage = null;
       });
 
+      debugPrint('[PropertyDetail] Loading property: ${widget.propertyId}');
+
       final propertyResponse = await ref
           .read(realEstateServiceProvider)
           .fetchSingleFilteredProperty(propertyId: widget.propertyId);
+      debugPrint('[PropertyDetail] fetchSingleFilteredProperty succeeded: ${propertyResponse.title}');
 
       final realEstateService = ref.read(realEstateServiceProvider);
-      final rawResponse = await realEstateService.dio.get(
-        '${AppConfig.baseUrl}${AppConfig.realEstatePropertiesPath}${widget.propertyId}/',
-      );
+      final url = '${AppConfig.baseUrl}${AppConfig.realEstatePropertiesPath}${widget.propertyId}/';
+      debugPrint('[PropertyDetail] Fetching raw details from: $url');
+      final rawResponse = await realEstateService.dio.get(url);
+      debugPrint('[PropertyDetail] Raw response status: ${rawResponse.statusCode}');
+      debugPrint('[PropertyDetail] Raw response data keys: ${rawResponse.data?.keys?.toList()}');
 
       if (mounted && rawResponse.statusCode == 200) {
         final data = rawResponse.data;
-        if (data['success'] == true && data['property'] != null) {
-          final propertyData = data['property'];
+        // API returns {success, data: {property: {...}, related_properties: [...]}}
+        final propertyData = data['property'] ?? data['data']?['property'];
+        debugPrint('[PropertyDetail] success=${data['success']}, hasProperty=${propertyData != null}, keys=${data.keys.toList()}');
+        if (data['success'] == true && propertyData != null) {
+          debugPrint('[PropertyDetail] Property data keys: ${propertyData.keys.toList()}');
 
           setState(() {
             property = propertyResponse;
@@ -198,7 +203,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           throw Exception('Invalid response structure');
         }
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('[PropertyDetail] ERROR loading property: $error');
+      debugPrint('[PropertyDetail] Stack trace: $stackTrace');
       if (mounted) {
         setState(() {
           errorMessage = error.toString();
@@ -611,7 +618,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              color: carrotOrange,
+                              color: colorScheme.primary,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -631,7 +638,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: Colors.amber,
+                                color: const Color(0xFFFFA726),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Row(
@@ -744,12 +751,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
   Widget _buildContent(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     if (isLoading) {
       return Container(
         height: 400,
         child: Center(
-          child: CircularProgressIndicator(color: carrotOrange),
+          child: CircularProgressIndicator(color: colorScheme.primary),
         ),
       );
     }
@@ -762,20 +770,20 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(Icons.error_outline, size: 64, color: colorScheme.onSurfaceVariant),
               SizedBox(height: 16),
               Text(
                 l10n.loading_property_not_found ?? 'Property not found',
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
+                  color: colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 8),
               Text(
                 l10n.loading_property_not_found_message ??
                     'The property you are looking for does not exist or has been removed.',
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 24),
@@ -783,7 +791,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
                   l10n.loading_back_to_properties ?? 'Back to Properties',
-                  style: theme.textTheme.labelLarge?.copyWith(color: carrotOrange),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.primary,
+                  ),
                 ),
               ),
             ],
@@ -1485,7 +1495,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               decoration: BoxDecoration(
-                color: carrotOrange,
+                color: colorScheme.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

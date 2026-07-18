@@ -56,7 +56,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     if (code.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Verification code must be 6 digits'),
+          content: Text(localizations?.verification_code_length ?? 'Verification code must be 6 digits'),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -114,7 +114,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter your email address'),
+          content: Text(localizations?.email_required ?? 'Please enter your email address'),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -125,7 +125,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter a valid email address'),
+          content: Text(localizations?.email_invalid ?? 'Please enter a valid email address'),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );

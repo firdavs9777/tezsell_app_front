@@ -9,11 +9,13 @@ class ProductFilter extends ConsumerStatefulWidget {
   final String countryCode;
   final String regionName;
   final String districtName;
+  final int? districtId;
   const ProductFilter({
     super.key,
     this.countryCode = '',
     required this.regionName,
     required this.districtName,
+    this.districtId,
   });
 
   @override
@@ -130,7 +132,8 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
     final encodedCountry = Uri.encodeComponent(widget.countryCode);
     final encodedRegion = Uri.encodeComponent(widget.regionName);
     final encodedDistrict = Uri.encodeComponent(widget.districtName);
-    context.push('/products?category=$encodedCategory&country=$encodedCountry&region=$encodedRegion&district=$encodedDistrict');
+    final districtIdParam = widget.districtId != null ? '&districtId=${widget.districtId}' : '';
+    context.push('/products?category=$encodedCategory&country=$encodedCountry&region=$encodedRegion&district=$encodedDistrict$districtIdParam');
   }
 
   String getCategoryName(CategoryModel category) {

@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class RadiusNotifier extends StateNotifier<double> {
   static const _key = 'browse_radius_km_v1';
-  static const defaultKm = 3.0;
+  static const defaultKm = double.infinity;
 
   RadiusNotifier() : super(defaultKm) {
     hydrate();

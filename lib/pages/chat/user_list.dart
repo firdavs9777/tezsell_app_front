@@ -1,5 +1,5 @@
 // lib/pages/messages/user_list.dart
-import 'package:app/pages/chat//chat_room.dart';
+import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/widgets/image_viewer.dart';

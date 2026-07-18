@@ -184,10 +184,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
   // In chat_provider.dart - add this public method
 
   Future<void> ensureChatListConnected() async {
-
     if (!state.isAuthenticated) {
-
       return;
+    }
+
+    // Clear any lingering room-level error when returning to the list.
+    if (state.error != null && state.currentChatRoomId == null) {
+      print('🔵 [ChatProvider] ensureChatListConnected — clearing stale error: ${state.error}');
+      _safeUpdateState((s) => s.copyWith(error: null));
     }
 
     if (_chatListWS == null || _chatListWS?.isConnected == null) {
@@ -356,10 +360,42 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       final chatRooms = await _apiService.getChatRooms();
 
+      // Apply local pin state
+      final prefs = await SharedPreferences.getInstance();
+      final pinnedIds = prefs.getStringList('pinned_chats') ?? [];
+      final roomsWithPins = chatRooms.map((room) {
+        if (pinnedIds.contains(room.id.toString())) {
+          return ChatRoom(
+            id: room.id,
+            name: room.name,
+            createdAt: room.createdAt,
+            updatedAt: room.updatedAt,
+            participants: room.participants,
+            lastMessagePreview: room.lastMessagePreview,
+            lastMessageTimestamp: room.lastMessageTimestamp,
+            unreadCount: room.unreadCount,
+            isGroup: room.isGroup,
+            isPinned: true,
+          );
+        }
+        return room;
+      }).toList();
+
+      // 🔥 DEBUG: Log unread counts from API
+      for (var room in roomsWithPins) {
+        print('📬 [ChatProvider] Room ${room.id} (${room.name}): unread_count=${room.unreadCount}');
+      }
+
       _safeUpdateState((s) => s.copyWith(
         isLoading: false,
-        chatRooms: chatRooms,
+        chatRooms: roomsWithPins,
       ));
+
+      // 🔥 NEW: Also request list refresh via WebSocket to ensure sync
+      if (_chatListWS != null && _chatListWS!.isConnected) {
+        _chatListWS!.requestListRefresh();
+        print('✅ [ChatProvider] Requested chat list refresh via WebSocket');
+      }
 
     } catch (e) {
 
@@ -398,6 +434,39 @@ class ChatNotifier extends StateNotifier<ChatState> {
       ));
       return false;
     }
+  }
+
+  /// Toggle pin state for a chat room (stored locally)
+  Future<void> togglePinChat(int chatId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final pinnedIds = prefs.getStringList('pinned_chats') ?? [];
+
+    if (pinnedIds.contains(chatId.toString())) {
+      pinnedIds.remove(chatId.toString());
+    } else {
+      pinnedIds.add(chatId.toString());
+    }
+    await prefs.setStringList('pinned_chats', pinnedIds);
+
+    final updatedRooms = state.chatRooms.map((room) {
+      if (room.id == chatId) {
+        return ChatRoom(
+          id: room.id,
+          name: room.name,
+          createdAt: room.createdAt,
+          updatedAt: room.updatedAt,
+          participants: room.participants,
+          lastMessagePreview: room.lastMessagePreview,
+          lastMessageTimestamp: room.lastMessageTimestamp,
+          unreadCount: room.unreadCount,
+          isGroup: room.isGroup,
+          isPinned: !room.isPinned,
+        );
+      }
+      return room;
+    }).toList();
+
+    _safeUpdateState((s) => s.copyWith(chatRooms: updatedRooms));
   }
 
   Future<bool> deleteChatRoom(int chatId) async {
@@ -479,28 +548,31 @@ class ChatNotifier extends StateNotifier<ChatState> {
             lastMessageTimestamp: room.lastMessageTimestamp,
             unreadCount: 0, // Reset unread count when viewing
             isGroup: room.isGroup,
+            isPinned: room.isPinned,
           );
         }
         return room;
       }).toList();
       _safeUpdateState((s) => s.copyWith(chatRooms: updatedRooms));
 
-      // Connect WebSocket
+      // Connect WebSocket — service awaits connection_established before returning.
       _chatRoomWS = ChatRoomWebSocketService();
       await _chatRoomWS!.connectToChatRoom(roomId);
 
-      // Wait a bit for connection to be established
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Guard: disconnectFromChatRoom() may have been called during the await
+      // above (e.g. user pressed back while connecting), which sets _chatRoomWS
+      // to null. Bail out silently — no error to show.
+      final ws = _chatRoomWS;
+      if (ws == null) {
+        print('🔵 [ChatProvider] connectToChatRoom: ws nulled during connect, aborting');
+        return;
+      }
 
-      // Verify connection
-      if (_chatRoomWS!.isConnected) {
+      if (ws.isConnected) {
         print('✅ [ChatProvider] WebSocket connected to room $roomId');
 
-        // 🔥 Properly set up subscription
-        _chatRoomSubscription = _chatRoomWS!.messages.listen(
-          (data) {
-            _handleChatRoomMessage(data);
-          },
+        _chatRoomSubscription = ws.messages.listen(
+          (data) { _handleChatRoomMessage(data); },
           onError: (error) {
             print('❌ [ChatProvider] WebSocket error: $error');
           },
@@ -509,17 +581,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
           },
         );
 
-        // 🔥 NEW: Send read receipt when entering chat room (KakaoTalk-style)
-        // This tells the other user that we've read their messages
-        _chatRoomWS!.sendReadReceipt();
+        ws.sendReadReceipt();
       } else {
-        print('❌ [ChatProvider] Failed to establish WebSocket connection');
-        _safeUpdateState((s) => s.copyWith(
-          error: 'Failed to establish connection',
-        ));
+        print('❌ [ChatProvider] WebSocket connected but stream already closed for room $roomId');
+        // Stream closed before first use — not a user-visible error, just reconnect
       }
     } catch (e) {
-
+      print('🔴 [ChatProvider] connectToChatRoom error: $e');
       _safeUpdateState((s) => s.copyWith(error: e.toString()));
     }
   }
@@ -702,7 +770,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   void disconnectFromChatRoom() {
-
+    print('🔵 [ChatProvider] disconnectFromChatRoom — error before clear: ${state.error}');
     // Only disconnect chat room WebSocket
     _chatRoomSubscription?.cancel();
     _chatRoomWS?.disconnect();
@@ -714,7 +782,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       messages: [],
       error: null,
     ));
-
+    print('🟢 [ChatProvider] disconnectFromChatRoom done — error cleared');
   }
 
   // Users
@@ -819,6 +887,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
                   lastMessageTimestamp: room.lastMessageTimestamp,
                   unreadCount: room.unreadCount,
                   isGroup: room.isGroup,
+                  isPinned: room.isPinned,
                 );
                 chatRooms.add(updatedRoom);
               } else {
@@ -880,28 +949,59 @@ class ChatNotifier extends StateNotifier<ChatState> {
       case 'message':
         try {
           final message = ChatMessage.fromJson(data);
-          
-          // 🔥 FIX: Check for duplicate messages by ID to prevent double sending
-          final messageExists = state.messages.any((m) => m.id == message.id);
-          if (messageExists) {
 
+          // 🔥 FIX: Check for duplicate messages by ID to prevent double sending
+          final existingIndex = state.messages.indexWhere((m) => m.id == message.id);
+          if (existingIndex != -1) {
+            // 🔥 NEW: Message exists - check if read_by was updated
+            final existingMsg = state.messages[existingIndex];
+            final newReaders = message.readBy.where((id) => !existingMsg.readBy.contains(id)).toList();
+
+            if (newReaders.isNotEmpty || message.isRead != existingMsg.isRead) {
+              // Update existing message with new read status
+              final updatedMessages = List<ChatMessage>.from(state.messages);
+              updatedMessages[existingIndex] = ChatMessage(
+                id: existingMsg.id,
+                messageType: existingMsg.messageType,
+                content: existingMsg.content,
+                file: existingMsg.file,
+                fileUrl: existingMsg.fileUrl,
+                duration: existingMsg.duration,
+                sender: existingMsg.sender,
+                timestamp: existingMsg.timestamp,
+                updatedAt: existingMsg.updatedAt,
+                isRead: message.isRead || existingMsg.isRead,
+                readBy: [...existingMsg.readBy, ...newReaders],
+                isEdited: existingMsg.isEdited,
+                isDeleted: existingMsg.isDeleted,
+                replyTo: existingMsg.replyTo,
+                reactions: existingMsg.reactions,
+              );
+              _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+              print('✅ [ChatProvider] Updated message ${message.id} read status');
+            }
             return;
           }
-          
+
+          // 🔥 NEW: If message is from another user and we're viewing this chat,
+          // automatically send a read receipt so the sender knows we read it
+          final isFromOtherUser = message.sender.id != state.currentUserId;
+          if (isFromOtherUser && message.id != null && _chatRoomWS != null && _chatRoomWS!.isConnected) {
+            print('📬 [ChatProvider] Auto-sending read receipt for message ${message.id} from ${message.sender.username}');
+            _chatRoomWS!.markMessageAsRead(message.id!);
+          }
+
           final updatedMessages = [...state.messages, message];
-          
+
           // 🔥 NEW: Update unread_count and last message preview in chat room list
           // When a message arrives, update the corresponding chat room
-          final isFromOtherUser = message.sender.id != state.currentUserId;
           final currentRoomId = state.currentChatRoomId;
           
           List<ChatRoom> updatedChatRooms = state.chatRooms;
-          
-          // Find the chat room that contains this message's sender
+
+          // Update only the chat room we're currently in
           updatedChatRooms = state.chatRooms.map((room) {
-            final roomHasSender = room.participants.any((p) => p.id == message.sender.id);
-            
-            if (roomHasSender) {
+            if (room.id == currentRoomId) {
               // Update last message preview and timestamp
               final newPreview = message.content ?? 
                   (message.messageType == MessageType.image 
@@ -924,10 +1024,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 participants: room.participants,
                 lastMessagePreview: newPreview,
                 lastMessageTimestamp: message.timestamp,
-                unreadCount: shouldIncrementUnread 
-                    ? room.unreadCount + 1 
-                    : room.unreadCount, // Don't increment if viewing the room
+                unreadCount: shouldIncrementUnread
+                    ? room.unreadCount + 1
+                    : room.unreadCount,
                 isGroup: room.isGroup,
+                isPinned: room.isPinned,
               );
             }
             return room;
@@ -1165,9 +1266,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 lastMessageTimestamp: room.lastMessageTimestamp,
                 unreadCount: room.unreadCount,
                 isGroup: room.isGroup,
+                isPinned: room.isPinned,
               );
             }).toList();
-            
+
             _safeUpdateState((s) => s.copyWith(
               onlineUsers: updatedOnlineUsers,
               chatRooms: updatedChatRooms,
@@ -1222,93 +1324,226 @@ class ChatNotifier extends StateNotifier<ChatState> {
         print('✅ [ChatProvider] Connection established');
         break;
 
+      // 🔥 NEW: Handle message status update (delivery/read status)
+      case 'message_status':
+      case 'delivery_status':
+        try {
+          print('📬 [ChatProvider] Message status update: $data');
+          final messageId = data['message_id'] as int? ?? data['id'] as int?;
+          final status = data['status'] as String? ?? data['delivery_status'] as String?;
+          final isRead = data['is_read'] as bool?;
+          final readBy = data['read_by'] as List?;
+
+          if (messageId != null) {
+            final updatedMessages = state.messages.map((msg) {
+              if (msg.id == messageId) {
+                List<int> newReadBy = msg.readBy;
+                if (readBy != null) {
+                  final serverReadBy = readBy.map((id) => id as int).toList();
+                  final newReaders = serverReadBy.where((id) =>
+                    id != msg.sender.id && !msg.readBy.contains(id)
+                  ).toList();
+                  if (newReaders.isNotEmpty) {
+                    newReadBy = [...msg.readBy, ...newReaders];
+                  }
+                }
+
+                return ChatMessage(
+                  id: msg.id,
+                  messageType: msg.messageType,
+                  content: msg.content,
+                  file: msg.file,
+                  fileUrl: msg.fileUrl,
+                  duration: msg.duration,
+                  sender: msg.sender,
+                  timestamp: msg.timestamp,
+                  updatedAt: msg.updatedAt,
+                  isRead: isRead ?? (newReadBy.isNotEmpty) || msg.isRead,
+                  readBy: newReadBy,
+                  isEdited: msg.isEdited,
+                  isDeleted: msg.isDeleted,
+                  replyTo: msg.replyTo,
+                  reactions: msg.reactions,
+                );
+              }
+              return msg;
+            }).toList();
+            _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+            print('✅ [ChatProvider] Updated message $messageId status');
+          }
+        } catch (e) {
+          print('❌ [ChatProvider] Error handling message status: $e');
+        }
+        break;
+
+      // 🔥 NEW: Handle new message notification on chat list (updates unread count)
+      case 'new_message':
+      case 'message_notification':
+      case 'chat_update':
+        try {
+          print('📬 [ChatProvider] New message notification received: $data');
+          final roomId = data['room_id'] as int? ?? data['chat_id'] as int?;
+          final senderId = data['sender_id'] as int?;
+          final messagePreview = data['message'] as String? ?? data['content'] as String? ?? data['preview'] as String?;
+          final timestamp = data['timestamp'] != null
+              ? DateTime.tryParse(data['timestamp'] as String)?.toLocal()
+              : DateTime.now();
+          final unreadCountFromServer = data['unread_count'] as int?;
+
+          if (roomId != null) {
+            // Update the specific chat room with new message info and unread count
+            final updatedRooms = state.chatRooms.map((room) {
+              if (room.id == roomId) {
+                // Only increment unread if:
+                // 1. Not currently viewing this room
+                // 2. Message is from another user
+                final isCurrentlyViewing = state.currentChatRoomId == roomId;
+                final isFromOtherUser = senderId != state.currentUserId;
+                final shouldIncrementUnread = !isCurrentlyViewing && isFromOtherUser;
+
+                return ChatRoom(
+                  id: room.id,
+                  name: room.name,
+                  createdAt: room.createdAt,
+                  updatedAt: room.updatedAt,
+                  participants: room.participants,
+                  lastMessagePreview: messagePreview ?? room.lastMessagePreview,
+                  lastMessageTimestamp: timestamp ?? room.lastMessageTimestamp,
+                  unreadCount: unreadCountFromServer ?? (shouldIncrementUnread
+                      ? room.unreadCount + 1
+                      : room.unreadCount),
+                  isGroup: room.isGroup,
+                  isPinned: room.isPinned,
+                );
+              }
+              return room;
+            }).toList();
+
+            _safeUpdateState((s) => s.copyWith(chatRooms: updatedRooms));
+            print('✅ [ChatProvider] Updated room $roomId with new message notification');
+          }
+        } catch (e) {
+          print('❌ [ChatProvider] Error handling new message notification: $e');
+        }
+        break;
+
       case 'error':
         final errorMsg = data['error'] as String? ?? data['message'] as String? ?? '';
         print('❌ [ChatProvider] WebSocket error: $errorMsg');
         break;
 
-      // 🔥 NEW: Handle read receipts (KakaoTalk-style)
+      // 🔥 Handle read receipts (KakaoTalk-style)
       case 'read_receipt':
       case 'messages_read':
       case 'mark_read':
+      case 'messages_marked_read':
         try {
           print('📬 [ChatProvider] Read receipt received: $data');
           final readerId = data['reader_id'] as int? ?? data['user_id'] as int?;
           final messageIds = data['message_ids'] as List?;
           final lastReadMessageId = data['last_read_message_id'] as int?;
 
+          // 🔥 NEW: Also handle read_by array from server
+          final readByFromServer = data['read_by'] as List?;
+
           if (readerId != null && readerId != state.currentUserId) {
+            int updatedCount = 0;
+
             // Update messages to show they've been read
             final updatedMessages = state.messages.map((msg) {
+              // Only update messages sent by current user (our messages)
+              if (msg.sender.id != state.currentUserId) {
+                return msg;
+              }
+
+              // Check if already marked as read by this reader
+              if (msg.readBy.contains(readerId)) {
+                return msg;
+              }
+
+              bool shouldUpdate = false;
+
               // If specific message IDs provided, only update those
-              if (messageIds != null) {
-                if (messageIds.contains(msg.id)) {
-                  return ChatMessage(
-                    id: msg.id,
-                    messageType: msg.messageType,
-                    content: msg.content,
-                    file: msg.file,
-                    fileUrl: msg.fileUrl,
-                    duration: msg.duration,
-                    sender: msg.sender,
-                    timestamp: msg.timestamp,
-                    updatedAt: msg.updatedAt,
-                    isRead: true,
-                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
-                    isEdited: msg.isEdited,
-                    isDeleted: msg.isDeleted,
-                    replyTo: msg.replyTo,
-                    reactions: msg.reactions,
-                  );
-                }
-              } else if (lastReadMessageId != null) {
+              if (messageIds != null && messageIds.contains(msg.id)) {
+                shouldUpdate = true;
+              } else if (lastReadMessageId != null && msg.id != null && msg.id! <= lastReadMessageId) {
                 // Mark all messages up to lastReadMessageId as read
-                if (msg.id != null && msg.id! <= lastReadMessageId && msg.sender.id == state.currentUserId) {
-                  return ChatMessage(
-                    id: msg.id,
-                    messageType: msg.messageType,
-                    content: msg.content,
-                    file: msg.file,
-                    fileUrl: msg.fileUrl,
-                    duration: msg.duration,
-                    sender: msg.sender,
-                    timestamp: msg.timestamp,
-                    updatedAt: msg.updatedAt,
-                    isRead: true,
-                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
-                    isEdited: msg.isEdited,
-                    isDeleted: msg.isDeleted,
-                    replyTo: msg.replyTo,
-                    reactions: msg.reactions,
-                  );
-                }
-              } else {
-                // Mark all own messages as read by this reader
-                if (msg.sender.id == state.currentUserId && !msg.isRead) {
-                  return ChatMessage(
-                    id: msg.id,
-                    messageType: msg.messageType,
-                    content: msg.content,
-                    file: msg.file,
-                    fileUrl: msg.fileUrl,
-                    duration: msg.duration,
-                    sender: msg.sender,
-                    timestamp: msg.timestamp,
-                    updatedAt: msg.updatedAt,
-                    isRead: true,
-                    readBy: msg.readBy.contains(readerId) ? msg.readBy : [...msg.readBy, readerId],
-                    isEdited: msg.isEdited,
-                    isDeleted: msg.isDeleted,
-                    replyTo: msg.replyTo,
-                    reactions: msg.reactions,
-                  );
-                }
+                shouldUpdate = true;
+              } else if (messageIds == null && lastReadMessageId == null) {
+                // No specific IDs - mark all own unread messages as read by this reader
+                shouldUpdate = true;
+              }
+
+              if (shouldUpdate) {
+                updatedCount++;
+                return ChatMessage(
+                  id: msg.id,
+                  messageType: msg.messageType,
+                  content: msg.content,
+                  file: msg.file,
+                  fileUrl: msg.fileUrl,
+                  duration: msg.duration,
+                  sender: msg.sender,
+                  timestamp: msg.timestamp,
+                  updatedAt: msg.updatedAt,
+                  isRead: true,
+                  readBy: [...msg.readBy, readerId],
+                  isEdited: msg.isEdited,
+                  isDeleted: msg.isDeleted,
+                  replyTo: msg.replyTo,
+                  reactions: msg.reactions,
+                );
+              }
+
+              return msg;
+            }).toList();
+
+            if (updatedCount > 0) {
+              _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+              print('✅ [ChatProvider] Marked $updatedCount messages as read by user $readerId');
+            }
+          } else if (readByFromServer != null) {
+            // 🔥 NEW: Handle bulk read_by update from server
+            final readerIds = readByFromServer.map((id) => id as int).toList();
+            int updatedCount = 0;
+
+            final updatedMessages = state.messages.map((msg) {
+              if (msg.sender.id != state.currentUserId) {
+                return msg;
+              }
+
+              // Check if there are new readers not in current readBy
+              final newReaders = readerIds.where((id) =>
+                id != state.currentUserId && !msg.readBy.contains(id)
+              ).toList();
+
+              if (newReaders.isNotEmpty) {
+                updatedCount++;
+                return ChatMessage(
+                  id: msg.id,
+                  messageType: msg.messageType,
+                  content: msg.content,
+                  file: msg.file,
+                  fileUrl: msg.fileUrl,
+                  duration: msg.duration,
+                  sender: msg.sender,
+                  timestamp: msg.timestamp,
+                  updatedAt: msg.updatedAt,
+                  isRead: true,
+                  readBy: [...msg.readBy, ...newReaders],
+                  isEdited: msg.isEdited,
+                  isDeleted: msg.isDeleted,
+                  replyTo: msg.replyTo,
+                  reactions: msg.reactions,
+                );
               }
               return msg;
             }).toList();
 
-            _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-            print('✅ [ChatProvider] Updated ${updatedMessages.where((m) => m.isRead).length} messages as read');
+            if (updatedCount > 0) {
+              _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+              print('✅ [ChatProvider] Bulk updated $updatedCount messages with read_by');
+            }
           }
         } catch (e) {
           print('❌ [ChatProvider] Error handling read receipt: $e');
@@ -1634,6 +1869,61 @@ class ChatNotifier extends StateNotifier<ChatState> {
       if (state.currentChatRoomId != null) {
         await loadChatMessages(state.currentChatRoomId!);
       }
+    }
+  }
+
+  // 🔥 NEW: Refresh only message read statuses (lightweight refresh)
+  Future<void> refreshMessageReadStatus() async {
+    if (!state.isAuthenticated || state.currentChatRoomId == null) {
+      return;
+    }
+
+    try {
+      print('🔄 [ChatProvider] Refreshing message read status...');
+      final result = await _apiService.getChatMessagesPaginated(
+        state.currentChatRoomId!,
+        page: 1,
+        pageSize: 50,
+      );
+
+      final freshMessages = result['messages'] as List<ChatMessage>;
+
+      // Update existing messages with fresh read_by data
+      final updatedMessages = state.messages.map((msg) {
+        final freshMsg = freshMessages.firstWhere(
+          (m) => m.id == msg.id,
+          orElse: () => msg,
+        );
+
+        // Only update if read status changed
+        if (freshMsg.id == msg.id &&
+            (freshMsg.isRead != msg.isRead ||
+             freshMsg.readBy.length != msg.readBy.length)) {
+          return ChatMessage(
+            id: msg.id,
+            messageType: msg.messageType,
+            content: msg.content,
+            file: msg.file,
+            fileUrl: msg.fileUrl,
+            duration: msg.duration,
+            sender: msg.sender,
+            timestamp: msg.timestamp,
+            updatedAt: msg.updatedAt,
+            isRead: freshMsg.isRead,
+            readBy: freshMsg.readBy,
+            isEdited: msg.isEdited,
+            isDeleted: msg.isDeleted,
+            replyTo: msg.replyTo,
+            reactions: msg.reactions,
+          );
+        }
+        return msg;
+      }).toList();
+
+      _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+      print('✅ [ChatProvider] Message read status refreshed');
+    } catch (e) {
+      print('❌ [ChatProvider] Error refreshing read status: $e');
     }
   }
 

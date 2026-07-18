@@ -17,9 +17,9 @@ class AppTheme {
   static const double _normalLetterSpacing = -0.2;
 
   /// Line heights for better readability
-  static const double _headingLineHeight = 1.2;
-  static const double _bodyLineHeight = 1.5;
-  static const double _labelLineHeight = 1.3;
+  static const double _headingLineHeight = 1.15;
+  static const double _bodyLineHeight = 1.4;
+  static const double _labelLineHeight = 1.2;
 
   // ============================================================================
   // TEXT THEME BUILDER
@@ -162,13 +162,25 @@ class AppTheme {
         primary: AppColors.carrotOrange,
         secondary: AppColors.carrotOrange,
         surface: AppColors.lightSurface,
+        surfaceContainerLowest: Color(0xFFFFFDF9),
+        surfaceContainerLow: Color(0xFFFFF8F0),
+        surfaceContainer: Color(0xFFF5F0EB),
+        surfaceContainerHigh: Color(0xFFEDE8E3),
+        surfaceContainerHighest: Color(0xFFE6E1DC),
         background: AppColors.lightBackground,
         error: AppColors.error,
+        errorContainer: Color(0xFFFCE4EC),
+        onErrorContainer: Color(0xFF93000A),
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: AppColors.lightTextPrimary,
+        onSurfaceVariant: Color(0xFF6B7280),
         onBackground: AppColors.lightTextPrimary,
         onError: Colors.white,
+        outline: Color(0xFFD1D5DB),
+        outlineVariant: Color(0xFFE5E7EB),
+        primaryContainer: Color(0xFFFFE8D6),
+        onPrimaryContainer: Color(0xFF5C2D00),
       ),
 
       // App Bar Theme
@@ -357,6 +369,18 @@ class AppTheme {
         ),
       ),
 
+      // Popup Menu Theme
+      popupMenuTheme: PopupMenuThemeData(
+        color: AppColors.lightSurface,
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.lightTextPrimary,
+        ),
+      ),
+
       // Bottom Sheet Theme
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.lightSurface,
@@ -426,13 +450,25 @@ class AppTheme {
         primary: AppColors.carrotOrangeDark,
         secondary: AppColors.carrotOrangeDark,
         surface: AppColors.darkSurface,
+        surfaceContainerLowest: Color(0xFF161616),
+        surfaceContainerLow: Color(0xFF1E1E1E),
+        surfaceContainer: Color(0xFF232323),
+        surfaceContainerHigh: Color(0xFF282828),
+        surfaceContainerHighest: Color(0xFF333333),
         background: AppColors.darkBackground,
         error: AppColors.error,
+        errorContainer: Color(0xFF3D1212),
+        onErrorContainer: Color(0xFFFFB4AB),
         onPrimary: Colors.black,
         onSecondary: Colors.black,
         onSurface: AppColors.darkTextPrimary,
+        onSurfaceVariant: Color(0xFF9E9E9E),
         onBackground: AppColors.darkTextPrimary,
         onError: Colors.black,
+        outline: Color(0xFF48484A),
+        outlineVariant: Color(0xFF2C2C2E),
+        primaryContainer: Color(0xFF3D2200),
+        onPrimaryContainer: Color(0xFFFFDDB3),
       ),
 
       // App Bar Theme for Dark
@@ -483,7 +519,7 @@ class AppTheme {
       // Input Decoration Theme for Dark
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkSurface,
+        fillColor: const Color(0xFF232323),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -621,6 +657,18 @@ class AppTheme {
           fontWeight: FontWeight.w400,
           color: AppColors.darkTextPrimary,
           height: _bodyLineHeight,
+        ),
+      ),
+
+      // Popup Menu Theme for Dark
+      popupMenuTheme: PopupMenuThemeData(
+        color: const Color(0xFF2C2C2E),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.darkTextPrimary,
         ),
       ),
 

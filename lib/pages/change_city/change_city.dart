@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:app/config/app_config.dart';
+import 'package:app/pages/tab_bar/tab_bar.dart' show localLocationProvider;
 import 'package:app/providers/provider_models/country_model.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
@@ -11,7 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Model classes for API data
 class Region {
@@ -57,7 +60,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
 
   List<Region> regions = [];
   List<District> districts = [];
-  bool isLoadingRegions = false;
+  bool isLoadingRegions = true;
+  bool _locationInitialized = false;
   bool isLoadingDistricts = false;
   bool _isSaving = false;
 
@@ -65,9 +69,30 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
   void initState() {
     super.initState();
     _userInfoFuture = ref.read(profileServiceProvider).getUserInfo();
-    // Load saved country or default to UZ
-    final savedCountry = ref.read(selectedCountryProvider);
-    selectedCountry = savedCountry ?? CountryModel.getByCode(AppConfig.defaultCountry);
+    _initCountry();
+  }
+
+  Future<void> _initCountry() async {
+    // Read saved country directly from SharedPreferences (synchronous in-memory after first load)
+    final prefs = await SharedPreferences.getInstance();
+    final savedCode = prefs.getString('localCountryCode') ?? prefs.getString('selected_country');
+
+    if (savedCode != null && savedCode.isNotEmpty) {
+      final country = CountryModel.getByCode(savedCode);
+      if (country != null) {
+        setState(() {
+          selectedCountry = country;
+        });
+        _fetchRegions(country.code);
+        return;
+      }
+    }
+
+    // Fall back to Riverpod provider or default
+    final providerCountry = ref.read(selectedCountryProvider);
+    setState(() {
+      selectedCountry = providerCountry ?? CountryModel.getByCode(AppConfig.defaultCountry);
+    });
     if (selectedCountry != null) {
       _fetchRegions(selectedCountry!.code);
     }
@@ -102,7 +127,10 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
           isLoadingRegions = false;
         });
 
-        _initializeLocation();
+        if (!_locationInitialized) {
+          _locationInitialized = true;
+          _initializeLocation();
+        }
       } else {
         setState(() {
           isLoadingRegions = false;
@@ -166,43 +194,118 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
   Future<void> _initializeLocation() async {
     try {
       final user = await _userInfoFuture;
-      if (user.location != null && regions.isNotEmpty) {
-        final userRegionName = user.location!.region;
-        final userDistrictName = user.location!.district;
+      if (user.location == null) return;
 
-        if (userRegionName != null) {
-          final matchingRegion = regions.firstWhere(
-            (region) =>
-                region.name.toLowerCase() == userRegionName.toLowerCase(),
-            orElse: () => Region(name: ''),
-          );
+      final userCountryCode = user.location!.countryCode;
+      final userRegionName = user.location!.region;
+      final userDistrictName = user.location!.district;
+      final userDistrictId = user.location!.id;
 
-          if (matchingRegion.name != '') {
-            setState(() {
-              selectedRegion = matchingRegion;
-            });
+      print('[ChangeCity] Initializing with user location: country=$userCountryCode, region=$userRegionName, district=$userDistrictName');
 
-            await _fetchDistricts(matchingRegion.name, regionId: matchingRegion.id);
+      // If user's country is different from selected country, switch to user's country
+      if (userCountryCode != null && userCountryCode != selectedCountry?.code) {
+        final userCountry = CountryModel.getByCode(userCountryCode);
+        if (userCountry != null) {
+          print('[ChangeCity] Switching to user\'s country: $userCountryCode');
+          setState(() {
+            selectedCountry = userCountry;
+          });
+          // Fetch regions for user's country and wait for it
+          await _fetchRegionsAndWait(userCountryCode);
+        }
+      }
 
-            if (userDistrictName != null && districts.isNotEmpty) {
-              final matchingDistrict = districts.firstWhere(
-                (district) =>
-                    district.name.toLowerCase() ==
-                    userDistrictName.toLowerCase(),
+      // Now try to match region
+      if (userRegionName != null && regions.isNotEmpty) {
+        final userRegionLower = userRegionName.toLowerCase();
+        final matchingRegion = regions.firstWhere(
+          (region) {
+            final name = region.name.toLowerCase();
+            // Exact match, or one contains the other (backend may add suffixes)
+            return name == userRegionLower ||
+                name.contains(userRegionLower) ||
+                userRegionLower.contains(name);
+          },
+          orElse: () => Region(name: ''),
+        );
+
+        if (matchingRegion.name != '') {
+          setState(() {
+            selectedRegion = matchingRegion;
+          });
+
+          await _fetchDistricts(matchingRegion.name, regionId: matchingRegion.id);
+
+          if (districts.isNotEmpty) {
+            // Prefer matching by ID (unambiguous), fall back to name matching
+            var matchingDistrict = districts.firstWhere(
+              (district) => userDistrictId > 0 && district.id == userDistrictId,
+              orElse: () => District(id: -1, name: ''),
+            );
+
+            // Fall back to fuzzy name matching if ID match fails
+            if (matchingDistrict.id == -1 && userDistrictName != null) {
+              final userDistrictLower = userDistrictName.toLowerCase();
+              matchingDistrict = districts.firstWhere(
+                (district) {
+                  final name = district.name.toLowerCase();
+                  return name == userDistrictLower ||
+                      name.contains(userDistrictLower) ||
+                      userDistrictLower.contains(name);
+                },
                 orElse: () => District(id: -1, name: ''),
               );
+            }
 
-              if (matchingDistrict.id != -1) {
-                setState(() {
-                  selectedDistrict = matchingDistrict;
-                });
-              }
+            if (matchingDistrict.id != -1) {
+              setState(() {
+                selectedDistrict = matchingDistrict;
+              });
+              print('[ChangeCity] Initialized: region=${matchingRegion.name}, district=${matchingDistrict.name}');
             }
           }
         }
       }
     } catch (e) {
-      // Silent fail
+      print('[ChangeCity] Error initializing location: $e');
+    }
+  }
+
+  /// Fetch regions and wait for completion (used during initialization)
+  Future<void> _fetchRegionsAndWait(String countryCode) async {
+    setState(() {
+      isLoadingRegions = true;
+      regions = [];
+      selectedRegion = null;
+      districts = [];
+      selectedDistrict = null;
+    });
+
+    try {
+      final url = '${AppConfig.baseUrl}${AppConfig.regionsPath}?country=$countryCode';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final List<dynamic> regionData = responseData['regions'] ?? responseData['results'] ?? [];
+
+        setState(() {
+          regions = regionData
+              .map<Region>((region) => Region.fromJson(region))
+              .toList();
+          isLoadingRegions = false;
+        });
+      } else {
+        setState(() {
+          isLoadingRegions = false;
+        });
+      }
+    } catch (error) {
+      print('[ChangeCity] Error fetching regions for $countryCode: $error');
+      setState(() {
+        isLoadingRegions = false;
+      });
     }
   }
 
@@ -236,20 +339,37 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
       print('[ChangeCity] Saving country: ${selectedCountry!.code}');
       await ref.read(selectedCountryProvider.notifier).setCountry(selectedCountry!);
 
-      // Save location - pass country_code to help backend disambiguate districts
-      print('[ChangeCity] Saving location with district ID: ${selectedDistrict!.id}, country: ${selectedCountry!.code}');
-      final result = await ref
-          .read(profileServiceProvider)
-          .updateUserInfo(
-            locationId: selectedDistrict!.id,
-            countryCode: selectedCountry!.code,
-          );
-      print('[ChangeCity] Save result: $result');
+      // ALWAYS save location locally first (for filtering to work)
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userLocation', selectedDistrict!.id.toString());
+      await prefs.setString('localRegionName', selectedRegion!.name);
+      await prefs.setString('localDistrictName', selectedDistrict!.name);
+      await prefs.setString('localCountryCode', selectedCountry!.code);
+      print('[ChangeCity] Saved location locally: region=${selectedRegion!.name}, district=${selectedDistrict!.name}');
+
+      // Try to save location to backend (may fail if backend doesn't support it yet)
+      bool backendSaveSuccess = false;
+      try {
+        print('[ChangeCity] Attempting backend save with district ID: ${selectedDistrict!.id}, country: ${selectedCountry!.code}');
+        await ref
+            .read(profileServiceProvider)
+            .updateUserInfo(
+              locationId: selectedDistrict!.id,
+              countryCode: selectedCountry!.code,
+            );
+        backendSaveSuccess = true;
+        print('[ChangeCity] Backend save successful');
+      } catch (e) {
+        print('[ChangeCity] Backend save failed (using local): $e');
+        // Continue - local save is enough for filtering to work
+      }
 
       // Clear all caches so new location data is used
       ref.read(productsServiceProvider).clearCache();
       ref.invalidate(servicesProvider);
       ref.invalidate(myProfileProvider);
+      ref.invalidate(profileServiceProvider);  // Important: TabBar watches this for location
+      ref.invalidate(localLocationProvider);   // Refresh local location fallback
       print('[ChangeCity] Cleared all caches after location update');
 
       HapticFeedback.mediumImpact();
@@ -280,8 +400,8 @@ class _MyHomeTownState extends ConsumerState<MyHomeTown> {
             margin: const EdgeInsets.all(16),
           ),
         );
-        Navigator.pop(context, true);
-        print('[ChangeCity] Location saved successfully!');
+        context.pop(true);
+        print('[ChangeCity] Location saved successfully! (backend=${backendSaveSuccess ? "yes" : "local only"})');
       }
     } catch (e) {
       print('[ChangeCity] ERROR saving location: $e');

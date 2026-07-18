@@ -1,6 +1,7 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/utils/image_utils.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -36,9 +37,10 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite Products'),
+        title: Text(localizations?.favoriteProductsTitle ?? 'Favorite Products'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

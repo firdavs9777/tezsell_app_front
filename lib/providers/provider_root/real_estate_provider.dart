@@ -134,6 +134,7 @@ class RealEstateService {
     required String minPrice,
     required String maxPrice,
     int? districtId,
+    String? neighborhoodId,
     double? centerLat,
     double? centerLng,
     double? radiusKm,
@@ -147,7 +148,8 @@ class RealEstateService {
       if (propertyType.isNotEmpty) queryParams['property_type'] = propertyType;
       if (listingType.isNotEmpty) queryParams['listing_type'] = listingType;
 
-      // Karrot geo-radius takes precedence over district/name filters.
+      // Karrot geo-radius takes precedence when radius is finite.
+      // When radius=∞ (city-wide), fall back to neighborhood_id only.
       if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
         queryParams['center_lat'] = centerLat.toStringAsFixed(6);
         queryParams['center_lng'] = centerLng.toStringAsFixed(6);
@@ -155,17 +157,23 @@ class RealEstateService {
         if (kDebugMode) {
           print('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${radiusKm}km');
         }
-      } else if (districtId != null && districtId > 0) {
-        queryParams['district_id'] = districtId.toString();
-        if (kDebugMode) {
-          print('🏠 [RealEstateAPI] Filtering by district_id: $districtId');
-        }
-      } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
-        // Fallback to name-based filtering
-        if (regionName.isNotEmpty) queryParams['city'] = regionName;
-        if (districtName.isNotEmpty) queryParams['district'] = districtName;
-        if (kDebugMode) {
-          print('🏠 [RealEstateAPI] Filtering by names: region=$regionName, district=$districtName');
+      } else {
+        if (neighborhoodId != null) {
+          queryParams['neighborhood_id'] = neighborhoodId;
+          if (kDebugMode) {
+            print('🏠 [RealEstateAPI] Neighbourhood filter: $neighborhoodId (city-wide)');
+          }
+        } else if (districtId != null && districtId > 0) {
+          queryParams['district_id'] = districtId.toString();
+          if (kDebugMode) {
+            print('🏠 [RealEstateAPI] Filtering by district_id: $districtId');
+          }
+        } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
+          if (regionName.isNotEmpty) queryParams['city'] = regionName;
+          if (districtName.isNotEmpty) queryParams['district'] = districtName;
+          if (kDebugMode) {
+            print('🏠 [RealEstateAPI] Filtering by names: region=$regionName, district=$districtName');
+          }
         }
       }
 
@@ -251,12 +259,13 @@ class RealEstateService {
     String minPrice = "",
     String maxPrice = "",
     int? districtId,
+    String? neighborhoodId,
     double? centerLat,
     double? centerLng,
     double? radiusKm,
   }) async {
     final cacheKey =
-        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${minPrice}_$maxPrice';
+        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${minPrice}_$maxPrice';
 
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {}
@@ -275,6 +284,7 @@ class RealEstateService {
       minPrice: minPrice,
       maxPrice: maxPrice,
       districtId: districtId,
+      neighborhoodId: neighborhoodId,
       centerLat: centerLat,
       centerLng: centerLng,
       radiusKm: radiusKm,

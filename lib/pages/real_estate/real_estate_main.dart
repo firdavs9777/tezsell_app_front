@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
@@ -140,7 +141,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       } else {
         print('🏠 [RealEstateMain] NO filter — loading all properties');
       }
-      final properties =
+      final rawProperties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
                 currentPage: 1,
                 pageSize: 12,
@@ -149,6 +150,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 regionName: useNeighborhood ? '' : widget.regionName,
                 districtName: useNeighborhood ? '' : widget.districtName,
                 districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId: useNeighborhood ? activeNbhd.neighborhood.id : null,
                 centerLat: useNeighborhood
                     ? activeNbhd.neighborhood.centroidLat
                     : null,
@@ -158,16 +160,25 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 radiusKm: useNeighborhood ? radius : null,
               );
 
-      setState(() {
-        _allProperties = properties;
-        _currentPage = 1;
-        _hasMoreData = properties.length >= 12;
-        _isInitialLoading = false;
-      });
+      final serverHasMore = rawProperties.length >= 12;
+      final properties = useNeighborhood
+          ? rawProperties.where((p) => _matchesNeighbourhood(p, activeNbhd)).toList()
+          : rawProperties;
+
+      if (mounted) {
+        setState(() {
+          _allProperties = properties;
+          _currentPage = 1;
+          _hasMoreData = serverHasMore;
+          _isInitialLoading = false;
+        });
+      }
     } catch (error) {
-      setState(() {
-        _isInitialLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isInitialLoading = false;
+        });
+      }
     }
   }
 
@@ -183,7 +194,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
-      final newProperties =
+      final rawNewProperties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
                 currentPage: nextPage,
                 pageSize: 12,
@@ -192,6 +203,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 regionName: useNeighborhood ? '' : widget.regionName,
                 districtName: useNeighborhood ? '' : widget.districtName,
                 districtId: useNeighborhood ? null : widget.districtId,
+                neighborhoodId: useNeighborhood ? activeNbhd.neighborhood.id : null,
                 centerLat: useNeighborhood
                     ? activeNbhd.neighborhood.centroidLat
                     : null,
@@ -201,11 +213,16 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 radiusKm: useNeighborhood ? radius : null,
               );
 
+      final serverHasMore = rawNewProperties.length >= 12;
+      final newProperties = useNeighborhood
+          ? rawNewProperties.where((p) => _matchesNeighbourhood(p, activeNbhd)).toList()
+          : rawNewProperties;
+
       setState(() {
-        if (newProperties.isNotEmpty) {
+        if (rawNewProperties.isNotEmpty) {
           _allProperties.addAll(newProperties);
           _currentPage = nextPage;
-          _hasMoreData = newProperties.length >= 12;
+          _hasMoreData = serverHasMore;
         } else {
           _hasMoreData = false;
         }
@@ -219,6 +236,21 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
         });
       }
     }
+  }
+
+  bool _matchesNeighbourhood(RealEstate property, VerifiedNeighborhood nbhd) {
+    final city = nbhd.neighborhood.city.toLowerCase();
+    final region = nbhd.neighborhood.region.toLowerCase();
+    final propCity = property.city.toLowerCase();
+    final propDistrict = property.district.toLowerCase();
+    final propRegion = property.region.toLowerCase();
+    // NOTE: property.address is the OSM map-picked address set at listing time
+    // (not the registered city), so it must NOT be used for city matching.
+    if (propCity.isNotEmpty && (propCity.contains(city) || city.contains(propCity))) return true;
+    if (propDistrict.isNotEmpty && (propDistrict.contains(city) || city.contains(propDistrict))) return true;
+    if (propCity.isEmpty && propDistrict.isEmpty && propRegion.isNotEmpty &&
+        (propRegion.contains(region) || region.contains(propRegion))) return true;
+    return false;
   }
 
   Future<void> refresh() async {
@@ -251,6 +283,14 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       if (previous != null && previous != next) {
         _loadInitialProperties();
       }
+    });
+    ref.listen(activeNeighborhoodProvider, (prev, next) {
+      if (prev?.neighborhood.id != next?.neighborhood.id) {
+        _loadInitialProperties();
+      }
+    });
+    ref.listen<double>(radiusProvider, (prev, next) {
+      if (prev != next) _loadInitialProperties();
     });
 
     return Scaffold(

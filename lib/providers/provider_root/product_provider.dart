@@ -335,10 +335,14 @@ class ProductsService {
       // and applies a Haversine-style bounding-box filter on listings'
       // latitude/longitude (Karrot pattern). Takes precedence over
       // neighborhood_id (which the backend doesn't filter on directly).
-      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+      // When radius is infinite (city-wide, no explicit limit), fall back to
+      // 50 km so the backend geo-filter actually fires instead of being skipped.
+      if (centerLat != null && centerLng != null) {
+        final effectiveRadius =
+            (radiusKm != null && radiusKm.isFinite) ? radiusKm : 50.0;
         queryParams['center_lat'] = centerLat.toStringAsFixed(6);
         queryParams['center_lng'] = centerLng.toStringAsFixed(6);
-        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        queryParams['radius_km'] = effectiveRadius.toStringAsFixed(0);
       } else {
         if (neighborhoodId != null) {
           queryParams['neighborhood_id'] = neighborhoodId;
@@ -364,7 +368,11 @@ class ProductsService {
         }
       } else {
         if (kDebugMode) {
-          print('📦 [ProductsAPI] No location filter - loading ALL products');
+          if (neighborhoodId != null) {
+            print('📦 [ProductsAPI] Neighbourhood filter only: $neighborhoodId (city-wide, no district override)');
+          } else {
+            print('📦 [ProductsAPI] No location filter - loading ALL products');
+          }
         }
       }
 
@@ -381,15 +389,18 @@ class ProductsService {
       );
 
       if (kDebugMode) {
+        final results = response.data?['results'] as List? ?? [];
         print('📦 [ProductsAPI] ─────────────────────────────────');
         print('📦 [ProductsAPI] URL: ${response.requestOptions.uri}');
         print('📦 [ProductsAPI] Status: ${response.statusCode}');
         print('📦 [ProductsAPI] Count: ${response.data?['count'] ?? 'N/A'}');
-        print('📦 [ProductsAPI] Results length: ${(response.data?['results'] as List?)?.length ?? 0}');
-        if ((response.data?['results'] as List?)?.isNotEmpty == true) {
-          final firstProduct = response.data['results'][0];
-          print('📦 [ProductsAPI] First product location: ${firstProduct['location'] ?? firstProduct['userAddress'] ?? 'N/A'}');
-        }
+        print('📦 [ProductsAPI] Results length: ${results.length}');
+        // Log all distinct locations to show if backend filter is working
+        final locationSummary = results.map((p) {
+          final loc = p['location'] as Map<String, dynamic>?;
+          return '${loc?['district'] ?? '?'}, ${loc?['region'] ?? '?'}';
+        }).toSet().toList();
+        print('📦 [ProductsAPI] Distinct locations in page: $locationSummary');
         print('📦 [ProductsAPI] ─────────────────────────────────');
       }
 

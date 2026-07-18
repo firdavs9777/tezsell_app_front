@@ -110,14 +110,20 @@ class CachedNetworkImageWidget extends StatelessWidget {
       return _buildPlaceholder(context);
     }
 
-    // Handle infinity/NaN values for cache dimensions
+    // Use device pixel ratio for sharp images on high-DPI screens
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     int? cacheWidth;
     int? cacheHeight;
     if (width != null && width!.isFinite && !width!.isNaN) {
-      cacheWidth = (width! * 2).toInt();
+      cacheWidth = (width! * devicePixelRatio).toInt();
+    } else {
+      // When no width specified (e.g. detail page), use full screen width at device resolution
+      cacheWidth = (screenWidth * devicePixelRatio).toInt();
     }
     if (height != null && height!.isFinite && !height!.isNaN) {
-      cacheHeight = (height! * 2).toInt();
+      cacheHeight = (height! * devicePixelRatio).toInt();
     }
 
     Widget imageWidget = CachedNetworkImage(

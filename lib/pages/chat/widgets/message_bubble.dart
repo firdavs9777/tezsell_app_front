@@ -103,9 +103,8 @@ class MessageBubble extends StatelessWidget {
                       ),
                       width: double.infinity, // Ensure full width
                       decoration: BoxDecoration(
-                        // Modern reply background
                         color: isOwnMessage
-                            ? Colors.white.withOpacity(0.15) // Subtle white for own messages
+                            ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
                             : Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
@@ -115,9 +114,7 @@ class MessageBubble extends StatelessWidget {
                         ),
                         border: Border(
                           left: BorderSide(
-                            color: isOwnMessage
-                                ? Colors.white // White vertical bar for own messages
-                                : const Color(0xFF25D366), // WhatsApp green
+                            color: Theme.of(context).colorScheme.primary,
                             width: 3,
                           ),
                         ),
@@ -128,12 +125,9 @@ class MessageBubble extends StatelessWidget {
                         children: [
                           Text(
                             message.replyTo!.sender.username,
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: isOwnMessage
-                                  ? Colors.white // White for own messages
-                                  : const Color(0xFF25D366), // WhatsApp green
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -154,12 +148,8 @@ class MessageBubble extends StatelessWidget {
                               }
                               return Text(
                                 replyContent,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w400,
-                                  color: isOwnMessage
-                                      ? Colors.white.withOpacity(0.9) // White for own messages
-                                      : Theme.of(context).colorScheme.onSurface,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -180,20 +170,18 @@ class MessageBubble extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Modern gradient for own messages, subtle surface for others
                     gradient: isOwnMessage
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Color(0xFF25D366), // WhatsApp green
-                              Color(0xFF128C7E), // Darker WhatsApp green
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.primary.withOpacity(0.85),
                             ],
                           )
                         : null,
                     color: isOwnMessage
                         ? null
-                        : Theme.of(context).brightness == Brightness.dark
-                            ? const Color(0xFF2A2F32) // Dark mode received
-                            : const Color(0xFFF0F2F5), // Light mode received
+                        : Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(18),
                       topRight: const Radius.circular(18),
@@ -218,10 +206,9 @@ class MessageBubble extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 4),
                           child: Text(
                             message.sender.username,
-                            style: TextStyle(
-                              fontSize: 13,
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF25D366), // WhatsApp green
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -237,21 +224,19 @@ class MessageBubble extends StatelessWidget {
                         children: [
                           Text(
                             DateFormat('HH:mm').format(message.timestamp),
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: isOwnMessage
                                   ? Colors.white.withOpacity(0.7)
                                   : Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           if (message.isEdited) ...[
                             const SizedBox(width: 4),
                             Text(
                               'edited',
-                              style: TextStyle(
-                                fontSize: 11,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                 fontStyle: FontStyle.italic,
+                                fontSize: 11,
                                 color: isOwnMessage
                                     ? Colors.white.withOpacity(0.6)
                                     : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -343,44 +328,35 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  // 🔥 Read receipt widget (KakaoTalk + WhatsApp hybrid style)
+  // 🔥 Read receipt widget (KakaoTalk + WhatsApp combined style)
   Widget _buildReadReceipt() {
     // Use actual ChatMessage properties: isRead and readBy
-    final readCount = message.readBy.length;
-    final hasBeenRead = message.isRead || readCount > 0;
+    // 🔥 FIX: Only count readers OTHER than the sender
+    final senderId = message.sender.id;
+    final otherReaders = message.readBy.where((id) => id != senderId).toList();
+    final hasBeenReadByOthers = message.isRead || otherReaders.isNotEmpty;
     final isDelivered = message.id != null; // If message has ID, it was sent to server
 
-    if (hasBeenRead) {
-      // Read - show blue double check (WhatsApp style)
+    if (hasBeenReadByOthers) {
+      // Read - double tick (bright white)
       return const Icon(
         Icons.done_all,
         size: 16,
-        color: Color(0xFF53BDEB), // Light blue - visible on green background
+        color: Colors.white,
       );
     } else if (isDelivered) {
-      // Delivered but not read - show unread count (KakaoTalk style)
-      // In 1:1 chat, this shows "1" meaning 1 person hasn't read it
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFC107), // KakaoTalk yellow
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Text(
-          '1',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+      // Delivered but unread - double tick (dimmed)
+      return Icon(
+        Icons.done_all,
+        size: 16,
+        color: Colors.white.withOpacity(0.55),
       );
     } else {
-      // Sent but not delivered (single grey check)
+      // Sent but not delivered - single tick (dimmed)
       return Icon(
         Icons.done,
         size: 16,
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withOpacity(0.55),
       );
     }
   }
@@ -451,14 +427,13 @@ class MessageBubble extends StatelessWidget {
 
         return Text(
           content,
-          style: TextStyle(
-            color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.onSurface,
-            fontSize: isEmojiMessage
-                ? 48
-                : 16, // Large emoji for emoji-only messages
-            height: isEmojiMessage ? 1.0 : 1.4,
-            letterSpacing: 0.1,
-          ),
+          style: isEmojiMessage
+              ? const TextStyle(fontSize: 48, height: 1.0)
+              : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                  height: 1.4,
+                  letterSpacing: 0.1,
+                ),
           textAlign: isEmojiMessage ? TextAlign.center : TextAlign.start,
           maxLines: isEmojiMessage ? null : 50, // Limit text messages to 50 lines
           overflow: isEmojiMessage ? null : TextOverflow.ellipsis,
@@ -551,12 +526,12 @@ class MessageBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isOwnMessage
                     ? Colors.white.withOpacity(0.25)
-                    : const Color(0xFF3390EC).withOpacity(0.15),
+                    : Theme.of(context).colorScheme.primary.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,
-                color: isOwnMessage ? Colors.white : const Color(0xFF3390EC),
+                color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.primary,
                 size: 24,
               ),
             ),
@@ -576,7 +551,7 @@ class MessageBubble extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: isOwnMessage
                               ? Colors.white.withOpacity(0.7)
-                              : const Color(0xFF3390EC).withOpacity(0.6),
+                              : Theme.of(context).colorScheme.primary.withOpacity(0.6),
                           borderRadius: BorderRadius.circular(1.5),
                         ),
                       );
@@ -585,11 +560,10 @@ class MessageBubble extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: isOwnMessage
                           ? Colors.white.withOpacity(0.8)
                           : Theme.of(context).colorScheme.onSurface,
-                      fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

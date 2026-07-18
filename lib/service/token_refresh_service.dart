@@ -20,7 +20,9 @@ class TokenRefreshService {
   }
 
   /// Start automatic token refresh (refreshes every 23 hours)
-  void start() {
+  /// If [skipInitialCheck] is true, skips the immediate refresh check
+  /// (useful when token was just refreshed before calling start)
+  void start({bool skipInitialCheck = false}) {
     if (_isRunning) {
       AppLogger.warning('Token refresh service is already running');
       return;
@@ -29,8 +31,10 @@ class TokenRefreshService {
     _isRunning = true;
     AppLogger.info('Starting automatic token refresh service');
 
-    // Refresh immediately if token is close to expiry
-    _checkAndRefreshIfNeeded();
+    // Refresh immediately if token is close to expiry (unless just refreshed)
+    if (!skipInitialCheck) {
+      _checkAndRefreshIfNeeded();
+    }
 
     // Set up periodic refresh (every 23 hours = 82800 seconds)
     _refreshTimer = Timer.periodic(

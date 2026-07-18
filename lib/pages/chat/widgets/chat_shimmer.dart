@@ -43,6 +43,10 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   Widget build(BuildContext context) {
     if (!widget.isLoading) return widget.child;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? const Color(0xFF2A2A2A) : const Color(0xFFEBEBEB);
+    final highlightColor = isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5);
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -51,10 +55,10 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
             return LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: const [
-                Color(0xFFEBEBEB),
-                Color(0xFFF5F5F5),
-                Color(0xFFEBEBEB),
+              colors: [
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: [
                 0.0,
@@ -206,6 +210,16 @@ class _ShimmerBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Theme-aware shimmer colors
+    final baseColor = isDark
+        ? const Color(0xFF2A2A2A)
+        : const Color(0xFFE8E8E8);
+    final highlightColor = isDark
+        ? const Color(0xFF3A3A3A)
+        : const Color(0xFFF5F5F5);
+
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -217,10 +231,10 @@ class _ShimmerBox extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: const [
-                Color(0xFFE8E8E8),
-                Color(0xFFF5F5F5),
-                Color(0xFFE8E8E8),
+              colors: [
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: [
                 (animation.value - 0.3).clamp(0.0, 1.0),

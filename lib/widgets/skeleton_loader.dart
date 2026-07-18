@@ -307,3 +307,131 @@ class CategoryChipsSkeleton extends StatelessWidget {
     );
   }
 }
+
+/// Skeleton loader for service list items
+class ServiceSkeletonItem extends StatelessWidget {
+  const ServiceSkeletonItem({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ShimmerEffect(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0),
+          color: theme.cardColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.08),
+              spreadRadius: 0,
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image skeleton
+              const SkeletonBox(
+                width: 110,
+                height: 110,
+                borderRadius: 12,
+              ),
+              const SizedBox(width: 14.0),
+              // Content skeleton
+              Expanded(
+                child: SizedBox(
+                  height: 110,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Name skeleton
+                          const SkeletonBox(
+                            width: double.infinity,
+                            height: 16,
+                            borderRadius: 4,
+                          ),
+                          const SizedBox(height: 8),
+                          // Category chip skeleton
+                          const SkeletonBox(
+                            width: 80,
+                            height: 22,
+                            borderRadius: 6,
+                          ),
+                        ],
+                      ),
+                      // Location and stats row
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Location skeleton
+                          Row(
+                            children: [
+                              const SkeletonCircle(size: 13),
+                              const SizedBox(width: 6),
+                              SkeletonBox(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 12,
+                                borderRadius: 4,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          // Stats row
+                          Row(
+                            children: const [
+                              SkeletonBox(
+                                width: 50,
+                                height: 22,
+                                borderRadius: 8,
+                              ),
+                              SizedBox(width: 8),
+                              SkeletonBox(
+                                width: 50,
+                                height: 22,
+                                borderRadius: 8,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Skeleton loader for full service list
+class ServiceListSkeleton extends StatelessWidget {
+  final int itemCount;
+
+  const ServiceListSkeleton({
+    super.key,
+    this.itemCount = 5,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: itemCount,
+      itemBuilder: (context, index) => const ServiceSkeletonItem(),
+    );
+  }
+}

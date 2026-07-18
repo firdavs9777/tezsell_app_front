@@ -386,10 +386,13 @@ class ServiceProvider {
       };
 
       // Geo-radius takes precedence over neighborhood_id (Karrot pattern).
-      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+      // When radius is infinite (city-wide), use 50 km so the backend filter fires.
+      if (centerLat != null && centerLng != null) {
+        final effectiveRadius =
+            (radiusKm != null && radiusKm.isFinite) ? radiusKm : 50.0;
         queryParams['center_lat'] = centerLat.toStringAsFixed(6);
         queryParams['center_lng'] = centerLng.toStringAsFixed(6);
-        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        queryParams['radius_km'] = effectiveRadius.toStringAsFixed(0);
       } else {
         if (neighborhoodId != null) {
           queryParams['neighborhood_id'] = neighborhoodId;

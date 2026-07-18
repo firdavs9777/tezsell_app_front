@@ -63,11 +63,21 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // Flag to track if widget is disposed
   bool _isDisposed = false;
 
+  // Captured in initState so dispose() can call it without touching ref
+  // (Riverpod marks ref invalid before state.dispose() is called in 2.x).
+  late final ChatNotifier _chatNotifier;
+
   StreamSubscription<PlayerState>? _audioPlayerStateSubscription;
+
+  // 🔥 NEW: Timer for periodic read status refresh (fallback)
+  Timer? _readStatusRefreshTimer;
+
+  final GlobalKey<_VoiceMicButtonState> _voiceMicKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    _chatNotifier = ref.read(chatProvider.notifier);
     _audioPlayerStateSubscription = _audioPlayer.onPlayerStateChanged.listen((
       state,
     ) {
@@ -88,9 +98,31 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     Future.microtask(() {
       if (mounted) {
-        ref.read(chatProvider.notifier).connectToChatRoom(widget.chatRoom.id);
-        // Mark all chat notifications for this room as read when entering
+        print('🔵 [ChatRoom] initState → connectToChatRoom(${widget.chatRoom.id})');
+        _chatNotifier.connectToChatRoom(widget.chatRoom.id);
         _markChatNotificationsAsRead(widget.chatRoom.id);
+      }
+    });
+
+    // 🔥 NEW: Start periodic read status refresh (fallback for WebSocket)
+    _startReadStatusRefresh();
+  }
+
+  /// 🔥 NEW: Periodic refresh of read status (every 10 seconds as fallback)
+  void _startReadStatusRefresh() {
+    _readStatusRefreshTimer?.cancel();
+    _readStatusRefreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted && !_isDisposed) {
+        // Only refresh if there are own messages that might need read status update
+        final chatState = ref.read(chatProvider);
+        final hasUnreadOwnMessages = chatState.messages.any((m) =>
+          m.sender.id == chatState.currentUserId && !m.isRead
+        );
+        if (hasUnreadOwnMessages) {
+          ref.read(chatProvider.notifier).refreshMessageReadStatus();
+        }
+      } else {
+        timer.cancel();
       }
     });
   }
@@ -175,11 +207,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   void dispose() {
-    // Mark as disposed FIRST to prevent any further updates
     _isDisposed = true;
+    _isDisconnecting = true;
 
     // Cancel all timers and subscriptions
     _typingTimer?.cancel();
+    _readStatusRefreshTimer?.cancel();
     _audioPlayerStateSubscription?.cancel();
     _scrollController.removeListener(_onScroll);
 
@@ -190,34 +223,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _audioRecorder.dispose();
     _audioPlayer.dispose();
 
-    // Mark as disconnecting
-    _isDisconnecting = true;
-
-    // Call provider methods last, but don't wait for them
-    // These might trigger updates, but the widget is already disposed
-    if (_hasSentTypingStatus) {
-      // Use Future.microtask to avoid blocking dispose
-      Future.microtask(() {
-        try {
-          if (!_isDisposed) {
-            // Extra check
-            ref.read(chatProvider.notifier).sendTypingStatus(false);
-          }
-        } catch (e) {
-          // Ignore errors - widget is already disposed
-        }
-      });
-    }
-
-    // Disconnect from chat room
-    Future.microtask(() {
+    // Riverpod forbids state changes during lifecycle methods (dispose included).
+    // Defer via Future(() {}) so it runs after the current frame when the tree
+    // is stable. _chatNotifier was captured in initState so ref is not needed.
+    final notifier = _chatNotifier;
+    final hadTyping = _hasSentTypingStatus;
+    Future(() {
       try {
-        if (!_isDisposed) {
-          // Extra check
-          ref.read(chatProvider.notifier).disconnectFromChatRoom();
-        }
+        if (hadTyping) notifier.sendTypingStatus(false);
+        print('🔵 [ChatRoom] dispose deferred → disconnectFromChatRoom()');
+        notifier.disconnectFromChatRoom();
       } catch (e) {
-        // Ignore errors - widget is already disposed
+        print('🔴 [ChatRoom] dispose deferred error: $e');
       }
     });
 
@@ -491,22 +508,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 height: 44,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF42A5F5), Color(0xFF1E88E5)],
-                  ),
+                  color: Theme.of(context).colorScheme.primary,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blue.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                   size: 28,
                 ),
               ),
@@ -569,7 +582,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l.image_too_large),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.error,
                 duration: const Duration(seconds: 3),
               ),
             );
@@ -583,7 +596,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l.image_file_not_found),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
           }
@@ -630,7 +643,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(l.failed_to_send_image),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
           }
@@ -709,7 +722,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           SnackBar(
             content: Text(l?.voice_message_sent ?? 'Voice message sent'),
             duration: const Duration(seconds: 2),
-            backgroundColor: const Color(0xFF25D366),
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );
         _scrollToBottom();
@@ -717,7 +730,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l?.failed_to_send_voice_message ?? 'Failed to send voice message'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -772,12 +785,15 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     children: [
                       CircleAvatar(
                         radius: 16,
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                         child: Text(
                           participant.username.isNotEmpty
                               ? participant.username[0].toUpperCase()
                               : '?',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -903,7 +919,8 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (didPop && !_isDisconnecting) {
           _isDisconnecting = true;
-          ref.read(chatProvider.notifier).disconnectFromChatRoom();
+          print('🔵 [ChatRoom] onPopInvoked → disconnectFromChatRoom()');
+          _chatNotifier.disconnectFromChatRoom();
         }
       },
       child: GestureDetector(
@@ -921,9 +938,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             onBlockTap: _handleBlockUser,
             onDeleteTap: _showDeleteConfirmation,
           ),
-          backgroundColor: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.surface
-              : const Color(0xFFE5F3FF), // Telegram light blue background
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
           body: _buildChatBody(
             chatState: chatState,
             messages: messages,
@@ -1156,139 +1171,134 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 },
               ),
 
-            // Input row
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    _showMediaOptions ? Icons.close : Icons.add_circle,
-                    color: _showMediaOptions ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: () {
-                    setState(() => _showMediaOptions = !_showMediaOptions);
-                  },
+            // Input row — full-width recording bar when recording, normal row otherwise
+            if (_isRecording)
+              SizedBox(
+                height: 56,
+                child: _VoiceMicButton(
+                  key: _voiceMicKey,
+                  onRecordingComplete: _handleVoiceRecordingComplete,
+                  onRecordingStarted: _handleVoiceRecordingStarted,
+                  onRecordingCancelled: _handleVoiceRecordingCancelled,
                 ),
-                IconButton(
-                  icon: Icon(
-                    _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions,
-                    color: _showEmojiPicker ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: () {
-                    if (!_isDisposed) {
-                      setState(() {
-                        _showEmojiPicker = !_showEmojiPicker;
-                        _showMediaOptions = false;
-                      });
-                    }
-                  },
-                ),
-                Expanded(
-                  child: _editingMessageId != null
-                      ? TextField(
-                          controller: _editController,
-                          decoration: InputDecoration(
-                            hintText:
-                                AppLocalizations.of(
-                                  context,
-                                )?.edit_message_hint ??
-                                'Edit message...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.orange[50],
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                          ),
-                          maxLines: 6, // Limit to 6 lines max - automatically scrollable when exceeded
-                          minLines: 1,
-                          keyboardType: TextInputType.multiline,
-                          textInputAction: TextInputAction.send,
-                          onSubmitted: (_) {
-                            if (_editController.text.trim().isNotEmpty) {
-                              _saveEditedMessage();
-                            }
-                          },
-                        )
-                      : TextField(
-                          controller: _messageController,
-                          onChanged: _onTypingChanged,
-                          decoration: InputDecoration(
-                            hintText:
-                                AppLocalizations.of(context)?.type_a_message ??
-                                'Type a message...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                          ),
-                          maxLines: 6,
-                          minLines: 1,
-                          keyboardType: TextInputType.multiline,
-                          textInputAction: TextInputAction.send,
-                          onSubmitted: (_) {
-                            if (_messageController.text.trim().isNotEmpty) {
-                              _typingTimer?.cancel();
-                              if (_hasSentTypingStatus) {
-                                _hasSentTypingStatus = false;
-                                ref
-                                    .read(chatProvider.notifier)
-                                    .sendTypingStatus(false);
-                              }
-                              _sendMessage();
-                            }
-                          },
-                        ),
-                ),
-                const SizedBox(width: 8),
-                // Send/Mic button - Telegram style
-                if (_editingMessageId != null)
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: _editController,
-                    builder: (context, value, child) {
-                      final hasText = value.text.trim().isNotEmpty;
-                      return _AnimatedSendButton(
-                        isEnabled: hasText,
-                        color: Colors.orange,
-                        icon: Icons.check,
-                        onPressed: hasText ? _saveEditedMessage : null,
-                      );
+              )
+            else
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      _showMediaOptions ? Icons.close : Icons.add_circle,
+                      color: _showMediaOptions ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    onPressed: () {
+                      setState(() => _showMediaOptions = !_showMediaOptions);
                     },
-                  )
-                else
-                  ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: _messageController,
-                    builder: (context, value, child) {
-                      final hasText = value.text.trim().isNotEmpty;
-                      // Show send button if there's text, mic button otherwise
-                      if (hasText) {
-                        return _AnimatedSendButton(
-                          isEnabled: true,
-                          color: const Color(0xFF25D366),
-                          icon: Icons.send,
-                          onPressed: _sendMessage,
-                        );
-                      } else {
-                        // Telegram-style voice recorder button
-                        return _VoiceMicButton(
-                          onRecordingComplete: _handleVoiceRecordingComplete,
-                          onRecordingStarted: _handleVoiceRecordingStarted,
-                          onRecordingCancelled: _handleVoiceRecordingCancelled,
-                        );
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions,
+                      color: _showEmojiPicker ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    onPressed: () {
+                      if (!_isDisposed) {
+                        setState(() {
+                          _showEmojiPicker = !_showEmojiPicker;
+                          _showMediaOptions = false;
+                        });
                       }
                     },
                   ),
-              ],
-            ),
+                  Expanded(
+                    child: _editingMessageId != null
+                        ? TextField(
+                            controller: _editController,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)?.edit_message_hint ?? 'Edit message...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
+                            maxLines: 6,
+                            minLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (_) {
+                              if (_editController.text.trim().isNotEmpty) {
+                                _saveEditedMessage();
+                              }
+                            },
+                          )
+                        : TextField(
+                            controller: _messageController,
+                            onChanged: _onTypingChanged,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)?.type_a_message ?? 'Type a message...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
+                            maxLines: 6,
+                            minLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (_) {
+                              if (_messageController.text.trim().isNotEmpty) {
+                                _typingTimer?.cancel();
+                                if (_hasSentTypingStatus) {
+                                  _hasSentTypingStatus = false;
+                                  ref.read(chatProvider.notifier).sendTypingStatus(false);
+                                }
+                                _sendMessage();
+                              }
+                            },
+                          ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (_editingMessageId != null)
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _editController,
+                      builder: (context, value, child) {
+                        final hasText = value.text.trim().isNotEmpty;
+                        return _AnimatedSendButton(
+                          isEnabled: hasText,
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: Icons.check,
+                          onPressed: hasText ? _saveEditedMessage : null,
+                        );
+                      },
+                    )
+                  else
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _messageController,
+                      builder: (context, value, child) {
+                        final hasText = value.text.trim().isNotEmpty;
+                        if (hasText) {
+                          return _AnimatedSendButton(
+                            isEnabled: true,
+                            color: Theme.of(context).colorScheme.primary,
+                            icon: Icons.send,
+                            onPressed: _sendMessage,
+                          );
+                        } else {
+                          return _VoiceMicButton(
+                            key: _voiceMicKey,
+                            onRecordingComplete: _handleVoiceRecordingComplete,
+                            onRecordingStarted: _handleVoiceRecordingStarted,
+                            onRecordingCancelled: _handleVoiceRecordingCancelled,
+                          );
+                        }
+                      },
+                    ),
+                ],
+              ),
           ],
         ),
       ),
@@ -1322,7 +1332,7 @@ class _AnimatedSendButton extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isEnabled ? color : Colors.grey[400],
+          color: isEnabled ? color : color.withOpacity(0.4),
           boxShadow: isEnabled
               ? [
                   BoxShadow(
@@ -1359,6 +1369,7 @@ class _VoiceMicButton extends StatefulWidget {
   final VoidCallback? onRecordingCancelled;
 
   const _VoiceMicButton({
+    super.key,
     required this.onRecordingComplete,
     this.onRecordingStarted,
     this.onRecordingCancelled,
@@ -1418,7 +1429,9 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
   Future<void> _startRecording() async {
     if (_isRecording) return;
 
-    if (!await _audioRecorder.hasPermission()) {
+    final hasPerm = await _audioRecorder.hasPermission();
+    print('🎙️ [Voice] hasPermission: $hasPerm');
+    if (!hasPerm) {
       HapticFeedback.heavyImpact();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1431,7 +1444,14 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
     HapticFeedback.mediumImpact();
 
     _recordingPath = '${Directory.systemTemp.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
-    await _audioRecorder.start(const RecordConfig(), path: _recordingPath!);
+    print('🎙️ [Voice] starting recording → $_recordingPath');
+    try {
+      await _audioRecorder.start(const RecordConfig(), path: _recordingPath!);
+      print('🎙️ [Voice] recording started OK');
+    } catch (e) {
+      print('🔴 [Voice] start error: $e');
+      rethrow;
+    }
 
     setState(() {
       _isRecording = true;
@@ -1461,8 +1481,10 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
 
     final path = await _audioRecorder.stop();
     final duration = _recordingDuration;
+    print('🎙️ [Voice] stopped — path: $path, duration: ${duration}s, send: $send');
 
     final wasCancelled = !send || duration < 1;
+    if (wasCancelled) print('🎙️ [Voice] cancelled (send=$send, duration=$duration)');
 
     setState(() {
       _isRecording = false;
@@ -1473,14 +1495,13 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
     });
 
     if (!wasCancelled && path != null) {
+      final fileSize = await File(path).length().catchError((_) => 0);
+      print('🎙️ [Voice] sending file — size: ${fileSize}B');
       HapticFeedback.lightImpact();
       widget.onRecordingComplete(File(path), duration);
     } else {
-      // Delete cancelled recording
       if (path != null) {
-        try {
-          await File(path).delete();
-        } catch (_) {}
+        try { await File(path).delete(); } catch (_) {}
       }
       widget.onRecordingCancelled?.call();
     }
@@ -1511,7 +1532,12 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
   }
 
   Widget _buildMicButton() {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
+      onTap: () async {
+        await _startRecording();
+        if (mounted && _isRecording) _lockRecording();
+      },
       onLongPressStart: (_) => _startRecording(),
       onLongPressEnd: (_) {
         if (!_isLocked && _isRecording) {
@@ -1538,11 +1564,11 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
         height: 44,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.grey[300],
+          color: colorScheme.surfaceContainerHighest,
         ),
         child: Icon(
           Icons.mic,
-          color: Colors.grey[600],
+          color: colorScheme.onSurfaceVariant,
           size: 22,
         ),
       ),
@@ -1551,20 +1577,23 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
 
   Widget _buildRecordingUI() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width - 32,
       height: 48,
       child: Row(
         children: [
-          // Recording indicator
+          const SizedBox(width: 4),
+          // Pulsing red dot
           AnimatedBuilder(
             animation: _pulseAnimation,
             builder: (context, child) {
-              return Container(
-                width: 10,
-                height: 10,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
+              return Transform.scale(
+                scale: _pulseAnimation.value,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                  ),
                 ),
               );
             },
@@ -1573,40 +1602,45 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
           // Timer
           Text(
             _formatDuration(_recordingDuration),
-            style: const TextStyle(
-              fontSize: 15,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.red,
+              color: Theme.of(context).colorScheme.error,
             ),
           ),
           const Spacer(),
-          // Slide to cancel
-          AnimatedOpacity(
-            opacity: _dragOffsetX.abs() > 30 ? 0.3 : 1.0,
-            duration: const Duration(milliseconds: 100),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.chevron_left, color: Colors.grey[500], size: 18),
-                Text(
-                  'Slide to cancel',
-                  style: TextStyle(color: Colors.grey[500], fontSize: 13),
-                ),
-              ],
+          // Slide to cancel — moves left with drag
+          Transform.translate(
+            offset: Offset(_dragOffsetX.clamp(-50.0, 0.0) * 0.5, 0),
+            child: Opacity(
+              opacity: _dragOffsetX < -20
+                  ? (1.0 - ((-_dragOffsetX - 20) / 60)).clamp(0.2, 1.0)
+                  : 1.0,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
+                  Text(
+                    'Slide to cancel',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(width: 8),
-          // Lock indicator
+          // Lock indicator (appears when dragging up)
           if (_dragOffsetY < -20)
             Icon(
               Icons.lock_outline,
               color: _dragOffsetY < _lockThreshold
-                  ? const Color(0xFF25D366)
+                  ? Theme.of(context).colorScheme.primary
                   : Colors.grey,
               size: 18,
             ),
-          const SizedBox(width: 8),
-          // Mic button (animated)
+          const SizedBox(width: 4),
+          // Animated mic button (moves with finger)
           AnimatedBuilder(
             animation: _pulseAnimation,
             builder: (context, child) {
@@ -1622,16 +1656,16 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
                     height: 44,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFF25D366),
+                      color: Theme.of(context).colorScheme.primary,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF25D366).withOpacity(0.4),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.mic, color: Colors.white, size: 22),
+                    child: Icon(Icons.mic, color: Theme.of(context).colorScheme.onPrimary, size: 22),
                   ),
                 ),
               );
@@ -1644,7 +1678,6 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
 
   Widget _buildLockedUI() {
     return SizedBox(
-      width: MediaQuery.of(context).size.width - 32,
       height: 48,
       child: Row(
         children: [
@@ -1682,7 +1715,7 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
                 height: h,
                 margin: const EdgeInsets.symmetric(horizontal: 1),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF25D366).withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
                   borderRadius: BorderRadius.circular(1),
                 ),
               );
@@ -1695,11 +1728,11 @@ class _VoiceMicButtonState extends State<_VoiceMicButton>
             child: Container(
               width: 44,
               height: 44,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFF25D366),
+                color: Theme.of(context).colorScheme.primary,
               ),
-              child: const Icon(Icons.send, color: Colors.white, size: 20),
+              child: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
             ),
           ),
         ],

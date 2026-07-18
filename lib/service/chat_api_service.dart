@@ -71,22 +71,20 @@ class ChatApiService {
     }
 
     try {
+      final fileSize = await audioFile.length();
+      final mimeType = lookupMimeType(audioFile.path) ?? 'audio/m4a';
+      print('🎙️ [VoiceAPI] uploading — room:$roomId duration:${duration}s size:${fileSize}B mime:$mimeType path:${audioFile.path}');
+
       final request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/chats/$roomId/messages/'),
       );
 
-      // Add headers
       request.headers['Authorization'] = 'Token $token';
-
-      // Add message type and duration
       request.fields['message_type'] = 'voice';
       request.fields['duration'] = duration.toString();
 
-      // Add audio file
-      final mimeType = lookupMimeType(audioFile.path) ?? 'audio/m4a';
       final mimeTypeData = mimeType.split('/');
-
       request.files.add(
         await http.MultipartFile.fromPath(
           'file',
@@ -98,15 +96,16 @@ class ChatApiService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
+      print('🎙️ [VoiceAPI] response ${response.statusCode}: ${response.body}');
+
       if (response.statusCode == 201) {
         final decoded = json.decode(utf8.decode(response.bodyBytes));
         return ChatMessage.fromJson(decoded);
       } else {
-
-        throw Exception('Failed to upload voice: ${response.statusCode}');
+        throw Exception('Failed to upload voice: ${response.statusCode} — ${response.body}');
       }
     } catch (e) {
-
+      print('🔴 [VoiceAPI] error: $e');
       rethrow;
     }
   }

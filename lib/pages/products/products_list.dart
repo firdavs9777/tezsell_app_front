@@ -2,6 +2,7 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/category_model.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
@@ -155,14 +156,15 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       print('📦 [ProductsList] ═══════════════════════════════════════');
       print('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
       if (useNeighborhood) {
-        print('📦 [ProductsList]   GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+        final radiusLabel = radius.isFinite ? '${radius}km' : 'city-wide';
+        print('📦 [ProductsList]   GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=$radiusLabel');
       } else if (widget.districtId != null && widget.districtId! > 0) {
         print('📦 [ProductsList]   DISTRICT filter: id=${widget.districtId}');
       } else {
         print('📦 [ProductsList]   NO filter — loading all products');
       }
       print('📦 [ProductsList] ═══════════════════════════════════════');
-      final products =
+      final rawProducts =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,
                 pageSize: 12,
@@ -184,14 +186,22 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         return;
       }
 
-      print('📦 [ProductsList] Filtered products: ${products.length}');
+      // Client-side guard: backend neighbourhood filter may return products
+      // from other cities. Keep only products whose location matches the
+      // active neighbourhood's city. Pagination uses the raw server count so
+      // we keep loading pages even when some are filtered out.
+      final serverHasMore = rawProducts.length >= 12;
+      final products = useNeighborhood
+          ? rawProducts.where((p) => _matchesNeighbourhood(p, activeNbhd)).toList()
+          : rawProducts;
+
+      print('📦 [ProductsList] After city-guard: ${products.length}/${rawProducts.length} products');
 
       if (mounted && !_isDisposed) {
         setState(() {
           _allProducts = products;
           _currentPage = 1;
-          _hasMoreData =
-              products.length >= 12; // If less than pageSize, no more data
+          _hasMoreData = serverHasMore;
           _isInitialLoading = false;
         });
       }
@@ -217,7 +227,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
-      final newProducts =
+      final rawNewProducts =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: nextPage,
                 pageSize: 12,
@@ -233,12 +243,17 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
               );
 
+      final serverHasMore = rawNewProducts.length >= 12;
+      final newProducts = useNeighborhood
+          ? rawNewProducts.where((p) => _matchesNeighbourhood(p, activeNbhd)).toList()
+          : rawNewProducts;
+
       if (mounted && !_isDisposed) {
         setState(() {
-          if (newProducts.isNotEmpty) {
+          if (rawNewProducts.isNotEmpty) {
             _allProducts.addAll(newProducts);
             _currentPage = nextPage;
-            _hasMoreData = newProducts.length >= 12;
+            _hasMoreData = serverHasMore;
           } else {
             _hasMoreData = false;
           }
@@ -253,6 +268,23 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         });
       }
     }
+  }
+
+  /// Returns true when a product's location is within the active neighbourhood's
+  /// city. Checked client-side because the backend neighbourhood_id filter may
+  /// return products from other cities when the backend hasn't fully implemented
+  /// the parameter.
+  bool _matchesNeighbourhood(Products product, VerifiedNeighborhood nbhd) {
+    final city = nbhd.neighborhood.city.toLowerCase();
+    final region = nbhd.neighborhood.region.toLowerCase();
+    final dist = product.location.district.toLowerCase();
+    final reg = product.location.region.toLowerCase();
+    final addr = (product.location.fullAddress ?? '').toLowerCase();
+    // Match city → district, city in full address, or region as fallback
+    if (dist.isNotEmpty && (dist.contains(city) || city.contains(dist))) return true;
+    if (addr.contains(city)) return true;
+    if (dist.isEmpty && reg.isNotEmpty && (reg.contains(region) || region.contains(reg))) return true;
+    return false;
   }
 
   Future<void> refresh() async {

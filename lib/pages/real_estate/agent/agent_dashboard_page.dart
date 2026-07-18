@@ -94,7 +94,9 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
         elevation: 0,
         title: Text(
           localizations?.general_agent_panel ?? 'Agent Dashboard',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         actions: [
           IconButton(
@@ -131,8 +133,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
               isNotAgent
                   ? 'Not Registered as Agent'
                   : 'Error loading dashboard',
-              style: TextStyle(
-                fontSize: 18,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
               ),
@@ -143,8 +144,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
               isNotAgent
                   ? 'You need to register as an agent to access the dashboard.'
                   : _error ?? '',
-              style: TextStyle(
-                fontSize: 14,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
@@ -237,8 +237,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                       children: [
                         Text(
                           agencyName,
-                          style: TextStyle(
-                            fontSize: 20,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
                           ),
@@ -256,8 +255,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                     const SizedBox(height: 8),
                     Text(
                       '${user['username'] ?? 'N/A'}',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -303,8 +301,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
             ),
             child: Text(
               'Specialization: $specialization',
-              style: TextStyle(
-                fontSize: 12,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.primary,
                 fontWeight: FontWeight.w600,
               ),
@@ -335,16 +332,14 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
             const SizedBox(height: 4),
             Text(
               value,
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
               ),
             ),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 10,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
@@ -459,8 +454,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
               children: [
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 22,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
@@ -468,8 +462,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                 const SizedBox(height: 2),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 11,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
                   maxLines: 2,
@@ -505,8 +498,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                   Expanded(
                     child: Text(
                       month['month'] ?? '',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: colorScheme.onSurface,
                       ),
@@ -520,8 +512,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                     ),
                     child: Text(
                       '${month['properties'] ?? 0} Properties',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.blue,
                       ),
@@ -536,8 +527,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                     ),
                     child: Text(
                       '${month['inquiries'] ?? 0} Inquiries',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Colors.green,
                       ),
@@ -555,8 +545,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
   Widget _buildSectionTitle(String title, ThemeData theme) {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 18,
+      style: theme.textTheme.titleMedium?.copyWith(
         fontWeight: FontWeight.w700,
         color: theme.colorScheme.onSurface,
       ),

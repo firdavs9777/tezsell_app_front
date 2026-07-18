@@ -163,8 +163,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                           Text(
                             l10n?.becomeAgentTitle ??
                                 'Join as a Real Estate Agent',
-                            style: TextStyle(
-                              fontSize: 18,
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.primaryColor,
                             ),
@@ -173,8 +172,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                           Text(
                             l10n?.becomeAgentSubtitle ??
                                 'List properties and help clients find their dream homes',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
@@ -189,8 +187,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
               // Benefits
               Text(
                 l10n?.agentBenefits ?? 'Benefits:',
-                style: TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colorScheme.onSurface,
                 ),
@@ -225,8 +222,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
               // Form Fields
               Text(
                 l10n?.agentApplicationForm ?? 'Application Form',
-                style: TextStyle(
-                  fontSize: 18,
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -342,8 +338,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                       child: Text(
                         l10n?.agentApplicationNote ??
                             'Your application will be reviewed by our team. You will be notified once your application is approved.',
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.blue[900],
                         ),
                       ),
@@ -379,8 +374,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
                       : Text(
                           l10n?.agentSubmitApplication ??
                               'Submit Application',
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -410,7 +404,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 14),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
         ],

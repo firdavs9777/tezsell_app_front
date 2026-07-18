@@ -32,20 +32,18 @@ class MessageList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(chatProvider);
-    final messages = chatState.messages;
     final isLoadingMessages = chatState.isLoadingMessages;
     final currentUserId = chatState.currentUserId;
+    // Use cached sorted provider to avoid O(n log n) sort on every rebuild
+    final sortedMessages = ref.watch(sortedMessagesProvider);
 
     if (isLoadingMessages) {
       return const MessageListShimmer();
     }
 
-    if (messages.isEmpty) {
+    if (sortedMessages.isEmpty) {
       return const SizedBox.shrink(); // Empty state is handled by parent
     }
-
-    final sortedMessages = List<ChatMessage>.from(messages)
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     return ListView.builder(
       controller: scrollController,

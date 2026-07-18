@@ -1015,6 +1015,9 @@ class AuthenticationService {
         prefs.remove(AppConfig.refreshTokenKey),
         prefs.remove('userId'),
         prefs.remove('userLocation'),
+        prefs.remove('localRegionName'),
+        prefs.remove('localDistrictName'),
+        prefs.remove('localCountryCode'),
         prefs.remove('token_expires_in'),
         prefs.remove('token_expires_at'),
         prefs.remove('refresh_token_expires_in'),
@@ -1024,7 +1027,7 @@ class AuthenticationService {
       // Clear pending requests
       _pendingRequests.clear();
 
-      AppLogger.info('User logged out successfully');
+      AppLogger.info('User logged out successfully (including location data)');
     } catch (e) {
       AppLogger.error('Error during logout: $e');
     }

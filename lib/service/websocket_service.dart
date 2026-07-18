@@ -182,6 +182,12 @@ class ChatRoomWebSocketService {
           print('🔌 WebSocket stream done (closed)');
           _isConnected = false;
           _isConnecting = false;
+          // Unblock any pending ready future so the caller doesn't wait 5s.
+          if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
+            _connectionCompleter!.completeError(
+              Exception('WebSocket closed before connection_established'),
+            );
+          }
         },
         cancelOnError: false,
       );

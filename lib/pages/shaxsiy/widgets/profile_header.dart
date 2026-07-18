@@ -1,6 +1,7 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/user_model.dart';
+import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,21 @@ class ProfileHeader extends ConsumerWidget {
         followersCount = profile.followersCount;
         followingCount = profile.followingCount;
       });
+    }
+
+    // Prefer the active map-pick neighbourhood over the backend profile location.
+    final activeNbhd = ref.watch(activeNeighborhoodProvider);
+    final String locationText;
+    if (activeNbhd != null) {
+      final nbhd = activeNbhd.neighborhood;
+      print('📍 [ProfileHeader] active nbhd: city="${nbhd.city}" region="${nbhd.region}" name="${nbhd.name}"');
+      final parts = [nbhd.city, nbhd.region].where((s) => s.isNotEmpty).toList();
+      locationText = parts.isNotEmpty ? parts.join(', ') : nbhd.name;
+    } else {
+      final parts = [user.location.region, user.location.district]
+          .where((s) => s.isNotEmpty)
+          .toList();
+      locationText = parts.join(', ');
     }
 
     return Container(
@@ -105,10 +121,14 @@ class ProfileHeader extends ConsumerWidget {
                   color: colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  '${user.location.region}, ${user.location.district}',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                Expanded(
+                  child: Text(
+                    locationText,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -138,6 +158,7 @@ class ProfileHeader extends ConsumerWidget {
     );
   }
 }
+
 
 String _formatCount(int count) {
   if (count >= 1000000) {

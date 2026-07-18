@@ -139,21 +139,11 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
         _isLoadingMore = false;
       });
     } catch (error) {
-      setState(() {
-        _isLoadingMore = false;
-      });
       if (mounted) {
-        final colorScheme = Theme.of(context).colorScheme;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)?.load_more_products_error ?? 'Error loading more products'),
-            backgroundColor: colorScheme.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
+        setState(() {
+          _isLoadingMore = false;
+          _hasMoreData = false;
+        });
       }
     }
   }

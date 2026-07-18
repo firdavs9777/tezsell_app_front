@@ -4,6 +4,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final ChatRoom chatRoom;
@@ -72,10 +73,8 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           height: 8,
                           decoration: BoxDecoration(
                             color: isOnline
-                                ? (Theme.of(context).brightness == Brightness.dark
-                                    ? Theme.of(context).colorScheme.primary
-                                    : const Color(0xFF43A047))
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                ? const Color(0xFF4CAF50) // Standard green for online
+                                : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
                             shape: BoxShape.circle,
                           ),
                         );
@@ -86,14 +85,47 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               Builder(
                 builder: (context) {
                   final l = AppLocalizations.of(context)!;
+                  String subtitle;
+                  if (chatRoom.isGroup) {
+                    subtitle = l.participants(chatRoom.participants.length);
+                  } else if (chatState.typingUsers.entries
+                      .where((e) => e.key != currentUserId && e.value)
+                      .isNotEmpty) {
+                    subtitle = l.typing;
+                  } else {
+                    // Check actual online status
+                    final user = chatRoom.participants.firstWhere(
+                      (p) => p.id != currentUserId,
+                      orElse: () => chatRoom.participants.first,
+                    );
+                    final onlineUser = chatState.onlineUsers[user.id];
+                    final isOnline = onlineUser?.isOnline ?? user.isOnline;
+                    final lastSeen = onlineUser?.lastSeen ?? user.lastSeen;
+
+                    if (isOnline) {
+                      subtitle = l.online;
+                    } else if (lastSeen != null) {
+                      final now = DateTime.now();
+                      final diff = now.difference(lastSeen);
+                      String timeStr;
+                      if (diff.inMinutes < 1) {
+                        timeStr = 'just now';
+                      } else if (diff.inHours < 1) {
+                        timeStr = '${diff.inMinutes}m ago';
+                      } else if (diff.inDays < 1) {
+                        timeStr = DateFormat.Hm().format(lastSeen);
+                      } else if (diff.inDays < 7) {
+                        timeStr = DateFormat.E().add_Hm().format(lastSeen);
+                      } else {
+                        timeStr = DateFormat.MMMd().format(lastSeen);
+                      }
+                      subtitle = l.last_seen_at(timeStr);
+                    } else {
+                      subtitle = l.offline;
+                    }
+                  }
                   return Text(
-                    chatRoom.isGroup
-                        ? l.participants(chatRoom.participants.length)
-                        : chatState.typingUsers.entries
-                                .where((e) => e.key != currentUserId && e.value)
-                                .isNotEmpty
-                            ? l.typing
-                            : l.online,
+                    subtitle,
                     style: Theme.of(context).textTheme.bodySmall,
                   );
                 },
@@ -103,20 +135,6 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        // Voice call button
-        IconButton(
-          icon: const Icon(Icons.phone),
-          onPressed: () {
-            ref.read(chatProvider.notifier).initiateCall('voice');
-          },
-        ),
-        // Video call button
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          onPressed: () {
-            ref.read(chatProvider.notifier).initiateCall('video');
-          },
-        ),
         PopupMenuButton(
           itemBuilder: (context) {
             final l = AppLocalizations.of(context);

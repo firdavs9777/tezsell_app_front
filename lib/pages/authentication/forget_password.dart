@@ -41,9 +41,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         ),
         title: Text(
           localizations?.forgotPassword ?? 'Forgot Password',
-          style: TextStyle(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            fontSize: 20,
             color: theme.colorScheme.onSurface,
             letterSpacing: -0.3,
           ),
@@ -99,8 +98,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                 // Title
                 Text(
                   localizations?.resetYourPassword ?? 'Reset Your Password',
-                  style: TextStyle(
-                    fontSize: 26,
+                  style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: theme.colorScheme.onSurface,
                     letterSpacing: -0.5,
@@ -206,8 +204,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                               const SizedBox(width: 12),
                               Text(
                                 localizations?.loading ?? 'Loading...',
-                                style: const TextStyle(
-                                  fontSize: 16,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: -0.3,
                                 ),
@@ -216,8 +213,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                           )
                         : Text(
                             localizations?.sendVerificationCode ?? 'Send Verification Code',
-                            style: const TextStyle(
-                              fontSize: 17,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.3,
                             ),

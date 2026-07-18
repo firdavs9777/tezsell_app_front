@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "523279655368-dm3t574i476tmtpb46q2q3tncpr0ndvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.tezsell.app",
+            "certificate_hash": "a7323b109fd4e167de60c5d0ddd753345d737925"
+          }
+        },
+        {
+          "client_id": "523279655368-hbgmq9ffphv5iv3ho7952dqt8cve40ig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.tezsell.app",
+            "certificate_hash": "629dee27bdb21be6a1486bf5d94c3681d8583068"
+          }
+        },
+        {
           "client_id": "523279655368-r31l2e6c7hhpv8lgkd30oo8ioq5enlms.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
