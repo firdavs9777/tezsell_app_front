@@ -59,6 +59,15 @@ class CommunityProvider {
     throw Exception('Failed to create post (${resp.statusCode})');
   }
 
+  Future<CommunityPost> getPost(int postId) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final resp = await http.get(uri, headers: await _authHeaders());
+    if (resp.statusCode == 200) {
+      return CommunityPost.fromJson(json.decode(resp.body) as Map<String, dynamic>);
+    }
+    throw Exception('Failed to load post (${resp.statusCode})');
+  }
+
   Future<Map<String, dynamic>> toggleLike(int postId) async {
     final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/like/');
     final resp = await http.post(uri, headers: await _authHeaders());
