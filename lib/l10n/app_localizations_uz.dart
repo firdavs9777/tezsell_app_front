@@ -4326,4 +4326,82 @@ class AppLocalizationsUz extends AppLocalizations {
   String switch_neighborhood_success(String name) {
     return '${name}ga o\'tildi';
   }
+
+  @override
+  String get communityAll => 'Hammasi';
+
+  @override
+  String get communityQuestion => 'Savol';
+
+  @override
+  String get communityRecommend => 'Maslahat';
+
+  @override
+  String get communityFree => 'Bepul';
+
+  @override
+  String get communityLostFound => 'Yo‘qolgan buyumlar';
+
+  @override
+  String get communityAlert => 'Ogohlantirish';
+
+  @override
+  String get communityGeneral => 'Umumiy';
+
+  @override
+  String get communityWrite => 'Yozish';
+
+  @override
+  String get communityEmpty => 'Hali post yo‘q. Birinchi bo‘ling!';
+
+  @override
+  String get communityPostTitle => 'Post';
+
+  @override
+  String get communityNoComments => 'Hali izoh yo‘q';
+
+  @override
+  String get communityAddComment => 'Izoh qo‘shing…';
+
+  @override
+  String get communityNewPost => 'Yangi post';
+
+  @override
+  String get communityPublish => 'Joylash';
+
+  @override
+  String get communityBodyHint => 'Mahallangiz bilan nimadir ulashing…';
+
+  @override
+  String get communityPostFailed => 'Joylashda xatolik';
+
+  @override
+  String get errorGeneric => 'Nimadir xato ketdi';
+
+  @override
+  String get tabHome => 'Bosh sahifa';
+
+  @override
+  String get tabCommunity => 'Hamjamiyat';
+
+  @override
+  String get tabNearby => 'Yaqin atrof';
+
+  @override
+  String get tabMy => 'Profil';
+
+  @override
+  String get nearbyServices => 'Xizmatlar';
+
+  @override
+  String get nearbyRealEstate => 'Ko‘chmas mulk';
+
+  @override
+  String get nearbyJobs => 'Ish';
+
+  @override
+  String get nearbyShops => 'Do‘konlar';
+
+  @override
+  String get nearbyComingSoon => 'Tez orada';
 }

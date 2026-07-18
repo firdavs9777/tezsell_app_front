@@ -8181,6 +8181,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Switched to {name}'**
   String switch_neighborhood_success(String name);
+
+  /// Community filter chip: all posts
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get communityAll;
+
+  /// Community filter chip / post category: question
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get communityQuestion;
+
+  /// Community filter chip / post category: recommendations/tips
+  ///
+  /// In en, this message translates to:
+  /// **'Tips'**
+  String get communityRecommend;
+
+  /// Community filter chip / post category: free items
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get communityFree;
+
+  /// Community filter chip / post category: lost and found
+  ///
+  /// In en, this message translates to:
+  /// **'Lost & Found'**
+  String get communityLostFound;
+
+  /// Community filter chip / post category: alert
+  ///
+  /// In en, this message translates to:
+  /// **'Alert'**
+  String get communityAlert;
+
+  /// Community filter chip / post category: general
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get communityGeneral;
+
+  /// Button label to write a new community post
+  ///
+  /// In en, this message translates to:
+  /// **'Write'**
+  String get communityWrite;
+
+  /// Empty state message for community feed
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet. Be the first!'**
+  String get communityEmpty;
+
+  /// Title for a community post detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get communityPostTitle;
+
+  /// Empty state message for community post comments
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet'**
+  String get communityNoComments;
+
+  /// Hint text for community comment input field
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get communityAddComment;
+
+  /// Title for the new community post screen
+  ///
+  /// In en, this message translates to:
+  /// **'New post'**
+  String get communityNewPost;
+
+  /// Button label to publish a new community post
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get communityPublish;
+
+  /// Hint text for community post body input field
+  ///
+  /// In en, this message translates to:
+  /// **'Share something with your neighborhood…'**
+  String get communityBodyHint;
+
+  /// Error message shown when publishing a community post fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to post'**
+  String get communityPostFailed;
+
+  /// Generic fallback error message
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get errorGeneric;
+
+  /// Bottom tab bar label: home
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get tabHome;
+
+  /// Bottom tab bar label: community
+  ///
+  /// In en, this message translates to:
+  /// **'Community'**
+  String get tabCommunity;
+
+  /// Bottom tab bar label: nearby
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby'**
+  String get tabNearby;
+
+  /// Bottom tab bar label: my/profile
+  ///
+  /// In en, this message translates to:
+  /// **'My'**
+  String get tabMy;
+
+  /// Nearby tab section: services
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get nearbyServices;
+
+  /// Nearby tab section: real estate
+  ///
+  /// In en, this message translates to:
+  /// **'Real Estate'**
+  String get nearbyRealEstate;
+
+  /// Nearby tab section: jobs
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs'**
+  String get nearbyJobs;
+
+  /// Nearby tab section: local shops
+  ///
+  /// In en, this message translates to:
+  /// **'Local shops'**
+  String get nearbyShops;
+
+  /// Placeholder label for a nearby section not yet implemented
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get nearbyComingSoon;
 }
 
 class _AppLocalizationsDelegate

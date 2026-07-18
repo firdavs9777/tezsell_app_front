@@ -4305,4 +4305,82 @@ class AppLocalizationsRu extends AppLocalizations {
   String switch_neighborhood_success(String name) {
     return 'Переключено на $name';
   }
+
+  @override
+  String get communityAll => 'Все';
+
+  @override
+  String get communityQuestion => 'Вопрос';
+
+  @override
+  String get communityRecommend => 'Советы';
+
+  @override
+  String get communityFree => 'Даром';
+
+  @override
+  String get communityLostFound => 'Бюро находок';
+
+  @override
+  String get communityAlert => 'Важное';
+
+  @override
+  String get communityGeneral => 'Общее';
+
+  @override
+  String get communityWrite => 'Написать';
+
+  @override
+  String get communityEmpty => 'Пока нет постов. Будьте первым!';
+
+  @override
+  String get communityPostTitle => 'Пост';
+
+  @override
+  String get communityNoComments => 'Пока нет комментариев';
+
+  @override
+  String get communityAddComment => 'Добавить комментарий…';
+
+  @override
+  String get communityNewPost => 'Новый пост';
+
+  @override
+  String get communityPublish => 'Опубликовать';
+
+  @override
+  String get communityBodyHint => 'Поделитесь чем-нибудь с соседями…';
+
+  @override
+  String get communityPostFailed => 'Не удалось опубликовать';
+
+  @override
+  String get errorGeneric => 'Что-то пошло не так';
+
+  @override
+  String get tabHome => 'Главная';
+
+  @override
+  String get tabCommunity => 'Сообщество';
+
+  @override
+  String get tabNearby => 'Рядом';
+
+  @override
+  String get tabMy => 'Профиль';
+
+  @override
+  String get nearbyServices => 'Услуги';
+
+  @override
+  String get nearbyRealEstate => 'Недвижимость';
+
+  @override
+  String get nearbyJobs => 'Работа';
+
+  @override
+  String get nearbyShops => 'Магазины';
+
+  @override
+  String get nearbyComingSoon => 'Скоро';
 }

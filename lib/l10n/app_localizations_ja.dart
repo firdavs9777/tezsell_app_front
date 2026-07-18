@@ -4166,4 +4166,82 @@ class AppLocalizationsJa extends AppLocalizations {
   String switch_neighborhood_success(String name) {
     return '$nameに切り替えました';
   }
+
+  @override
+  String get communityAll => 'All';
+
+  @override
+  String get communityQuestion => 'Question';
+
+  @override
+  String get communityRecommend => 'Tips';
+
+  @override
+  String get communityFree => 'Free';
+
+  @override
+  String get communityLostFound => 'Lost & Found';
+
+  @override
+  String get communityAlert => 'Alert';
+
+  @override
+  String get communityGeneral => 'General';
+
+  @override
+  String get communityWrite => 'Write';
+
+  @override
+  String get communityEmpty => 'No posts yet. Be the first!';
+
+  @override
+  String get communityPostTitle => 'Post';
+
+  @override
+  String get communityNoComments => 'No comments yet';
+
+  @override
+  String get communityAddComment => 'Add a comment…';
+
+  @override
+  String get communityNewPost => 'New post';
+
+  @override
+  String get communityPublish => 'Post';
+
+  @override
+  String get communityBodyHint => 'Share something with your neighborhood…';
+
+  @override
+  String get communityPostFailed => 'Failed to post';
+
+  @override
+  String get errorGeneric => 'Something went wrong';
+
+  @override
+  String get tabHome => 'Home';
+
+  @override
+  String get tabCommunity => 'Community';
+
+  @override
+  String get tabNearby => 'Nearby';
+
+  @override
+  String get tabMy => 'My';
+
+  @override
+  String get nearbyServices => 'Services';
+
+  @override
+  String get nearbyRealEstate => 'Real Estate';
+
+  @override
+  String get nearbyJobs => 'Jobs';
+
+  @override
+  String get nearbyShops => 'Local shops';
+
+  @override
+  String get nearbyComingSoon => 'Coming soon';
 }
