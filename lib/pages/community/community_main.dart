@@ -29,7 +29,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/community/new'),
+        onPressed: () => context.push('/community/new?districtId=${widget.districtId ?? ''}'),
         icon: const Icon(Icons.edit),
         label: Text(l?.communityWrite ?? 'Write'),
       ),

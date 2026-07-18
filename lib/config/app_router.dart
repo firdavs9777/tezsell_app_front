@@ -42,6 +42,8 @@ import '../pages/analytics/seller_analytics_screen.dart';
 import '../pages/onboarding/location_setup.dart';
 import '../pages/onboarding/welcome_screen.dart';
 import '../pages/location/neighborhood_management_page.dart';
+import '../pages/community/community_detail.dart';
+import '../pages/community/community_composer.dart';
 
 // Providers
 import '../service/authentication_service.dart';
@@ -369,6 +371,25 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/analytics',
         name: 'analytics',
         builder: (context, state) => const SellerAnalyticsScreen(),
+      ),
+      // Community routes
+      GoRoute(
+        path: '/community/new',
+        name: 'community-new',
+        builder: (context, state) {
+          final districtIdStr = state.uri.queryParameters['districtId'];
+          final districtId = (districtIdStr != null && districtIdStr.isNotEmpty)
+              ? int.tryParse(districtIdStr)
+              : null;
+          return CommunityComposer(districtId: districtId);
+        },
+      ),
+      GoRoute(
+        path: '/community/:id',
+        name: 'community-detail',
+        builder: (context, state) => CommunityDetail(
+          postId: int.parse(state.pathParameters['id']!),
+        ),
       ),
     ],
   );
