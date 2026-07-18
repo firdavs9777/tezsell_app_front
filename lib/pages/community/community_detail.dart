@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/community/community_labels.dart';
 import 'package:app/providers/provider_models/community_comment_model.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
@@ -31,25 +32,6 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  String _categoryLabel(AppLocalizations? l, String key) {
-    switch (key) {
-      case 'all':
-        return l?.communityAll ?? 'All';
-      case 'question':
-        return l?.communityQuestion ?? 'Question';
-      case 'recommend':
-        return l?.communityRecommend ?? 'Tips';
-      case 'free':
-        return l?.communityFree ?? 'Free';
-      case 'lostfound':
-        return l?.communityLostFound ?? 'Lost & Found';
-      case 'alert':
-        return l?.communityAlert ?? 'Alert';
-      default:
-        return l?.communityGeneral ?? 'General';
-    }
   }
 
   Future<void> _toggleLike(CommunityPost current) async {
@@ -103,6 +85,11 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
                 FutureBuilder<CommunityPost>(
                   future: _post,
                   builder: (context, snap) {
+                    if (snap.hasError) {
+                      return Center(
+                        child: Text(l?.errorGeneric ?? 'Something went wrong'),
+                      );
+                    }
                     if (!snap.hasData) {
                       return const Padding(
                         padding: EdgeInsets.symmetric(vertical: 24),
@@ -127,7 +114,7 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
                             Text(post.authorName, style: theme.textTheme.labelLarge),
                             const Spacer(),
                             Chip(
-                              label: Text(_categoryLabel(l, post.category)),
+                              label: Text(communityCategoryLabel(l, post.category)),
                               visualDensity: VisualDensity.compact,
                               padding: EdgeInsets.zero,
                             ),
@@ -168,6 +155,11 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
                 FutureBuilder<List<CommunityComment>>(
                   future: _comments,
                   builder: (context, snap) {
+                    if (snap.hasError) {
+                      return Center(
+                        child: Text(l?.errorGeneric ?? 'Something went wrong'),
+                      );
+                    }
                     if (!snap.hasData) {
                       return const Padding(
                         padding: EdgeInsets.symmetric(vertical: 24),

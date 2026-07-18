@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/community/community_labels.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
 
@@ -19,18 +20,6 @@ class CommunityMain extends ConsumerStatefulWidget {
 
 class _CommunityMainState extends ConsumerState<CommunityMain> {
   String _category = 'all';
-
-  String _label(AppLocalizations? l, String key) {
-    switch (key) {
-      case 'all': return l?.communityAll ?? 'All';
-      case 'question': return l?.communityQuestion ?? 'Question';
-      case 'recommend': return l?.communityRecommend ?? 'Tips';
-      case 'free': return l?.communityFree ?? 'Free';
-      case 'lostfound': return l?.communityLostFound ?? 'Lost & Found';
-      case 'alert': return l?.communityAlert ?? 'Alert';
-      default: return l?.communityGeneral ?? 'General';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +46,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                 final key = communityCategories[i];
                 final selected = key == _category;
                 return ChoiceChip(
-                  label: Text(_label(l, key)),
+                  label: Text(communityCategoryLabel(l, key)),
                   selected: selected,
                   onSelected: (_) => setState(() => _category = key),
                 );
@@ -77,7 +66,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                         itemCount: posts.length,
                         itemBuilder: (context, i) => _PostCard(
                           post: posts[i],
-                          categoryLabel: _label(l, posts[i].category),
+                          categoryLabel: communityCategoryLabel(l, posts[i].category),
                           onTap: () => context.push('/community/${posts[i].id}'),
                         ),
                       ),
