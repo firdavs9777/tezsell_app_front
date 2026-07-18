@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-07-19):** absorbed into [`2026-07-19-chat-advanced-karrot-design.md`](2026-07-19-chat-advanced-karrot-design.md). Do not execute the 2026-06-14 plan.
+
 # Chat International Upgrade — Design Spec
 
 **Date:** 2026-06-14
