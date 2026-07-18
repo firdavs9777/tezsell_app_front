@@ -1,7 +1,7 @@
 import 'package:app/pages/chat/chat_list.dart';
-import 'package:app/pages/service/main/main_service.dart';
+import 'package:app/pages/community/community_main.dart';
+import 'package:app/pages/nearby/nearby_hub.dart';
 import 'package:app/pages/products/products_list.dart';
-import 'package:app/pages/real_estate/real_estate_main.dart';
 import 'package:app/pages/shaxsiy/shaxsiy.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
@@ -94,7 +94,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
         case 0:
           ref.invalidate(productsProvider);
           break;
-        case 1:
+        case 2:
           ref.invalidate(servicesProvider);
           break;
       }
@@ -386,46 +386,30 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   void _navigateToSearch(String regionName, String districtName) {
     if (_selectedPageIndex == 0) {
       context.push('/product/search?region=$regionName&district=$districtName');
-    } else if (_selectedPageIndex == 1) {
-      context.push('/service/search?region=$regionName&district=$districtName');
-    } else if (_selectedPageIndex == 3) {
-      context.push('/real-estate/search');
     }
   }
 
   bool _shouldShowSearchFAB() {
-    return _selectedPageIndex == 0 ||
-        _selectedPageIndex == 1 ||
-        _selectedPageIndex == 3;
+    // Home searches products; Nearby routes search from inside its sub-views.
+    return _selectedPageIndex == 0;
   }
 
   bool _shouldShowNotification() {
-    return _selectedPageIndex >= 0 && _selectedPageIndex <= 3;
+    // Home + Nearby show a bell; Community bell is deferred to the deep-spec.
+    return _selectedPageIndex == 0 || _selectedPageIndex == 2;
   }
 
   StateNotifierProvider<NotificationNotifier, NotificationState>?
   _getNotificationProvider() {
-    StateNotifierProvider<NotificationNotifier, NotificationState>? provider;
     switch (_selectedPageIndex) {
       case 0:
-        provider = productNotificationProvider;
-        break;
-      case 1:
-        provider = serviceNotificationProvider;
-        break;
+        return productNotificationProvider;
       case 2:
-        provider = chatNotificationProvider;
-        break;
-      case 3:
-        provider = realEstateNotificationProvider;
-        break;
+        // Nearby: reuse the services notification stream in v1.
+        return serviceNotificationProvider;
       default:
-        provider = null;
+        return null;
     }
-    print(
-      '🔔 AppBar: Selected page index=$_selectedPageIndex, provider=${provider?.hashCode}',
-    );
-    return provider;
   }
 
   PageInfo _getPageInfo(
@@ -438,7 +422,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     switch (index) {
       case 0:
         return PageInfo(
-          title: localizations?.productsTitle ?? 'Products',
+          title: localizations?.tabHome ?? 'Home',
           widget: NeighborhoodGate(
             child: ProductsList(
               regionName: regionName,
@@ -449,41 +433,39 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
         );
       case 1:
         return PageInfo(
-          title: localizations?.servicesTitle ?? 'Services',
+          title: localizations?.tabCommunity ?? 'Community',
           widget: NeighborhoodGate(
-            child: ServiceMain(
-              regionName: regionName,
-              districtName: districtName,
-              districtId: districtId,
-            ),
+            child: CommunityMain(districtId: districtId),
           ),
         );
       case 2:
         return PageInfo(
-          title: localizations?.message ?? 'Chat',
-          widget: const MessagesList(),
-        );
-      case 3:
-        return PageInfo(
-          title: localizations?.realEstate ?? 'Real Estate',
-          widget: RealEstateMain(
+          title: localizations?.tabNearby ?? 'Nearby',
+          widget: NearbyHub(
             regionName: regionName,
             districtName: districtName,
             districtId: districtId,
           ),
         );
+      case 3:
+        return PageInfo(
+          title: localizations?.message ?? 'Chat',
+          widget: const MessagesList(),
+        );
       case 4:
         return PageInfo(
-          title: localizations?.profile ?? 'Profile',
+          title: localizations?.tabMy ?? 'My',
           widget: const ShaxsiyPage(),
         );
       default:
         return PageInfo(
-          title: localizations?.productsTitle ?? 'Products',
-          widget: ProductsList(
-            regionName: regionName,
-            districtName: districtName,
-            districtId: districtId,
+          title: localizations?.tabHome ?? 'Home',
+          widget: NeighborhoodGate(
+            child: ProductsList(
+              regionName: regionName,
+              districtName: districtName,
+              districtId: districtId,
+            ),
           ),
         );
     }
@@ -527,11 +509,11 @@ class _ModernBottomNav extends StatelessWidget {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
 
     final items = [
-      _NavItemData(Icons.storefront_outlined, Icons.storefront, l?.main ?? 'Home'),
-      _NavItemData(Icons.handyman_outlined, Icons.handyman, l?.servicesTitle ?? 'Services'),
+      _NavItemData(Icons.storefront_outlined, Icons.storefront, l?.tabHome ?? 'Home'),
+      _NavItemData(Icons.groups_outlined, Icons.groups, l?.tabCommunity ?? 'Community'),
+      _NavItemData(Icons.explore_outlined, Icons.explore, l?.tabNearby ?? 'Nearby'),
       _NavItemData(Icons.chat_bubble_outline_rounded, Icons.chat_bubble_rounded, l?.chat ?? 'Chat'),
-      _NavItemData(Icons.apartment_outlined, Icons.apartment, l?.realEstate ?? 'Estate'),
-      _NavItemData(Icons.person_outline_rounded, Icons.person_rounded, l?.profile ?? 'Profile'),
+      _NavItemData(Icons.person_outline_rounded, Icons.person_rounded, l?.tabMy ?? 'My'),
     ];
 
     return Container(
@@ -569,7 +551,7 @@ class _ModernBottomNav extends StatelessWidget {
             children: List.generate(items.length, (i) {
               final item = items[i];
               final isSelected = selectedIndex == i;
-              final badgeCount = i == 2 ? unreadChatCount : 0;
+              final badgeCount = i == 3 ? unreadChatCount : 0;
 
               return Expanded(
                 child: GestureDetector(
