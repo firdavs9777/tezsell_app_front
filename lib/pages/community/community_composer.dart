@@ -34,8 +34,9 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
             body: body,
             districtId: widget.districtId,
           );
+      if (!mounted) return;
       ref.invalidate(communityFeedProvider);
-      if (mounted) Navigator.of(context).pop(true);
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

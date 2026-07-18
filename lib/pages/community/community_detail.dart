@@ -62,9 +62,17 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
     setState(() => _sending = true);
     try {
       await ref.read(communityProvider).addComment(widget.postId, text);
+      if (!mounted) return;
       _controller.clear();
       setState(
           () => _comments = ref.read(communityProvider).getComments(widget.postId));
+    } catch (_) {
+      if (mounted) {
+        final l = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l?.communityPostFailed ?? 'Failed to post')),
+        );
+      }
     } finally {
       if (mounted) setState(() => _sending = false);
     }
