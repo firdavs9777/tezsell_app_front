@@ -8,6 +8,7 @@
 const String baseUrl = 'https://api.webtezsell.com';
 const String PRODUCTS_URL = '/products/api/products/';
 const String SERVICES_URL = '/services/api/services';
+const String COMMUNITY_URL = '/community/api/posts';
 const String REGISTER_URL = '/accounts/register/';
 const String LOGIN_URL = '/accounts/login/';
 const String USER_INFO = '/accounts/user/info/';
