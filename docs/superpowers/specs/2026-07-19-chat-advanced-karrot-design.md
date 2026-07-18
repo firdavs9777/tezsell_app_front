@@ -90,9 +90,10 @@ date separators partially present.
 ### 4.3 Reliability core (absorbed from June spec)
 
 - **Optimistic send + `local_id`:** client generates `local_id` (uuid); WS/REST
-  send carries it; backend stores nothing but echoes it in the ack and in the
-  `new_message` broadcast; client reconciles optimistic bubble → real message,
-  dedups on reconnect replay.
+  send carries it; backend persists it on the message (see §4.4) and echoes it
+  in the ack and in the `new_message` broadcast; client reconciles optimistic
+  bubble → real message, dedups on reconnect replay (same `local_id` in a room
+  → not re-created).
 - **Offline outbox:** unsent messages persisted in `shared_preferences`
   (decision carried from June: queue is small; no sqflite), retried with
   backoff on reconnect; failed state on bubble with tap-to-retry.
@@ -110,6 +111,8 @@ Backend additions:
 - `Message.is_pinned`, `pinned_at`, `pinned_by` (FK User, null=True).
 - `Message.local_id = CharField(max_length=64, null=True, db_index=True)`
   (echo/dedup support; unique per room enforced app-side).
+- `Message.metadata = JSONField(default=dict, blank=True)` — extensible
+  per-message data; v1 uses it for voice waveform amplitudes.
 - `Message.deleted_for = M2M(User)` — delete-for-me; `is_deleted` = delete
   for everyone (content blanked, bubble shows "Message deleted").
 - Edit endpoint (sender-only, **15-min window**, blocked if deleted);
