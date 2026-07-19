@@ -235,6 +235,10 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                           final post = posts[i];
                           final isOwn = currentUserId != null && post.authorId == currentUserId;
                           return _PostCard(
+                            // Stateful card (holds in-flight poll vote state):
+                            // key by post id so list reorders can't attach
+                            // one post's vote UI to another slot.
+                            key: ValueKey(post.id),
                             post: post,
                             categoryLabel: communityCategoryLabel(l, post.category),
                             isOwn: isOwn,
