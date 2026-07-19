@@ -14,7 +14,11 @@ class ConnectionBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       stream: ConnectionStateController.instance.shouldShowBanner,
-      initialData: false,
+      // 🔥 FIX: Seed with the controller's actual current state instead of
+      // a hardcoded `false` — otherwise a banner already armed before this
+      // widget was built (e.g. offline since app launch) wouldn't show until
+      // the next state transition fires a new stream event.
+      initialData: ConnectionStateController.instance.bannerShown,
       builder: (context, snapshot) {
         final show = snapshot.data ?? false;
         return AnimatedSize(

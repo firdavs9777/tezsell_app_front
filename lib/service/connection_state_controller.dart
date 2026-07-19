@@ -36,6 +36,22 @@ class ConnectionStateController {
   ConnectionStateController._internal() {
     _connectivitySub =
         Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
+
+    // 🔥 FIX: Seed real connectivity instead of assuming online — otherwise
+    // a device that's already offline at construction reports `connected`
+    // until the next connectivity change event fires.
+    Connectivity().checkConnectivity().then((results) {
+      final networkUp = results.any((r) => r != ConnectivityResult.none);
+      if (_networkUp == networkUp) return;
+      _networkUp = networkUp;
+      _recompute();
+    });
+
+    // 🔥 FIX: If the socket is already down at construction (e.g. app
+    // launched with no network), `_recompute()` has never run yet, so the
+    // 3s banner countdown would otherwise never arm until the next state
+    // change. Arm it explicitly after initial state is computed.
+    _updateBannerTimer();
   }
 
   static final ConnectionStateController instance =
@@ -65,10 +81,24 @@ class ConnectionStateController {
   /// upon reconnecting.
   Stream<bool> get shouldShowBanner => _bannerController.stream;
 
+  /// Current banner-shown state, synchronously readable. Used to seed
+  /// `StreamBuilder.initialData` so a widget built after the banner has
+  /// already armed (e.g. offline since app launch) shows it immediately
+  /// instead of waiting for the next stream event.
+  bool get bannerShown => _bannerShown;
+
   /// Called by socket services (chat list / chat room) to report whether
   /// the underlying WebSocket is currently up.
   void setSocketState(bool up) {
-    if (_socketUp == up) return;
+    if (_socketUp == up) {
+      // 🔥 FIX: No state change, but don't let this be a pure no-op — if
+      // we're still down and the countdown timer somehow isn't running
+      // (e.g. it fired once already without the state ever flipping to
+      // connected), make sure it (re)arms rather than leaving the banner
+      // stuck un-shown forever.
+      if (!up) _updateBannerTimer();
+      return;
+    }
     _socketUp = up;
     _recompute();
   }

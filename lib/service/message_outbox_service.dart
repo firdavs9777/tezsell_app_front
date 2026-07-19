@@ -114,6 +114,17 @@ class MessageOutboxService {
     await _writeAll(entries);
   }
 
+  /// Look up the currently-queued entry for a given `localId`, if any.
+  /// Used to carry forward state (e.g. `attempts`) when re-enqueuing after
+  /// a timeout, so re-enqueuing doesn't reset the retry counter.
+  OutboxEntry? getByLocalId(String localId) {
+    final entries = _readAll();
+    for (final e in entries) {
+      if (e.localId == localId) return e;
+    }
+    return null;
+  }
+
   /// Pending entries for a room, oldest first (drain order).
   List<OutboxEntry> pendingFor(int roomId) {
     final entries = _readAll().where((e) => e.roomId == roomId).toList();

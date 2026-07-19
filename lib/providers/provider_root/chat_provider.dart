@@ -796,11 +796,17 @@ class ChatNotifier extends StateNotifier<ChatState> {
       (m) => m.copyWith(deliveryStatus: DeliveryStatus.failed),
     );
     final outbox = await _ensureOutbox();
+    // 🔥 FIX: Carry forward the existing attempt count for this localId, if
+    // already queued. Without this, every re-enqueue (e.g. a fresh 10s ack
+    // timeout after a drain retry) resets attempts to 0 and `maxAttempts`
+    // never triggers, so a permanently-unreachable message retries forever.
+    final existing = outbox.getByLocalId(localId);
     await outbox.enqueue(OutboxEntry(
       localId: localId,
       roomId: roomId,
       content: content,
       createdAt: DateTime.now(),
+      attempts: existing?.attempts ?? 0,
     ));
   }
 
@@ -1123,6 +1129,52 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   }
 
+  /// Builds an updated `chatRooms` list reflecting [message] as the newest
+  /// message in its room: refreshes `lastMessagePreview`/`lastMessageTimestamp`
+  /// and bumps `unreadCount` when appropriate. Shared by both the normal
+  /// incoming-message path and the sender's own ack replace-in-place path,
+  /// since the backend only pushes `new_message_notification` to OTHER
+  /// participants — the sender must update their own chat-list preview
+  /// locally on ack.
+  List<ChatRoom> _updatedChatRoomsWithPreview(ChatMessage message) {
+    final currentRoomId = state.currentChatRoomId;
+    final isFromOtherUser = message.sender.id != state.currentUserId;
+
+    return state.chatRooms.map((room) {
+      if (room.id == currentRoomId) {
+        // Update last message preview and timestamp
+        final newPreview = message.content ??
+            (message.messageType == MessageType.image
+                ? '📷 Photo'
+                : message.messageType == MessageType.voice
+                    ? '🎤 Voice message'
+                    : room.lastMessagePreview);
+
+        // 🔥 FIX: Increment unread_count only if:
+        // 1. Message is from another user
+        // 2. User is NOT currently viewing this chat room
+        final shouldIncrementUnread = isFromOtherUser &&
+            (currentRoomId == null || currentRoomId != room.id);
+
+        return ChatRoom(
+          id: room.id,
+          name: room.name,
+          createdAt: room.createdAt,
+          updatedAt: room.updatedAt,
+          participants: room.participants,
+          lastMessagePreview: newPreview,
+          lastMessageTimestamp: message.timestamp,
+          unreadCount: shouldIncrementUnread
+              ? room.unreadCount + 1
+              : room.unreadCount,
+          isGroup: room.isGroup,
+          isPinned: room.isPinned,
+        );
+      }
+      return room;
+    }).toList();
+  }
+
   void _handleChatRoomMessage(Map<String, dynamic> data) {
 
     switch (data['type']) {
@@ -1146,7 +1198,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
                     ? DeliveryStatus.sent
                     : message.deliveryStatus,
               );
-              _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+              // 🔥 FIX: The backend only pushes `new_message_notification` to
+              // OTHER participants, so the sender's own chat-list preview
+              // never refreshes on ack unless we update it here too.
+              final updatedChatRoomsForAck = _updatedChatRoomsWithPreview(message);
+              _safeUpdateState((s) => s.copyWith(
+                messages: updatedMessages,
+                chatRooms: updatedChatRoomsForAck,
+              ));
               _ensureOutbox().then((o) => o.remove(message.localId!));
               return;
             }
@@ -1197,45 +1256,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           // 🔥 NEW: Update unread_count and last message preview in chat room list
           // When a message arrives, update the corresponding chat room
-          final currentRoomId = state.currentChatRoomId;
-          
-          List<ChatRoom> updatedChatRooms = state.chatRooms;
+          final updatedChatRooms = _updatedChatRoomsWithPreview(message);
 
-          // Update only the chat room we're currently in
-          updatedChatRooms = state.chatRooms.map((room) {
-            if (room.id == currentRoomId) {
-              // Update last message preview and timestamp
-              final newPreview = message.content ?? 
-                  (message.messageType == MessageType.image 
-                      ? '📷 Photo' 
-                      : message.messageType == MessageType.voice 
-                          ? '🎤 Voice message'
-                          : room.lastMessagePreview);
-              
-              // 🔥 FIX: Increment unread_count only if:
-              // 1. Message is from another user
-              // 2. User is NOT currently viewing this chat room
-              final shouldIncrementUnread = isFromOtherUser && 
-                  (currentRoomId == null || currentRoomId != room.id);
-              
-              return ChatRoom(
-                id: room.id,
-                name: room.name,
-                createdAt: room.createdAt,
-                updatedAt: room.updatedAt,
-                participants: room.participants,
-                lastMessagePreview: newPreview,
-                lastMessageTimestamp: message.timestamp,
-                unreadCount: shouldIncrementUnread
-                    ? room.unreadCount + 1
-                    : room.unreadCount,
-                isGroup: room.isGroup,
-                isPinned: room.isPinned,
-              );
-            }
-            return room;
-          }).toList();
-          
           _safeUpdateState((s) => s.copyWith(
             messages: updatedMessages,
             chatRooms: updatedChatRooms,

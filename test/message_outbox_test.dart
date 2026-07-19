@@ -127,6 +127,46 @@ void main() {
     expect(outbox.pendingFor(2).map((e) => e.localId).toList(), ['b']);
   });
 
+  test('getByLocalId returns the queued entry, or null if absent', () async {
+    final prefs = await SharedPreferences.getInstance();
+    final outbox = MessageOutboxService(prefs);
+
+    await outbox.enqueue(entry('a'));
+
+    expect(outbox.getByLocalId('a')?.localId, 'a');
+    expect(outbox.getByLocalId('does-not-exist'), isNull);
+  });
+
+  test(
+      'carry-forward re-enqueue (mirrors _markFailedAndEnqueue) preserves '
+      'attempts instead of resetting it, so maxAttempts is reachable', () async {
+    final prefs = await SharedPreferences.getInstance();
+    final outbox = MessageOutboxService(prefs);
+
+    // Simulate an entry that has already failed 3 times.
+    await outbox.enqueue(entry('a'));
+    for (var i = 0; i < 3; i++) {
+      await outbox.incrementAttempts('a');
+    }
+    expect(outbox.getByLocalId('a')?.attempts, 3);
+
+    // Simulate another ack-timeout re-enqueue for the same localId, using
+    // the carry-forward pattern from ChatProvider._markFailedAndEnqueue:
+    // look up the existing entry first and carry its attempts forward,
+    // rather than constructing a fresh OutboxEntry(attempts: 0).
+    final existing = outbox.getByLocalId('a');
+    await outbox.enqueue(OutboxEntry(
+      localId: 'a',
+      roomId: 1,
+      content: 'hello a',
+      createdAt: DateTime(2026, 1, 1),
+      attempts: existing?.attempts ?? 0,
+    ));
+
+    // Attempts must survive the re-enqueue, not reset to 0.
+    expect(outbox.getByLocalId('a')?.attempts, 3);
+  });
+
   test('clear empties the outbox', () async {
     final prefs = await SharedPreferences.getInstance();
     final outbox = MessageOutboxService(prefs);
