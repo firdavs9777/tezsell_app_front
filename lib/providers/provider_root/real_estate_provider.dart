@@ -655,6 +655,65 @@ class RealEstateService {
   }
 
   // ============= MAP METHODS =============
+
+  /// Fetch lightweight map pins within the given viewport bounds, via the
+  /// purpose-built `PropertyMapBoundsView` endpoint (capped 1000 server-side).
+  /// Optional [propertyType]/[listingType] mirror the browse tabs so the map
+  /// stays in sync with whatever filter is active in list mode.
+  Future<List<RealEstateMapPin>> getMapBounds({
+    required double north,
+    required double south,
+    required double east,
+    required double west,
+    String? propertyType,
+    String? listingType,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'north': north.toString(),
+        'south': south.toString(),
+        'east': east.toString(),
+        'west': west.toString(),
+      };
+      if (propertyType != null && propertyType.isNotEmpty) {
+        queryParams['property_type'] = propertyType;
+      }
+      if (listingType != null && listingType.isNotEmpty) {
+        queryParams['listing_type'] = listingType;
+      }
+
+      final response = await dio.get(
+        AppConfig.realEstateMapBoundsPath,
+        queryParameters: queryParams,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['success'] == true && data['data'] != null) {
+          final properties = data['data']['properties'] as List? ?? [];
+          return properties
+              .map((p) => RealEstateMapPin.fromJson(p as Map<String, dynamic>))
+              .toList();
+        }
+        return [];
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Failed to load map bounds: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> getMapProperties({
     required double north,
     required double south,

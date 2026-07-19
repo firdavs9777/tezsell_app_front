@@ -160,6 +160,91 @@ double? _toDouble(dynamic v) {
   return double.tryParse(v.toString());
 }
 
+/// Lightweight pin for the real-estate map browse view (Plan B Task 4).
+/// Mirrors the backend's `PropertyMapSerializer` payload from
+/// `GET /real_estate/api/map/bounds/` — a much smaller field set than the
+/// full [RealEstate] list/detail serializers, capped at 1000 results server-side.
+class RealEstateMapPin {
+  const RealEstateMapPin({
+    required this.id,
+    required this.title,
+    required this.latitude,
+    required this.longitude,
+    required this.price,
+    required this.pricePerSqm,
+    required this.currency,
+    required this.propertyType,
+    required this.listingType,
+    required this.bedrooms,
+    required this.squareMeters,
+    required this.district,
+    required this.city,
+    required this.isFeatured,
+    this.mainImage,
+  });
+
+  final String id;
+  final String title;
+  final double latitude;
+  final double longitude;
+  final String price;
+  final String pricePerSqm;
+  final String currency;
+  final String propertyType;
+  final String listingType;
+  final int bedrooms;
+  final int squareMeters;
+  final String district;
+  final String city;
+  final bool isFeatured;
+  final String? mainImage;
+
+  factory RealEstateMapPin.fromJson(Map<String, dynamic> json) {
+    return RealEstateMapPin(
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      latitude: _toDouble(json['latitude']) ?? 0.0,
+      longitude: _toDouble(json['longitude']) ?? 0.0,
+      price: (json['price'] ?? '0').toString(),
+      pricePerSqm: (json['price_per_sqm'] ?? '0').toString(),
+      currency: (json['currency'] ?? 'UZS').toString(),
+      propertyType: (json['property_type'] ?? '').toString(),
+      listingType: (json['listing_type'] ?? '').toString(),
+      bedrooms: json['bedrooms'] is int
+          ? json['bedrooms']
+          : int.tryParse(json['bedrooms']?.toString() ?? '0') ?? 0,
+      squareMeters: json['square_meters'] is int
+          ? json['square_meters']
+          : int.tryParse(json['square_meters']?.toString() ?? '0') ?? 0,
+      district: (json['district'] ?? '').toString(),
+      city: (json['city'] ?? '').toString(),
+      isFeatured: json['is_featured'] ?? false,
+      mainImage: json['main_image'] as String?,
+    );
+  }
+
+  /// Compact price label for the map pill marker, e.g. "$420", "1.2M UZS".
+  String get priceLabel {
+    final value = double.tryParse(price) ?? 0.0;
+    final isUsd = currency.toUpperCase() == 'USD';
+    final symbol = isUsd ? '\$' : '';
+    String compact;
+    if (value >= 1000000) {
+      final m = value / 1000000;
+      compact = '${m % 1 == 0 ? m.toStringAsFixed(0) : m.toStringAsFixed(1)}M';
+    } else if (value >= 1000) {
+      final k = value / 1000;
+      compact = '${k % 1 == 0 ? k.toStringAsFixed(0) : k.toStringAsFixed(1)}K';
+    } else {
+      compact = value.toStringAsFixed(0);
+    }
+    return isUsd ? '$symbol$compact' : '$compact $currency';
+  }
+
+  /// Full price line for the preview card, e.g. "420,000 USD".
+  String get priceDisplay => '$price $currency';
+}
+
 class UserLocation {
   const UserLocation({
     required this.id,

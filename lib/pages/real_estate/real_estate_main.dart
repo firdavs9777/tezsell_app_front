@@ -1,5 +1,6 @@
 import 'package:app/pages/real_estate/real_estate_detail.dart';
 import 'package:app/pages/real_estate/property_create_page.dart';
+import 'package:app/pages/real_estate/real_estate_map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/widgets/fresh_nearest_toggle.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:latlong2/latlong.dart';
 
 class RealEstateMain extends ConsumerStatefulWidget {
   final String regionName;
@@ -27,6 +29,8 @@ class RealEstateMain extends ConsumerStatefulWidget {
   ConsumerState<RealEstateMain> createState() => _RealEstateMainState();
 }
 
+enum _BrowseMode { list, map }
+
 class _RealEstateMainState extends ConsumerState<RealEstateMain>
     with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
@@ -36,6 +40,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   bool _isLoadingMore = false;
   bool _hasMoreData = true;
   bool _isInitialLoading = true;
+  _BrowseMode _browseMode = _BrowseMode.list;
 
   String _selectedPropertyType = '';
   String _selectedListingType = '';
@@ -366,17 +371,23 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     ),
                   ),
 
-                // Sort toggle (Fresh | Nearest)
+                // Browse mode (List | Map) + Sort toggle (Fresh | Nearest)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FreshNearestToggle(
-                      mode: _sortMode,
-                      nearestEnabled: hasGeoCenter,
-                      onChanged: _onSortChanged,
-                    ),
+                  child: Row(
+                    children: [
+                      _RealEstateBrowseModeToggle(
+                        mode: _browseMode,
+                        onChanged: (m) => setState(() => _browseMode = m),
+                      ),
+                      const Spacer(),
+                      FreshNearestToggle(
+                        mode: _sortMode,
+                        nearestEnabled: hasGeoCenter,
+                        onChanged: _onSortChanged,
+                      ),
+                    ],
                   ),
                 ),
 
@@ -548,6 +559,10 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       );
     }
 
+    if (_browseMode == _BrowseMode.map) {
+      return _buildPropertiesMap();
+    }
+
     return ListView.builder(
       controller: _scrollController,
       physics: AlwaysScrollableScrollPhysics(),
@@ -584,6 +599,48 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           ),
         );
       },
+    );
+  }
+
+  /// Karrot-style map browse (Plan B Task 4). Initial camera priority:
+  /// active neighborhood center (zoom ~13) → first loaded property's
+  /// coordinates → a country-level default (Tashkent, matching the
+  /// default used by [ItemsMapView] elsewhere in the app).
+  Widget _buildPropertiesMap() {
+    final active = ref.read(activeNeighborhoodProvider);
+
+    LatLng center;
+    double zoom;
+    if (active != null) {
+      center = LatLng(
+          active.neighborhood.centroidLat, active.neighborhood.centroidLng);
+      zoom = 13.0;
+    } else {
+      final withCoords = _allProperties.where((p) {
+        final lat = double.tryParse(p.latitude);
+        final lng = double.tryParse(p.longitude);
+        return lat != null && lng != null && lat != 0 && lng != 0;
+      });
+      if (withCoords.isNotEmpty) {
+        final first = withCoords.first;
+        center =
+            LatLng(double.parse(first.latitude), double.parse(first.longitude));
+        zoom = 13.0;
+      } else {
+        // Country-level default.
+        center = const LatLng(41.3, 69.24);
+        zoom = 6.0;
+      }
+    }
+
+    return RealEstateMapView(
+      key: ValueKey('re_map_${active?.neighborhood.id ?? 'default'}'),
+      initialCenter: center,
+      initialZoom: zoom,
+      propertyType:
+          _selectedPropertyType.isNotEmpty ? _selectedPropertyType : null,
+      listingType:
+          _selectedListingType.isNotEmpty ? _selectedListingType : null,
     );
   }
 
@@ -828,6 +885,54 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           ),
         ),
       ],
+    );
+  }
+}
+
+/// List/Map browse toggle — mirrors `_ProductBrowseModeToggle` (products)
+/// and `_BrowseModeToggle` (services) so all three verticals share the same
+/// icons/position/behavior (Plan B Task 4).
+class _RealEstateBrowseModeToggle extends StatelessWidget {
+  const _RealEstateBrowseModeToggle(
+      {required this.mode, required this.onChanged});
+
+  final _BrowseMode mode;
+  final ValueChanged<_BrowseMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget btn(IconData icon, _BrowseMode m) {
+      final active = mode == m;
+      return InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => onChanged(m),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: active ? colorScheme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon,
+              size: 18,
+              color: active ? colorScheme.onPrimary : colorScheme.primary),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          btn(Icons.list, _BrowseMode.list),
+          btn(Icons.map_outlined, _BrowseMode.map),
+        ],
+      ),
     );
   }
 }
