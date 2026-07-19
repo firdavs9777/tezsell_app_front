@@ -32,6 +32,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
   static const _recentSearchesPrefsKey = 're_recent_searches';
   static const _maxRecentSearches = 8;
   static const _pageSize = 12;
+  static const _minQueryLength = 2;
 
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -142,7 +143,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
     setState(() {}); // toggle the clear button / recent-searches visibility
     final query = value.trim();
 
-    if (query.length < 2) {
+    if (query.length < _minQueryLength) {
       // Not yet enough to search — don't fire a request, don't show stale
       // results either. Covers both the fully-empty (recent searches) case
       // and a 1-char in-progress query.
@@ -163,15 +164,14 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
   void _onSubmitted(String value) {
     _debounce?.cancel();
     final query = value.trim();
-    if (query.isEmpty) return;
-    unawaited(_recordRecentSearch(query));
+    if (query.length < _minQueryLength) return;
     _performSearch(query);
   }
 
   void _onFilterChanged() {
     _debounce?.cancel();
     final query = _controller.text.trim();
-    if (query.length >= 2) {
+    if (query.length >= _minQueryLength) {
       _performSearch(query);
     }
   }
@@ -222,7 +222,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
     if (_isLoadingMore || !_hasMoreData || !_hasSearched) return;
     final gen = _searchGeneration;
     final query = _controller.text.trim();
-    if (query.length < 2) return;
+    if (query.length < _minQueryLength) return;
 
     setState(() => _isLoadingMore = true);
 
@@ -246,14 +246,14 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
         } else {
           _hasMoreData = false;
         }
-        _isLoadingMore = false;
       });
     } catch (e) {
       if (!mounted || gen != _searchGeneration) return;
       setState(() {
-        _isLoadingMore = false;
         _hasMoreData = false;
       });
+    } finally {
+      if (mounted && _isLoadingMore) setState(() => _isLoadingMore = false);
     }
   }
 
