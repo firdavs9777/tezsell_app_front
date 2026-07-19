@@ -10,6 +10,12 @@ class CommunityPost {
   final int commentCount;
   final bool isLiked;
   final DateTime createdAt;
+  final int viewCount;
+  final bool isEdited;
+
+  /// Raw poll payload (question/options/votes shape TBD) — parsed as-is for
+  /// now; Task C9 builds the typed poll model + voting UI on top of this.
+  final Map<String, dynamic>? poll;
 
   CommunityPost({
     required this.id,
@@ -23,6 +29,9 @@ class CommunityPost {
     required this.commentCount,
     required this.isLiked,
     required this.createdAt,
+    this.viewCount = 0,
+    this.isEdited = false,
+    this.poll,
   });
 
   factory CommunityPost.fromJson(Map<String, dynamic> json) {
@@ -44,14 +53,26 @@ class CommunityPost {
       isLiked: json['is_liked'] as bool? ?? false,
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? '') ??
           DateTime.now(),
+      viewCount: json['view_count'] as int? ?? 0,
+      isEdited: json['is_edited'] as bool? ?? false,
+      poll: json['poll'] as Map<String, dynamic>?,
     );
   }
 
-  CommunityPost copyWith({int? likeCount, bool? isLiked, int? commentCount}) {
+  CommunityPost copyWith({
+    String? category,
+    String? body,
+    int? likeCount,
+    bool? isLiked,
+    int? commentCount,
+    int? viewCount,
+    bool? isEdited,
+    Map<String, dynamic>? poll,
+  }) {
     return CommunityPost(
       id: id,
-      category: category,
-      body: body,
+      category: category ?? this.category,
+      body: body ?? this.body,
       authorId: authorId,
       authorName: authorName,
       regionName: regionName,
@@ -60,6 +81,9 @@ class CommunityPost {
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
       createdAt: createdAt,
+      viewCount: viewCount ?? this.viewCount,
+      isEdited: isEdited ?? this.isEdited,
+      poll: poll ?? this.poll,
     );
   }
 }

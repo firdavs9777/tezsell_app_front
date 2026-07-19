@@ -4252,6 +4252,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get communityMaxImages => 'Up to 5 photos';
 
   @override
+  String get communitySearchHint => 'Search posts…';
+
+  @override
   String get errorGeneric => 'Something went wrong';
 
   @override
@@ -4463,6 +4466,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sortNearest => 'Nearest';
+
+  @override
+  String get sortPopular => 'Popular';
+
+  @override
+  String get communityDeleteConfirm => 'Delete this post?';
 
   @override
   String distanceKm(String km) {

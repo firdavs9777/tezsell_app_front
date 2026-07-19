@@ -4391,6 +4391,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get communityMaxImages => 'До 5 фото';
 
   @override
+  String get communitySearchHint => 'Поиск постов…';
+
+  @override
   String get errorGeneric => 'Что-то пошло не так';
 
   @override
@@ -4604,6 +4607,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sortNearest => 'Сначала ближние';
+
+  @override
+  String get sortPopular => 'Популярные';
+
+  @override
+  String get communityDeleteConfirm => 'Удалить этот пост?';
 
   @override
   String distanceKm(String km) {

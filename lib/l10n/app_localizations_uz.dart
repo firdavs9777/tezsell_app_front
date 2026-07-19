@@ -4413,6 +4413,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get communityMaxImages => 'Ko\'pi bilan 5 ta rasm';
 
   @override
+  String get communitySearchHint => 'Postlarni qidirish…';
+
+  @override
   String get errorGeneric => 'Nimadir xato ketdi';
 
   @override
@@ -4627,6 +4630,12 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get sortNearest => 'Avval yaqinlari';
+
+  @override
+  String get sortPopular => 'Ommabop';
+
+  @override
+  String get communityDeleteConfirm => 'Bu postni o\'chirishmi?';
 
   @override
   String distanceKm(String km) {

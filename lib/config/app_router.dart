@@ -44,6 +44,8 @@ import '../pages/onboarding/welcome_screen.dart';
 import '../pages/location/neighborhood_management_page.dart';
 import '../pages/community/community_detail.dart';
 import '../pages/community/community_composer.dart';
+import '../pages/community/community_edit.dart';
+import '../providers/provider_models/community_post_model.dart';
 
 // Providers
 import '../service/authentication_service.dart';
@@ -389,6 +391,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'community-detail',
         builder: (context, state) => CommunityDetail(
           postId: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/community/:id/edit',
+        name: 'community-edit',
+        builder: (context, state) => CommunityEditPage(
+          post: state.extra as CommunityPost,
         ),
       ),
     ],

@@ -8344,6 +8344,12 @@ abstract class AppLocalizations {
   /// **'Up to 5 photos'**
   String get communityMaxImages;
 
+  /// Placeholder text for the community feed search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search posts…'**
+  String get communitySearchHint;
+
   /// Generic fallback error message
   ///
   /// In en, this message translates to:
@@ -8757,6 +8763,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nearest'**
   String get sortNearest;
+
+  /// Sort toggle option: most-liked/commented posts in the last 7 days first
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get sortPopular;
+
+  /// Confirmation prompt shown before deleting the current user's own community post
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this post?'**
+  String get communityDeleteConfirm;
 
   /// Distance label shown on a listing card
   ///

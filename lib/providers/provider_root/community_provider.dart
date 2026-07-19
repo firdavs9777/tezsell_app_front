@@ -14,10 +14,19 @@ class CommunityProvider {
     return {if (token != null) 'Authorization': 'Token $token'};
   }
 
-  Future<List<CommunityPost>> getFeed({int? districtId, String? category, int page = 1}) async {
+  Future<List<CommunityPost>> getFeed({
+    int? districtId,
+    String? category,
+    String? query,
+    String? sort,
+    int page = 1,
+  }) async {
     final qp = <String, String>{'page': '$page'};
     if (districtId != null) qp['district_id'] = '$districtId';
     if (category != null && category != 'all') qp['category'] = category;
+    final trimmedQuery = query?.trim();
+    if (trimmedQuery != null && trimmedQuery.length >= 2) qp['q'] = trimmedQuery;
+    if (sort == 'popular') qp['sort'] = 'popular';
     final uri = Uri.parse('$baseUrl$COMMUNITY_URL/').replace(queryParameters: qp);
     final resp = await http.get(uri, headers: await _authHeaders());
     if (resp.statusCode == 200) {
@@ -26,6 +35,60 @@ class CommunityProvider {
       return results.map((e) => CommunityPost.fromJson(e as Map<String, dynamic>)).toList();
     }
     throw Exception('Failed to load community feed (${resp.statusCode})');
+  }
+
+  /// Category post counts for the chip badges — six keys matching
+  /// [communityCategories] minus `all` (question/recommend/free/lostfound/
+  /// alert/general).
+  Future<Map<String, int>> getCounts({int? districtId}) async {
+    final qp = <String, String>{};
+    if (districtId != null) qp['district_id'] = '$districtId';
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/counts/')
+        .replace(queryParameters: qp.isEmpty ? null : qp);
+    final resp = await http.get(uri, headers: await _authHeaders());
+    if (resp.statusCode == 200) {
+      final data = json.decode(resp.body) as Map<String, dynamic>;
+      return data.map((k, v) => MapEntry(k, (v as num?)?.toInt() ?? 0));
+    }
+    throw Exception('Failed to load community counts (${resp.statusCode})');
+  }
+
+  /// Author-only edit of a post's body/category.
+  Future<CommunityPost> updatePost(
+    int postId, {
+    required String body,
+    required String category,
+  }) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final headers = await _authHeaders();
+    headers['Content-Type'] = 'application/json';
+    final resp = await http.patch(
+      uri,
+      headers: headers,
+      body: json.encode({'body': body, 'category': category}),
+    );
+    if (resp.statusCode == 200) {
+      return CommunityPost.fromJson(json.decode(resp.body) as Map<String, dynamic>);
+    }
+    throw Exception('Failed to update post (${resp.statusCode})');
+  }
+
+  /// Author-only delete of a post.
+  Future<void> deletePost(int postId) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final resp = await http.delete(uri, headers: await _authHeaders());
+    if (resp.statusCode != 200 && resp.statusCode != 204) {
+      throw Exception('Failed to delete post (${resp.statusCode})');
+    }
+  }
+
+  /// The signed-in user's id (mirrors the storage key `authentication_service`
+  /// writes on login), used to gate own-post edit/delete/report actions.
+  Future<int?> getCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('userId');
+    if (raw == null) return null;
+    return int.tryParse(raw);
   }
 
   Future<CommunityPost> createPost({
@@ -107,12 +170,31 @@ class CommunityProvider {
 
 final communityProvider = Provider<CommunityProvider>((ref) => CommunityProvider());
 
-typedef CommunityFeedArgs = ({int? districtId, String? category});
+typedef CommunityFeedArgs = ({
+  int? districtId,
+  String? category,
+  String? query,
+  String sort,
+});
 
 final communityFeedProvider =
     FutureProvider.family<List<CommunityPost>, CommunityFeedArgs>((ref, args) {
   return ref.read(communityProvider).getFeed(
         districtId: args.districtId,
         category: args.category,
+        query: args.query,
+        sort: args.sort,
       );
+});
+
+/// Category post counts for the chip badges, keyed by district.
+final communityCountsProvider =
+    FutureProvider.family<Map<String, int>, int?>((ref, districtId) {
+  return ref.read(communityProvider).getCounts(districtId: districtId);
+});
+
+/// The signed-in user's id, used app-wide in Community screens to gate
+/// own-post edit/delete/report affordances.
+final communityCurrentUserIdProvider = FutureProvider<int?>((ref) {
+  return ref.read(communityProvider).getCurrentUserId();
 });

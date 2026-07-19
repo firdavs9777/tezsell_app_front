@@ -246,8 +246,51 @@ class ContentReportService {
     }
   }
 
+  /// Report a community post
+  ///
+  /// [postId] - ID of the community post to report
+  /// [reason] - Reason for reporting
+  /// [description] - Optional additional details
+  Future<ReportResult> reportCommunityPost({
+    required int postId,
+    required String reason,
+    String? description,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+
+      final response = await http.post(
+        Uri.parse('${AppConfig.baseUrl}$_reportEndpoint'),
+        headers: headers,
+        body: json.encode({
+          'content_type': 'community_post',
+          'content_id': postId,
+          'reason': reason,
+          'description': description ?? '',
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        AppLogger.info('Community post reported successfully: $postId');
+        return ReportResult(success: true);
+      } else {
+        final responseBody = utf8.decode(response.bodyBytes);
+        AppLogger.error('Failed to report community post: ${response.statusCode}');
+        AppLogger.error('Response: $responseBody');
+        return _parseErrorResponse(response.statusCode, responseBody);
+      }
+    } catch (e) {
+      AppLogger.error('Error reporting community post: $e');
+      return ReportResult(
+        success: false,
+        errorMessage: 'Network error occurred',
+        errorCode: 'network_error',
+      );
+    }
+  }
+
   /// Report a property
-  /// 
+  ///
   /// [propertyId] - ID of the property to report (UUID string)
   /// [reason] - Reason for reporting
   /// [description] - Optional additional details

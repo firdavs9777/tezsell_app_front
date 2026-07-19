@@ -128,6 +128,7 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
           );
       if (!mounted) return;
       ref.invalidate(communityFeedProvider);
+      ref.invalidate(communityCountsProvider);
       Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
