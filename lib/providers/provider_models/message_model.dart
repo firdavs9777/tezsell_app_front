@@ -207,6 +207,12 @@ class ChatRoom {
   final DateTime? lastMessageTimestamp;
   final int unreadCount;
   final bool isGroup;
+
+  /// Legacy client-local pin flag. NOT sent by the backend
+  /// `ChatRoomSerializer` (there is no top-level `is_pinned` key) — it always
+  /// defaults to false when parsing server payloads. The backend-persisted,
+  /// per-user pin lives in [state.isPinned]; new code (room management UI)
+  /// must read/write [state], and existing sorts on this field should migrate.
   final bool isPinned;
 
   // 🔥 NEW: Listing anchor + per-user room state
@@ -936,6 +942,7 @@ class ChatMessage {
     DateTime? pinnedAt,
     int? pinnedBy,
     String? translation,
+    bool clearTranslation = false,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -964,7 +971,8 @@ class ChatMessage {
       isPinned: isPinned ?? this.isPinned,
       pinnedAt: pinnedAt ?? this.pinnedAt,
       pinnedBy: pinnedBy ?? this.pinnedBy,
-      translation: translation ?? this.translation,
+      translation:
+          clearTranslation ? null : (translation ?? this.translation),
     );
   }
 
