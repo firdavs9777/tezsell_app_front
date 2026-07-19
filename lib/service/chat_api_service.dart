@@ -614,7 +614,11 @@ class ChatApiService {
         final data = json.decode(utf8.decode(response.bodyBytes));
         return ChatMessage.fromJson(data);
       } else {
-        throw Exception('Failed to edit message: ${response.statusCode}');
+        // 🔥 NEW: Task 15 — surface the backend's `detail` message (e.g. the
+        // 403 raised once the sender-only 15-minute edit window has
+        // expired) instead of a generic status-code string, so the UI can
+        // show it directly in a snackbar.
+        throw Exception(_extractErrorDetail(response, 'Failed to edit message'));
       }
     } catch (e) {
 
@@ -622,18 +626,41 @@ class ChatApiService {
     }
   }
 
-  // 🔥 NEW: Delete message (soft delete)
-  Future<void> deleteMessage(int chatId, int messageId) async {
+  /// 🔥 NEW: Task 15 — best-effort extraction of a human-readable error
+  /// message from a non-2xx JSON body (DRF-style `{"detail": "..."}` or
+  /// `{"error": "..."}`), falling back to `$fallback: <status code>`.
+  String _extractErrorDetail(http.Response response, String fallback) {
+    try {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      if (data is Map) {
+        final detail = data['detail'] ?? data['error'] ?? data['message'];
+        if (detail != null) return detail.toString();
+      }
+    } catch (_) {
+      // Body wasn't JSON (or was empty) — fall through to the generic message.
+    }
+    return '$fallback: ${response.statusCode}';
+  }
+
+  // 🔥 NEW: Delete message. [mode] is 'for_me' (removes the message only
+  // for the calling user/account) or 'for_everyone' (own messages only —
+  // blanks it for all participants via the backend + `message_deleted` WS
+  // relay).
+  Future<void> deleteMessage(
+    int chatId,
+    int messageId, {
+    String mode = 'for_me',
+  }) async {
     try {
       final headers = await _getHeaders();
 
       final response = await http.delete(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/'),
+        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/?mode=$mode'),
         headers: headers,
       );
 
       if (response.statusCode != 200 && response.statusCode != 204) {
-        throw Exception('Failed to delete message: ${response.statusCode}');
+        throw Exception(_extractErrorDetail(response, 'Failed to delete message'));
       }
     } catch (e) {
 

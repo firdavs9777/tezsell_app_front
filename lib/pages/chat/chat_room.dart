@@ -14,7 +14,6 @@ import 'package:app/pages/chat/widgets/blocked_user_banner.dart';
 import 'package:app/pages/chat/widgets/empty_message_state.dart';
 import 'package:app/pages/chat/widgets/media_options_sheet.dart';
 import 'package:app/pages/chat/widgets/message_options_sheet.dart';
-import 'package:app/pages/chat/widgets/reaction_picker.dart';
 import 'package:app/pages/chat/widgets/listing_card.dart';
 import 'package:app/pages/chat/widgets/quick_chips.dart';
 import 'package:app/widgets/connection_banner.dart';
@@ -56,6 +55,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   int? _replyingToMessageId;
   ChatMessage? _replyingToMessage;
   int? _editingMessageId;
+  // 🔥 NEW: Task 15 — the full message being edited (not just its id), so
+  // the edit banner can show a snippet of the original content.
+  ChatMessage? _editingMessage;
   final TextEditingController _editController = TextEditingController();
 
   // Typing indicator debounce timer
@@ -368,8 +370,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           }
         },
         onEdit: () => _startEditingMessage(message),
-        onDelete: () => _deleteMessage(message),
-        onAddReaction: () => _showReactionPicker(message),
+        onDelete: () => _deleteMessage(message, isOwnMessage),
+        onReact: (emoji) {
+          if (message.id != null) {
+            ref.read(chatProvider.notifier).toggleReaction(message.id!, emoji);
+          }
+        },
         onCopy: message.content != null
             ? () => _copyMessage(message.content!)
             : null,
@@ -391,22 +397,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     }
   }
 
-  void _showReactionPicker(ChatMessage message) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => ReactionPicker(
-        message: message,
-        onReactionSelected: (emoji) {
-          ref.read(chatProvider.notifier).toggleReaction(message.id!, emoji);
-        },
-      ),
-    );
-  }
-
   void _startEditingMessage(ChatMessage message) {
     if (!_isDisposed) {
       setState(() {
         _editingMessageId = message.id;
+        _editingMessage = message;
         _editController.text = message.content ?? '';
       });
     }
@@ -417,41 +412,85 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       return;
     }
 
-    final success = await ref
-        .read(chatProvider.notifier)
-        .editMessage(_editingMessageId!, _editController.text.trim());
+    final notifier = ref.read(chatProvider.notifier);
+    final success = await notifier.editMessage(
+      _editingMessageId!,
+      _editController.text.trim(),
+    );
 
-    if (success && mounted) {
+    if (!mounted) return;
+
+    if (success) {
       if (!_isDisposed) {
         setState(() {
           _editingMessageId = null;
+          _editingMessage = null;
           _editController.clear();
         });
       }
+    } else {
+      // 🔥 NEW: Task 15 — surface the 15-minute-window 403 (or any other
+      // edit failure) via a snackbar with the backend's detail message,
+      // falling back to a generic message. Clear the transient provider
+      // error afterward so it doesn't also linger as the persistent
+      // top-of-screen error banner.
+      final l = AppLocalizations.of(context)!;
+      final rawError = ref.read(chatProvider).error;
+      final detail = (rawError != null && rawError.isNotEmpty)
+          ? rawError.replaceFirst(RegExp(r'^Exception:\s*'), '')
+          : l.unknown_error;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(detail),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      notifier.clearError();
     }
   }
 
-  void _deleteMessage(ChatMessage message) {
-    final l = AppLocalizations.of(context);
+  /// 🔥 NEW: Task 15 — offers "Delete for me" (always) and, for the
+  /// sender's own messages, "Delete for everyone". `for_me` only removes
+  /// the message from this client/account; `for_everyone` blanks it for
+  /// all participants (backend + `message_deleted` WS relay).
+  void _deleteMessage(ChatMessage message, bool isOwnMessage) {
+    final l = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l?.delete_message ?? 'Delete Message'),
-        content: Text(l?.delete_message_confirm ?? 'Are you sure you want to delete this message?'),
+        title: Text(l.chatDelete),
+        content: Text(l.delete_message_confirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l?.cancel ?? 'Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
               if (message.id != null) {
-                await ref.read(chatProvider.notifier).deleteMessage(message.id!);
+                await ref
+                    .read(chatProvider.notifier)
+                    .deleteMessage(message.id!, mode: 'for_me');
               }
             },
-            child: Text(l?.delete ?? 'Delete', style: TextStyle(color: Theme.of(dialogContext).colorScheme.error)),
+            child: Text(l.chatDeleteForMe),
           ),
+          if (isOwnMessage)
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+                if (message.id != null) {
+                  await ref
+                      .read(chatProvider.notifier)
+                      .deleteMessage(message.id!, mode: 'for_everyone');
+                }
+              },
+              child: Text(
+                l.chatDeleteForEveryone,
+                style: TextStyle(color: Theme.of(dialogContext).colorScheme.error),
+              ),
+            ),
         ],
       ),
     );
@@ -1246,10 +1285,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             // Edit preview
             if (_editingMessageId != null)
               EditPreview(
+                snippet: _editingMessage?.content,
                 onCancel: () {
                   if (!_isDisposed) {
                     setState(() {
                       _editingMessageId = null;
+                      _editingMessage = null;
                       _editController.clear();
                     });
                   }

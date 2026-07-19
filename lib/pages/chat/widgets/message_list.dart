@@ -129,6 +129,16 @@ class MessageList extends ConsumerWidget {
                   HapticFeedback.mediumImpact();
                   onMessageLongPress(message, currentUserId!);
                 },
+                // 🔥 NEW: Task 15 — double-tap a bubble to toggle a quick ❤️
+                // reaction (Karrot/Instagram pattern), with a light haptic.
+                onDoubleTap: message.id != null
+                    ? () {
+                        HapticFeedback.lightImpact();
+                        ref
+                            .read(chatProvider.notifier)
+                            .toggleReaction(message.id!, '❤️');
+                      }
+                    : null,
                 child: bubble,
               ),
           ],

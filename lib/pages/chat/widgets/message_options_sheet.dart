@@ -2,6 +2,7 @@ import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'chat_helpers.dart';
 
 class MessageOptionsSheet extends StatelessWidget {
   final ChatMessage message;
@@ -9,8 +10,15 @@ class MessageOptionsSheet extends StatelessWidget {
   final VoidCallback onReply;
   final VoidCallback? onEdit;
   final VoidCallback onDelete;
-  final VoidCallback? onAddReaction;
   final VoidCallback? onCopy; // Add copy functionality
+
+  /// 🔥 NEW: Task 15 — BananaTalk-pattern quick-react row rendered at the
+  /// TOP of the sheet. Tapping an emoji reacts (toggling it, per the
+  /// backend's one-per-user-replace semantics) and closes the sheet.
+  final Function(String)? onReact;
+
+  /// 🔥 NEW: Task 15 — emoji offered by the quick-react row.
+  static const List<String> quickReactions = ['❤️', '👍', '😂', '😮', '😢', '🙏'];
 
   /// 🔥 NEW: Task 14 — skeleton hooks for Tasks 15/16/18. Each row only
   /// renders when its callback is non-null, so this sheet ships fully
@@ -27,8 +35,8 @@ class MessageOptionsSheet extends StatelessWidget {
     required this.onReply,
     this.onEdit,
     required this.onDelete,
-    this.onAddReaction,
     this.onCopy,
+    this.onReact,
     this.onPin,
     this.onForward,
     this.onTranslate,
@@ -58,7 +66,32 @@ class MessageOptionsSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
+
+            // 🔥 NEW: Task 15 — BananaTalk-pattern quick-react row at the top
+            // of the sheet: tap an emoji to react and close the sheet.
+            if (onReact != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: quickReactions.map((emoji) {
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(24),
+                      onTap: () {
+                        Navigator.pop(context);
+                        onReact!(emoji);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(emoji, style: const TextStyle(fontSize: 28)),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+
+            if (onReact != null) const Divider(height: 1),
+
             // Message preview (optional)
             if (message.content != null)
               Container(
@@ -119,17 +152,6 @@ class MessageOptionsSheet extends StatelessWidget {
                 },
               ),
 
-            if (onAddReaction != null)
-              _buildOption(
-                context,
-                icon: Icons.add_reaction_outlined,
-                label: l.add_reaction,
-                onTap: () {
-                  Navigator.pop(context);
-                  onAddReaction!();
-                },
-              ),
-
             // Translate never applies to your own messages — you already
             // know what you wrote.
             if (!isOwnMessage && onTranslate != null)
@@ -156,7 +178,10 @@ class MessageOptionsSheet extends StatelessWidget {
                 },
               ),
 
-            if (isOwnMessage && message.messageType == MessageType.text && onEdit != null)
+            if (isOwnMessage &&
+                message.messageType == MessageType.text &&
+                onEdit != null &&
+                ChatHelpers.canEditMessage(message.timestamp))
               _buildOption(
                 context,
                 icon: Icons.edit,

@@ -86,7 +86,7 @@ class MessageBubble extends StatelessWidget {
                   builder: (context) {
                     final l = AppLocalizations.of(context)!;
                     return Text(
-                      l.this_message_was_deleted,
+                      l.chatMessageDeleted,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -261,15 +261,20 @@ class MessageBubble extends StatelessWidget {
                           ),
                           if (message.isEdited) ...[
                             const SizedBox(width: 4),
-                            Text(
-                              'edited',
-                              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                fontStyle: FontStyle.italic,
-                                fontSize: 11,
-                                color: isOwnMessage
-                                    ? Colors.white.withOpacity(0.6)
-                                    : Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                            Builder(
+                              builder: (context) {
+                                final l = AppLocalizations.of(context)!;
+                                return Text(
+                                  l.chatEdited,
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 11,
+                                    color: isOwnMessage
+                                        ? Colors.white.withOpacity(0.6)
+                                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                );
+                              },
                             ),
                           ],
                           // Delivery ticks (only for own messages)
@@ -428,19 +433,17 @@ class MessageBubble extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(emoji, style: const TextStyle(fontSize: 32)),
-                if (userIds.length > 1) ...[
-                  const SizedBox(width: 6),
-                  Text(
-                    '${userIds.length}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: hasMyReaction
-                          ? Theme.of(context).colorScheme.onPrimaryContainer
-                          : Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                const SizedBox(width: 6),
+                Text(
+                  '${userIds.length}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: hasMyReaction
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                ],
+                ),
               ],
             ),
           ),

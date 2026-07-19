@@ -998,6 +998,15 @@ class ChatNotifier extends StateNotifier<ChatState> {
     ));
   }
 
+  /// 🔥 NEW: Task 15 — clears a transient error the caller has already
+  /// surfaced through its own UI (e.g. a snackbar for a failed edit), so it
+  /// doesn't also linger as the persistent top-of-screen error banner.
+  void clearError() {
+    if (state.error != null) {
+      _safeUpdateState((s) => s.copyWith(error: null));
+    }
+  }
+
   void sendTypingStatus(bool isTyping) {
     if (_chatRoomWS != null &&
         _chatRoomWS!.isConnected &&
@@ -1356,78 +1365,39 @@ class ChatNotifier extends StateNotifier<ChatState> {
         }
         break;
         
-      // 🔥 NEW: Message deleted (soft delete)
+      // 🔥 NEW: Message deleted. `mode` is 'for_me' or 'for_everyone' — a
+      // 'for_me' delete is local to the deleting user/account only and
+      // must NOT blank the message for any other connected client, so it's
+      // ignored here. Absence of `mode` (older backend payloads) is treated
+      // as 'for_everyone' for backward compatibility.
       case 'message_deleted':
         try {
           final messageId = data['message_id'] as int?;
-          if (messageId != null) {
-            final updatedMessages = state.messages.map((msg) {
-              if (msg.id == messageId) {
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
-                  content: msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
-                  updatedAt: msg.updatedAt,
-                  isRead: msg.isRead,
-                  readBy: msg.readBy,
-                  isEdited: msg.isEdited,
-                  isDeleted: true,
-                  replyTo: msg.replyTo,
-                  reactions: msg.reactions,
-                );
-              }
-              return msg;
-            }).toList();
-            _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-
+          final mode = data['mode'] as String?;
+          if (messageId != null && mode != 'for_me') {
+            _applyMessageDeleted(messageId);
           }
         } catch (e) {
 
         }
         break;
-        
-      // 🔥 NEW: Message reaction updated
+
+      // 🔥 NEW: Message reaction updated. Backend relays have used both
+      // `message_reaction` and `reaction_updated` as the event type — handle
+      // either.
       case 'message_reaction':
+      case 'reaction_updated':
         try {
           final messageId = data['message_id'] as int?;
           if (messageId != null && data['reactions'] != null) {
             final reactionsData = data['reactions'] as Map<String, dynamic>;
-            Map<String, List<int>> reactions = {};
+            final Map<String, List<int>> reactions = {};
             reactionsData.forEach((emoji, userIds) {
               if (userIds is List) {
                 reactions[emoji] = userIds.map((id) => id as int).toList();
               }
             });
-            
-            final updatedMessages = state.messages.map((msg) {
-              if (msg.id == messageId) {
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
-                  content: msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
-                  updatedAt: msg.updatedAt,
-                  isRead: msg.isRead,
-                  readBy: msg.readBy,
-                  isEdited: msg.isEdited,
-                  isDeleted: msg.isDeleted,
-                  replyTo: msg.replyTo,
-                  reactions: reactions,
-                );
-              }
-              return msg;
-            }).toList();
-            _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-
+            _updateMessageReactions(messageId, reactions);
           }
         } catch (e) {
 
@@ -1889,60 +1859,60 @@ class ChatNotifier extends StateNotifier<ChatState> {
         messageId,
         newContent,
       );
-      
-      // Update message in state
+
+      // 🔥 FIX: Merge onto the existing message via copyWith rather than
+      // replacing it outright — the edit endpoint's response may not carry
+      // every client-side field (reactions, readBy, reply preview, etc.),
+      // and a full replace would silently wipe those out.
       final updatedMessages = state.messages.map<ChatMessage>((msg) {
         if (msg.id == messageId) {
-          return updatedMessage;
+          return msg.copyWith(
+            content: updatedMessage.content,
+            isEdited: true,
+            updatedAt: updatedMessage.updatedAt,
+          );
         }
         return msg;
       }).toList();
-      
+
       _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
 
       return true;
     } catch (e) {
 
-      _safeUpdateState((s) => s.copyWith(error: 'Failed to edit message: $e'));
+      // Not prefixed — the raw exception text (e.g. the backend's 403
+      // detail once the sender-only 15-minute edit window expired) is
+      // shown directly to the user via a snackbar by the caller.
+      _safeUpdateState((s) => s.copyWith(error: e.toString()));
       return false;
     }
   }
 
-  // 🔥 NEW: Delete message
-  Future<bool> deleteMessage(int messageId) async {
+  // 🔥 NEW: Delete message. [mode] is 'for_me' (removed from this
+  // client/account only — never broadcast as affecting other participants)
+  // or 'for_everyone' (blanked for all participants; mirrors the
+  // `message_deleted` WS relay applied in [_handleChatRoomMessage]).
+  Future<bool> deleteMessage(int messageId, {String mode = 'for_me'}) async {
     if (!state.isAuthenticated || state.currentChatRoomId == null) {
 
       return false;
     }
 
     try {
-      await _apiService.deleteMessage(state.currentChatRoomId!, messageId);
-      
-      // Update message in state (soft delete)
-      final updatedMessages = state.messages.map((msg) {
-        if (msg.id == messageId) {
-          return ChatMessage(
-            id: msg.id,
-            messageType: msg.messageType,
-            content: msg.content,
-            file: msg.file,
-            fileUrl: msg.fileUrl,
-            duration: msg.duration,
-            sender: msg.sender,
-            timestamp: msg.timestamp,
-            updatedAt: msg.updatedAt,
-            isRead: msg.isRead,
-            readBy: msg.readBy,
-            isEdited: msg.isEdited,
-            isDeleted: true,
-            replyTo: msg.replyTo,
-            reactions: msg.reactions,
-          );
-        }
-        return msg;
-      }).toList();
-      
-      _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+      await _apiService.deleteMessage(
+        state.currentChatRoomId!,
+        messageId,
+        mode: mode,
+      );
+
+      if (mode == 'for_me') {
+        // Local-only removal — doesn't touch the message for anyone else.
+        final updatedMessages =
+            state.messages.where((msg) => msg.id != messageId).toList();
+        _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+      } else {
+        _applyMessageDeleted(messageId);
+      }
 
       return true;
     } catch (e) {
@@ -1952,12 +1922,69 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
-  // 🔥 NEW: Toggle reaction
+  /// Marks [messageId] as deleted-for-everyone (soft delete): the bubble
+  /// renders the italic `chatMessageDeleted` placeholder for every
+  /// participant. Shared by the direct API-driven delete above and the
+  /// `message_deleted` WS relay so both paths converge on the same state.
+  void _applyMessageDeleted(int messageId) {
+    final updatedMessages = state.messages.map((msg) {
+      if (msg.id == messageId) {
+        return msg.copyWith(isDeleted: true);
+      }
+      return msg;
+    }).toList();
+    _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+  }
+
+  /// Replaces [messageId]'s reactions map in state, if present.
+  void _updateMessageReactions(int messageId, Map<String, List<int>> reactions) {
+    final idx = state.messages.indexWhere((m) => m.id == messageId);
+    if (idx == -1) return;
+    final updated = List<ChatMessage>.from(state.messages);
+    updated[idx] = updated[idx].copyWith(reactions: reactions);
+    _safeUpdateState((s) => s.copyWith(messages: updated));
+  }
+
+  // 🔥 NEW: Toggle reaction — optimistic (one-per-user replace; tapping the
+  // same emoji again toggles it off, mirroring the backend's semantics),
+  // reverting the local state if the API call fails. The `message_reaction`
+  // / `reaction_updated` WS relay (handled in [_handleChatRoomMessage])
+  // keeps this in sync for any other connected client.
   Future<bool> toggleReaction(int messageId, String emoji) async {
-    if (!state.isAuthenticated || state.currentChatRoomId == null) {
+    if (!state.isAuthenticated ||
+        state.currentChatRoomId == null ||
+        state.currentUserId == null) {
 
       return false;
     }
+
+    final currentUserId = state.currentUserId!;
+    final msgIndex = state.messages.indexWhere((m) => m.id == messageId);
+    final originalReactions =
+        msgIndex == -1 ? const <String, List<int>>{} : state.messages[msgIndex].reactions;
+
+    // Build the optimistic reactions map: remove the user from whatever
+    // emoji they currently have (if any), then add them to the tapped
+    // emoji unless that's the one being removed (i.e. toggled off).
+    final optimisticReactions = <String, List<int>>{
+      for (final entry in originalReactions.entries)
+        entry.key: List<int>.from(entry.value),
+    };
+    bool hadThisEmoji = false;
+    for (final key in optimisticReactions.keys.toList()) {
+      if (optimisticReactions[key]!.contains(currentUserId)) {
+        if (key == emoji) hadThisEmoji = true;
+        optimisticReactions[key]!.remove(currentUserId);
+        if (optimisticReactions[key]!.isEmpty) {
+          optimisticReactions.remove(key);
+        }
+      }
+    }
+    if (!hadThisEmoji) {
+      optimisticReactions.putIfAbsent(emoji, () => []).add(currentUserId);
+    }
+
+    _updateMessageReactions(messageId, optimisticReactions);
 
     try {
       final reactions = await _apiService.toggleReaction(
@@ -1965,36 +1992,15 @@ class ChatNotifier extends StateNotifier<ChatState> {
         messageId,
         emoji,
       );
-      
-      // Update message reactions in state
-      final updatedMessages = state.messages.map((msg) {
-        if (msg.id == messageId) {
-          return ChatMessage(
-            id: msg.id,
-            messageType: msg.messageType,
-            content: msg.content,
-            file: msg.file,
-            fileUrl: msg.fileUrl,
-            duration: msg.duration,
-            sender: msg.sender,
-            timestamp: msg.timestamp,
-            updatedAt: msg.updatedAt,
-            isRead: msg.isRead,
-            readBy: msg.readBy,
-            isEdited: msg.isEdited,
-            isDeleted: msg.isDeleted,
-            replyTo: msg.replyTo,
-            reactions: reactions,
-          );
-        }
-        return msg;
-      }).toList();
-      
-      _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+
+      // Reconcile with the server's authoritative result.
+      _updateMessageReactions(messageId, reactions);
 
       return true;
     } catch (e) {
 
+      // Revert the optimistic update on failure.
+      _updateMessageReactions(messageId, originalReactions);
       _safeUpdateState((s) => s.copyWith(error: 'Failed to toggle reaction: $e'));
       return false;
     }
