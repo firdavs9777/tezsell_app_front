@@ -31,6 +31,7 @@ class Products {
     this.regionName,
     this.cityName,
     this.showExactPin = false,
+    this.distanceKm,
   });
 
   final int id;
@@ -64,6 +65,10 @@ class Products {
 
   /// Privacy-pin reveal flag — true once buyer-seller chat initiated.
   final bool showExactPin;
+
+  /// Distance from the active geo center (km, 1dp), when the request was
+  /// made with center_lat/center_lng. Null otherwise.
+  final double? distanceKm;
 
   /// Returns localized condition label
   String get conditionLabel {
@@ -139,6 +144,7 @@ class Products {
       regionName: json['region_name'] as String?,
       cityName: json['city_name'] as String?,
       showExactPin: (json['show_exact_pin'] as bool?) ?? false,
+      distanceKm: _toDouble(json['distance_km']),
     );
   }
 }

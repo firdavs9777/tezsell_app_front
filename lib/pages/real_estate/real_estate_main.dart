@@ -8,6 +8,7 @@ import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
+import 'package:app/widgets/fresh_nearest_toggle.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class RealEstateMain extends ConsumerStatefulWidget {
@@ -38,6 +39,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
   String _selectedPropertyType = '';
   String _selectedListingType = '';
+  // In-memory only (per-screen) — resets on navigation away, per Plan B Task 3.
+  ListingSort _sortMode = ListingSort.fresh;
 
   // Updated property types with multilingual support
   final List<Map<String, dynamic>> _propertyTypes = [
@@ -158,6 +161,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     ? activeNbhd.neighborhood.centroidLng
                     : null,
                 radiusKm: useNeighborhood ? radius : null,
+                ordering: (useNeighborhood && _sortMode == ListingSort.nearest)
+                    ? 'nearest'
+                    : null,
               );
 
       final serverHasMore = rawProperties.length >= 12;
@@ -211,6 +217,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     ? activeNbhd.neighborhood.centroidLng
                     : null,
                 radiusKm: useNeighborhood ? radius : null,
+                ordering: (useNeighborhood && _sortMode == ListingSort.nearest)
+                    ? 'nearest'
+                    : null,
               );
 
       final serverHasMore = rawNewProperties.length >= 12;
@@ -273,6 +282,13 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
     _loadInitialProperties();
   }
 
+  void _onSortChanged(ListingSort mode) {
+    if (_sortMode == mode) return;
+    HapticFeedback.selectionClick();
+    setState(() => _sortMode = mode);
+    _loadInitialProperties();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -286,12 +302,18 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
     });
     ref.listen(activeNeighborhoodProvider, (prev, next) {
       if (prev?.neighborhood.id != next?.neighborhood.id) {
+        // A geo center is required for "nearest" — fall back to fresh when
+        // it's cleared so the toggle doesn't sit on a disabled option.
+        if (next == null && _sortMode == ListingSort.nearest) {
+          setState(() => _sortMode = ListingSort.fresh);
+        }
         _loadInitialProperties();
       }
     });
     ref.listen<double>(radiusProvider, (prev, next) {
       if (prev != next) _loadInitialProperties();
     });
+    final hasGeoCenter = ref.watch(activeNeighborhoodProvider) != null;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -343,6 +365,20 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                       ],
                     ),
                   ),
+
+                // Sort toggle (Fresh | Nearest)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: FreshNearestToggle(
+                      mode: _sortMode,
+                      nearestEnabled: hasGeoCenter,
+                      onChanged: _onSortChanged,
+                    ),
+                  ),
+                ),
 
                 // Tab Bar with localized labels
                 Container(
@@ -704,6 +740,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      if (property.distanceKm != null)
+                        _buildDistanceChip(property.distanceKm!),
                     ],
                   ),
                   SizedBox(height: 12),
@@ -734,6 +772,41 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Small "📍 {km} km" chip shown on property cards when distance is known.
+  Widget _buildDistanceChip(double distanceKm) {
+    final theme = Theme.of(context);
+    final label = AppLocalizations.of(context)
+            ?.distanceKm(distanceKm.toStringAsFixed(1)) ??
+        '${distanceKm.toStringAsFixed(1)} km';
+    return Container(
+      margin: const EdgeInsets.only(left: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on_rounded,
+            color: theme.colorScheme.primary,
+            size: 12.0,
+          ),
+          const SizedBox(width: 3.0),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.0,
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -138,6 +138,7 @@ class RealEstateService {
     double? centerLat,
     double? centerLng,
     double? radiusKm,
+    String? ordering,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -147,6 +148,12 @@ class RealEstateService {
 
       if (propertyType.isNotEmpty) queryParams['property_type'] = propertyType;
       if (listingType.isNotEmpty) queryParams['listing_type'] = listingType;
+
+      // Nearest ordering requires an active geo center; backend defaults to
+      // its usual ordering when center is missing/invalid.
+      if (ordering != null && ordering.isNotEmpty) {
+        queryParams['ordering'] = ordering;
+      }
 
       // Karrot geo-radius takes precedence when radius is finite.
       // When radius=∞ (city-wide), fall back to neighborhood_id only.
@@ -263,9 +270,10 @@ class RealEstateService {
     double? centerLat,
     double? centerLng,
     double? radiusKm,
+    String? ordering,
   }) async {
     final cacheKey =
-        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${minPrice}_$maxPrice';
+        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${ordering ?? ""}_${minPrice}_$maxPrice';
 
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {}
@@ -288,6 +296,7 @@ class RealEstateService {
       centerLat: centerLat,
       centerLng: centerLng,
       radiusKm: radiusKm,
+      ordering: ordering,
     );
 
     _pendingRequests[cacheKey] = future;

@@ -181,35 +181,44 @@ class ProductMain extends ConsumerWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            // Likes
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0,
-                                vertical: 3.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.surfaceVariant.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.favorite_rounded,
-                                    color: colorScheme.error,
-                                    size: 14.0,
-                                  ),
-                                  const SizedBox(width: 3.0),
-                                  Text(
-                                    '${product.likeCount}',
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.onSurface.withOpacity(0.7),
-                                    ),
-                                  ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (product.distanceKm != null) ...[
+                                  _DistanceChip(distanceKm: product.distanceKm!),
+                                  const SizedBox(width: 6.0),
                                 ],
-                              ),
+                                // Likes
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6.0,
+                                    vertical: 3.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.surfaceVariant.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.favorite_rounded,
+                                        color: colorScheme.error,
+                                        size: 14.0,
+                                      ),
+                                      const SizedBox(width: 3.0),
+                                      Text(
+                                        '${product.likeCount}',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w500,
+                                          color: colorScheme.onSurface.withOpacity(0.7),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -242,5 +251,46 @@ class ProductMain extends ConsumerWidget {
       return shortAddr;
     }
     return '${shortAddr.substring(0, maxLength)}...';
+  }
+}
+
+/// Small "📍 {km} km" chip shown on list cards when a geo distance is known.
+class _DistanceChip extends StatelessWidget {
+  final double distanceKm;
+
+  const _DistanceChip({required this.distanceKm});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final label = AppLocalizations.of(context)
+            ?.distanceKm(distanceKm.toStringAsFixed(1)) ??
+        '${distanceKm.toStringAsFixed(1)} km';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on_rounded,
+            color: colorScheme.primary,
+            size: 12.0,
+          ),
+          const SizedBox(width: 3.0),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.0,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

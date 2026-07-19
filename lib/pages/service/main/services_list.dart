@@ -1,6 +1,7 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/utils/image_utils.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -165,6 +166,11 @@ class ServiceList extends ConsumerWidget {
                             const SizedBox(height: 6),
                             Row(
                               children: [
+                                if (service.distanceKm != null) ...[
+                                  _ServiceDistanceChip(
+                                      distanceKm: service.distanceKm!),
+                                  const SizedBox(width: 8),
+                                ],
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6.0,
@@ -241,6 +247,47 @@ class ServiceList extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Small "📍 {km} km" chip shown on service cards when a geo distance is known.
+class _ServiceDistanceChip extends StatelessWidget {
+  final double distanceKm;
+
+  const _ServiceDistanceChip({required this.distanceKm});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final label = AppLocalizations.of(context)
+            ?.distanceKm(distanceKm.toStringAsFixed(1)) ??
+        '${distanceKm.toStringAsFixed(1)} km';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.location_on_rounded,
+            color: colorScheme.primary,
+            size: 12.0,
+          ),
+          const SizedBox(width: 3.0),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.0,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -25,6 +25,7 @@ class Services {
     this.regionName,
     this.cityName,
     this.showExactPin = false,
+    this.distanceKm,
   });
 
   final int id;
@@ -52,6 +53,10 @@ class Services {
   /// Privacy-pin reveal flag — true once buyer-seller chat initiated.
   /// Backend computes this per-request based on the authenticated user.
   final bool showExactPin;
+
+  /// Distance from the active geo center (km, 1dp), when the request was
+  /// made with center_lat/center_lng. Null otherwise.
+  final double? distanceKm;
 
   factory Services.fromJson(Map<String, dynamic> json) {
     double? toDouble(dynamic v) {
@@ -91,6 +96,7 @@ class Services {
       regionName: json['region_name'] as String?,
       cityName: json['city_name'] as String?,
       showExactPin: (json['show_exact_pin'] as bool?) ?? false,
+      distanceKm: toDouble(json['distance_km']),
     );
   }
 }

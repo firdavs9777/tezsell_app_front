@@ -378,6 +378,7 @@ class ServiceProvider {
     double? radiusKm,
     double? centerLat,
     double? centerLng,
+    String? sort,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -421,6 +422,10 @@ class ServiceProvider {
       if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
       if (serviceName.isNotEmpty) queryParams['service_name'] = serviceName;
 
+      // Nearest sort requires an active geo center; backend defaults to
+      // fresh (recency) sort when center is missing/invalid.
+      if (sort != null && sort.isNotEmpty) queryParams['sort'] = sort;
+
       final response = await dio.get(
         '$SERVICES_URL/', // Fixed: removed leading slash to work with baseUrl
         queryParameters: queryParams,
@@ -460,9 +465,10 @@ class ServiceProvider {
     double? radiusKm,
     double? centerLat,
     double? centerLng,
+    String? sort,
   }) async {
     final cacheKey =
-        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_$serviceName';
+        'filtered_services_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${sort ?? ""}_$serviceName';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -485,6 +491,7 @@ class ServiceProvider {
       radiusKm: radiusKm,
       centerLat: centerLat,
       centerLng: centerLng,
+      sort: sort,
     );
 
     _pendingRequests[cacheKey] = future;

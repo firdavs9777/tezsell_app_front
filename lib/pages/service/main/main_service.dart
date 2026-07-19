@@ -8,6 +8,7 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/fresh_nearest_toggle.dart';
 import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
@@ -48,6 +49,8 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
   bool _isDisposed = false;
   bool _isCategoriesLoading = true;
   _BrowseMode _browseMode = _BrowseMode.list;
+  // In-memory only (per-screen) — resets on navigation away, per Plan B Task 3.
+  ListingSort _sortMode = ListingSort.fresh;
 
   @override
   void initState() {
@@ -63,6 +66,13 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onSortChanged(ListingSort mode) {
+    if (_sortMode == mode) return;
+    HapticFeedback.selectionClick();
+    setState(() => _sortMode = mode);
+    _loadInitialServices();
   }
 
   Future<void> _loadCategories() async {
@@ -165,6 +175,9 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
             centerLng:
                 useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
+            sort: (useNeighborhood && _sortMode == ListingSort.nearest)
+                ? 'nearest'
+                : null,
           );
 
       final serverHasMore = rawServices.length >= 12;
@@ -211,6 +224,15 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                 neighborhoodId:
                     useNeighborhood ? activeNbhd.neighborhood.id : null,
                 radiusKm: useNeighborhood ? radius : null,
+                centerLat: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLat
+                    : null,
+                centerLng: useNeighborhood
+                    ? activeNbhd.neighborhood.centroidLng
+                    : null,
+                sort: (useNeighborhood && _sortMode == ListingSort.nearest)
+                    ? 'nearest'
+                    : null,
               );
 
       final serverHasMore = rawNewServices.length >= 12;
@@ -290,12 +312,18 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
     // Phase-1: reload when verified-neighborhood or radius changes
     ref.listen(activeNeighborhoodProvider, (prev, next) {
       if (prev?.neighborhood.id != next?.neighborhood.id) {
+        // A geo center is required for "nearest" — fall back to fresh when
+        // it's cleared so the toggle doesn't sit on a disabled option.
+        if (next == null && _sortMode == ListingSort.nearest) {
+          setState(() => _sortMode = ListingSort.fresh);
+        }
         _loadInitialServices();
       }
     });
     ref.listen<double>(radiusProvider, (prev, next) {
       if (prev != next) _loadInitialServices();
     });
+    final hasGeoCenter = ref.watch(activeNeighborhoodProvider) != null;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -348,6 +376,12 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
                       _BrowseModeToggle(
                         mode: _browseMode,
                         onChanged: (m) => setState(() => _browseMode = m),
+                      ),
+                      const SizedBox(width: 8),
+                      FreshNearestToggle(
+                        mode: _sortMode,
+                        nearestEnabled: hasGeoCenter,
+                        onChanged: _onSortChanged,
                       ),
                       const SizedBox(width: 8),
                       // Location Badge

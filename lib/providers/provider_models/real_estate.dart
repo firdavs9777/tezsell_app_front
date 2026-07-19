@@ -28,6 +28,7 @@ class RealEstate {
     this.placeId,
     this.formattedAddress,
     this.countryCode,
+    this.distanceKm,
   });
 
   final String id;
@@ -60,6 +61,10 @@ class RealEstate {
   final String? placeId;
   final String? formattedAddress;
   final String? countryCode;
+
+  /// Distance from the active geo center (km, 1dp), when the request was
+  /// made with center_lat/center_lng. Null otherwise.
+  final double? distanceKm;
 
   factory RealEstate.fromJson(Map<String, dynamic> json) {
     try {
@@ -102,6 +107,7 @@ class RealEstate {
         placeId: json['place_id'] as String?,
         formattedAddress: json['formatted_address'] as String?,
         countryCode: json['country_code'] as String?,
+        distanceKm: _toDouble(json['distance_km']),
       );
     } catch (e) {
       print('[RealEstate.fromJson] ERROR parsing: $e');
@@ -143,8 +149,15 @@ class RealEstate {
       if (placeId != null) 'place_id': placeId,
       if (formattedAddress != null) 'formatted_address': formattedAddress,
       if (countryCode != null) 'country_code': countryCode,
+      if (distanceKm != null) 'distance_km': distanceKm,
     };
   }
+}
+
+double? _toDouble(dynamic v) {
+  if (v == null) return null;
+  if (v is num) return v.toDouble();
+  return double.tryParse(v.toString());
 }
 
 class UserLocation {

@@ -4581,4 +4581,15 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get chatSelfChatError =>
       'O‘z e\'loningiz haqida o‘zingiz bilan yozisha olmaysiz';
+
+  @override
+  String get sortFresh => 'Avval yangilari';
+
+  @override
+  String get sortNearest => 'Avval yaqinlari';
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
 }

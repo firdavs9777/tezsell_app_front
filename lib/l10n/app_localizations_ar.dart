@@ -4496,4 +4496,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chatSelfChatError => 'You can\'t chat about your own listing';
+
+  @override
+  String get sortFresh => 'Newest';
+
+  @override
+  String get sortNearest => 'Nearest';
+
+  @override
+  String distanceKm(String km) {
+    return '$km km';
+  }
 }

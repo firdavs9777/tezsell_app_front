@@ -4559,4 +4559,15 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chatSelfChatError =>
       'Нельзя писать самому себе о своём объявлении';
+
+  @override
+  String get sortFresh => 'Сначала новые';
+
+  @override
+  String get sortNearest => 'Сначала ближние';
+
+  @override
+  String distanceKm(String km) {
+    return '$km км';
+  }
 }

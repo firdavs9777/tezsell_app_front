@@ -2836,5 +2836,8 @@
   "chatMediaGallery": "Media",
   "chatUnreadDivider": "O‘qilmagan xabarlar",
   "chatDraft": "Qoralama",
-  "chatSelfChatError": "O‘z e'loningiz haqida o‘zingiz bilan yozisha olmaysiz"
+  "chatSelfChatError": "O‘z e'loningiz haqida o‘zingiz bilan yozisha olmaysiz",
+  "sortFresh": "Avval yangilari",
+  "sortNearest": "Avval yaqinlari",
+  "distanceKm": "{km} km"
 }

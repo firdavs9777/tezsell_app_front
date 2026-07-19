@@ -8,6 +8,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/fresh_nearest_toggle.dart';
 import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
@@ -49,6 +50,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   bool _isCategoriesLoading = true;
   int _loadGeneration = 0; // Prevents stale requests from overwriting newer ones
   _BrowseMode _browseMode = _BrowseMode.list;
+  // In-memory only (per-screen) — resets on navigation away, per Plan B Task 3.
+  ListingSort _sortMode = ListingSort.fresh;
 
   @override
   void initState() {
@@ -111,6 +114,13 @@ class _ProductsListState extends ConsumerState<ProductsList> {
         }
       });
     }
+  }
+
+  void _onSortChanged(ListingSort mode) {
+    if (_sortMode == mode) return;
+    HapticFeedback.selectionClick();
+    setState(() => _sortMode = mode);
+    _loadInitialProducts();
   }
 
   @override
@@ -178,6 +188,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
                 centerLng:
                     useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
+                sort: (useNeighborhood && _sortMode == ListingSort.nearest)
+                    ? 'nearest'
+                    : null,
               );
 
       // Ignore if a newer load was triggered while this was in-flight
@@ -241,6 +254,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
                 centerLng:
                     useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
+                sort: (useNeighborhood && _sortMode == ListingSort.nearest)
+                    ? 'nearest'
+                    : null,
               );
 
       final serverHasMore = rawNewProducts.length >= 12;
@@ -327,12 +343,18 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     // Phase-1: reload when verified-neighborhood or radius changes
     ref.listen(activeNeighborhoodProvider, (prev, next) {
       if (prev?.neighborhood.id != next?.neighborhood.id) {
+        // A geo center is required for "nearest" — fall back to fresh when
+        // it's cleared so the toggle doesn't sit on a disabled option.
+        if (next == null && _sortMode == ListingSort.nearest) {
+          setState(() => _sortMode = ListingSort.fresh);
+        }
         _loadInitialProducts();
       }
     });
     ref.listen<double>(radiusProvider, (prev, next) {
       if (prev != next) _loadInitialProducts();
     });
+    final hasGeoCenter = ref.watch(activeNeighborhoodProvider) != null;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -386,6 +408,12 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                         mode: _browseMode,
                         onChanged: (m) =>
                             setState(() => _browseMode = m),
+                      ),
+                      const SizedBox(width: 8),
+                      FreshNearestToggle(
+                        mode: _sortMode,
+                        nearestEnabled: hasGeoCenter,
+                        onChanged: _onSortChanged,
                       ),
                       const SizedBox(width: 8),
                       // Location Badge

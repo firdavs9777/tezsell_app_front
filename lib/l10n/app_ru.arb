@@ -2839,5 +2839,8 @@
   "chatMediaGallery": "Медиа",
   "chatUnreadDivider": "Непрочитанные сообщения",
   "chatDraft": "Черновик",
-  "chatSelfChatError": "Нельзя писать самому себе о своём объявлении"
+  "chatSelfChatError": "Нельзя писать самому себе о своём объявлении",
+  "sortFresh": "Сначала новые",
+  "sortNearest": "Сначала ближние",
+  "distanceKm": "{km} км"
 }

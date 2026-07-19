@@ -8673,6 +8673,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can\'t chat about your own listing'**
   String get chatSelfChatError;
+
+  /// Sort toggle option: newest/freshest listings first
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get sortFresh;
+
+  /// Sort toggle option: nearest listings first (requires an active geo center)
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest'**
+  String get sortNearest;
+
+  /// Distance label shown on a listing card
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String distanceKm(String km);
 }
 
 class _AppLocalizationsDelegate

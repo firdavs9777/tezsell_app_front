@@ -271,9 +271,10 @@ class ProductsService {
     double? radiusKm,
     double? centerLat,
     double? centerLng,
+    String? sort,
   }) async {
     final cacheKey =
-        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_$productTitle';
+        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${sort ?? ""}_$productTitle';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -296,6 +297,7 @@ class ProductsService {
       radiusKm: radiusKm,
       centerLat: centerLat,
       centerLng: centerLng,
+      sort: sort,
     );
 
     _pendingRequests[cacheKey] = future;
@@ -324,6 +326,7 @@ class ProductsService {
     double? radiusKm,
     double? centerLat,
     double? centerLng,
+    String? sort,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -378,6 +381,10 @@ class ProductsService {
 
       if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
       if (productTitle.isNotEmpty) queryParams['product_title'] = productTitle;
+
+      // Nearest sort requires an active geo center; backend defaults to
+      // fresh (recency) sort when center is missing/invalid.
+      if (sort != null && sort.isNotEmpty) queryParams['sort'] = sort;
 
       if (kDebugMode) {
         print('📦 [ProductsAPI] Fetching with params: $queryParams');

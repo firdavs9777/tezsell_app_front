@@ -3305,5 +3305,11 @@
   "chatDraft": "Draft",
   "@chatDraft": {"description": "Label shown in the chat list preview when a draft message exists"},
   "chatSelfChatError": "You can't chat about your own listing",
-  "@chatSelfChatError": {"description": "Error shown when a user tries to open a chat about their own listing"}
+  "@chatSelfChatError": {"description": "Error shown when a user tries to open a chat about their own listing"},
+  "sortFresh": "Newest",
+  "@sortFresh": {"description": "Sort toggle option: newest/freshest listings first"},
+  "sortNearest": "Nearest",
+  "@sortNearest": {"description": "Sort toggle option: nearest listings first (requires an active geo center)"},
+  "distanceKm": "{km} km",
+  "@distanceKm": {"description": "Distance label shown on a listing card", "placeholders": {"km": {"type": "String"}}}
 }
