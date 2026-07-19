@@ -4393,6 +4393,26 @@ class AppLocalizationsUz extends AppLocalizations {
   String get communityPostFailed => 'Joylashda xatolik';
 
   @override
+  String get communityAddPoll => 'So\'rovnoma qo\'shish';
+
+  @override
+  String get communityPollQuestion => 'So\'rovnoma savoli';
+
+  @override
+  String communityPollOption(int n) {
+    return 'Variant $n';
+  }
+
+  @override
+  String get communityAddOption => 'Variant qo\'shish';
+
+  @override
+  String get communityPollValidation => 'Savol va 2-5 variant kiriting';
+
+  @override
+  String get communityMaxImages => 'Ko\'pi bilan 5 ta rasm';
+
+  @override
   String get errorGeneric => 'Nimadir xato ketdi';
 
   @override

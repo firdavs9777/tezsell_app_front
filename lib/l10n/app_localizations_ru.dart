@@ -4371,6 +4371,26 @@ class AppLocalizationsRu extends AppLocalizations {
   String get communityPostFailed => 'Не удалось опубликовать';
 
   @override
+  String get communityAddPoll => 'Добавить опрос';
+
+  @override
+  String get communityPollQuestion => 'Вопрос опроса';
+
+  @override
+  String communityPollOption(int n) {
+    return 'Вариант $n';
+  }
+
+  @override
+  String get communityAddOption => 'Добавить вариант';
+
+  @override
+  String get communityPollValidation => 'Добавьте вопрос и 2-5 вариантов';
+
+  @override
+  String get communityMaxImages => 'До 5 фото';
+
+  @override
   String get errorGeneric => 'Что-то пошло не так';
 
   @override

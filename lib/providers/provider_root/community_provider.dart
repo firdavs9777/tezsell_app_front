@@ -37,6 +37,8 @@ class CommunityProvider {
     String? countryCode,
     String? regionName,
     List<File> images = const [],
+    String? pollQuestion,
+    List<String>? pollOptions,
   }) async {
     final uri = Uri.parse('$baseUrl$COMMUNITY_URL/');
     final req = http.MultipartRequest('POST', uri)
@@ -48,6 +50,12 @@ class CommunityProvider {
     if (lng != null) req.fields['longitude'] = '$lng';
     if (countryCode != null) req.fields['country_code'] = countryCode;
     if (regionName != null) req.fields['region_name'] = regionName;
+    if (pollQuestion != null && pollQuestion.isNotEmpty) {
+      req.fields['poll_question'] = pollQuestion;
+    }
+    if (pollOptions != null && pollOptions.isNotEmpty) {
+      req.fields['poll_options'] = json.encode(pollOptions);
+    }
     for (final img in images) {
       req.files.add(await http.MultipartFile.fromPath('images', img.path));
     }

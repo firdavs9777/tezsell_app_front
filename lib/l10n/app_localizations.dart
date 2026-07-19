@@ -8308,6 +8308,42 @@ abstract class AppLocalizations {
   /// **'Failed to post'**
   String get communityPostFailed;
 
+  /// Toggle label to add a poll to a community post
+  ///
+  /// In en, this message translates to:
+  /// **'Add poll'**
+  String get communityAddPoll;
+
+  /// Label/hint for the poll question input field
+  ///
+  /// In en, this message translates to:
+  /// **'Poll question'**
+  String get communityPollQuestion;
+
+  /// Label for a poll option input field, numbered
+  ///
+  /// In en, this message translates to:
+  /// **'Option {n}'**
+  String communityPollOption(int n);
+
+  /// Button label to add another poll option
+  ///
+  /// In en, this message translates to:
+  /// **'Add option'**
+  String get communityAddOption;
+
+  /// Inline validation error when the poll fields are incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'Add a question and 2-5 options'**
+  String get communityPollValidation;
+
+  /// Snackbar/hint message about the maximum number of photos allowed
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 5 photos'**
+  String get communityMaxImages;
+
   /// Generic fallback error message
   ///
   /// In en, this message translates to:

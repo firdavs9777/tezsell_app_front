@@ -4417,6 +4417,26 @@ class AppLocalizationsEs extends AppLocalizations {
   String get communityPostFailed => 'Failed to post';
 
   @override
+  String get communityAddPoll => 'Add poll';
+
+  @override
+  String get communityPollQuestion => 'Poll question';
+
+  @override
+  String communityPollOption(int n) {
+    return 'Option $n';
+  }
+
+  @override
+  String get communityAddOption => 'Add option';
+
+  @override
+  String get communityPollValidation => 'Add a question and 2-5 options';
+
+  @override
+  String get communityMaxImages => 'Up to 5 photos';
+
+  @override
   String get errorGeneric => 'Something went wrong';
 
   @override
