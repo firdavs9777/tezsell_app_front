@@ -4527,7 +4527,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get chatPinChat => 'Chatni mahkamlash';
 
   @override
-  String get chatUnpinChat => 'Chatni bo‘shatish';
+  String get chatUnpinChat => 'Chatni mahkamlashdan chiqarish';
 
   @override
   String get chatTyping => 'yozmoqda…';

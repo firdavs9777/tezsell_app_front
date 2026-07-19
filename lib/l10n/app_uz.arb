@@ -2821,7 +2821,7 @@
   "chatUnarchive": "Arxivdan chiqarish",
   "chatArchived": "Arxivlangan",
   "chatPinChat": "Chatni mahkamlash",
-  "chatUnpinChat": "Chatni bo‘shatish",
+  "chatUnpinChat": "Chatni mahkamlashdan chiqarish",
   "chatTyping": "yozmoqda…",
   "chatOnline": "onlayn",
   "chatLastSeen": "oxirgi faollik: {time}",
