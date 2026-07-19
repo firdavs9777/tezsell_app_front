@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
+import 'package:app/widgets/maps/cluster_badge.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
@@ -46,10 +49,49 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
   RealEstateMapPin? _selected;
   bool _isLoading = false;
 
+  /// Tracks the selected pin id independently of the marker list so tapping a
+  /// pin doesn't force a rebuild of all (up to 1000) markers — only the tiny
+  /// `_PricePillMarker` subtree listening on this notifier repaints.
+  final ValueNotifier<String?> _selectedIdNotifier = ValueNotifier<String?>(
+    null,
+  );
+
+  // Memoized marker list, rebuilt only when `_pins` gets a new list identity
+  // (i.e. after a fresh bounds fetch), not on every build triggered by
+  // selection/loading-state changes.
+  List<RealEstateMapPin>? _memoPinsRef;
+  List<Marker>? _memoMarkers;
+
+  List<Marker> get _markers {
+    if (!identical(_memoPinsRef, _pins)) {
+      _memoPinsRef = _pins;
+      _memoMarkers = _pins
+          .map((pin) => Marker(
+                point: LatLng(pin.latitude, pin.longitude),
+                width: 84,
+                height: 40,
+                alignment: Alignment.bottomCenter,
+                child: _PricePillMarker(
+                  pin: pin,
+                  selectedId: _selectedIdNotifier,
+                  onTap: () => _select(pin),
+                ),
+              ))
+          .toList();
+    }
+    return _memoMarkers!;
+  }
+
+  void _select(RealEstateMapPin? pin) {
+    setState(() => _selected = pin);
+    _selectedIdNotifier.value = pin?.id;
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
     _controller.dispose();
+    _selectedIdNotifier.dispose();
     super.dispose();
   }
 
@@ -97,6 +139,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
         // Drop the preview if the selected pin scrolled out of the new set.
         if (_selected != null && !pins.any((p) => p.id == _selected!.id)) {
           _selected = null;
+          _selectedIdNotifier.value = null;
         }
       });
     } catch (e) {
@@ -143,7 +186,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
           options: MapOptions(
             initialCenter: widget.initialCenter,
             initialZoom: widget.initialZoom,
-            onTap: (_, __) => setState(() => _selected = null),
+            onTap: (_, __) => _select(null),
             onPositionChanged: _onPositionChanged,
             onMapReady: () =>
                 _fetchBounds(_controller.camera.visibleBounds),
@@ -153,24 +196,14 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               userAgentPackageName: 'SabziMarketApp/1.0',
             ),
-            MarkerLayer(
-              markers: _pins.map((pin) {
-                final isSelected = _selected?.id == pin.id;
-                return Marker(
-                  point: LatLng(pin.latitude, pin.longitude),
-                  width: 84,
-                  height: 40,
-                  alignment: Alignment.bottomCenter,
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selected = pin),
-                    child: _PricePill(
-                      label: pin.priceLabel,
-                      selected: isSelected,
-                      featured: pin.isFeatured,
-                    ),
-                  ),
-                );
-              }).toList(),
+            MarkerClusterLayerWidget(
+              options: MarkerClusterLayerOptions(
+                maxClusterRadius: 70,
+                size: const Size(48, 48),
+                markers: _markers,
+                builder: (context, markers) =>
+                    ClusterBadge(count: markers.length),
+              ),
             ),
           ],
         ),
@@ -247,6 +280,36 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Wraps [_PricePill] with a [ValueListenableBuilder] so tapping a pin only
+/// repaints this one marker's subtree (via [selectedId]) instead of forcing
+/// the memoized [_RealEstateMapViewState._markers] list to rebuild.
+class _PricePillMarker extends StatelessWidget {
+  const _PricePillMarker({
+    required this.pin,
+    required this.selectedId,
+    required this.onTap,
+  });
+
+  final RealEstateMapPin pin;
+  final ValueListenable<String?> selectedId;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: selectedId,
+      builder: (context, selected, _) => GestureDetector(
+        onTap: onTap,
+        child: _PricePill(
+          label: pin.priceLabel,
+          selected: selected == pin.id,
+          featured: pin.isFeatured,
+        ),
+      ),
     );
   }
 }

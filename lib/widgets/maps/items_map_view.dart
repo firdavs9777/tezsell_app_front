@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
+
+import 'cluster_badge.dart';
 
 class MappedItem {
   MappedItem({
@@ -70,24 +73,30 @@ class _ItemsMapViewState extends State<ItemsMapView> {
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               userAgentPackageName: widget.userAgent,
             ),
-            MarkerLayer(
-              markers: widget.items
-                  .map((item) => Marker(
-                        point: LatLng(item.lat, item.lng),
-                        width: 44,
-                        height: 44,
-                        child: GestureDetector(
-                          onTap: () => setState(() => _selected = item),
-                          child: Icon(
-                            Icons.location_on,
-                            size: 40,
-                            color: _selected?.id == item.id
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.error,
+            MarkerClusterLayerWidget(
+              options: MarkerClusterLayerOptions(
+                maxClusterRadius: 80,
+                size: const Size(44, 44),
+                markers: widget.items
+                    .map((item) => Marker(
+                          point: LatLng(item.lat, item.lng),
+                          width: 44,
+                          height: 44,
+                          child: GestureDetector(
+                            onTap: () => setState(() => _selected = item),
+                            child: Icon(
+                              Icons.location_on,
+                              size: 40,
+                              color: _selected?.id == item.id
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.error,
+                            ),
                           ),
-                        ),
-                      ))
-                  .toList(),
+                        ))
+                    .toList(),
+                builder: (context, markers) =>
+                    ClusterBadge(count: markers.length),
+              ),
             ),
           ],
         ),
