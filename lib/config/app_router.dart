@@ -396,9 +396,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/community/:id/edit',
         name: 'community-edit',
-        builder: (context, state) => CommunityEditPage(
-          post: state.extra as CommunityPost,
-        ),
+        builder: (context, state) {
+          // `extra` carries the post when navigated in-app; on web refresh /
+          // route restoration it is null — fall back to the detail screen
+          // (which fetches by id) instead of crashing on an unguarded cast.
+          final extra = state.extra;
+          if (extra is CommunityPost) {
+            return CommunityEditPage(post: extra);
+          }
+          return CommunityDetail(
+            postId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+          );
+        },
       ),
     ],
   );
