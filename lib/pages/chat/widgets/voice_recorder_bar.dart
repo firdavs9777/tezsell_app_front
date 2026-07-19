@@ -118,6 +118,10 @@ class VoiceMicButtonState extends State<VoiceMicButton>
         '${Directory.systemTemp.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
     await _audioRecorder.start(const RecordConfig(), path: _recordingPath!);
 
+    // 🔥 FIX: F3 — guard against the widget being disposed while `start()`
+    // was in flight, before touching setState / the pulse controller below.
+    if (!mounted) return;
+
     setState(() {
       _isRecording = true;
       _isLocked = false;
@@ -166,7 +170,6 @@ class VoiceMicButtonState extends State<VoiceMicButton>
     _pulseController.stop();
     _pulseController.reset();
 
-    final path = await _audioRecorder.stop();
     final duration = _recordingDuration;
     final waveform = List<int>.from(_waveformSamples);
 
@@ -174,12 +177,28 @@ class VoiceMicButtonState extends State<VoiceMicButton>
     // message (accidental tap/hold under 1s).
     final wasCancelled = !send || duration < 1;
 
-    setState(() {
-      _isRecording = false;
-      _isLocked = false;
-      _dragOffsetX = 0;
-      _dragOffsetY = 0;
-    });
+    // 🔥 FIX: F2 — `.stop()` can throw (e.g. platform recorder already
+    // released); make sure the UI never gets stuck showing "recording"
+    // forever by clearing state in `finally` regardless of outcome.
+    String? path;
+    try {
+      path = await _audioRecorder.stop();
+    } catch (e) {
+      path = null;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRecording = false;
+          _isLocked = false;
+          _dragOffsetX = 0;
+          _dragOffsetY = 0;
+        });
+      }
+    }
+
+    // 🔥 FIX: F3 — guard against the widget being disposed while `stop()`
+    // was in flight, before touching the completion/cancellation callbacks.
+    if (!mounted) return;
 
     if (!wasCancelled && path != null) {
       HapticFeedback.lightImpact();

@@ -994,6 +994,7 @@ class ChatMessage {
     int? pinnedBy,
     String? translation,
     bool clearTranslation = false,
+    bool clearPinMeta = false,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -1020,8 +1021,8 @@ class ChatMessage {
       isForwarded: isForwarded ?? this.isForwarded,
       forwardedFromId: forwardedFromId ?? this.forwardedFromId,
       isPinned: isPinned ?? this.isPinned,
-      pinnedAt: pinnedAt ?? this.pinnedAt,
-      pinnedBy: pinnedBy ?? this.pinnedBy,
+      pinnedAt: clearPinMeta ? null : (pinnedAt ?? this.pinnedAt),
+      pinnedBy: clearPinMeta ? null : (pinnedBy ?? this.pinnedBy),
       translation:
           clearTranslation ? null : (translation ?? this.translation),
     );

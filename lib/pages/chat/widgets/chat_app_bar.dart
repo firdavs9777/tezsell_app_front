@@ -230,7 +230,7 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     children: [
                       const Icon(Icons.person_outline, size: 20),
                       const SizedBox(width: 8),
-                      Text('Profilni ko\'rish'),
+                      Text(l?.agent_card_view_profile ?? 'Profilni ko\'rish'),
                     ],
                   ),
                 ),

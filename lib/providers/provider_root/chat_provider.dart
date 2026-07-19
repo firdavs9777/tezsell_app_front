@@ -1497,22 +1497,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
             if (newReaders.isNotEmpty || message.isRead != existingMsg.isRead) {
               // Update existing message with new read status
               final updatedMessages = List<ChatMessage>.from(state.messages);
-              updatedMessages[existingIndex] = ChatMessage(
-                id: existingMsg.id,
-                messageType: existingMsg.messageType,
-                content: existingMsg.content,
-                file: existingMsg.file,
-                fileUrl: existingMsg.fileUrl,
-                duration: existingMsg.duration,
-                sender: existingMsg.sender,
-                timestamp: existingMsg.timestamp,
-                updatedAt: existingMsg.updatedAt,
+              updatedMessages[existingIndex] = existingMsg.copyWith(
                 isRead: message.isRead || existingMsg.isRead,
                 readBy: [...existingMsg.readBy, ...newReaders],
-                isEdited: existingMsg.isEdited,
-                isDeleted: existingMsg.isDeleted,
-                replyTo: existingMsg.replyTo,
-                reactions: existingMsg.reactions,
               );
               _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
               print('✅ [ChatProvider] Updated message ${message.id} read status');
@@ -1551,24 +1538,12 @@ class ChatNotifier extends StateNotifier<ChatState> {
           if (messageId != null) {
             final updatedMessages = state.messages.map((msg) {
               if (msg.id == messageId) {
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
+                return msg.copyWith(
                   content: data['content'] as String? ?? msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
                   updatedAt: data['updated_at'] != null
                       ? DateTime.parse(data['updated_at'] as String).toLocal() // 🔥 Convert UTC to local time
                       : msg.updatedAt,
-                  isRead: msg.isRead,
-                  readBy: msg.readBy,
                   isEdited: data['is_edited'] as bool? ?? true,
-                  isDeleted: msg.isDeleted,
-                  replyTo: msg.replyTo,
-                  reactions: msg.reactions,
                 );
               }
               return msg;
@@ -1840,22 +1815,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
                   }
                 }
 
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
-                  content: msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
-                  updatedAt: msg.updatedAt,
+                return msg.copyWith(
                   isRead: isRead ?? (newReadBy.isNotEmpty) || msg.isRead,
                   readBy: newReadBy,
-                  isEdited: msg.isEdited,
-                  isDeleted: msg.isDeleted,
-                  replyTo: msg.replyTo,
-                  reactions: msg.reactions,
                 );
               }
               return msg;
@@ -1963,22 +1925,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
               if (shouldUpdate) {
                 updatedCount++;
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
-                  content: msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
-                  updatedAt: msg.updatedAt,
+                return msg.copyWith(
                   isRead: true,
                   readBy: [...msg.readBy, readerId],
-                  isEdited: msg.isEdited,
-                  isDeleted: msg.isDeleted,
-                  replyTo: msg.replyTo,
-                  reactions: msg.reactions,
                 );
               }
 
@@ -2006,22 +1955,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
               if (newReaders.isNotEmpty) {
                 updatedCount++;
-                return ChatMessage(
-                  id: msg.id,
-                  messageType: msg.messageType,
-                  content: msg.content,
-                  file: msg.file,
-                  fileUrl: msg.fileUrl,
-                  duration: msg.duration,
-                  sender: msg.sender,
-                  timestamp: msg.timestamp,
-                  updatedAt: msg.updatedAt,
+                return msg.copyWith(
                   isRead: true,
                   readBy: [...msg.readBy, ...newReaders],
-                  isEdited: msg.isEdited,
-                  isDeleted: msg.isDeleted,
-                  replyTo: msg.replyTo,
-                  reactions: msg.reactions,
                 );
               }
               return msg;
@@ -2254,6 +2190,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       isPinned: isPinnedFlag,
       pinnedAt: isPinnedFlag ? DateTime.now() : null,
       pinnedBy: isPinnedFlag ? pinnedBy : null,
+      clearPinMeta: !isPinnedFlag,
     );
     _safeUpdateState((s) => s.copyWith(messages: updated));
   }
@@ -2512,22 +2449,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
         if (freshMsg.id == msg.id &&
             (freshMsg.isRead != msg.isRead ||
              freshMsg.readBy.length != msg.readBy.length)) {
-          return ChatMessage(
-            id: msg.id,
-            messageType: msg.messageType,
-            content: msg.content,
-            file: msg.file,
-            fileUrl: msg.fileUrl,
-            duration: msg.duration,
-            sender: msg.sender,
-            timestamp: msg.timestamp,
-            updatedAt: msg.updatedAt,
+          return msg.copyWith(
             isRead: freshMsg.isRead,
             readBy: freshMsg.readBy,
-            isEdited: msg.isEdited,
-            isDeleted: msg.isDeleted,
-            replyTo: msg.replyTo,
-            reactions: msg.reactions,
           );
         }
         return msg;
