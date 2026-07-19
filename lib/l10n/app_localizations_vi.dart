@@ -1552,6 +1552,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get in_area => 'trong khu vực';
 
   @override
+  String get realEstateSearchHint => 'Search properties by title, location...';
+
+  @override
+  String get realEstateSearchPrompt => 'Search for properties';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear all';
+
+  @override
+  String get searchPropertiesError =>
+      'Failed to search properties. Please try again.';
+
+  @override
   String get pagination_previous => 'Trước';
 
   @override

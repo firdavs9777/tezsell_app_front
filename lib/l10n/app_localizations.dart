@@ -3070,6 +3070,36 @@ abstract class AppLocalizations {
   /// **'in area'**
   String get in_area;
 
+  /// Hint text in the real estate search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search properties by title, location...'**
+  String get realEstateSearchHint;
+
+  /// Title shown on the real estate search screen before any query is entered
+  ///
+  /// In en, this message translates to:
+  /// **'Search for properties'**
+  String get realEstateSearchPrompt;
+
+  /// Heading above the list of recent search queries
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get recentSearches;
+
+  /// Button that clears the recent searches list
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearRecentSearches;
+
+  /// Error snackbar shown when a property search request fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to search properties. Please try again.'**
+  String get searchPropertiesError;
+
   /// No description provided for @pagination_previous.
   ///
   /// In en, this message translates to:

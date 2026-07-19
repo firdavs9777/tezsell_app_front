@@ -1513,6 +1513,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get in_area => '在地区';
 
   @override
+  String get realEstateSearchHint => 'Search properties by title, location...';
+
+  @override
+  String get realEstateSearchPrompt => 'Search for properties';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear all';
+
+  @override
+  String get searchPropertiesError =>
+      'Failed to search properties. Please try again.';
+
+  @override
   String get pagination_previous => '以前的';
 
   @override

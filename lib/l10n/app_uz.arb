@@ -1519,6 +1519,11 @@
     }
   },
   "in_area": "hududida",
+  "realEstateSearchHint": "Nomi, joylashuvi bo'yicha ko'chmas mulk qidirish...",
+  "realEstateSearchPrompt": "Ko'chmas mulk qidirish",
+  "recentSearches": "So'nggi qidiruvlar",
+  "clearRecentSearches": "Barchasini tozalash",
+  "searchPropertiesError": "Qidiruvda xatolik yuz berdi. Qayta urinib ko'ring.",
   "pagination_previous": "Oldingi",
   "pagination_next": "Keyingi",
   "pagination_page": "Sahifa",

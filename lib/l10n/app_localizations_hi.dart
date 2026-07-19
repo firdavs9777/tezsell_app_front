@@ -1549,6 +1549,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get in_area => 'क्षेत्र में';
 
   @override
+  String get realEstateSearchHint => 'Search properties by title, location...';
+
+  @override
+  String get realEstateSearchPrompt => 'Search for properties';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear all';
+
+  @override
+  String get searchPropertiesError =>
+      'Failed to search properties. Please try again.';
+
+  @override
   String get pagination_previous => 'पहले का';
 
   @override

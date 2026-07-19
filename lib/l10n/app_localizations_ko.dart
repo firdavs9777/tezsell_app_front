@@ -1518,6 +1518,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get in_area => '지역에';
 
   @override
+  String get realEstateSearchHint => 'Search properties by title, location...';
+
+  @override
+  String get realEstateSearchPrompt => 'Search for properties';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear all';
+
+  @override
+  String get searchPropertiesError =>
+      'Failed to search properties. Please try again.';
+
+  @override
   String get pagination_previous => '이전의';
 
   @override

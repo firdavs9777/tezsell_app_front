@@ -139,6 +139,7 @@ class RealEstateService {
     double? centerLng,
     double? radiusKm,
     String? ordering,
+    String search = "",
   }) async {
     try {
       final queryParams = <String, String>{
@@ -146,6 +147,7 @@ class RealEstateService {
         'page_size': pageSize.toString(),
       };
 
+      if (search.isNotEmpty) queryParams['search'] = search;
       if (propertyType.isNotEmpty) queryParams['property_type'] = propertyType;
       if (listingType.isNotEmpty) queryParams['listing_type'] = listingType;
 
@@ -275,9 +277,10 @@ class RealEstateService {
     double? centerLng,
     double? radiusKm,
     String? ordering,
+    String search = "",
   }) async {
     final cacheKey =
-        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${ordering ?? ""}_${minPrice}_$maxPrice';
+        'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${ordering ?? ""}_${minPrice}_${maxPrice}_$search';
 
     if (_pendingRequests.containsKey(cacheKey)) {
       if (kDebugMode) {}
@@ -301,6 +304,7 @@ class RealEstateService {
       centerLng: centerLng,
       radiusKm: radiusKm,
       ordering: ordering,
+      search: search,
     );
 
     _pendingRequests[cacheKey] = future;

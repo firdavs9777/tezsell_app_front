@@ -1563,6 +1563,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get in_area => 'na área';
 
   @override
+  String get realEstateSearchHint => 'Search properties by title, location...';
+
+  @override
+  String get realEstateSearchPrompt => 'Search for properties';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear all';
+
+  @override
+  String get searchPropertiesError =>
+      'Failed to search properties. Please try again.';
+
+  @override
   String get pagination_previous => 'Anterior';
 
   @override

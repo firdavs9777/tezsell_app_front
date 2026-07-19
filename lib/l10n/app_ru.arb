@@ -1522,6 +1522,11 @@
     }
   },
   "in_area": "в районе",
+  "realEstateSearchHint": "Поиск недвижимости по названию, месту...",
+  "realEstateSearchPrompt": "Поиск недвижимости",
+  "recentSearches": "Недавние поиски",
+  "clearRecentSearches": "Очистить все",
+  "searchPropertiesError": "Не удалось выполнить поиск. Попробуйте снова.",
   "pagination_previous": "Предыдущая",
   "pagination_next": "Следующая",
   "pagination_page": "Страница",

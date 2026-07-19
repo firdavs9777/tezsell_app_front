@@ -1555,6 +1555,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get in_area => 'в районе';
 
   @override
+  String get realEstateSearchHint => 'Поиск недвижимости по названию, месту...';
+
+  @override
+  String get realEstateSearchPrompt => 'Поиск недвижимости';
+
+  @override
+  String get recentSearches => 'Недавние поиски';
+
+  @override
+  String get clearRecentSearches => 'Очистить все';
+
+  @override
+  String get searchPropertiesError =>
+      'Не удалось выполнить поиск. Попробуйте снова.';
+
+  @override
   String get pagination_previous => 'Предыдущая';
 
   @override

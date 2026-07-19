@@ -1563,6 +1563,23 @@ class AppLocalizationsUz extends AppLocalizations {
   String get in_area => 'hududida';
 
   @override
+  String get realEstateSearchHint =>
+      'Nomi, joylashuvi bo\'yicha ko\'chmas mulk qidirish...';
+
+  @override
+  String get realEstateSearchPrompt => 'Ko\'chmas mulk qidirish';
+
+  @override
+  String get recentSearches => 'So\'nggi qidiruvlar';
+
+  @override
+  String get clearRecentSearches => 'Barchasini tozalash';
+
+  @override
+  String get searchPropertiesError =>
+      'Qidiruvda xatolik yuz berdi. Qayta urinib ko\'ring.';
+
+  @override
   String get pagination_previous => 'Oldingi';
 
   @override
