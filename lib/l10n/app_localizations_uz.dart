@@ -4404,4 +4404,171 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get nearbyComingSoon => 'Tez orada';
+
+  @override
+  String get chatWithSeller => 'Sotuvchiga yozish';
+
+  @override
+  String get chatQuickAvailable => 'Bu mavjudmi?';
+
+  @override
+  String get chatQuickPrice => 'Narxni tushirasizmi?';
+
+  @override
+  String get chatQuickMeet => 'Qayerda uchrashamiz?';
+
+  @override
+  String get chatReserve => 'Band qilish';
+
+  @override
+  String get chatMarkSold => 'Sotilgan deb belgilash';
+
+  @override
+  String get chatMarkAvailable => 'Qayta faollashtirish';
+
+  @override
+  String get chatStatusReserved => 'Band qilingan';
+
+  @override
+  String get chatStatusSold => 'Sotilgan';
+
+  @override
+  String get chatStatusAvailable => 'Mavjud';
+
+  @override
+  String get chatSysReserved =>
+      'Sotuvchi mahsulotni band qilingan deb belgiladi';
+
+  @override
+  String get chatSysSold => 'Sotuvchi mahsulotni sotilgan deb belgiladi';
+
+  @override
+  String get chatSysAvailable => 'Mahsulot qayta mavjud';
+
+  @override
+  String get chatLeaveReview => 'Sharh qoldirish';
+
+  @override
+  String get chatReply => 'Javob berish';
+
+  @override
+  String get chatEdit => 'Tahrirlash';
+
+  @override
+  String get chatEdited => 'tahrirlangan';
+
+  @override
+  String get chatDelete => 'O‘chirish';
+
+  @override
+  String get chatDeleteForMe => 'O‘zim uchun o‘chirish';
+
+  @override
+  String get chatDeleteForEveryone => 'Barcha uchun o‘chirish';
+
+  @override
+  String get chatMessageDeleted => 'Xabar o‘chirildi';
+
+  @override
+  String get chatCopy => 'Nusxalash';
+
+  @override
+  String get chatCopied => 'Nusxalandi';
+
+  @override
+  String get chatForward => 'Uzatish';
+
+  @override
+  String get chatForwarded => 'Uzatilgan';
+
+  @override
+  String get chatForwardTo => 'Kimga uzatish…';
+
+  @override
+  String get chatPin => 'Mahkamlash';
+
+  @override
+  String get chatUnpin => 'Mahkamlashni bekor qilish';
+
+  @override
+  String get chatPinnedMessages => 'Mahkamlangan xabarlar';
+
+  @override
+  String get chatTranslate => 'Tarjima qilish';
+
+  @override
+  String get chatTranslationFailed => 'Tarjima mavjud emas';
+
+  @override
+  String get chatShowOriginal => 'Asl nusxani ko‘rsatish';
+
+  @override
+  String get chatSearchInChat => 'Chatda qidirish';
+
+  @override
+  String get chatNoResults => 'Natija topilmadi';
+
+  @override
+  String get chatMute => 'Ovozsiz qilish';
+
+  @override
+  String get chatUnmute => 'Ovozni yoqish';
+
+  @override
+  String get chatArchive => 'Arxivlash';
+
+  @override
+  String get chatUnarchive => 'Arxivdan chiqarish';
+
+  @override
+  String get chatArchived => 'Arxivlangan';
+
+  @override
+  String get chatPinChat => 'Chatni mahkamlash';
+
+  @override
+  String get chatUnpinChat => 'Chatni bo‘shatish';
+
+  @override
+  String get chatTyping => 'yozmoqda…';
+
+  @override
+  String get chatOnline => 'onlayn';
+
+  @override
+  String chatLastSeen(Object time) {
+    return 'oxirgi faollik: $time';
+  }
+
+  @override
+  String get chatConnecting => 'Qayta ulanmoqda…';
+
+  @override
+  String get chatSendFailed => 'Yuborilmadi. Qayta urinish uchun bosing';
+
+  @override
+  String get chatVoiceMessage => 'Ovozli xabar';
+
+  @override
+  String get chatRecordingHint =>
+      'Yuborish uchun qo‘yib yuboring, bekor qilish uchun suring';
+
+  @override
+  String get chatQuickReplies => 'Tezkor javoblar';
+
+  @override
+  String get chatAddQuickReply => 'Tezkor javob qo‘shish';
+
+  @override
+  String get chatMediaGallery => 'Media';
+
+  @override
+  String get chatUnreadDivider => 'O‘qilmagan xabarlar';
+
+  @override
+  String get chatDraft => 'Qoralama';
+
+  @override
+  String get chatSelfChatError =>
+      'O‘z e\'loningiz haqida o‘zingiz bilan yozisha olmaysiz';
 }

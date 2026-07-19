@@ -8337,6 +8337,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Coming soon'**
   String get nearbyComingSoon;
+
+  /// Button label to open a chat with the item's seller
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with seller'**
+  String get chatWithSeller;
+
+  /// Quick reply asking if the listed item is still available
+  ///
+  /// In en, this message translates to:
+  /// **'Is this still available?'**
+  String get chatQuickAvailable;
+
+  /// Quick reply asking the seller to lower the price
+  ///
+  /// In en, this message translates to:
+  /// **'Can you lower the price?'**
+  String get chatQuickPrice;
+
+  /// Quick reply asking about a meeting location
+  ///
+  /// In en, this message translates to:
+  /// **'Where can we meet?'**
+  String get chatQuickMeet;
+
+  /// Button to mark a listing as reserved for a buyer
+  ///
+  /// In en, this message translates to:
+  /// **'Reserve'**
+  String get chatReserve;
+
+  /// Button to mark a listing as sold
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as sold'**
+  String get chatMarkSold;
+
+  /// Button to return a listing to available status
+  ///
+  /// In en, this message translates to:
+  /// **'Back to available'**
+  String get chatMarkAvailable;
+
+  /// Listing status badge: reserved
+  ///
+  /// In en, this message translates to:
+  /// **'Reserved'**
+  String get chatStatusReserved;
+
+  /// Listing status badge: sold
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get chatStatusSold;
+
+  /// Listing status badge: available
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get chatStatusAvailable;
+
+  /// System message shown in chat when the seller reserves the item
+  ///
+  /// In en, this message translates to:
+  /// **'Seller marked this item as reserved'**
+  String get chatSysReserved;
+
+  /// System message shown in chat when the seller marks the item sold
+  ///
+  /// In en, this message translates to:
+  /// **'Seller marked this item as sold'**
+  String get chatSysSold;
+
+  /// System message shown in chat when the item becomes available again
+  ///
+  /// In en, this message translates to:
+  /// **'This item is available again'**
+  String get chatSysAvailable;
+
+  /// Button to leave a review for the other chat participant
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a review'**
+  String get chatLeaveReview;
+
+  /// Action to reply to a specific chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get chatReply;
+
+  /// Action to edit a sent chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get chatEdit;
+
+  /// Label appended to a message that has been edited
+  ///
+  /// In en, this message translates to:
+  /// **'edited'**
+  String get chatEdited;
+
+  /// Action to delete a chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get chatDelete;
+
+  /// Option to delete a message only for the current user
+  ///
+  /// In en, this message translates to:
+  /// **'Delete for me'**
+  String get chatDeleteForMe;
+
+  /// Option to delete a message for all chat participants
+  ///
+  /// In en, this message translates to:
+  /// **'Delete for everyone'**
+  String get chatDeleteForEveryone;
+
+  /// Placeholder text shown in place of a deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'Message deleted'**
+  String get chatMessageDeleted;
+
+  /// Action to copy a chat message's text
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get chatCopy;
+
+  /// Confirmation toast shown after copying text
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get chatCopied;
+
+  /// Action to forward a chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Forward'**
+  String get chatForward;
+
+  /// Label shown on a forwarded message
+  ///
+  /// In en, this message translates to:
+  /// **'Forwarded'**
+  String get chatForwarded;
+
+  /// Title of the screen/picker for choosing a forward destination
+  ///
+  /// In en, this message translates to:
+  /// **'Forward to…'**
+  String get chatForwardTo;
+
+  /// Action to pin a chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get chatPin;
+
+  /// Action to unpin a chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get chatUnpin;
+
+  /// Title for the list of pinned messages in a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned messages'**
+  String get chatPinnedMessages;
+
+  /// Action to translate a chat message
+  ///
+  /// In en, this message translates to:
+  /// **'Translate'**
+  String get chatTranslate;
+
+  /// Error shown when a message could not be translated
+  ///
+  /// In en, this message translates to:
+  /// **'Translation unavailable'**
+  String get chatTranslationFailed;
+
+  /// Action to revert a translated message back to its original text
+  ///
+  /// In en, this message translates to:
+  /// **'Show original'**
+  String get chatShowOriginal;
+
+  /// Label/hint for searching messages within a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Search in chat'**
+  String get chatSearchInChat;
+
+  /// Shown when a search yields no matching results
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get chatNoResults;
+
+  /// Action to mute notifications for a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get chatMute;
+
+  /// Action to unmute notifications for a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get chatUnmute;
+
+  /// Action to archive a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get chatArchive;
+
+  /// Action to unarchive a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get chatUnarchive;
+
+  /// Label for the archived chats section
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get chatArchived;
+
+  /// Action to pin a chat to the top of the chat list
+  ///
+  /// In en, this message translates to:
+  /// **'Pin chat'**
+  String get chatPinChat;
+
+  /// Action to unpin a chat from the top of the chat list
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin chat'**
+  String get chatUnpinChat;
+
+  /// Indicator shown when the other participant is typing
+  ///
+  /// In en, this message translates to:
+  /// **'typing…'**
+  String get chatTyping;
+
+  /// Presence indicator shown when the other participant is online
+  ///
+  /// In en, this message translates to:
+  /// **'online'**
+  String get chatOnline;
+
+  /// Presence indicator showing when the other participant was last seen
+  ///
+  /// In en, this message translates to:
+  /// **'last seen {time}'**
+  String chatLastSeen(Object time);
+
+  /// Status shown while the chat connection is being re-established
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecting…'**
+  String get chatConnecting;
+
+  /// Shown on a message that failed to send
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. Tap to retry'**
+  String get chatSendFailed;
+
+  /// Label for a voice message chat bubble
+  ///
+  /// In en, this message translates to:
+  /// **'Voice message'**
+  String get chatVoiceMessage;
+
+  /// Hint shown while recording a voice message
+  ///
+  /// In en, this message translates to:
+  /// **'Release to send, slide to cancel'**
+  String get chatRecordingHint;
+
+  /// Title for the quick replies section/list
+  ///
+  /// In en, this message translates to:
+  /// **'Quick replies'**
+  String get chatQuickReplies;
+
+  /// Action to add a new quick reply template
+  ///
+  /// In en, this message translates to:
+  /// **'Add quick reply'**
+  String get chatAddQuickReply;
+
+  /// Title for the shared media gallery in a chat
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get chatMediaGallery;
+
+  /// Divider label separating read and unread messages
+  ///
+  /// In en, this message translates to:
+  /// **'Unread messages'**
+  String get chatUnreadDivider;
+
+  /// Label shown in the chat list preview when a draft message exists
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get chatDraft;
+
+  /// Error shown when a user tries to open a chat about their own listing
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t chat about your own listing'**
+  String get chatSelfChatError;
 }
 
 class _AppLocalizationsDelegate

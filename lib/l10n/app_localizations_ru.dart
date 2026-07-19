@@ -4383,4 +4383,170 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nearbyComingSoon => 'Скоро';
+
+  @override
+  String get chatWithSeller => 'Написать продавцу';
+
+  @override
+  String get chatQuickAvailable => 'Товар ещё доступен?';
+
+  @override
+  String get chatQuickPrice => 'Можете снизить цену?';
+
+  @override
+  String get chatQuickMeet => 'Где встретимся?';
+
+  @override
+  String get chatReserve => 'Забронировать';
+
+  @override
+  String get chatMarkSold => 'Отметить как продано';
+
+  @override
+  String get chatMarkAvailable => 'Вернуть в продажу';
+
+  @override
+  String get chatStatusReserved => 'Забронировано';
+
+  @override
+  String get chatStatusSold => 'Продано';
+
+  @override
+  String get chatStatusAvailable => 'Доступно';
+
+  @override
+  String get chatSysReserved => 'Продавец отметил товар как забронированный';
+
+  @override
+  String get chatSysSold => 'Продавец отметил товар как проданный';
+
+  @override
+  String get chatSysAvailable => 'Товар снова доступен';
+
+  @override
+  String get chatLeaveReview => 'Оставить отзыв';
+
+  @override
+  String get chatReply => 'Ответить';
+
+  @override
+  String get chatEdit => 'Изменить';
+
+  @override
+  String get chatEdited => 'изменено';
+
+  @override
+  String get chatDelete => 'Удалить';
+
+  @override
+  String get chatDeleteForMe => 'Удалить у себя';
+
+  @override
+  String get chatDeleteForEveryone => 'Удалить у всех';
+
+  @override
+  String get chatMessageDeleted => 'Сообщение удалено';
+
+  @override
+  String get chatCopy => 'Копировать';
+
+  @override
+  String get chatCopied => 'Скопировано';
+
+  @override
+  String get chatForward => 'Переслать';
+
+  @override
+  String get chatForwarded => 'Переслано';
+
+  @override
+  String get chatForwardTo => 'Переслать…';
+
+  @override
+  String get chatPin => 'Закрепить';
+
+  @override
+  String get chatUnpin => 'Открепить';
+
+  @override
+  String get chatPinnedMessages => 'Закреплённые сообщения';
+
+  @override
+  String get chatTranslate => 'Перевести';
+
+  @override
+  String get chatTranslationFailed => 'Перевод недоступен';
+
+  @override
+  String get chatShowOriginal => 'Показать оригинал';
+
+  @override
+  String get chatSearchInChat => 'Поиск в чате';
+
+  @override
+  String get chatNoResults => 'Ничего не найдено';
+
+  @override
+  String get chatMute => 'Отключить уведомления';
+
+  @override
+  String get chatUnmute => 'Включить уведомления';
+
+  @override
+  String get chatArchive => 'Архивировать';
+
+  @override
+  String get chatUnarchive => 'Восстановить из архива';
+
+  @override
+  String get chatArchived => 'В архиве';
+
+  @override
+  String get chatPinChat => 'Закрепить чат';
+
+  @override
+  String get chatUnpinChat => 'Открепить чат';
+
+  @override
+  String get chatTyping => 'печатает…';
+
+  @override
+  String get chatOnline => 'в сети';
+
+  @override
+  String chatLastSeen(Object time) {
+    return 'был(а) $time';
+  }
+
+  @override
+  String get chatConnecting => 'Переподключение…';
+
+  @override
+  String get chatSendFailed => 'Не отправлено. Нажмите для повтора';
+
+  @override
+  String get chatVoiceMessage => 'Голосовое сообщение';
+
+  @override
+  String get chatRecordingHint =>
+      'Отпустите, чтобы отправить, проведите в сторону, чтобы отменить';
+
+  @override
+  String get chatQuickReplies => 'Быстрые ответы';
+
+  @override
+  String get chatAddQuickReply => 'Добавить быстрый ответ';
+
+  @override
+  String get chatMediaGallery => 'Медиа';
+
+  @override
+  String get chatUnreadDivider => 'Непрочитанные сообщения';
+
+  @override
+  String get chatDraft => 'Черновик';
+
+  @override
+  String get chatSelfChatError =>
+      'Нельзя писать самому себе о своём объявлении';
 }

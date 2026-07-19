@@ -4322,4 +4322,168 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nearbyComingSoon => 'Coming soon';
+
+  @override
+  String get chatWithSeller => 'Chat with seller';
+
+  @override
+  String get chatQuickAvailable => 'Is this still available?';
+
+  @override
+  String get chatQuickPrice => 'Can you lower the price?';
+
+  @override
+  String get chatQuickMeet => 'Where can we meet?';
+
+  @override
+  String get chatReserve => 'Reserve';
+
+  @override
+  String get chatMarkSold => 'Mark as sold';
+
+  @override
+  String get chatMarkAvailable => 'Back to available';
+
+  @override
+  String get chatStatusReserved => 'Reserved';
+
+  @override
+  String get chatStatusSold => 'Sold';
+
+  @override
+  String get chatStatusAvailable => 'Available';
+
+  @override
+  String get chatSysReserved => 'Seller marked this item as reserved';
+
+  @override
+  String get chatSysSold => 'Seller marked this item as sold';
+
+  @override
+  String get chatSysAvailable => 'This item is available again';
+
+  @override
+  String get chatLeaveReview => 'Leave a review';
+
+  @override
+  String get chatReply => 'Reply';
+
+  @override
+  String get chatEdit => 'Edit';
+
+  @override
+  String get chatEdited => 'edited';
+
+  @override
+  String get chatDelete => 'Delete';
+
+  @override
+  String get chatDeleteForMe => 'Delete for me';
+
+  @override
+  String get chatDeleteForEveryone => 'Delete for everyone';
+
+  @override
+  String get chatMessageDeleted => 'Message deleted';
+
+  @override
+  String get chatCopy => 'Copy';
+
+  @override
+  String get chatCopied => 'Copied';
+
+  @override
+  String get chatForward => 'Forward';
+
+  @override
+  String get chatForwarded => 'Forwarded';
+
+  @override
+  String get chatForwardTo => 'Forward to…';
+
+  @override
+  String get chatPin => 'Pin';
+
+  @override
+  String get chatUnpin => 'Unpin';
+
+  @override
+  String get chatPinnedMessages => 'Pinned messages';
+
+  @override
+  String get chatTranslate => 'Translate';
+
+  @override
+  String get chatTranslationFailed => 'Translation unavailable';
+
+  @override
+  String get chatShowOriginal => 'Show original';
+
+  @override
+  String get chatSearchInChat => 'Search in chat';
+
+  @override
+  String get chatNoResults => 'No results';
+
+  @override
+  String get chatMute => 'Mute';
+
+  @override
+  String get chatUnmute => 'Unmute';
+
+  @override
+  String get chatArchive => 'Archive';
+
+  @override
+  String get chatUnarchive => 'Unarchive';
+
+  @override
+  String get chatArchived => 'Archived';
+
+  @override
+  String get chatPinChat => 'Pin chat';
+
+  @override
+  String get chatUnpinChat => 'Unpin chat';
+
+  @override
+  String get chatTyping => 'typing…';
+
+  @override
+  String get chatOnline => 'online';
+
+  @override
+  String chatLastSeen(Object time) {
+    return 'last seen $time';
+  }
+
+  @override
+  String get chatConnecting => 'Reconnecting…';
+
+  @override
+  String get chatSendFailed => 'Not sent. Tap to retry';
+
+  @override
+  String get chatVoiceMessage => 'Voice message';
+
+  @override
+  String get chatRecordingHint => 'Release to send, slide to cancel';
+
+  @override
+  String get chatQuickReplies => 'Quick replies';
+
+  @override
+  String get chatAddQuickReply => 'Add quick reply';
+
+  @override
+  String get chatMediaGallery => 'Media';
+
+  @override
+  String get chatUnreadDivider => 'Unread messages';
+
+  @override
+  String get chatDraft => 'Draft';
+
+  @override
+  String get chatSelfChatError => 'You can\'t chat about your own listing';
 }
