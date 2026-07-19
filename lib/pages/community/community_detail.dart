@@ -222,7 +222,14 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
         _updateComment(comment.id, (c) => c.copyWith(isLiked: prevLiked, likeCount: prevCount));
       }
     } finally {
-      _likingComments.remove(comment.id);
+      // Must rebuild: the last frame baked in onTap: null while this id was
+      // in-flight — without setState the like button stays dead until an
+      // unrelated rebuild.
+      if (mounted) {
+        setState(() => _likingComments.remove(comment.id));
+      } else {
+        _likingComments.remove(comment.id);
+      }
     }
   }
 
@@ -260,7 +267,9 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
             );
           }).toList();
         }
-        if (identical(comment, _replyingTo)) _replyingTo = null;
+        // Compare by id — copyWith replaces instances on like toggles, so
+        // identity would miss and leave a dangling reply banner.
+        if (comment.id == _replyingTo?.id) _replyingTo = null;
       });
       _refreshPostSilently();
     } catch (_) {
