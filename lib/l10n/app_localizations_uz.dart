@@ -4538,6 +4538,19 @@ class AppLocalizationsUz extends AppLocalizations {
   }
 
   @override
+  String get timeJustNow => 'hozirgina';
+
+  @override
+  String timeMinutesShort(Object m) {
+    return '$m daqiqa oldin';
+  }
+
+  @override
+  String timeHoursShort(Object h) {
+    return '$h soat oldin';
+  }
+
+  @override
   String get chatConnecting => 'Qayta ulanmoqda…';
 
   @override

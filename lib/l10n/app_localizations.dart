@@ -8596,6 +8596,24 @@ abstract class AppLocalizations {
   /// **'last seen {time}'**
   String chatLastSeen(Object time);
 
+  /// Relative time label for an event that happened less than a minute ago
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeJustNow;
+
+  /// Compact relative time label for minutes elapsed
+  ///
+  /// In en, this message translates to:
+  /// **'{m}m ago'**
+  String timeMinutesShort(Object m);
+
+  /// Compact relative time label for hours elapsed
+  ///
+  /// In en, this message translates to:
+  /// **'{h}h ago'**
+  String timeHoursShort(Object h);
+
   /// Status shown while the chat connection is being re-established
   ///
   /// In en, this message translates to:

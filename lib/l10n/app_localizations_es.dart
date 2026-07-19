@@ -4562,6 +4562,19 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get timeJustNow => 'just now';
+
+  @override
+  String timeMinutesShort(Object m) {
+    return '${m}m ago';
+  }
+
+  @override
+  String timeHoursShort(Object h) {
+    return '${h}h ago';
+  }
+
+  @override
   String get chatConnecting => 'Reconnecting…';
 
   @override

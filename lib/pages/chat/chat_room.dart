@@ -1314,6 +1314,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         // treat this as a "new message arrived" event if the newest
         // message actually got newer (appended at the tail), not when
         // older history was merely prepended.
+        //
+        // Note: this listener only reacts to *incoming* state (peer
+        // messages, WS/refetch). It intentionally does not auto-scroll for
+        // the local user's own outgoing message — those already scroll via
+        // an explicit `_scrollToBottom()` call in the send path (see
+        // `_sendMessage`/optimistic-send handlers) before this provider
+        // update even lands, so no separate branch is needed here for them.
         final prevLatest = _latestTimestamp(previous.messages);
         final nextLatest = _latestTimestamp(next.messages);
         final isNewAtTail =

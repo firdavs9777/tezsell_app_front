@@ -196,7 +196,7 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   if (isOnline) {
                     subtitle = l.chatOnline;
                   } else if (lastSeen != null) {
-                    subtitle = l.chatLastSeen(ChatHelpers.relativeTimeShort(lastSeen));
+                    subtitle = l.chatLastSeen(ChatHelpers.relativeTimeShort(lastSeen, l));
                   } else {
                     subtitle = l.offline;
                   }

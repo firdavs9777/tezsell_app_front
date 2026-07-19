@@ -1,3 +1,4 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:intl/intl.dart';
 
@@ -41,22 +42,28 @@ class ChatHelpers {
   }
 
   /// 🔥 NEW: Task 20 — compact relative-time string for the presence
-  /// subtitle's `chatLastSeen(time)` placeholder (e.g. "5m ago", "14:32",
+  /// subtitle's `chatLastSeen(time)` placeholder (e.g. "5m ago", "3h ago",
   /// "Mon 14:32", "Jul 4"). Shared by the app bar and anywhere else a short
   /// last-seen string is needed.
-  static String relativeTimeShort(DateTime timestamp) {
+  ///
+  /// 🔥 FIX: Task 20 review — the sub-24h branches are localized via
+  /// [AppLocalizations] instead of hardcoded English so ru/uz don't get
+  /// mixed-language text inside `chatLastSeen`. [l] may be null (e.g. in
+  /// pure unit tests), in which case English fallbacks are used. The >=24h
+  /// branches keep absolute `DateFormat`s but thread [l]'s locale through.
+  static String relativeTimeShort(DateTime timestamp, AppLocalizations? l) {
     final now = DateTime.now();
     final diff = now.difference(timestamp);
     if (diff.inMinutes < 1) {
-      return 'just now';
+      return l?.timeJustNow ?? 'just now';
     } else if (diff.inHours < 1) {
-      return '${diff.inMinutes}m ago';
+      return l?.timeMinutesShort(diff.inMinutes) ?? '${diff.inMinutes}m ago';
     } else if (diff.inDays < 1) {
-      return DateFormat.Hm().format(timestamp);
+      return l?.timeHoursShort(diff.inHours) ?? '${diff.inHours}h ago';
     } else if (diff.inDays < 7) {
-      return DateFormat.E().add_Hm().format(timestamp);
+      return DateFormat.E(l?.localeName).add_Hm().format(timestamp);
     } else {
-      return DateFormat.MMMd().format(timestamp);
+      return DateFormat.MMMd(l?.localeName).format(timestamp);
     }
   }
 

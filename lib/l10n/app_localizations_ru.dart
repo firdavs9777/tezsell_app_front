@@ -4516,6 +4516,19 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get timeJustNow => 'только что';
+
+  @override
+  String timeMinutesShort(Object m) {
+    return '$m мин назад';
+  }
+
+  @override
+  String timeHoursShort(Object h) {
+    return '$h ч назад';
+  }
+
+  @override
   String get chatConnecting => 'Переподключение…';
 
   @override
