@@ -1,3 +1,9 @@
+import 'package:app/providers/provider_models/message_model.dart';
+import 'package:intl/intl.dart';
+
+/// 🔥 NEW: Task 20 — a message's position within a run of consecutive
+/// same-sender messages, used to pick grouped-bubble corner radii.
+enum BubblePosition { single, first, middle, last }
 
 class ChatHelpers {
   /// 🔥 NEW: Task 15 — sender-only edit window mirrored from the backend
@@ -32,6 +38,54 @@ class ChatHelpers {
     } else {
       return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
     }
+  }
+
+  /// 🔥 NEW: Task 20 — compact relative-time string for the presence
+  /// subtitle's `chatLastSeen(time)` placeholder (e.g. "5m ago", "14:32",
+  /// "Mon 14:32", "Jul 4"). Shared by the app bar and anywhere else a short
+  /// last-seen string is needed.
+  static String relativeTimeShort(DateTime timestamp) {
+    final now = DateTime.now();
+    final diff = now.difference(timestamp);
+    if (diff.inMinutes < 1) {
+      return 'just now';
+    } else if (diff.inHours < 1) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inDays < 1) {
+      return DateFormat.Hm().format(timestamp);
+    } else if (diff.inDays < 7) {
+      return DateFormat.E().add_Hm().format(timestamp);
+    } else {
+      return DateFormat.MMMd().format(timestamp);
+    }
+  }
+
+  /// 🔥 NEW: Task 20 — where [index] falls within a run of consecutive
+  /// messages from the same sender in [sortedMessages] (ascending by
+  /// timestamp). System messages and day boundaries always break a run so
+  /// grouping never spans a date separator or a system pill.
+  static BubblePosition bubblePosition(
+    List<ChatMessage> sortedMessages,
+    int index,
+  ) {
+    final message = sortedMessages[index];
+    if (message.messageType == MessageType.system) {
+      return BubblePosition.single;
+    }
+
+    bool groupsWith(ChatMessage other) =>
+        other.messageType != MessageType.system &&
+        other.sender.id == message.sender.id &&
+        isSameDay(other.timestamp, message.timestamp);
+
+    final sameAsPrev = index > 0 && groupsWith(sortedMessages[index - 1]);
+    final sameAsNext = index < sortedMessages.length - 1 &&
+        groupsWith(sortedMessages[index + 1]);
+
+    if (!sameAsPrev && !sameAsNext) return BubblePosition.single;
+    if (!sameAsPrev && sameAsNext) return BubblePosition.first;
+    if (sameAsPrev && sameAsNext) return BubblePosition.middle;
+    return BubblePosition.last;
   }
 }
 

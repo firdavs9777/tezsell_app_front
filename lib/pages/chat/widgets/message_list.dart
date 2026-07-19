@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'message_bubble.dart';
 import 'date_separator.dart';
 import 'chat_helpers.dart';
+import 'unread_divider.dart';
 
 class MessageList extends ConsumerWidget {
   final ScrollController scrollController;
@@ -33,6 +34,12 @@ class MessageList extends ConsumerWidget {
   /// so it can render a brief highlight.
   final int? highlightedMessageId;
 
+  /// 🔥 NEW: Task 20 — id of the first unread message, computed once by
+  /// `ChatRoomScreen` when the room's messages first finish loading. An
+  /// [UnreadDivider] row is rendered directly above this message; null once
+  /// there was nothing unread at open (or after the room has no messages).
+  final int? unreadDividerMessageId;
+
   const MessageList({
     super.key,
     required this.scrollController,
@@ -45,6 +52,7 @@ class MessageList extends ConsumerWidget {
     this.onMessageSwipeReply,
     this.listingSellerId,
     this.highlightedMessageId,
+    this.unreadDividerMessageId,
   });
 
   @override
@@ -116,6 +124,10 @@ class MessageList extends ConsumerWidget {
               : null,
           currentUserId: currentUserId,
           onReactionTap: (emoji) {
+            // 🔥 NEW: Task 20 — light haptic on tapping an existing
+            // reaction chip (toggling your own reaction), matching the
+            // double-tap-to-react haptic below.
+            HapticFeedback.lightImpact();
             ref.read(chatProvider.notifier).toggleReaction(
               message.id!,
               emoji,
@@ -127,6 +139,9 @@ class MessageList extends ConsumerWidget {
           },
           listingSellerId: listingSellerId,
           isHighlighted: message.id != null && message.id == highlightedMessageId,
+          // 🔥 NEW: Task 20 — grouped-bubble corner treatment for
+          // consecutive same-sender messages.
+          position: ChatHelpers.bubblePosition(sortedMessages, messageIndex),
           // 🔥 NEW: Task 15 — double-tap the bubble's content region to
           // toggle a quick ❤️ reaction (Karrot/Instagram pattern), with a
           // light haptic. Scoped inside MessageBubble to the background
@@ -153,11 +168,18 @@ class MessageList extends ConsumerWidget {
               : null,
         );
 
+        // 🔥 NEW: Task 20 — the unread divider is computed once at open and
+        // never recomputed as messages get marked read, so this is a plain
+        // id match, not a live "isRead" check.
+        final showUnreadDivider =
+            unreadDividerMessageId != null && message.id == unreadDividerMessageId;
+
         final messageWidget = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (showDateSeparator)
               DateSeparator(date: message.timestamp),
+            if (showUnreadDivider) const UnreadDivider(),
             if (!isInteractive)
               bubble
             else

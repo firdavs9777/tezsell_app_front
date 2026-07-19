@@ -1,10 +1,11 @@
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/pages/chat/widgets/chat_helpers.dart';
+import 'package:app/pages/chat/widgets/typing_indicator.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final ChatRoom chatRoom;
@@ -109,7 +110,8 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Online status indicator
+                  // Online status indicator — small green glow when online
+                  // (Task 20 polish), dim/no glow otherwise.
                   if (chatRoom.participants.isNotEmpty)
                     Builder(
                       builder: (context) {
@@ -119,14 +121,25 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         );
                         final onlineUser = chatState.onlineUsers[user.id];
                         final isOnline = onlineUser?.isOnline ?? user.isOnline;
-                        return Container(
+                        const onlineColor = Color(0xFF4CAF50); // Standard green for online
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
                             color: isOnline
-                                ? const Color(0xFF4CAF50) // Standard green for online
+                                ? onlineColor
                                 : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
                             shape: BoxShape.circle,
+                            boxShadow: isOnline
+                                ? [
+                                    BoxShadow(
+                                      color: onlineColor.withOpacity(0.6),
+                                      blurRadius: 6,
+                                      spreadRadius: 1,
+                                    ),
+                                  ]
+                                : null,
                           ),
                         );
                       },
@@ -136,44 +149,56 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               Builder(
                 builder: (context) {
                   final l = AppLocalizations.of(context)!;
-                  String subtitle;
-                  if (chatRoom.isGroup) {
-                    subtitle = l.participants(chatRoom.participants.length);
-                  } else if (chatState.typingUsers.entries
-                      .where((e) => e.key != currentUserId && e.value)
-                      .isNotEmpty) {
-                    subtitle = l.typing;
-                  } else {
-                    // Check actual online status
-                    final user = chatRoom.participants.firstWhere(
-                      (p) => p.id != currentUserId,
-                      orElse: () => chatRoom.participants.first,
-                    );
-                    final onlineUser = chatState.onlineUsers[user.id];
-                    final isOnline = onlineUser?.isOnline ?? user.isOnline;
-                    final lastSeen = onlineUser?.lastSeen ?? user.lastSeen;
 
-                    if (isOnline) {
-                      subtitle = l.online;
-                    } else if (lastSeen != null) {
-                      final now = DateTime.now();
-                      final diff = now.difference(lastSeen);
-                      String timeStr;
-                      if (diff.inMinutes < 1) {
-                        timeStr = 'just now';
-                      } else if (diff.inHours < 1) {
-                        timeStr = '${diff.inMinutes}m ago';
-                      } else if (diff.inDays < 1) {
-                        timeStr = DateFormat.Hm().format(lastSeen);
-                      } else if (diff.inDays < 7) {
-                        timeStr = DateFormat.E().add_Hm().format(lastSeen);
-                      } else {
-                        timeStr = DateFormat.MMMd().format(lastSeen);
-                      }
-                      subtitle = l.last_seen_at(timeStr);
-                    } else {
-                      subtitle = l.offline;
-                    }
+                  if (chatRoom.isGroup) {
+                    return Text(
+                      l.participants(chatRoom.participants.length),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    );
+                  }
+
+                  // 🔥 NEW: Task 20 — animated 3-dot + `chatTyping` subtitle
+                  // while the OTHER participant is typing (self filtered by
+                  // user_id already, see `chatState.typingUsers`).
+                  final isOtherTyping = chatState.typingUsers.entries
+                      .where((e) => e.key != currentUserId && e.value)
+                      .isNotEmpty;
+                  if (isOtherTyping) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const TypingDots(dotSize: 4, showBackground: false),
+                        const SizedBox(width: 6),
+                        Text(
+                          l.chatTyping,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  // 🔥 NEW: Task 20 — presence subtitle: `chatOnline` while
+                  // online, else `chatLastSeen(relative)`, sourced from live
+                  // `presence` WS events with the room's participant data on
+                  // load as the fallback.
+                  final user = chatRoom.participants.firstWhere(
+                    (p) => p.id != currentUserId,
+                    orElse: () => chatRoom.participants.first,
+                  );
+                  final onlineUser = chatState.onlineUsers[user.id];
+                  final isOnline = onlineUser?.isOnline ?? user.isOnline;
+                  final lastSeen = onlineUser?.lastSeen ?? user.lastSeen;
+
+                  String subtitle;
+                  if (isOnline) {
+                    subtitle = l.chatOnline;
+                  } else if (lastSeen != null) {
+                    subtitle = l.chatLastSeen(ChatHelpers.relativeTimeShort(lastSeen));
+                  } else {
+                    subtitle = l.offline;
                   }
                   return Text(
                     subtitle,

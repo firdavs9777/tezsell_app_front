@@ -147,6 +147,12 @@ class ChatNotifier extends StateNotifier<ChatState> {
   bool _isDraining = false;
   final Random _random = Random();
 
+  /// 🔥 NEW: Task 20 — per-user safety timers that force-clear a stale
+  /// `typingUsers` entry 5s after the last `typing` event for that user, in
+  /// case a `typing_stop` (or the peer's dispose-time stop) is ever dropped
+  /// (backgrounded app, flaky connection, etc.).
+  final Map<int, Timer> _typingSafetyTimers = {};
+
   // 🔥 FIX: Safe state update that handles disposed widgets
   void _safeUpdateState(ChatState Function(ChatState) updateFn) {
     try {
@@ -1645,6 +1651,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
               final updatedTypingUsers = Map<int, bool>.from(state.typingUsers);
               updatedTypingUsers.remove(userId);
               _safeUpdateState((s) => s.copyWith(typingUsers: updatedTypingUsers));
+              _typingSafetyTimers.remove(userId)?.cancel();
             } else {
               // This is another user typing - show it!
               final updatedTypingUsers = Map<int, bool>.from(state.typingUsers);
@@ -1654,6 +1661,19 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 updatedTypingUsers.remove(userId);
               }
               _safeUpdateState((s) => s.copyWith(typingUsers: updatedTypingUsers));
+
+              // 🔥 NEW: Task 20 — (re)arm/clear the 5s safety timer so a
+              // dropped `typing_stop` can't leave the indicator stuck on.
+              _typingSafetyTimers.remove(userId)?.cancel();
+              if (isTyping) {
+                _typingSafetyTimers[userId] = Timer(const Duration(seconds: 5), () {
+                  final cleared = Map<int, bool>.from(state.typingUsers);
+                  if (cleared.remove(userId) != null) {
+                    _safeUpdateState((s) => s.copyWith(typingUsers: cleared));
+                  }
+                  _typingSafetyTimers.remove(userId);
+                });
+              }
             }
           } else {
 
@@ -2530,6 +2550,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
       timer.cancel();
     }
     _ackTimeouts.clear();
+    for (final timer in _typingSafetyTimers.values) {
+      timer.cancel();
+    }
+    _typingSafetyTimers.clear();
     _chatListWS?.disconnect();
     _chatRoomWS?.disconnect();
     super.dispose();

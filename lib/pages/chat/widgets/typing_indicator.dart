@@ -42,7 +42,7 @@ class TypingIndicator extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          const _TypingDots(),
+          const TypingDots(),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -61,15 +61,25 @@ class TypingIndicator extends StatelessWidget {
   }
 }
 
-/// Animated typing dots (like iMessage/Telegram)
-class _TypingDots extends StatefulWidget {
-  const _TypingDots();
+/// Animated typing dots (like iMessage/Telegram). Public (Task 20) so the
+/// app bar's compact typing subtitle can reuse the same bounce animation at
+/// a smaller size instead of duplicating it.
+class TypingDots extends StatefulWidget {
+  /// Diameter of each dot.
+  final double dotSize;
+
+  /// Whether to wrap the dots in the pill-shaped surface background used by
+  /// the below-message-list indicator. The app bar's inline usage renders
+  /// bare dots (no pill) to sit flush in the subtitle row.
+  final bool showBackground;
+
+  const TypingDots({super.key, this.dotSize = 6, this.showBackground = true});
 
   @override
-  State<_TypingDots> createState() => _TypingDotsState();
+  State<TypingDots> createState() => _TypingDotsState();
 }
 
-class _TypingDotsState extends State<_TypingDots>
+class _TypingDotsState extends State<TypingDots>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -90,43 +100,47 @@ class _TypingDotsState extends State<_TypingDots>
 
   @override
   Widget build(BuildContext context) {
+    final dots = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(3, (index) {
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            // Stagger the animation for each dot
+            final delay = index * 0.2;
+            final progress = (_controller.value + delay) % 1.0;
+            final bounce = (progress < 0.5)
+                ? progress * 2
+                : 2.0 - (progress * 2);
+
+            return Container(
+              margin: EdgeInsets.only(left: index > 0 ? widget.dotSize * 0.67 : 0),
+              child: Transform.translate(
+                offset: Offset(0, -(widget.dotSize / 2) * bounce),
+                child: Container(
+                  width: widget.dotSize,
+                  height: widget.dotSize,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }),
+    );
+
+    if (!widget.showBackground) return dots;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(3, (index) {
-          return AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              // Stagger the animation for each dot
-              final delay = index * 0.2;
-              final progress = (_controller.value + delay) % 1.0;
-              final bounce = (progress < 0.5)
-                  ? progress * 2
-                  : 2.0 - (progress * 2);
-
-              return Container(
-                margin: EdgeInsets.only(left: index > 0 ? 4 : 0),
-                child: Transform.translate(
-                  offset: Offset(0, -3 * bounce),
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        }),
-      ),
+      child: dots,
     );
   }
 }

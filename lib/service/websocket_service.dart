@@ -279,6 +279,10 @@ class ChatRoomWebSocketService {
     }
   }
 
+  /// 🔥 NEW: Task 20 — sends the dedicated `typing_start`/`typing_stop`
+  /// client events the backend now listens for (it also still accepts the
+  /// legacy `{type: 'typing', is_typing}` shape for older clients, but this
+  /// is the documented contract going forward).
   void sendTypingStatus(bool isTyping) {
     if (!_isConnected || _channel == null) {
       return;
@@ -286,8 +290,7 @@ class ChatRoomWebSocketService {
 
     try {
       final message = json.encode({
-        'type': 'typing',
-        'is_typing': isTyping,
+        'type': isTyping ? 'typing_start' : 'typing_stop',
       });
       _channel!.sink.add(message);
     } catch (e) {

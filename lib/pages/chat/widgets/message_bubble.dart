@@ -4,6 +4,7 @@ import 'package:app/widgets/image_viewer.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/chat/widgets/voice_bubble.dart';
 import 'package:app/pages/chat/widgets/link_preview_card.dart';
+import 'package:app/pages/chat/widgets/chat_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +65,12 @@ class MessageBubble extends StatelessWidget {
   /// `showingOriginalTranslationsProvider`.
   final bool showOriginal;
 
+  /// 🔥 NEW: Task 20 — this message's position within a run of consecutive
+  /// same-sender messages (see `ChatHelpers.bubblePosition`), used by
+  /// [_bubbleRadius] to give grouped bubbles a connected first/middle/last
+  /// corner treatment instead of every bubble looking like a standalone one.
+  final BubblePosition position;
+
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
   static const int _maxCacheSize = 100;
@@ -85,7 +92,51 @@ class MessageBubble extends StatelessWidget {
     this.onDoubleTap,
     this.onShowOriginal,
     this.showOriginal = true,
+    this.position = BubblePosition.single,
   });
+
+  /// 🔥 NEW: Task 20 — grouped-bubble corner radii. The "tail" corner (the
+  /// pointed one nearest the sender's side — bottom-right for own messages,
+  /// bottom-left for others) only shows on a standalone message or the last
+  /// of a run; corners touching a same-sender neighbor above/below tighten
+  /// to a small radius so consecutive bubbles read as one connected group
+  /// (Telegram/WhatsApp style).
+  BorderRadius _bubbleRadius() {
+    const large = Radius.circular(18);
+    const tight = Radius.circular(6);
+    const tail = Radius.circular(4);
+
+    switch (position) {
+      case BubblePosition.single:
+        return BorderRadius.only(
+          topLeft: large,
+          topRight: large,
+          bottomLeft: isOwnMessage ? large : tail,
+          bottomRight: isOwnMessage ? tail : large,
+        );
+      case BubblePosition.first:
+        return BorderRadius.only(
+          topLeft: large,
+          topRight: large,
+          bottomLeft: isOwnMessage ? large : tight,
+          bottomRight: isOwnMessage ? tight : large,
+        );
+      case BubblePosition.middle:
+        return BorderRadius.only(
+          topLeft: isOwnMessage ? large : tight,
+          topRight: isOwnMessage ? tight : large,
+          bottomLeft: isOwnMessage ? large : tight,
+          bottomRight: isOwnMessage ? tight : large,
+        );
+      case BubblePosition.last:
+        return BorderRadius.only(
+          topLeft: isOwnMessage ? large : tight,
+          topRight: isOwnMessage ? tight : large,
+          bottomLeft: isOwnMessage ? large : tail,
+          bottomRight: isOwnMessage ? tail : large,
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,12 +297,7 @@ class MessageBubble extends StatelessWidget {
                     color: isOwnMessage
                         ? null
                         : Theme.of(context).colorScheme.surfaceContainer,
-                    borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(18),
-                      topRight: const Radius.circular(18),
-                      bottomLeft: Radius.circular(isOwnMessage ? 18 : 4),
-                      bottomRight: Radius.circular(isOwnMessage ? 4 : 18),
-                    ),
+                    borderRadius: _bubbleRadius(),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.08),

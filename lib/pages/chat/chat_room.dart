@@ -81,6 +81,22 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // Scroll to bottom button state
   bool _showScrollToBottom = false;
 
+  /// 🔥 NEW: Task 20 — distance-from-bottom threshold (px) past which the
+  /// scroll-to-bottom FAB appears.
+  static const double _scrollUpFabThreshold = 300;
+
+  /// 🔥 NEW: Task 20 — count of messages that have arrived while the user
+  /// is scrolled up (shown as a badge on the FAB); reset on tap-to-bottom or
+  /// once the list naturally scrolls back near the bottom.
+  int _unseenNewMessagesCount = 0;
+
+  /// 🔥 NEW: Task 20 — id of the first unread message at the moment this
+  /// room's messages finished their initial load. Computed once (guarded by
+  /// [_unreadDividerComputed]) so the divider row doesn't shift as messages
+  /// get marked read while the user is sitting in the room.
+  int? _unreadDividerMessageId;
+  bool _unreadDividerComputed = false;
+
   // 🔥 NEW: Task 14 — id of the message briefly flashed after tapping a
   // quoted-reply block scrolls the list to it.
   int? _highlightedMessageId;
@@ -221,15 +237,23 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
-    // Show/hide scroll to bottom button
+    // Show/hide scroll to bottom button — appears once scrolled up more
+    // than ~300px from the bottom (Task 20 polish; was 200px).
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    final isNearBottom = (maxScroll - currentScroll) < 200; // 200px threshold
+    final isScrolledUp = (maxScroll - currentScroll) > _scrollUpFabThreshold;
 
     if (mounted && !_isDisposed) {
-      setState(() {
-        _showScrollToBottom = !isNearBottom && maxScroll > 0;
-      });
+      final nowShown = isScrolledUp && maxScroll > 0;
+      if (_showScrollToBottom && !nowShown) {
+        // Back near the bottom — the unseen badge no longer applies.
+        setState(() {
+          _showScrollToBottom = false;
+          _unseenNewMessagesCount = 0;
+        });
+      } else if (_showScrollToBottom != nowShown) {
+        setState(() => _showScrollToBottom = nowShown);
+      }
     }
 
     final chatState = ref.read(chatProvider);
@@ -646,6 +670,46 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     );
   }
 
+  /// 🔥 NEW: Task 20 — the latest (max) timestamp in [messages], or null if
+  /// empty. Used to tell a genuinely new tail message apart from an older
+  /// page of history merged in at the front of the list.
+  DateTime? _latestTimestamp(List<ChatMessage> messages) {
+    if (messages.isEmpty) return null;
+    return messages
+        .map((m) => m.timestamp)
+        .reduce((a, b) => a.isAfter(b) ? a : b);
+  }
+
+  /// 🔥 NEW: Task 20 — snapshots the first message (from the other
+  /// participant) this user hasn't read yet, exactly once per room open, so
+  /// the [UnreadDivider] row stays put even after those messages get marked
+  /// read while the user is sitting in the room (read receipts round-trip
+  /// asynchronously over the WS, well after this runs).
+  void _computeUnreadDividerOnce() {
+    if (_unreadDividerComputed) return;
+    _unreadDividerComputed = true;
+
+    final chatState = ref.read(chatProvider);
+    final currentUserId = chatState.currentUserId;
+    if (currentUserId == null) return;
+
+    final sorted = ref.read(sortedMessagesProvider);
+    ChatMessage? firstUnread;
+    for (final m in sorted) {
+      if (m.id != null &&
+          m.sender.id != currentUserId &&
+          !m.isRead &&
+          !m.readBy.contains(currentUserId)) {
+        firstUnread = m;
+        break;
+      }
+    }
+
+    if (firstUnread != null && mounted && !_isDisposed) {
+      setState(() => _unreadDividerMessageId = firstUnread!.id);
+    }
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -654,10 +718,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
-        // Hide button after scrolling
+        // Hide button after scrolling and clear the unseen-messages badge.
         if (mounted && !_isDisposed) {
           setState(() {
             _showScrollToBottom = false;
+            _unseenNewMessagesCount = 0;
           });
         }
       }
@@ -756,34 +821,72 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         child: AnimatedOpacity(
           opacity: _showScrollToBottom ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 150),
-          child: Material(
-            elevation: 4,
-            shadowColor: Theme.of(context).shadowColor.withOpacity(0.3),
-            shape: const CircleBorder(),
-            child: InkWell(
-              onTap: _scrollToBottom,
-              customBorder: const CircleBorder(),
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Material(
+                elevation: 4,
+                shadowColor: Theme.of(context).shadowColor.withOpacity(0.3),
+                shape: const CircleBorder(),
+                child: InkWell(
+                  onTap: _scrollToBottom,
+                  customBorder: const CircleBorder(),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  size: 28,
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      size: 28,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              // 🔥 NEW: Task 20 — badge showing how many new messages
+              // arrived while the user was scrolled up.
+              if (_unseenNewMessagesCount > 0)
+                Positioned(
+                  top: -4,
+                  right: -4,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.error,
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.surface,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _unseenNewMessagesCount > 99
+                            ? '99+'
+                            : '$_unseenNewMessagesCount',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onError,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          height: 1.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -1196,13 +1299,38 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       if (!mounted || _isDisposed)
         return; // Guard against updates after disposal
 
-      if (previous?.messages.length != next.messages.length) {
-        _scrollToBottom();
-      }
+      final justFinishedLoading = previous?.isLoadingMessages == true &&
+          next.isLoadingMessages == false;
 
-      if (previous?.isLoadingMessages == true &&
-          next.isLoadingMessages == false) {
+      if (justFinishedLoading) {
         _scrollToBottom();
+        // 🔥 NEW: Task 20 — snapshot the first-unread message id exactly
+        // once, right as the room's messages first land.
+        _computeUnreadDividerOnce();
+      } else if (previous != null &&
+          next.messages.length > previous.messages.length) {
+        // 🔥 FIX: Task 20 — `loadOlderMessages()` (pagination while
+        // scrolled up to read history) also grows `messages.length`; only
+        // treat this as a "new message arrived" event if the newest
+        // message actually got newer (appended at the tail), not when
+        // older history was merely prepended.
+        final prevLatest = _latestTimestamp(previous.messages);
+        final nextLatest = _latestTimestamp(next.messages);
+        final isNewAtTail =
+            prevLatest == null || (nextLatest != null && nextLatest.isAfter(prevLatest));
+
+        if (isNewAtTail) {
+          if (_showScrollToBottom) {
+            // User is scrolled up reading history — don't yank them down;
+            // surface the arrival via the FAB's unseen-count badge instead.
+            final delta = next.messages.length - previous.messages.length;
+            if (!_isDisposed) {
+              setState(() => _unseenNewMessagesCount += delta);
+            }
+          } else {
+            _scrollToBottom();
+          }
+        }
       }
     });
 
@@ -1369,6 +1497,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             onReplyTap: _scrollToMessage,
                             listingSellerId: effectiveListing?.sellerId,
                             highlightedMessageId: _highlightedMessageId,
+                            unreadDividerMessageId: _unreadDividerMessageId,
                             onMessageSwipeReply: (message) {
                               if (mounted && !_isDisposed) {
                                 setState(() {
