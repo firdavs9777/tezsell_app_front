@@ -14,6 +14,10 @@ class MessageList extends ConsumerWidget {
   final ScrollController scrollController;
   final int? currentlyPlayingMessageId;
   final PlayerState audioPlayerState;
+
+  /// 🔥 NEW: Task 17 — forwarded to [MessageBubble]/`VoiceBubble` for the
+  /// played-progress waveform fill on the currently-playing voice bubble.
+  final Duration playbackPosition;
   final Function(ChatMessage) onAudioTap;
   final Function(ChatMessage, int) onMessageLongPress;
   final Function(int)? onReplyTap; // Callback when reply preview is tapped
@@ -34,6 +38,7 @@ class MessageList extends ConsumerWidget {
     required this.scrollController,
     required this.currentlyPlayingMessageId,
     required this.audioPlayerState,
+    this.playbackPosition = Duration.zero,
     required this.onAudioTap,
     required this.onMessageLongPress,
     this.onReplyTap,
@@ -102,6 +107,7 @@ class MessageList extends ConsumerWidget {
           isOwnMessage: isOwnMessage,
           currentlyPlayingMessageId: currentlyPlayingMessageId,
           audioPlayerState: audioPlayerState,
+          playbackPosition: playbackPosition,
           onAudioTap: message.messageType == MessageType.voice
               ? () => onAudioTap(message)
               : null,

@@ -18,6 +18,7 @@ import 'package:app/pages/chat/widgets/forward_picker_sheet.dart';
 import 'package:app/pages/chat/widgets/pinned_messages_bar.dart';
 import 'package:app/pages/chat/widgets/listing_card.dart';
 import 'package:app/pages/chat/widgets/quick_chips.dart';
+import 'package:app/pages/chat/widgets/voice_recorder_bar.dart';
 import 'package:app/widgets/connection_banner.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   int? _currentlyPlayingMessageId;
   PlayerState _audioPlayerState = PlayerState.stopped;
 
+  /// 🔥 NEW: Task 17 — current playback position of the single shared
+  /// `_audioPlayer`, forwarded down to `MessageList`/`MessageBubble`/
+  /// `VoiceBubble` so the currently-playing voice bubble can render a
+  /// played-progress fill on its waveform.
+  Duration _playbackPosition = Duration.zero;
+
   // Enhanced features state
   int? _replyingToMessageId;
   ChatMessage? _replyingToMessage;
@@ -83,11 +90,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   late final ChatNotifier _chatNotifier;
 
   StreamSubscription<PlayerState>? _audioPlayerStateSubscription;
+  StreamSubscription<Duration>? _audioPositionSubscription;
 
   // 🔥 NEW: Timer for periodic read status refresh (fallback)
   Timer? _readStatusRefreshTimer;
 
-  final GlobalKey<_VoiceMicButtonState> _voiceMicKey = GlobalKey();
+  final GlobalKey<VoiceMicButtonState> _voiceMicKey = GlobalKey();
 
   @override
   void initState() {
@@ -106,6 +114,16 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             }
           });
         }
+      }
+    });
+
+    // 🔥 NEW: Task 17 — track playback position for the voice bubble's
+    // played-progress waveform fill.
+    _audioPositionSubscription = _audioPlayer.onPositionChanged.listen((
+      position,
+    ) {
+      if (mounted && !_isDisposed) {
+        setState(() => _playbackPosition = position);
       }
     });
 
@@ -230,6 +248,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _readStatusRefreshTimer?.cancel();
     _highlightTimer?.cancel();
     _audioPlayerStateSubscription?.cancel();
+    _audioPositionSubscription?.cancel();
     _scrollController.removeListener(_onScroll);
 
     // Dispose controllers
@@ -282,7 +301,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       }
 
       if (!_isDisposed) {
-        setState(() => _currentlyPlayingMessageId = message.id);
+        setState(() {
+          _currentlyPlayingMessageId = message.id;
+          // 🔥 NEW: Task 17 — reset the shared progress tracker so the new
+          // (or resumed-from-scratch) bubble doesn't briefly show the
+          // previous message's played-fill for a frame.
+          _playbackPosition = Duration.zero;
+        });
       }
       await _audioPlayer.play(UrlSource(message.fileUrl!));
     } catch (e) {
@@ -821,7 +846,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     }
   }
 
-  Future<void> _handleVoiceRecordingComplete(File audioFile, int duration) async {
+  Future<void> _handleVoiceRecordingComplete(
+    File audioFile,
+    int duration,
+    List<int> waveform,
+  ) async {
     if (!_isDisposed) {
       setState(() {
         _isRecording = false;
@@ -855,7 +884,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     final success = await ref
         .read(chatProvider.notifier)
-        .sendVoiceMessage(audioFile, widget.chatRoom.id, duration);
+        .sendVoiceMessage(
+          audioFile,
+          widget.chatRoom.id,
+          duration,
+          waveform: waveform,
+        );
 
     if (mounted) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -1187,6 +1221,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             currentlyPlayingMessageId:
                                 _currentlyPlayingMessageId,
                             audioPlayerState: _audioPlayerState,
+                            playbackPosition: _playbackPosition,
                             onAudioTap: _toggleAudioPlayback,
                             onMessageLongPress: _showMessageOptions,
                             onReplyTap: _scrollToMessage,
@@ -1356,7 +1391,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             if (_isRecording)
               SizedBox(
                 height: 56,
-                child: _VoiceMicButton(
+                child: VoiceMicButton(
                   key: _voiceMicKey,
                   onRecordingComplete: _handleVoiceRecordingComplete,
                   onRecordingStarted: _handleVoiceRecordingStarted,
@@ -1461,21 +1496,44 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       valueListenable: _messageController,
                       builder: (context, value, child) {
                         final hasText = value.text.trim().isNotEmpty;
-                        if (hasText) {
-                          return _AnimatedSendButton(
-                            isEnabled: true,
-                            color: Theme.of(context).colorScheme.primary,
-                            icon: Icons.send,
-                            onPressed: _sendMessage,
-                          );
-                        } else {
-                          return _VoiceMicButton(
-                            key: _voiceMicKey,
-                            onRecordingComplete: _handleVoiceRecordingComplete,
-                            onRecordingStarted: _handleVoiceRecordingStarted,
-                            onRecordingCancelled: _handleVoiceRecordingCancelled,
-                          );
-                        }
+                        // 🔥 NEW: Task 17 — cross-fade between the mic and
+                        // send buttons instead of an instant swap. The mic
+                        // button keeps `_voiceMicKey` so its recorder/timer
+                        // state survives being reparented into the
+                        // full-width recording bar above once a hold starts
+                        // (see the `_isRecording` branch) — mutually
+                        // exclusive with this branch, so the key is never
+                        // duplicated in the tree at the same time.
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: animation,
+                                  child: child,
+                                ),
+                              ),
+                          child: hasText
+                              ? _AnimatedSendButton(
+                                  key: const ValueKey('send-button'),
+                                  isEnabled: true,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  icon: Icons.send,
+                                  onPressed: _sendMessage,
+                                )
+                              : VoiceMicButton(
+                                  key: _voiceMicKey,
+                                  onRecordingComplete:
+                                      _handleVoiceRecordingComplete,
+                                  onRecordingStarted:
+                                      _handleVoiceRecordingStarted,
+                                  onRecordingCancelled:
+                                      _handleVoiceRecordingCancelled,
+                                ),
+                        );
                       },
                     ),
                 ],
@@ -1495,6 +1553,7 @@ class _AnimatedSendButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const _AnimatedSendButton({
+    super.key,
     required this.isEnabled,
     required this.color,
     required this.icon,
@@ -1543,381 +1602,3 @@ class _AnimatedSendButton extends StatelessWidget {
   }
 }
 
-/// Telegram-style voice mic button with hold-to-record
-class _VoiceMicButton extends StatefulWidget {
-  final Function(File audioFile, int duration) onRecordingComplete;
-  final VoidCallback? onRecordingStarted;
-  final VoidCallback? onRecordingCancelled;
-
-  const _VoiceMicButton({
-    super.key,
-    required this.onRecordingComplete,
-    this.onRecordingStarted,
-    this.onRecordingCancelled,
-  });
-
-  @override
-  State<_VoiceMicButton> createState() => _VoiceMicButtonState();
-}
-
-class _VoiceMicButtonState extends State<_VoiceMicButton>
-    with TickerProviderStateMixin {
-  final AudioRecorder _audioRecorder = AudioRecorder();
-
-  bool _isRecording = false;
-  bool _isLocked = false;
-  DateTime? _recordingStartTime;
-  String? _recordingPath;
-  Timer? _durationTimer;
-  int _recordingDuration = 0;
-
-  // Gesture tracking
-  double _dragOffsetX = 0;
-  double _dragOffsetY = 0;
-  static const double _cancelThreshold = -80;
-  static const double _lockThreshold = -60;
-
-  // Animation
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _durationTimer?.cancel();
-    _pulseController.dispose();
-    _audioRecorder.dispose();
-    super.dispose();
-  }
-
-  String _formatDuration(int seconds) {
-    final minutes = seconds ~/ 60;
-    final secs = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
-  }
-
-  Future<void> _startRecording() async {
-    if (_isRecording) return;
-
-    final hasPerm = await _audioRecorder.hasPermission();
-    print('🎙️ [Voice] hasPermission: $hasPerm');
-    if (!hasPerm) {
-      HapticFeedback.heavyImpact();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Microphone permission denied')),
-        );
-      }
-      return;
-    }
-
-    HapticFeedback.mediumImpact();
-
-    _recordingPath = '${Directory.systemTemp.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
-    print('🎙️ [Voice] starting recording → $_recordingPath');
-    try {
-      await _audioRecorder.start(const RecordConfig(), path: _recordingPath!);
-      print('🎙️ [Voice] recording started OK');
-    } catch (e) {
-      print('🔴 [Voice] start error: $e');
-      rethrow;
-    }
-
-    setState(() {
-      _isRecording = true;
-      _isLocked = false;
-      _recordingStartTime = DateTime.now();
-      _recordingDuration = 0;
-      _dragOffsetX = 0;
-      _dragOffsetY = 0;
-    });
-
-    widget.onRecordingStarted?.call();
-    _pulseController.repeat(reverse: true);
-
-    _durationTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted && _isRecording) {
-        setState(() => _recordingDuration++);
-      }
-    });
-  }
-
-  Future<void> _stopRecording({bool send = true}) async {
-    if (!_isRecording) return;
-
-    _durationTimer?.cancel();
-    _pulseController.stop();
-    _pulseController.reset();
-
-    final path = await _audioRecorder.stop();
-    final duration = _recordingDuration;
-    print('🎙️ [Voice] stopped — path: $path, duration: ${duration}s, send: $send');
-
-    final wasCancelled = !send || duration < 1;
-    if (wasCancelled) print('🎙️ [Voice] cancelled (send=$send, duration=$duration)');
-
-    setState(() {
-      _isRecording = false;
-      _isLocked = false;
-      _recordingStartTime = null;
-      _dragOffsetX = 0;
-      _dragOffsetY = 0;
-    });
-
-    if (!wasCancelled && path != null) {
-      final fileSize = await File(path).length().catchError((_) => 0);
-      print('🎙️ [Voice] sending file — size: ${fileSize}B');
-      HapticFeedback.lightImpact();
-      widget.onRecordingComplete(File(path), duration);
-    } else {
-      if (path != null) {
-        try { await File(path).delete(); } catch (_) {}
-      }
-      widget.onRecordingCancelled?.call();
-    }
-  }
-
-  void _cancelRecording() {
-    HapticFeedback.heavyImpact();
-    _stopRecording(send: false);
-  }
-
-  void _lockRecording() {
-    HapticFeedback.mediumImpact();
-    setState(() {
-      _isLocked = true;
-      _dragOffsetY = 0;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_isRecording) {
-      return _buildMicButton();
-    } else if (_isLocked) {
-      return _buildLockedUI();
-    } else {
-      return _buildRecordingUI();
-    }
-  }
-
-  Widget _buildMicButton() {
-    final colorScheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: () async {
-        await _startRecording();
-        if (mounted && _isRecording) _lockRecording();
-      },
-      onLongPressStart: (_) => _startRecording(),
-      onLongPressEnd: (_) {
-        if (!_isLocked && _isRecording) {
-          _stopRecording(send: true);
-        }
-      },
-      onLongPressMoveUpdate: (details) {
-        if (!_isRecording) return;
-
-        setState(() {
-          _dragOffsetX = details.offsetFromOrigin.dx;
-          _dragOffsetY = details.offsetFromOrigin.dy;
-        });
-
-        if (_dragOffsetX < _cancelThreshold) {
-          _cancelRecording();
-        } else if (_dragOffsetY < _lockThreshold && !_isLocked) {
-          _lockRecording();
-        }
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: colorScheme.surfaceContainerHighest,
-        ),
-        child: Icon(
-          Icons.mic,
-          color: colorScheme.onSurfaceVariant,
-          size: 22,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecordingUI() {
-    return SizedBox(
-      height: 48,
-      child: Row(
-        children: [
-          const SizedBox(width: 4),
-          // Pulsing red dot
-          AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _pulseAnimation.value,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                  ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(width: 8),
-          // Timer
-          Text(
-            _formatDuration(_recordingDuration),
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ),
-          const Spacer(),
-          // Slide to cancel — moves left with drag
-          Transform.translate(
-            offset: Offset(_dragOffsetX.clamp(-50.0, 0.0) * 0.5, 0),
-            child: Opacity(
-              opacity: _dragOffsetX < -20
-                  ? (1.0 - ((-_dragOffsetX - 20) / 60)).clamp(0.2, 1.0)
-                  : 1.0,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
-                  Text(
-                    'Slide to cancel',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Lock indicator (appears when dragging up)
-          if (_dragOffsetY < -20)
-            Icon(
-              Icons.lock_outline,
-              color: _dragOffsetY < _lockThreshold
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
-              size: 18,
-            ),
-          const SizedBox(width: 4),
-          // Animated mic button (moves with finger)
-          AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(
-                  _dragOffsetX.clamp(-40, 0),
-                  _dragOffsetY.clamp(-40, 0),
-                ),
-                child: Transform.scale(
-                  scale: _pulseAnimation.value,
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Icon(Icons.mic, color: Theme.of(context).colorScheme.onPrimary, size: 22),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLockedUI() {
-    return SizedBox(
-      height: 48,
-      child: Row(
-        children: [
-          // Cancel button
-          IconButton(
-            onPressed: _cancelRecording,
-            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 22),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-          ),
-          // Recording indicator
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red,
-            ),
-          ),
-          const SizedBox(width: 6),
-          // Timer
-          Text(
-            _formatDuration(_recordingDuration),
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-          const Spacer(),
-          // Waveform animation
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(12, (i) {
-              final h = ((_recordingDuration + i) % 4 + 1) * 3.5;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 2.5,
-                height: h,
-                margin: const EdgeInsets.symmetric(horizontal: 1),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              );
-            }),
-          ),
-          const SizedBox(width: 12),
-          // Send button
-          GestureDetector(
-            onTap: () => _stopRecording(send: true),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              child: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

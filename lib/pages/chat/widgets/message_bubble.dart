@@ -2,6 +2,7 @@ import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/chat/widgets/voice_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,12 @@ class MessageBubble extends StatelessWidget {
   final bool isOwnMessage;
   final int? currentlyPlayingMessageId;
   final PlayerState audioPlayerState;
+
+  /// 🔥 NEW: Task 17 — current playback position, forwarded down from
+  /// `ChatRoomScreen`'s single shared `AudioPlayer` so the voice bubble
+  /// currently playing can render a played-progress fill on its waveform.
+  /// Only meaningful for the bubble whose id == `currentlyPlayingMessageId`.
+  final Duration playbackPosition;
   final VoidCallback? onAudioTap;
   final int? currentUserId;
   final Function(String)? onReactionTap;
@@ -52,6 +59,7 @@ class MessageBubble extends StatelessWidget {
     required this.isOwnMessage,
     this.currentlyPlayingMessageId,
     this.audioPlayerState = PlayerState.stopped,
+    this.playbackPosition = Duration.zero,
     this.onAudioTap,
     this.currentUserId,
     this.onReactionTap,
@@ -672,7 +680,18 @@ class MessageBubble extends StatelessWidget {
         return _buildImageMessage(context);
 
       case MessageType.voice:
-        return _buildVoiceMessage(context, onAudioTap);
+        final isPlaying =
+            currentlyPlayingMessageId == message.id &&
+            audioPlayerState == PlayerState.playing;
+        return VoiceBubble(
+          message: message,
+          isOwnMessage: isOwnMessage,
+          isPlaying: isPlaying,
+          playbackPosition: currentlyPlayingMessageId == message.id
+              ? playbackPosition
+              : Duration.zero,
+          onTap: onAudioTap,
+        );
 
       case MessageType.system:
         // Unreachable: `build()` returns `_buildSystemMessage` before ever
@@ -739,82 +758,4 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildVoiceMessage(BuildContext context, VoidCallback? onTap) {
-    final duration = message.duration ?? 0;
-    final minutes = duration ~/ 60;
-    final seconds = duration % 60;
-    final isPlaying =
-        currentlyPlayingMessageId == message.id &&
-        audioPlayerState == PlayerState.playing;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: isOwnMessage
-                    ? Colors.white.withOpacity(0.25)
-                    : Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.primary,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(20, (index) {
-                      final height = (index % 3 + 1) * 4.0;
-                      return Container(
-                        width: 3,
-                        height: height,
-                        margin: const EdgeInsets.symmetric(horizontal: 1.5),
-                        decoration: BoxDecoration(
-                          color: isOwnMessage
-                              ? Colors.white.withOpacity(0.7)
-                              : Theme.of(context).colorScheme.primary.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(1.5),
-                        ),
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: isOwnMessage
-                          ? Colors.white.withOpacity(0.8)
-                          : Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.mic,
-              color: isOwnMessage
-                  ? Colors.white.withOpacity(0.7)
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-              size: 20,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

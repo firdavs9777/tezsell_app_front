@@ -726,8 +726,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
 // 🔥 NEW: Send voice message
+  // 🔥 NEW: Task 17 — [waveform] (up to 100 amplitude samples, 0..100) is
+  // forwarded to the upload so the playback bubble gets a real waveform.
   Future<bool> sendVoiceMessage(
-      File audioFile, int roomId, int duration) async {
+      File audioFile, int roomId, int duration, {List<int>? waveform}) async {
 
     if (!state.isAuthenticated) {
 
@@ -738,8 +740,12 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
 
       // Upload voice via API
-      final message =
-          await _apiService.sendVoiceMessage(audioFile, roomId, duration);
+      final message = await _apiService.sendVoiceMessage(
+        audioFile,
+        roomId,
+        duration,
+        waveform: waveform,
+      );
 
       // 🔥 FIX: Don't add message here - it will come via WebSocket
       // This prevents double messages

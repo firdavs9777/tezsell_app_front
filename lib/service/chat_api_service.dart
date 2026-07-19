@@ -88,8 +88,14 @@ class ChatApiService {
   }
 
   // 🔥 NEW: Upload voice message
+  // 🔥 NEW: Task 17 — [waveform] is up to 100 amplitude samples (ints
+  // 0..100) captured while recording; sent as a JSON-encoded string under
+  // the `metadata` field (DRF's JSONField parses a JSON string from
+  // multipart form data the same way it would a JSON body), landing in
+  // `Message.metadata = {'waveform': [...]}` for the playback bubble to
+  // render a real waveform instead of a placeholder pattern.
   Future<ChatMessage> sendVoiceMessage(
-      File audioFile, int roomId, int duration) async {
+      File audioFile, int roomId, int duration, {List<int>? waveform}) async {
     final token = await _getToken();
     if (token == null) {
       throw Exception('Not authenticated');
@@ -108,6 +114,9 @@ class ChatApiService {
       request.headers['Authorization'] = 'Token $token';
       request.fields['message_type'] = 'voice';
       request.fields['duration'] = duration.toString();
+      if (waveform != null && waveform.isNotEmpty) {
+        request.fields['metadata'] = json.encode({'waveform': waveform});
+      }
 
       final mimeTypeData = mimeType.split('/');
       request.files.add(
