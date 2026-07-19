@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:app/providers/provider_models/community_comment_model.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 
 void main() {
@@ -83,5 +84,95 @@ void main() {
     expect(updated.likeCount, original.likeCount);
     expect(updated.viewCount, original.viewCount);
     expect(updated.authorName, original.authorName);
+  });
+
+  test('CommunityComment.fromJson parses a top-level comment with nested replies', () {
+    final json = {
+      'id': 10,
+      'user': {'id': 3, 'username': 'aziza'},
+      'text': 'Great post!',
+      'created_at': '2026-07-19T10:00:00Z',
+      'like_count': 4,
+      'is_liked': true,
+      'reply_count': 2,
+      'replies': [
+        {
+          'id': 11,
+          'user': {'id': 4, 'username': 'bek'},
+          'text': 'Agreed',
+          'created_at': '2026-07-19T10:05:00Z',
+          'like_count': 1,
+          'is_liked': false,
+        },
+        {
+          'id': 12,
+          'user': {'id': 5, 'username': 'dono'},
+          'text': 'Same here',
+          'created_at': '2026-07-19T10:06:00Z',
+        },
+      ],
+    };
+    final comment = CommunityComment.fromJson(json);
+    expect(comment.id, 10);
+    expect(comment.userId, 3);
+    expect(comment.userName, 'aziza');
+    expect(comment.likeCount, 4);
+    expect(comment.isLiked, true);
+    expect(comment.replyCount, 2);
+    expect(comment.replies, hasLength(2));
+    expect(comment.replies[0].id, 11);
+    expect(comment.replies[0].userName, 'bek');
+    expect(comment.replies[0].likeCount, 1);
+    expect(comment.replies[1].id, 12);
+    // Fields absent from the reply payload fall back to safe defaults.
+    expect(comment.replies[1].likeCount, 0);
+    expect(comment.replies[1].isLiked, false);
+    expect(comment.replies[1].replies, isEmpty);
+  });
+
+  test('CommunityComment.fromJson falls back safely when optional fields are absent', () {
+    final json = {
+      'id': 20,
+      'user': {'username': 'guest'},
+      'text': 'hi',
+      'created_at': '2026-07-19T10:00:00Z',
+    };
+    final comment = CommunityComment.fromJson(json);
+    expect(comment.userId, 0);
+    expect(comment.likeCount, 0);
+    expect(comment.isLiked, false);
+    expect(comment.replyCount, 0);
+    expect(comment.replies, isEmpty);
+  });
+
+  test('CommunityComment.copyWith overrides only the given fields', () {
+    final original = CommunityComment(
+      id: 1,
+      userId: 3,
+      text: 'Original',
+      userName: 'aziza',
+      createdAt: DateTime.parse('2026-07-19T10:00:00Z'),
+      likeCount: 2,
+      isLiked: false,
+      replyCount: 1,
+      replies: [
+        CommunityComment(
+          id: 2,
+          userId: 4,
+          text: 'reply',
+          userName: 'bek',
+          createdAt: DateTime.parse('2026-07-19T10:05:00Z'),
+        ),
+      ],
+    );
+
+    final updated = original.copyWith(likeCount: 3, isLiked: true);
+
+    expect(updated.id, original.id);
+    expect(updated.likeCount, 3);
+    expect(updated.isLiked, true);
+    expect(updated.replyCount, original.replyCount);
+    expect(updated.replies, original.replies);
+    expect(updated.text, original.text);
   });
 }

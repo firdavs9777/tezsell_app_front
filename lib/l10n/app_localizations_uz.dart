@@ -4653,4 +4653,18 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get radiusApply => 'Qo\'llash';
+
+  @override
+  String communityViewReplies(int n) {
+    return '$n ta javobni ko\'rish';
+  }
+
+  @override
+  String get communityAuthorBadge => 'Muallif';
+
+  @override
+  String get communityDeleteCommentConfirm => 'Bu izohni o\'chirishmi?';
+
+  @override
+  String get communityLoadMoreComments => 'Ko\'proq izohlarni ko\'rish';
 }

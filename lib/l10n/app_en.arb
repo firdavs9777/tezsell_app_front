@@ -3351,5 +3351,13 @@
   "radiusCityWide": "City-wide",
   "@radiusCityWide": {"description": "Toggle/chip label in the radius picker sheet that sets the radius to infinity (whole city)"},
   "radiusApply": "Apply",
-  "@radiusApply": {"description": "Apply button in the radius picker sheet that confirms the selected radius"}
+  "@radiusApply": {"description": "Apply button in the radius picker sheet that confirms the selected radius"},
+  "communityViewReplies": "View {n} replies",
+  "@communityViewReplies": {"description": "Button label to expand and view all replies to a community comment", "placeholders": {"n": {"type": "int"}}},
+  "communityAuthorBadge": "Author",
+  "@communityAuthorBadge": {"description": "Badge shown next to a comment/reply written by the original post's author"},
+  "communityDeleteCommentConfirm": "Delete this comment?",
+  "@communityDeleteCommentConfirm": {"description": "Confirmation prompt shown before deleting a community comment or reply"},
+  "communityLoadMoreComments": "Load more comments",
+  "@communityLoadMoreComments": {"description": "Button label to load the next page of top-level community comments"}
 }

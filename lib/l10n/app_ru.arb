@@ -2861,5 +2861,9 @@
   "nearYouNow": "Рядом с вами",
   "radiusPickerTitle": "Радиус поиска",
   "radiusCityWide": "Весь город",
-  "radiusApply": "Применить"
+  "radiusApply": "Применить",
+  "communityViewReplies": "Показать {n} ответов",
+  "communityAuthorBadge": "Автор",
+  "communityDeleteCommentConfirm": "Удалить этот комментарий?",
+  "communityLoadMoreComments": "Показать ещё комментарии"
 }

@@ -148,25 +148,64 @@ class CommunityProvider {
     throw Exception('Failed to toggle like (${resp.statusCode})');
   }
 
-  Future<List<CommunityComment>> getComments(int postId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/');
+  /// Fetches one page of top-level comments (page_size 20 server-side).
+  /// Each result carries its full, chronological `replies` list nested
+  /// inline — replies are never paginated separately.
+  Future<CommunityCommentsPage> getComments(int postId, {int page = 1}) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/')
+        .replace(queryParameters: {'page': '$page'});
     final resp = await http.get(uri, headers: await _authHeaders());
     if (resp.statusCode == 200) {
-      final list = (json.decode(resp.body) as List?) ?? const [];
-      return list.map((e) => CommunityComment.fromJson(e as Map<String, dynamic>)).toList();
+      final data = json.decode(resp.body) as Map<String, dynamic>;
+      final results = (data['results'] as List?) ?? const [];
+      final comments = results
+          .map((e) => CommunityComment.fromJson(e as Map<String, dynamic>))
+          .toList();
+      final count = (data['count'] as num?)?.toInt() ?? comments.length;
+      return (comments: comments, count: count, hasMore: data['next'] != null);
     }
     throw Exception('Failed to load comments (${resp.statusCode})');
   }
 
-  Future<CommunityComment> addComment(int postId, String text) async {
+  Future<CommunityComment> addComment(int postId, String text, {int? parentId}) async {
     final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/');
-    final resp = await http.post(uri, headers: await _authHeaders(), body: {'text': text});
+    final body = <String, String>{'text': text};
+    if (parentId != null) body['parent'] = '$parentId';
+    final resp = await http.post(uri, headers: await _authHeaders(), body: body);
     if (resp.statusCode == 200 || resp.statusCode == 201) {
       return CommunityComment.fromJson(json.decode(resp.body) as Map<String, dynamic>);
     }
     throw Exception('Failed to add comment (${resp.statusCode})');
   }
+
+  /// Toggles the current user's like on a comment or reply.
+  Future<Map<String, dynamic>> toggleCommentLike(int postId, int commentId) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/$commentId/like/');
+    final resp = await http.post(uri, headers: await _authHeaders());
+    if (resp.statusCode == 200) {
+      return json.decode(resp.body) as Map<String, dynamic>;
+    }
+    throw Exception('Failed to toggle comment like (${resp.statusCode})');
+  }
+
+  /// Deletes a comment or reply (allowed for its author, or for the post's
+  /// author).
+  Future<void> deleteComment(int postId, int commentId) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/$commentId/');
+    final resp = await http.delete(uri, headers: await _authHeaders());
+    if (resp.statusCode != 200 && resp.statusCode != 204) {
+      throw Exception('Failed to delete comment (${resp.statusCode})');
+    }
+  }
 }
+
+/// One page of top-level comments plus enough envelope data to drive
+/// pagination in the UI.
+typedef CommunityCommentsPage = ({
+  List<CommunityComment> comments,
+  int count,
+  bool hasMore,
+});
 
 final communityProvider = Provider<CommunityProvider>((ref) => CommunityProvider());
 

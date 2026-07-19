@@ -8805,6 +8805,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Apply'**
   String get radiusApply;
+
+  /// Button label to expand and view all replies to a community comment
+  ///
+  /// In en, this message translates to:
+  /// **'View {n} replies'**
+  String communityViewReplies(int n);
+
+  /// Badge shown next to a comment/reply written by the original post's author
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get communityAuthorBadge;
+
+  /// Confirmation prompt shown before deleting a community comment or reply
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this comment?'**
+  String get communityDeleteCommentConfirm;
+
+  /// Button label to load the next page of top-level community comments
+  ///
+  /// In en, this message translates to:
+  /// **'Load more comments'**
+  String get communityLoadMoreComments;
 }
 
 class _AppLocalizationsDelegate

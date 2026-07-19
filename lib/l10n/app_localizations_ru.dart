@@ -4630,4 +4630,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get radiusApply => 'Применить';
+
+  @override
+  String communityViewReplies(int n) {
+    return 'Показать $n ответов';
+  }
+
+  @override
+  String get communityAuthorBadge => 'Автор';
+
+  @override
+  String get communityDeleteCommentConfirm => 'Удалить этот комментарий?';
+
+  @override
+  String get communityLoadMoreComments => 'Показать ещё комментарии';
 }

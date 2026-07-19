@@ -2858,5 +2858,9 @@
   "nearYouNow": "Yaqin atrofda",
   "radiusPickerTitle": "Qidiruv radiusi",
   "radiusCityWide": "Butun shahar",
-  "radiusApply": "Qo'llash"
+  "radiusApply": "Qo'llash",
+  "communityViewReplies": "{n} ta javobni ko'rish",
+  "communityAuthorBadge": "Muallif",
+  "communityDeleteCommentConfirm": "Bu izohni o'chirishmi?",
+  "communityLoadMoreComments": "Ko'proq izohlarni ko'rish"
 }

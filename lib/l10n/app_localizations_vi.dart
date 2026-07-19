@@ -4616,4 +4616,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get radiusApply => 'Apply';
+
+  @override
+  String communityViewReplies(int n) {
+    return 'View $n replies';
+  }
+
+  @override
+  String get communityAuthorBadge => 'Author';
+
+  @override
+  String get communityDeleteCommentConfirm => 'Delete this comment?';
+
+  @override
+  String get communityLoadMoreComments => 'Load more comments';
 }
