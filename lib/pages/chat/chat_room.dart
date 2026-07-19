@@ -286,12 +286,22 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     }
 
     try {
-      if (_currentlyPlayingMessageId == message.id &&
-          _audioPlayerState == PlayerState.playing) {
+      final isSameMessage = _currentlyPlayingMessageId == message.id;
+
+      if (isSameMessage && _audioPlayerState == PlayerState.playing) {
+        // 🔥 FIX: keep _currentlyPlayingMessageId set while paused so the
+        // bubble keeps receiving its playbackPosition (and freezes the
+        // waveform fill) instead of snapping to 0. The onPlayerStateChanged
+        // listener only clears the id on stopped/completed, not paused.
         await _audioPlayer.pause();
-        if (!_isDisposed) {
-          setState(() => _currentlyPlayingMessageId = null);
-        }
+        return;
+      }
+
+      if (isSameMessage && _audioPlayerState == PlayerState.paused) {
+        // Resume from the exact paused position — play() with the same
+        // source would restart from 0, resume() continues from where the
+        // player was paused.
+        await _audioPlayer.resume();
         return;
       }
 
