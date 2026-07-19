@@ -458,9 +458,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   /// `chatTranslationFailed` snackbar per the task contract.
   Future<void> _translateMessage(ChatMessage message) async {
     if (message.id == null) return;
+    final id = message.id!;
 
+    // 🔥 FIX: Task 18 review — a cached translation is never destroyed; the
+    // sheet's "Show original" row (relabeled by message_options_sheet.dart
+    // once `message.translation != null`) just flips whether this message id
+    // is currently showing its original text, with no network round-trip.
     if (message.translation != null) {
-      ref.read(chatProvider.notifier).clearMessageTranslation(message.id!);
+      ref.read(showingOriginalTranslationsProvider.notifier).update((ids) {
+        final next = {...ids};
+        if (!next.remove(id)) next.add(id);
+        return next;
+      });
       return;
     }
 
@@ -976,9 +985,31 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _handleVoiceRecordingStarted();
   }
 
+  /// 🔥 FIX: Task 18 review — stops this room's shared voice player and
+  /// clears the "currently playing" id, without the error-snackbar/retry
+  /// plumbing `_toggleAudioPlayback` needs for a user-initiated tap. Used
+  /// whenever another audio surface (the media gallery's own player) is
+  /// about to become active, so the two never play over each other.
+  Future<void> _stopAudioPlayback() async {
+    if (_currentlyPlayingMessageId == null) return;
+    try {
+      await _audioPlayer.stop();
+    } catch (_) {
+      // Best-effort — falls through to clearing local state regardless.
+    }
+    if (!_isDisposed) {
+      setState(() => _currentlyPlayingMessageId = null);
+    }
+  }
+
   /// 🔥 NEW: Task 18 — opens the shared media gallery (Images/Voice tabs)
   /// for this room, built from whatever messages are already loaded.
-  void _openMediaGallery() {
+  void _openMediaGallery() async {
+    // 🔥 FIX: Task 18 review — the gallery has its own AudioPlayer for voice
+    // messages; without pausing the room's player first, both could play
+    // simultaneously.
+    await _stopAudioPlayback();
+    if (!mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const MediaGalleryScreen()),

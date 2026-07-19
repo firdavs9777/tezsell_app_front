@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -44,6 +47,11 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
   _LinkPreviewData? _data;
   bool _loading = true;
 
+  // 🔥 FIX: og tags always live in <head>, well within the first few KB —
+  // cap the download so a malicious/huge response can't be streamed
+  // indefinitely into memory.
+  static const int _maxBodyBytes = 64 * 1024;
+
   @override
   void initState() {
     super.initState();
@@ -71,16 +79,35 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
     try {
       final uri = Uri.tryParse(widget.url);
       if (uri != null) {
-        final response = await http
-            .get(uri, headers: const {'User-Agent': 'Mozilla/5.0 (compatible; SabziMarketBot/1.0)'})
-            .timeout(const Duration(seconds: 3));
-        if (response.statusCode == 200) {
-          final body = response.body;
-          final title = _extractMeta(body, 'og:title') ?? _extractTitle(body);
-          final image = _extractMeta(body, 'og:image');
-          if (title != null || image != null) {
-            result = _LinkPreviewData(title: title, imageUrl: image);
+        final client = http.Client();
+        try {
+          final request = http.Request('GET', uri)
+            ..headers['User-Agent'] =
+                'Mozilla/5.0 (compatible; SabziMarketBot/1.0)';
+          final streamedResponse =
+              await client.send(request).timeout(const Duration(seconds: 3));
+
+          final contentType =
+              streamedResponse.headers['content-type'] ?? '';
+          if (streamedResponse.statusCode == 200 &&
+              contentType.toLowerCase().contains('text/html')) {
+            final bytes = <int>[];
+            await for (final chunk in streamedResponse.stream) {
+              bytes.addAll(chunk);
+              if (bytes.length >= _maxBodyBytes) break;
+            }
+            final capped = bytes.length > _maxBodyBytes
+                ? Uint8List.fromList(bytes.sublist(0, _maxBodyBytes))
+                : Uint8List.fromList(bytes);
+            final body = utf8.decode(capped, allowMalformed: true);
+            final title = _extractMeta(body, 'og:title') ?? _extractTitle(body);
+            final image = _extractMeta(body, 'og:image');
+            if (title != null || image != null) {
+              result = _LinkPreviewData(title: title, imageUrl: image);
+            }
           }
+        } finally {
+          client.close();
         }
       }
     } catch (_) {

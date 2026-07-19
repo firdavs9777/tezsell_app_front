@@ -51,10 +51,18 @@ class MessageBubble extends StatelessWidget {
   final bool isHighlighted;
 
   /// 🔥 NEW: Task 18 — tap handler for the small "Show original" row shown
-  /// under a translated text bubble (only rendered when
-  /// `message.translation != null`). Clears the cached translation so the
-  /// bubble reverts to the original text.
+  /// under a translated text bubble (only rendered when a cached
+  /// translation exists and is currently being displayed). Toggles the
+  /// client-side `showingOriginalTranslationsProvider` set so the bubble
+  /// reverts to the original text — the cached translation itself is never
+  /// destroyed, so toggling back doesn't re-fetch.
   final VoidCallback? onShowOriginal;
+
+  /// 🔥 FIX: Task 18 review — whether this message is currently displaying
+  /// its original text rather than the cached `message.translation`. True
+  /// whenever there's no cached translation at all, or the id is present in
+  /// `showingOriginalTranslationsProvider`.
+  final bool showOriginal;
 
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
@@ -76,6 +84,7 @@ class MessageBubble extends StatelessWidget {
     this.isHighlighted = false,
     this.onDoubleTap,
     this.onShowOriginal,
+    this.showOriginal = true,
   });
 
   @override
@@ -672,7 +681,11 @@ class MessageBubble extends StatelessWidget {
         // 🔥 NEW: Task 18 — a cached translation (fetched via the actions
         // sheet's Translate action) takes over the bubble's displayed text;
         // the original is still one tap away via the "Show original" row.
-        final displayText = message.translation ?? content;
+        // 🔥 FIX: the translation stays cached forever once fetched —
+        // `showOriginal` (client-side toggle, not a destroyed cache) decides
+        // which of the two cached strings is actually rendered.
+        final displayText =
+            showOriginal ? content : (message.translation ?? content);
         final firstUrl = isEmojiMessage ? null : extractFirstUrl(content);
 
         return Column(
@@ -693,7 +706,7 @@ class MessageBubble extends StatelessWidget {
               maxLines: isEmojiMessage ? null : 50, // Limit text messages to 50 lines
               overflow: isEmojiMessage ? null : TextOverflow.ellipsis,
             ),
-            if (message.translation != null)
+            if (message.translation != null && !showOriginal)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: GestureDetector(

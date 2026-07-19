@@ -48,6 +48,13 @@ class _ChatSearchBarState extends ConsumerState<ChatSearchBar> {
   List<int> _matchIds = const [];
   int _currentIndex = -1;
 
+  /// 🔥 FIX: monotonically increasing token guarding against out-of-order
+  /// responses — a slow earlier request landing after a faster later one
+  /// (or after clear/close) must not clobber the current results. Bumped on
+  /// every new query and on clear/close; the in-flight request's captured
+  /// value is compared against this after the await, before applying.
+  int _searchGeneration = 0;
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -73,6 +80,7 @@ class _ChatSearchBarState extends ConsumerState<ChatSearchBar> {
     final query = value.trim();
 
     if (query.length < 2) {
+      _searchGeneration++;
       setState(() {
         _searched = false;
         _matchIds = const [];
@@ -90,9 +98,10 @@ class _ChatSearchBarState extends ConsumerState<ChatSearchBar> {
   }
 
   Future<void> _performSearch(String query) async {
+    final gen = ++_searchGeneration;
     try {
       final data = await _apiService.searchMessagesInChat(widget.chatId, query);
-      if (!mounted) return;
+      if (!mounted || gen != _searchGeneration) return;
 
       final rawResults = data['results'] as List? ?? const [];
       final ids = rawResults
@@ -114,7 +123,7 @@ class _ChatSearchBarState extends ConsumerState<ChatSearchBar> {
         widget.onNavigateToMessage(nav.first);
       }
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || gen != _searchGeneration) return;
       setState(() {
         _isLoading = false;
         _searched = true;
@@ -206,6 +215,8 @@ class _ChatSearchBarState extends ConsumerState<ChatSearchBar> {
         IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
+            _debounce?.cancel();
+            _searchGeneration++;
             _controller.clear();
             widget.onClose();
           },

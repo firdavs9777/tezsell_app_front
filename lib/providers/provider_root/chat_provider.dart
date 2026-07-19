@@ -2117,17 +2117,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
-  /// 🔥 NEW: Task 18 — reverts a message's bubble back to its original text
-  /// by clearing the cached translation (the "Show original" toggle, both
-  /// on the bubble itself and via the actions sheet once translated).
-  void clearMessageTranslation(int messageId) {
-    final idx = state.messages.indexWhere((m) => m.id == messageId);
-    if (idx == -1) return;
-    final updated = List<ChatMessage>.from(state.messages);
-    updated[idx] = updated[idx].copyWith(clearTranslation: true);
-    _safeUpdateState((s) => s.copyWith(messages: updated));
-  }
-
   // 🔥 NEW: Block user
   Future<bool> blockUser(int userId) async {
     if (!state.isAuthenticated) {
@@ -2400,3 +2389,12 @@ final sortedMessagesProvider = Provider<List<ChatMessage>>((ref) {
   sorted.sort((a, b) => a.timestamp.compareTo(b.timestamp));
   return sorted;
 });
+
+// 🔥 FIX: Task 18 — a translated message's cached `ChatMessage.translation`
+// is now kept forever once fetched (no more destructive
+// clearMessageTranslation); this tracks, purely client-side, which message
+// ids are *currently displaying* their original text instead of the cached
+// translation. Toggled by the bubble's "Show original" row and by the
+// actions sheet — never triggers a re-fetch.
+final showingOriginalTranslationsProvider =
+    StateProvider<Set<int>>((ref) => <int>{});

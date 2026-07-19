@@ -54,6 +54,9 @@ class MessageList extends ConsumerWidget {
     final currentUserId = chatState.currentUserId;
     // Use cached sorted provider to avoid O(n log n) sort on every rebuild
     final sortedMessages = ref.watch(sortedMessagesProvider);
+    // 🔥 FIX: Task 18 review — ids currently displaying original text
+    // instead of their cached translation (see showingOriginalTranslationsProvider).
+    final showingOriginalIds = ref.watch(showingOriginalTranslationsProvider);
 
     if (isLoadingMessages) {
       return const MessageListShimmer();
@@ -138,12 +141,15 @@ class MessageList extends ConsumerWidget {
                       .toggleReaction(message.id!, '❤️');
                 }
               : null,
-          // 🔥 NEW: Task 18 — "Show original" row under a translated bubble
-          // clears the cached translation via the provider.
+          // 🔥 FIX: Task 18 review — "Show original" row under a translated
+          // bubble now toggles the client-side display set instead of
+          // destroying the cached translation (no re-fetch to undo).
+          showOriginal: message.translation == null ||
+              (message.id != null && showingOriginalIds.contains(message.id)),
           onShowOriginal: message.id != null
               ? () => ref
-                  .read(chatProvider.notifier)
-                  .clearMessageTranslation(message.id!)
+                  .read(showingOriginalTranslationsProvider.notifier)
+                  .update((ids) => {...ids, message.id!})
               : null,
         );
 
