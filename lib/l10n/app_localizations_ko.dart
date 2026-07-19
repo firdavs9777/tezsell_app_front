@@ -3691,9 +3691,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reply => '회신하다';
 
   @override
-  String get add_reaction => '반응 추가';
-
-  @override
   String get editing_message => '메시지 편집 중';
 
   @override

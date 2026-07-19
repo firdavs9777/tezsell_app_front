@@ -2345,7 +2345,6 @@
   "this_message_was_deleted": "Bu xabar o'chirilgan",
   "edit": "Tahrirlash",
   "reply": "Javob berish",
-  "add_reaction": "Reaksiya qo'shish",
   "editing_message": "Xabarni tahrirlash",
   "replying_to": "{username} ga javob",
   "@replying_to": {

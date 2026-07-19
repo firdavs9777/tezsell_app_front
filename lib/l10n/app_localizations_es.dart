@@ -3854,9 +3854,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reply => 'Responder';
 
   @override
-  String get add_reaction => 'Agregar reacción';
-
-  @override
   String get editing_message => 'Editando mensaje';
 
   @override

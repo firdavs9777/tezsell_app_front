@@ -7324,12 +7324,6 @@ abstract class AppLocalizations {
   /// **'Reply'**
   String get reply;
 
-  /// No description provided for @add_reaction.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Reaction'**
-  String get add_reaction;
-
   /// No description provided for @editing_message.
   ///
   /// In en, this message translates to:

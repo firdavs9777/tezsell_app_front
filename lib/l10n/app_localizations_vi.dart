@@ -3798,9 +3798,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reply => 'Hồi đáp';
 
   @override
-  String get add_reaction => 'Thêm phản ứng';
-
-  @override
   String get editing_message => 'Chỉnh sửa tin nhắn';
 
   @override

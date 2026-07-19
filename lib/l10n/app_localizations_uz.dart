@@ -3828,9 +3828,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get reply => 'Javob berish';
 
   @override
-  String get add_reaction => 'Reaksiya qo\'shish';
-
-  @override
   String get editing_message => 'Xabarni tahrirlash';
 
   @override

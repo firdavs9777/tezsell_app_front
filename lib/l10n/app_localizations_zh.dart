@@ -3670,9 +3670,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reply => '回复';
 
   @override
-  String get add_reaction => '添加反应';
-
-  @override
   String get editing_message => '编辑消息';
 
   @override

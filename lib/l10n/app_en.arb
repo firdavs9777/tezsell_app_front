@@ -2633,7 +2633,6 @@
   "this_message_was_deleted": "This message was deleted",
   "edit": "Edit",
   "reply": "Reply",
-  "add_reaction": "Add Reaction",
   "editing_message": "Editing message",
   "replying_to": "Replying to {username}",
   "@replying_to": {

@@ -3868,9 +3868,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reply => 'Antwort';
 
   @override
-  String get add_reaction => 'Reaktion hinzufügen';
-
-  @override
   String get editing_message => 'Nachricht wird bearbeitet';
 
   @override

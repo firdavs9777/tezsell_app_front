@@ -3754,9 +3754,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reply => 'رد';
 
   @override
-  String get add_reaction => 'أضف رد فعل';
-
-  @override
   String get editing_message => 'تحرير الرسالة';
 
   @override

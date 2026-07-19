@@ -3688,9 +3688,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reply => '返事';
 
   @override
-  String get add_reaction => 'リアクションを追加';
-
-  @override
   String get editing_message => 'メッセージの編集';
 
   @override

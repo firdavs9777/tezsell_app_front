@@ -3769,9 +3769,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reply => 'Reply';
 
   @override
-  String get add_reaction => 'Add Reaction';
-
-  @override
   String get editing_message => 'Editing message';
 
   @override

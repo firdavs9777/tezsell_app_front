@@ -3783,9 +3783,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get reply => 'Cevap vermek';
 
   @override
-  String get add_reaction => 'Tepki Ekle';
-
-  @override
   String get editing_message => 'Mesaj düzenleniyor';
 
   @override

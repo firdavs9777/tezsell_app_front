@@ -80,6 +80,10 @@ class MessageList extends ConsumerWidget {
         // 🔥 NEW: Task 13 — system messages (pill style) aren't interactive:
         // no long-press options sheet, no swipe-to-reply.
         final isSystemMessage = message.messageType == MessageType.system;
+        // 🔥 FIX: deleted-for-everyone bubbles show only the italic
+        // placeholder — no options sheet (which would still preview stale
+        // content) and no double-tap react on content that no longer exists.
+        final isInteractive = !isSystemMessage && !message.isDeleted;
 
         // Determine if we should show date separator
         bool showDateSeparator = false;
@@ -114,6 +118,20 @@ class MessageList extends ConsumerWidget {
           },
           listingSellerId: listingSellerId,
           isHighlighted: message.id != null && message.id == highlightedMessageId,
+          // 🔥 NEW: Task 15 — double-tap the bubble's content region to
+          // toggle a quick ❤️ reaction (Karrot/Instagram pattern), with a
+          // light haptic. Scoped inside MessageBubble to the background
+          // content container only, so it doesn't steal the gesture arena
+          // from nested taps (reaction chips, reply-preview scroll, retry,
+          // image) — see MessageBubble's onDoubleTap wiring.
+          onDoubleTap: isInteractive && message.id != null
+              ? () {
+                  HapticFeedback.lightImpact();
+                  ref
+                      .read(chatProvider.notifier)
+                      .toggleReaction(message.id!, '❤️');
+                }
+              : null,
         );
 
         final messageWidget = Column(
@@ -121,7 +139,7 @@ class MessageList extends ConsumerWidget {
           children: [
             if (showDateSeparator)
               DateSeparator(date: message.timestamp),
-            if (isSystemMessage)
+            if (!isInteractive)
               bubble
             else
               GestureDetector(
@@ -129,16 +147,6 @@ class MessageList extends ConsumerWidget {
                   HapticFeedback.mediumImpact();
                   onMessageLongPress(message, currentUserId!);
                 },
-                // 🔥 NEW: Task 15 — double-tap a bubble to toggle a quick ❤️
-                // reaction (Karrot/Instagram pattern), with a light haptic.
-                onDoubleTap: message.id != null
-                    ? () {
-                        HapticFeedback.lightImpact();
-                        ref
-                            .read(chatProvider.notifier)
-                            .toggleReaction(message.id!, '❤️');
-                      }
-                    : null,
                 child: bubble,
               ),
           ],

@@ -3814,9 +3814,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reply => 'Responder';
 
   @override
-  String get add_reaction => 'Adicionar reação';
-
-  @override
   String get editing_message => 'Editando mensagem';
 
   @override

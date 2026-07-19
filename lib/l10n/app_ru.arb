@@ -2348,7 +2348,6 @@
   "this_message_was_deleted": "Это сообщение было удалено",
   "edit": "Редактировать",
   "reply": "Ответить",
-  "add_reaction": "Добавить реакцию",
   "editing_message": "Редактирование сообщения",
   "replying_to": "Ответ {username}",
   "@replying_to": {

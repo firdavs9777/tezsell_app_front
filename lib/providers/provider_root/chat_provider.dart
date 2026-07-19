@@ -1929,7 +1929,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
   void _applyMessageDeleted(int messageId) {
     final updatedMessages = state.messages.map((msg) {
       if (msg.id == messageId) {
-        return msg.copyWith(isDeleted: true);
+        // 🔥 FIX: belt-and-braces — this path is only ever reached for
+        // for_everyone deletes (the for_me branch removes the message from
+        // local state entirely, see deleteMessage above), so it's safe to
+        // blank the in-memory content too. Rendering keys off `isDeleted`
+        // everywhere, so an empty string is enough; no need (or way, since
+        // `content` is non-nullable in copyWith's `??` merge) to null it.
+        return msg.copyWith(isDeleted: true, content: '');
       }
       return msg;
     }).toList();

@@ -22,6 +22,15 @@ class MessageBubble extends StatelessWidget {
   /// the message's `localId`.
   final Function(String)? onRetry;
 
+  /// 🔥 NEW: Task 15 — double-tap the bubble's content region to toggle a
+  /// quick ❤️ reaction. Scoped to just the main bubble container (text/
+  /// image/voice content) below, NOT the reply-preview block, the reaction
+  /// chips, or the delivery-tick/retry icon, so double-tapping those areas
+  /// doesn't also register as a bubble double-tap and — more importantly —
+  /// so the DoubleTap gesture arena doesn't delay their single-tap
+  /// recognition by ~300ms.
+  final VoidCallback? onDoubleTap;
+
   /// 🔥 NEW: Task 13 — the anchored listing's seller id, used to decide
   /// whether the current user is the buyer for a `review_cta` system
   /// message (the CTA button is buyer-only). Null when the room has no
@@ -50,6 +59,7 @@ class MessageBubble extends StatelessWidget {
     this.onRetry,
     this.listingSellerId,
     this.isHighlighted = false,
+    this.onDoubleTap,
   });
 
   @override
@@ -229,21 +239,40 @@ class MessageBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Sender name (for group chats) - Modern style
-                      if (!isOwnMessage)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            message.sender.username,
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
+                      // 🔥 FIX: Task 15 — double-tap scoped to just the
+                      // sender-name + text-content block, as a SIBLING of
+                      // the timestamp/delivery-tick row below (not an
+                      // ancestor), and only registered for text messages —
+                      // image/voice bubbles keep their own single-tap-to-
+                      // open/play gesture as the sole recognizer so neither
+                      // it nor the retry tick ever has to wait out the
+                      // DoubleTap recognizer's ~300ms disambiguation window.
+                      GestureDetector(
+                        onDoubleTap: message.messageType == MessageType.text
+                            ? onDoubleTap
+                            : null,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Sender name (for group chats) - Modern style
+                            if (!isOwnMessage)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Text(
+                                  message.sender.username,
+                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
 
-                      // Message content
-                      _buildMessageContent(context),
+                            // Message content
+                            _buildMessageContent(context),
+                          ],
+                        ),
+                      ),
 
                       const SizedBox(height: 6),
 

@@ -92,8 +92,11 @@ class MessageOptionsSheet extends StatelessWidget {
 
             if (onReact != null) const Divider(height: 1),
 
-            // Message preview (optional)
-            if (message.content != null)
+            // Message preview (optional) — never for deleted-for-everyone
+            // content: `content` stays populated in memory (rendering keys
+            // off `isDeleted`), so gating on `content != null` alone would
+            // still leak the original text into this sheet.
+            if (message.content != null && !message.isDeleted)
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 padding: const EdgeInsets.all(12),

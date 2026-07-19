@@ -376,7 +376,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             ref.read(chatProvider.notifier).toggleReaction(message.id!, emoji);
           }
         },
-        onCopy: message.content != null
+        // 🔥 FIX: never offer copy for deleted-for-everyone content — the
+        // in-memory `content` still holds the original text (rendering
+        // keys off `isDeleted`), so gating on `content != null` alone would
+        // let a deleted message's text still be copied.
+        onCopy: message.content != null && !message.isDeleted
             ? () => _copyMessage(message.content!)
             : null,
         // onPin / onForward / onTranslate intentionally omitted — Tasks

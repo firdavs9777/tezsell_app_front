@@ -3808,9 +3808,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reply => 'Ответить';
 
   @override
-  String get add_reaction => 'Добавить реакцию';
-
-  @override
   String get editing_message => 'Редактирование сообщения';
 
   @override

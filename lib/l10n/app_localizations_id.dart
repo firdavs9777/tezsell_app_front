@@ -3810,9 +3810,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get reply => 'Membalas';
 
   @override
-  String get add_reaction => 'Tambahkan Reaksi';
-
-  @override
   String get editing_message => 'Mengedit pesan';
 
   @override

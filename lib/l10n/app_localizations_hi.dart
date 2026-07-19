@@ -3787,9 +3787,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get reply => 'जवाब';
 
   @override
-  String get add_reaction => 'प्रतिक्रिया जोड़ें';
-
-  @override
   String get editing_message => 'संदेश संपादित करना';
 
   @override
