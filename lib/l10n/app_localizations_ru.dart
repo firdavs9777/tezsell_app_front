@@ -4589,4 +4589,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String distanceKm(String km) {
     return '$km км';
   }
+
+  @override
+  String get nearYouNow => 'Рядом с вами';
 }

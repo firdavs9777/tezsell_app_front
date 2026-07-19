@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/service/main/main_service.dart';
 import 'package:app/pages/real_estate/real_estate_main.dart';
 import 'package:app/pages/tab_bar/tab_bar.dart' show NeighborhoodGate;
+import 'package:app/pages/nearby/nearby_feed_strip.dart';
 
-class NearbyHub extends StatelessWidget {
+class NearbyHub extends ConsumerWidget {
   const NearbyHub({
     super.key,
     required this.regionName,
@@ -23,7 +25,7 @@ class NearbyHub extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
 
     final services = _NearbyCard(
@@ -60,29 +62,34 @@ class NearbyHub extends StatelessWidget {
       ),
     );
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        services,
-        const SizedBox(height: 12),
-        realEstate,
-        const SizedBox(height: 12),
-        _NearbyCard(
-          icon: Icons.work_outline,
-          color: const Color(0xFFF3EEFB),
-          title: l?.nearbyJobs ?? 'Jobs',
-          subtitle: l?.nearbyComingSoon ?? 'Coming soon',
-          onTap: null,
-        ),
-        const SizedBox(height: 12),
-        _NearbyCard(
-          icon: Icons.storefront,
-          color: const Color(0xFFFDF0E8),
-          title: l?.nearbyShops ?? 'Local shops',
-          subtitle: l?.nearbyComingSoon ?? 'Coming soon',
-          onTap: null,
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: () => ref.refresh(nearbyFeedProvider.future),
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          const NearbyFeedStrip(),
+          services,
+          const SizedBox(height: 12),
+          realEstate,
+          const SizedBox(height: 12),
+          _NearbyCard(
+            icon: Icons.work_outline,
+            color: const Color(0xFFF3EEFB),
+            title: l?.nearbyJobs ?? 'Jobs',
+            subtitle: l?.nearbyComingSoon ?? 'Coming soon',
+            onTap: null,
+          ),
+          const SizedBox(height: 12),
+          _NearbyCard(
+            icon: Icons.storefront,
+            color: const Color(0xFFFDF0E8),
+            title: l?.nearbyShops ?? 'Local shops',
+            subtitle: l?.nearbyComingSoon ?? 'Coming soon',
+            onTap: null,
+          ),
+        ],
+      ),
     );
   }
 }

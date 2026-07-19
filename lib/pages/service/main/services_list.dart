@@ -1,5 +1,6 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/service_rating_badge.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -164,13 +165,19 @@ class ServiceList extends ConsumerWidget {
                               ],
                             ),
                             const SizedBox(height: 6),
-                            Row(
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
-                                if (service.distanceKm != null) ...[
+                                if (service.ratingCount > 0)
+                                  ServiceRatingBadge(
+                                    ratingAvg: service.ratingAvg,
+                                    ratingCount: service.ratingCount,
+                                  ),
+                                if (service.distanceKm != null)
                                   _ServiceDistanceChip(
                                       distanceKm: service.distanceKm!),
-                                  const SizedBox(width: 8),
-                                ],
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6.0,
@@ -203,7 +210,6 @@ class ServiceList extends ConsumerWidget {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6.0,

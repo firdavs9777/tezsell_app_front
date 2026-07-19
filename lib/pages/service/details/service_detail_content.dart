@@ -1,5 +1,6 @@
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/widgets/maps/map_view.dart';
+import 'package:app/widgets/service_rating_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
@@ -99,6 +100,14 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
               letterSpacing: -0.5,
             ),
           ),
+          if (widget.service.ratingCount > 0) ...[
+            const SizedBox(height: 8),
+            ServiceRatingBadge(
+              ratingAvg: widget.service.ratingAvg,
+              ratingCount: widget.service.ratingCount,
+              compact: false,
+            ),
+          ],
           const SizedBox(height: 20),
 
           // Service Description

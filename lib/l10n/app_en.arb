@@ -3325,5 +3325,7 @@
   "sortNearest": "Nearest",
   "@sortNearest": {"description": "Sort toggle option: nearest listings first (requires an active geo center)"},
   "distanceKm": "{km} km",
-  "@distanceKm": {"description": "Distance label shown on a listing card", "placeholders": {"km": {"type": "String"}}}
+  "@distanceKm": {"description": "Distance label shown on a listing card", "placeholders": {"km": {"type": "String"}}},
+  "nearYouNow": "Near you now",
+  "@nearYouNow": {"description": "Section header above the Nearby hub's horizontal strip of the latest nearby services/properties"}
 }

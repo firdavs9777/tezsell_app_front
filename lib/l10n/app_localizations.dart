@@ -8727,6 +8727,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{km} km'**
   String distanceKm(String km);
+
+  /// Section header above the Nearby hub's horizontal strip of the latest nearby services/properties
+  ///
+  /// In en, this message translates to:
+  /// **'Near you now'**
+  String get nearYouNow;
 }
 
 class _AppLocalizationsDelegate

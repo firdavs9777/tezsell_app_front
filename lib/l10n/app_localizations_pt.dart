@@ -4594,4 +4594,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String distanceKm(String km) {
     return '$km km';
   }
+
+  @override
+  String get nearYouNow => 'Near you now';
 }

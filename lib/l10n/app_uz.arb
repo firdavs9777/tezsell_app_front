@@ -2845,5 +2845,6 @@
   "sortFresh": "Avval yangilari",
   "sortNearest": "Avval yaqinlari",
   "distanceKm": "{km} km",
-  "mapLoadError": "Xaritada e'lonlarni yuklab bo'lmadi"
+  "mapLoadError": "Xaritada e'lonlarni yuklab bo'lmadi",
+  "nearYouNow": "Yaqin atrofda"
 }

@@ -4612,4 +4612,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String distanceKm(String km) {
     return '$km km';
   }
+
+  @override
+  String get nearYouNow => 'Yaqin atrofda';
 }

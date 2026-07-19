@@ -66,6 +66,50 @@ void main() {
     });
   });
 
+  group('Services.fromJson ratingAvg/ratingCount (Plan B Task 7)', () {
+    test('parses rating_avg/rating_count when present', () {
+      final service = Services.fromJson({
+        'id': 1,
+        'name': 'Plumbing',
+        'rating_avg': 4.8,
+        'rating_count': 12,
+      });
+      expect(service.ratingAvg, 4.8);
+      expect(service.ratingCount, 12);
+    });
+
+    test('ratingAvg is null and ratingCount is 0 when absent (no reviews)', () {
+      final service = Services.fromJson({
+        'id': 1,
+        'name': 'Plumbing',
+      });
+      expect(service.ratingAvg, isNull);
+      expect(service.ratingCount, 0);
+    });
+
+    test('ratingAvg is null when rating_avg is explicitly null', () {
+      final service = Services.fromJson({
+        'id': 1,
+        'name': 'Plumbing',
+        'rating_avg': null,
+        'rating_count': 0,
+      });
+      expect(service.ratingAvg, isNull);
+      expect(service.ratingCount, 0);
+    });
+
+    test('parses a string rating_count (defensive backend contract)', () {
+      final service = Services.fromJson({
+        'id': 1,
+        'name': 'Plumbing',
+        'rating_avg': '4.5',
+        'rating_count': '3',
+      });
+      expect(service.ratingAvg, 4.5);
+      expect(service.ratingCount, 3);
+    });
+  });
+
   group('RealEstate.fromJson distanceKm', () {
     test('parses a numeric distance_km into a double', () {
       final property = RealEstate.fromJson({

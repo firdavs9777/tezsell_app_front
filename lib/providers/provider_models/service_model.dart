@@ -26,6 +26,8 @@ class Services {
     this.cityName,
     this.showExactPin = false,
     this.distanceKm,
+    this.ratingAvg,
+    this.ratingCount = 0,
   });
 
   final int id;
@@ -57,6 +59,14 @@ class Services {
   /// Distance from the active geo center (km, 1dp), when the request was
   /// made with center_lat/center_lng. Null otherwise.
   final double? distanceKm;
+
+  /// Seller's aggregate rating (1dp), from `reviews.Review` via
+  /// `ServiceSerializer.rating_avg` (Plan B Task 2, backend). Null when the
+  /// seller has zero visible reviews.
+  final double? ratingAvg;
+
+  /// Count of visible reviews backing [ratingAvg]. 0 when [ratingAvg] is null.
+  final int ratingCount;
 
   factory Services.fromJson(Map<String, dynamic> json) {
     double? toDouble(dynamic v) {
@@ -97,6 +107,10 @@ class Services {
       cityName: json['city_name'] as String?,
       showExactPin: (json['show_exact_pin'] as bool?) ?? false,
       distanceKm: toDouble(json['distance_km']),
+      ratingAvg: toDouble(json['rating_avg']),
+      ratingCount: json['rating_count'] is int
+          ? json['rating_count']
+          : int.tryParse(json['rating_count']?.toString() ?? '') ?? 0,
     );
   }
 }
