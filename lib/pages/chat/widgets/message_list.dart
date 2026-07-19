@@ -3,6 +3,7 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/pages/chat/widgets/chat_shimmer.dart';
 import 'package:app/pages/chat/widgets/swipeable_message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'message_bubble.dart';
@@ -23,6 +24,11 @@ class MessageList extends ConsumerWidget {
   /// for a `review_cta` system message.
   final int? listingSellerId;
 
+  /// 🔥 NEW: Task 14 — id of the message currently flashed after a
+  /// tap-to-scroll from a quoted reply block, forwarded to [MessageBubble]
+  /// so it can render a brief highlight.
+  final int? highlightedMessageId;
+
   const MessageList({
     super.key,
     required this.scrollController,
@@ -33,6 +39,7 @@ class MessageList extends ConsumerWidget {
     this.onReplyTap,
     this.onMessageSwipeReply,
     this.listingSellerId,
+    this.highlightedMessageId,
   });
 
   @override
@@ -106,6 +113,7 @@ class MessageList extends ConsumerWidget {
             ref.read(chatProvider.notifier).retryMessage(localId);
           },
           listingSellerId: listingSellerId,
+          isHighlighted: message.id != null && message.id == highlightedMessageId,
         );
 
         final messageWidget = Column(
@@ -117,7 +125,10 @@ class MessageList extends ConsumerWidget {
               bubble
             else
               GestureDetector(
-                onLongPress: () => onMessageLongPress(message, currentUserId!),
+                onLongPress: () {
+                  HapticFeedback.mediumImpact();
+                  onMessageLongPress(message, currentUserId!);
+                },
                 child: bubble,
               ),
           ],

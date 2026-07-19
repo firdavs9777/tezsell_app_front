@@ -5,7 +5,10 @@ import 'package:app/pages/chat/widgets/chat_app_bar.dart';
 import 'package:app/pages/chat/widgets/message_list.dart';
 import 'package:app/pages/chat/widgets/chat_helpers.dart';
 import 'package:app/pages/chat/widgets/typing_indicator.dart';
-import 'package:app/pages/chat/widgets/reply_preview.dart';
+// Aliased: `message_model.dart` also exports a `ReplyPreview` class (the
+// lightweight `{id, content, sender, message_type}` payload shape) — the
+// name collides with this widget, so an unprefixed import is ambiguous.
+import 'package:app/pages/chat/widgets/reply_preview.dart' as reply_bar;
 import 'package:app/pages/chat/widgets/edit_preview.dart';
 import 'package:app/pages/chat/widgets/blocked_user_banner.dart';
 import 'package:app/pages/chat/widgets/empty_message_state.dart';
@@ -62,6 +65,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   // Scroll to bottom button state
   bool _showScrollToBottom = false;
+
+  // 🔥 NEW: Task 14 — id of the message briefly flashed after tapping a
+  // quoted-reply block scrolls the list to it.
+  int? _highlightedMessageId;
+  Timer? _highlightTimer;
 
   // Flag to track if widget is disposed
   bool _isDisposed = false;
@@ -216,6 +224,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     // Cancel all timers and subscriptions
     _typingTimer?.cancel();
     _readStatusRefreshTimer?.cancel();
+    _highlightTimer?.cancel();
     _audioPlayerStateSubscription?.cancel();
     _scrollController.removeListener(_onScroll);
 
@@ -361,8 +370,25 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         onEdit: () => _startEditingMessage(message),
         onDelete: () => _deleteMessage(message),
         onAddReaction: () => _showReactionPicker(message),
+        onCopy: message.content != null
+            ? () => _copyMessage(message.content!)
+            : null,
+        // onPin / onForward / onTranslate intentionally omitted — Tasks
+        // 15/16/18 wire real Pin/Forward/Translate; the sheet already
+        // hides these rows whenever the callback is null.
       ),
     );
+  }
+
+  /// 🔥 NEW: Task 14 — Copy wiring for the message actions sheet.
+  void _copyMessage(String content) {
+    Clipboard.setData(ClipboardData(text: content));
+    if (mounted) {
+      final l = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.chatCopied), duration: const Duration(seconds: 2)),
+      );
+    }
   }
 
   void _showReactionPicker(ChatMessage message) {
@@ -505,8 +531,28 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         _scrollController.position.maxScrollExtent,
       );
 
-      // Instant scroll (no animation)
-      _scrollController.jumpTo(targetPosition);
+      // 🔥 NEW: Task 14 — animate to the target instead of an instant jump,
+      // then flash-highlight the message so it's easy to spot once in view.
+      _scrollController
+          .animateTo(
+            targetPosition,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          )
+          .then((_) => _flashHighlightMessage(messageId));
+    });
+  }
+
+  /// 🔥 NEW: Task 14 — briefly highlights [messageId]'s bubble (see
+  /// [MessageBubble.isHighlighted]), then clears it after a short delay.
+  void _flashHighlightMessage(int messageId) {
+    if (!mounted || _isDisposed) return;
+    _highlightTimer?.cancel();
+    setState(() => _highlightedMessageId = messageId);
+    _highlightTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (mounted && !_isDisposed) {
+        setState(() => _highlightedMessageId = null);
+      }
     });
   }
 
@@ -1067,6 +1113,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             onMessageLongPress: _showMessageOptions,
                             onReplyTap: _scrollToMessage,
                             listingSellerId: effectiveListing?.sellerId,
+                            highlightedMessageId: _highlightedMessageId,
                             onMessageSwipeReply: (message) {
                               if (mounted && !_isDisposed) {
                                 setState(() {
@@ -1184,7 +1231,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           children: [
             // Reply preview
             if (_replyingToMessage != null)
-              ReplyPreview(
+              reply_bar.ReplyPreview(
                 replyToMessage: _replyingToMessage!,
                 onCancel: () {
                   if (!_isDisposed) {

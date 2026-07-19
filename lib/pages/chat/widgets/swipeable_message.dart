@@ -49,8 +49,9 @@ class _SwipeableMessageState extends State<SwipeableMessage>
     if (!widget.enabled) return;
 
     setState(() {
-      // Only allow right-to-left swipe (negative delta)
-      _dragExtent = (_dragExtent - details.primaryDelta!)
+      // Only allow left-to-right swipe (positive delta) — dragging left
+      // decays back toward 0 instead of reversing the reveal.
+      _dragExtent = (_dragExtent + details.primaryDelta!)
           .clamp(0, _maxDragExtent);
     });
 
@@ -130,14 +131,15 @@ class _SwipeableMessageState extends State<SwipeableMessage>
                 },
               ),
             ),
-          // Main message content
+          // Main message content — slides right (away from the icon
+          // pinned at the left edge) as the drag progresses.
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
               final currentOffset =
                   _controller.isAnimating ? _animation.value : _dragExtent;
               return Transform.translate(
-                offset: Offset(-currentOffset, 0),
+                offset: Offset(currentOffset, 0),
                 child: widget.child,
               );
             },

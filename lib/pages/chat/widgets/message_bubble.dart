@@ -28,6 +28,11 @@ class MessageBubble extends StatelessWidget {
   /// product listing or the seller id wasn't resolved.
   final int? listingSellerId;
 
+  /// 🔥 NEW: Task 14 — true for a brief window after the user taps a
+  /// quoted-reply block that scrolled the list to this message; renders a
+  /// fading background flash so the target is easy to spot.
+  final bool isHighlighted;
+
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
   static const int _maxCacheSize = 100;
@@ -44,6 +49,7 @@ class MessageBubble extends StatelessWidget {
     this.onReplyTap,
     this.onRetry,
     this.listingSellerId,
+    this.isHighlighted = false,
   });
 
   @override
@@ -57,42 +63,45 @@ class MessageBubble extends StatelessWidget {
 
     // Show deleted message differently (Telegram style)
     if (message.isDeleted) {
-      return Align(
-        alignment: isOwnMessage ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.7,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.delete_outline, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
-              const SizedBox(width: 8),
-              Builder(
-                builder: (context) {
-                  final l = AppLocalizations.of(context)!;
-                  return Text(
-                    l.this_message_was_deleted,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  );
-                },
-              ),
-            ],
+      return _wrapHighlight(
+        context,
+        Align(
+          alignment: isOwnMessage ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.delete_outline, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(width: 8),
+                Builder(
+                  builder: (context) {
+                    final l = AppLocalizations.of(context)!;
+                    return Text(
+                      l.this_message_was_deleted,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       );
     }
 
-    return Align(
+    return _wrapHighlight(context, Align(
       alignment: isOwnMessage ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
@@ -291,6 +300,20 @@ class MessageBubble extends StatelessWidget {
           ],
         ),
       ),
+    ));
+  }
+
+  /// 🔥 NEW: Task 14 — wraps a message bubble with a background flash that
+  /// fades in/out when [isHighlighted] toggles, used after a tap on a
+  /// quoted-reply block scrolls the list to the original message.
+  Widget _wrapHighlight(BuildContext context, Widget child) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+      color: isHighlighted
+          ? Theme.of(context).colorScheme.primary.withOpacity(0.16)
+          : Colors.transparent,
+      child: child,
     );
   }
 

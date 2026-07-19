@@ -12,6 +12,14 @@ class MessageOptionsSheet extends StatelessWidget {
   final VoidCallback? onAddReaction;
   final VoidCallback? onCopy; // Add copy functionality
 
+  /// 🔥 NEW: Task 14 — skeleton hooks for Tasks 15/16/18. Each row only
+  /// renders when its callback is non-null, so this sheet ships fully
+  /// functional with just Reply/Copy (plus the already-wired Edit/Delete/
+  /// React above) until those tasks fill the callbacks in from chat_room.
+  final VoidCallback? onPin;
+  final VoidCallback? onForward;
+  final VoidCallback? onTranslate;
+
   const MessageOptionsSheet({
     super.key,
     required this.message,
@@ -21,6 +29,9 @@ class MessageOptionsSheet extends StatelessWidget {
     required this.onDelete,
     this.onAddReaction,
     this.onCopy,
+    this.onPin,
+    this.onForward,
+    this.onTranslate,
   });
 
   @override
@@ -76,7 +87,7 @@ class MessageOptionsSheet extends StatelessWidget {
             _buildOption(
               context,
               icon: Icons.reply,
-              label: l.reply,
+              label: l.chatReply,
               onTap: () {
                 Navigator.pop(context);
                 // Small delay to ensure bottom sheet is fully closed
@@ -85,29 +96,29 @@ class MessageOptionsSheet extends StatelessWidget {
                 });
               },
             ),
-            
+
             if (message.messageType == MessageType.text && onCopy != null)
               _buildOption(
                 context,
                 icon: Icons.copy,
-                label: l.copy,
+                label: l.chatCopy,
                 onTap: () {
                   Navigator.pop(context);
                   onCopy!();
                 },
               ),
-            
-            if (isOwnMessage && message.messageType == MessageType.text && onEdit != null)
+
+            if (onForward != null)
               _buildOption(
                 context,
-                icon: Icons.edit,
-                label: l.edit,
+                icon: Icons.forward,
+                label: l.chatForward,
                 onTap: () {
                   Navigator.pop(context);
-                  onEdit!();
+                  onForward!();
                 },
               ),
-            
+
             if (onAddReaction != null)
               _buildOption(
                 context,
@@ -118,12 +129,49 @@ class MessageOptionsSheet extends StatelessWidget {
                   onAddReaction!();
                 },
               ),
-            
+
+            // Translate never applies to your own messages — you already
+            // know what you wrote.
+            if (!isOwnMessage && onTranslate != null)
+              _buildOption(
+                context,
+                icon: Icons.translate,
+                label: message.translation != null
+                    ? l.chatShowOriginal
+                    : l.chatTranslate,
+                onTap: () {
+                  Navigator.pop(context);
+                  onTranslate!();
+                },
+              ),
+
+            if (onPin != null)
+              _buildOption(
+                context,
+                icon: message.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                label: message.isPinned ? l.chatUnpin : l.chatPin,
+                onTap: () {
+                  Navigator.pop(context);
+                  onPin!();
+                },
+              ),
+
+            if (isOwnMessage && message.messageType == MessageType.text && onEdit != null)
+              _buildOption(
+                context,
+                icon: Icons.edit,
+                label: l.chatEdit,
+                onTap: () {
+                  Navigator.pop(context);
+                  onEdit!();
+                },
+              ),
+
             if (isOwnMessage)
               _buildOption(
                 context,
                 icon: Icons.delete_outline,
-                label: l.delete,
+                label: l.chatDelete,
                 iconColor: Colors.red,
                 textColor: Colors.red,
                 onTap: () {
