@@ -4666,4 +4666,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nearYouNow => 'Near you now';
+
+  @override
+  String get radiusPickerTitle => 'Search radius';
+
+  @override
+  String get radiusCityWide => 'City-wide';
+
+  @override
+  String get radiusApply => 'Apply';
 }

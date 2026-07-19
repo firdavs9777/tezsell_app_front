@@ -2849,5 +2849,8 @@
   "sortNearest": "Сначала ближние",
   "distanceKm": "{km} км",
   "mapLoadError": "Не удалось загрузить объекты на карте",
-  "nearYouNow": "Рядом с вами"
+  "nearYouNow": "Рядом с вами",
+  "radiusPickerTitle": "Радиус поиска",
+  "radiusCityWide": "Весь город",
+  "radiusApply": "Применить"
 }

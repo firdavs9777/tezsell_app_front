@@ -4615,4 +4615,13 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get nearYouNow => 'Yaqin atrofda';
+
+  @override
+  String get radiusPickerTitle => 'Qidiruv radiusi';
+
+  @override
+  String get radiusCityWide => 'Butun shahar';
+
+  @override
+  String get radiusApply => 'Qo\'llash';
 }

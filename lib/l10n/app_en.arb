@@ -3327,5 +3327,11 @@
   "distanceKm": "{km} km",
   "@distanceKm": {"description": "Distance label shown on a listing card", "placeholders": {"km": {"type": "String"}}},
   "nearYouNow": "Near you now",
-  "@nearYouNow": {"description": "Section header above the Nearby hub's horizontal strip of the latest nearby services/properties"}
+  "@nearYouNow": {"description": "Section header above the Nearby hub's horizontal strip of the latest nearby services/properties"},
+  "radiusPickerTitle": "Search radius",
+  "@radiusPickerTitle": {"description": "Title of the advanced radius picker bottom sheet with a map preview"},
+  "radiusCityWide": "City-wide",
+  "@radiusCityWide": {"description": "Toggle/chip label in the radius picker sheet that sets the radius to infinity (whole city)"},
+  "radiusApply": "Apply",
+  "@radiusApply": {"description": "Apply button in the radius picker sheet that confirms the selected radius"}
 }

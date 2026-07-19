@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  test('default radius is 3km', () async {
+  test('default radius is city-wide (infinity)', () async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    expect(container.read(radiusProvider), 3.0);
+    expect(container.read(radiusProvider), double.infinity);
   });
 
   test('setRadius persists', () async {

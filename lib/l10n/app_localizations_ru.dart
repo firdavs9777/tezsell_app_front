@@ -4592,4 +4592,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nearYouNow => 'Рядом с вами';
+
+  @override
+  String get radiusPickerTitle => 'Радиус поиска';
+
+  @override
+  String get radiusCityWide => 'Весь город';
+
+  @override
+  String get radiusApply => 'Применить';
 }

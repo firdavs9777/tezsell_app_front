@@ -135,7 +135,7 @@ void main() {
     );
     await tester.pump();
 
-    expect(container.read(radiusProvider), 3.0); // default
+    expect(container.read(radiusProvider), double.infinity); // default
     await tester.tap(find.text('5 km'));
     await tester.pumpAndSettle();
     expect(container.read(radiusProvider), 5.0);

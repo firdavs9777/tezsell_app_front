@@ -8733,6 +8733,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Near you now'**
   String get nearYouNow;
+
+  /// Title of the advanced radius picker bottom sheet with a map preview
+  ///
+  /// In en, this message translates to:
+  /// **'Search radius'**
+  String get radiusPickerTitle;
+
+  /// Toggle/chip label in the radius picker sheet that sets the radius to infinity (whole city)
+  ///
+  /// In en, this message translates to:
+  /// **'City-wide'**
+  String get radiusCityWide;
+
+  /// Apply button in the radius picker sheet that confirms the selected radius
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get radiusApply;
 }
 
 class _AppLocalizationsDelegate

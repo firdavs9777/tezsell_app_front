@@ -2846,5 +2846,8 @@
   "sortNearest": "Avval yaqinlari",
   "distanceKm": "{km} km",
   "mapLoadError": "Xaritada e'lonlarni yuklab bo'lmadi",
-  "nearYouNow": "Yaqin atrofda"
+  "nearYouNow": "Yaqin atrofda",
+  "radiusPickerTitle": "Qidiruv radiusi",
+  "radiusCityWide": "Butun shahar",
+  "radiusApply": "Qo'llash"
 }
