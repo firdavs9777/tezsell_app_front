@@ -3057,6 +3057,10 @@
   "@browse_no_items_with_location": {
     "description": "Empty-state message in map browse mode"
   },
+  "mapLoadError": "Could not load properties on the map",
+  "@mapLoadError": {
+    "description": "Error snackbar shown when the real estate map fails to load property pins"
+  },
   "location_picker_title": "Set location",
   "@location_picker_title": {},
   "location_picker_confirm": "Confirm location",

@@ -4028,6 +4028,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browse_no_items_with_location => '该区域还没有包含位置数据的项目。';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => '设置位置';
 
   @override

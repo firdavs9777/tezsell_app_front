@@ -496,6 +496,10 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       );
     }
 
+    if (_browseMode == _BrowseMode.map) {
+      return _buildPropertiesMap();
+    }
+
     if (_allProperties.isEmpty) {
       return SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -557,10 +561,6 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
           ),
         ),
       );
-    }
-
-    if (_browseMode == _BrowseMode.map) {
-      return _buildPropertiesMap();
     }
 
     return ListView.builder(

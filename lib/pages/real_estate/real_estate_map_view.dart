@@ -49,6 +49,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
   @override
   void dispose() {
     _debounce?.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -112,9 +113,18 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
     if (_errorSnackbarShowing || !mounted) return;
     _errorSnackbarShowing = true;
     final messenger = ScaffoldMessenger.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     messenger
-        .showSnackBar(const SnackBar(
-          content: Text('Could not load properties on the map.'),
+        .showSnackBar(SnackBar(
+          content: Text(
+            AppLocalizations.of(context)?.mapLoadError ??
+                'Could not load properties on the map',
+          ),
+          backgroundColor: colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ))
         .closed
         .then((_) {

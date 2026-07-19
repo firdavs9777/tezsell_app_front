@@ -4254,6 +4254,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucun élément avec des données de localisation dans cette zone pour l\'instant.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'Définir l\'emplacement';
 
   @override

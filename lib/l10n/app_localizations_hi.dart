@@ -4155,6 +4155,9 @@ class AppLocalizationsHi extends AppLocalizations {
       'इस क्षेत्र में अभी तक स्थान डेटा वाला कोई आइटम नहीं है।';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'स्थान निर्धारित करें';
 
   @override

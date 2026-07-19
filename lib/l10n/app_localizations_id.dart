@@ -4184,6 +4184,9 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada item dengan data lokasi di area ini.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'Tetapkan lokasi';
 
   @override

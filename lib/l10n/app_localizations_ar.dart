@@ -4121,6 +4121,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا توجد عناصر تحتوي على بيانات الموقع في هذه المنطقة حتى الآن.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'تحديد الموقع';
 
   @override

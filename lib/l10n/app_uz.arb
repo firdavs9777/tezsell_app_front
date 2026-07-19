@@ -2839,5 +2839,6 @@
   "chatSelfChatError": "O‘z e'loningiz haqida o‘zingiz bilan yozisha olmaysiz",
   "sortFresh": "Avval yangilari",
   "sortNearest": "Avval yaqinlari",
-  "distanceKm": "{km} km"
+  "distanceKm": "{km} km",
+  "mapLoadError": "Xaritada e'lonlarni yuklab bo'lmadi"
 }

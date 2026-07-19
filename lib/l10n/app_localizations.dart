@@ -7972,6 +7972,12 @@ abstract class AppLocalizations {
   /// **'No items with location data in this area yet.'**
   String get browse_no_items_with_location;
 
+  /// Error snackbar shown when the real estate map fails to load property pins
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load properties on the map'**
+  String get mapLoadError;
+
   /// No description provided for @location_picker_title.
   ///
   /// In en, this message translates to:

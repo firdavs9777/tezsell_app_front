@@ -2842,5 +2842,6 @@
   "chatSelfChatError": "Нельзя писать самому себе о своём объявлении",
   "sortFresh": "Сначала новые",
   "sortNearest": "Сначала ближние",
-  "distanceKm": "{km} км"
+  "distanceKm": "{km} км",
+  "mapLoadError": "Не удалось загрузить объекты на карте"
 }

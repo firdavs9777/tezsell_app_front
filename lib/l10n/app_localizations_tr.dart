@@ -4154,6 +4154,9 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu alanda henüz konum verisi olan öğe yok.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'Konumu ayarla';
 
   @override

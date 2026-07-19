@@ -4050,6 +4050,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get browse_no_items_with_location => '이 지역에는 아직 위치 데이터가 포함된 항목이 없습니다.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => '위치 설정';
 
   @override

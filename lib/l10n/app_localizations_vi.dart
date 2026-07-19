@@ -4168,6 +4168,9 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chưa có mục nào có dữ liệu vị trí trong khu vực này.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'Đặt vị trí';
 
   @override

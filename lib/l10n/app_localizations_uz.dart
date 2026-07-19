@@ -4200,6 +4200,9 @@ class AppLocalizationsUz extends AppLocalizations {
       'No items with location data in this area yet.';
 
   @override
+  String get mapLoadError => 'Xaritada e\'lonlarni yuklab bo\'lmadi';
+
+  @override
   String get location_picker_title => 'Set location';
 
   @override

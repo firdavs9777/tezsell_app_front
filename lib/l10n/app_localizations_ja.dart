@@ -4046,6 +4046,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browse_no_items_with_location => 'このエリアには位置データを持つアイテムはまだありません。';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => '場所を設定する';
 
   @override

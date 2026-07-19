@@ -4247,6 +4247,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'In diesem Bereich gibt es noch keine Artikel mit Standortdaten.';
 
   @override
+  String get mapLoadError => 'Could not load properties on the map';
+
+  @override
   String get location_picker_title => 'Standort festlegen';
 
   @override
