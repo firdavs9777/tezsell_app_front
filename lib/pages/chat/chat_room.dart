@@ -144,6 +144,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     Future.microtask(() {
       if (mounted) {
         print('🔵 [ChatRoom] initState → connectToChatRoom(${widget.chatRoom.id})');
+        // 🔥 FIX: Task 19 (review round 1) — rooms just created from a
+        // listing detail page (product/service/real-estate) via
+        // `ChatApiService.startFromListing()` never went through the
+        // provider, so they're missing from `chatRooms`/`archivedChatRooms`.
+        // Insert the full object we already have before anything on this
+        // screen (mute/archive/pin) needs it.
+        _chatNotifier.ensureRoomInList(widget.chatRoom);
         _chatNotifier.connectToChatRoom(widget.chatRoom.id);
         _markChatNotificationsAsRead(widget.chatRoom.id);
       }

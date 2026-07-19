@@ -510,12 +510,24 @@ class ChatNotifier extends StateNotifier<ChatState> {
     _safeUpdateState((s) => s.copyWith(chatRooms: newMain, archivedChatRooms: newArchived));
   }
 
+  /// 🔥 NEW: Task 19 (review round 1) — per-room in-flight serialization for
+  /// `updateRoomState`. Two overlapping calls on the same room (e.g. a fast
+  /// double-tap on mute, or mute+archive fired in quick succession) used to
+  /// race: each captured its own pre-call snapshot up front, so a later call
+  /// that resolved first could have its result stomped by an earlier call's
+  /// failure-revert. Chaining onto this per-room future means call N doesn't
+  /// start (and doesn't snapshot state) until call N-1 has fully resolved.
+  final Map<int, Future<void>> _stateCalls = {};
+
   /// 🔥 NEW: Task 19 — mute/archive/pin a room via `POST /chats/<id>/state/`.
   /// Applies an optimistic update to local state first (so swipe actions in
   /// the list feel instant), then reconciles with the server's authoritative
   /// `RoomState`; reverts to the pre-call snapshot on failure. Archiving
   /// moves the room out of `chatRooms` into `archivedChatRooms` (mirroring
   /// the server's default-fetch exclusion) and unarchiving does the reverse.
+  ///
+  /// Calls for the same [chatId] are serialized (see `_stateCalls`) so a
+  /// slow/failing call can't revert a later call's already-applied result.
   Future<bool> updateRoomState(
     int chatId, {
     bool? isMuted,
@@ -525,8 +537,64 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }) async {
     if (!state.isAuthenticated) return false;
 
+    var result = false;
+    final previous = _stateCalls[chatId] ?? Future<void>.value();
+    final chained = previous.then((_) async {
+      result = await _doUpdateRoomState(
+        chatId,
+        isMuted: isMuted,
+        mutedUntil: mutedUntil,
+        isArchived: isArchived,
+        isPinned: isPinned,
+      );
+    });
+    // `_doUpdateRoomState` never throws (it has its own try/catch), so this
+    // chain link always resolves cleanly and won't poison later calls.
+    _stateCalls[chatId] = chained;
+    await chained;
+    return result;
+  }
+
+  /// Does the actual optimistic-update + API-call + revert-on-failure work
+  /// for [updateRoomState], run inside that method's per-room serialization
+  /// so the local-state snapshot below is always taken immediately before
+  /// *this* call's own optimistic apply — not before some earlier call that
+  /// may still be in flight.
+  Future<bool> _doUpdateRoomState(
+    int chatId, {
+    bool? isMuted,
+    DateTime? mutedUntil,
+    bool? isArchived,
+    bool? isPinned,
+  }) async {
     final existingRoom = _findRoomAnywhere(chatId);
-    if (existingRoom == null) return false;
+
+    if (existingRoom == null) {
+      // 🔥 FIX: Task 19 (review round 1) — the room isn't in local state yet.
+      // Reachable when a room was just created from a listing detail page
+      // (product/service/real-estate), which calls
+      // `ChatApiService.startFromListing()` directly and pushes
+      // `ChatRoomScreen` without going through the provider first. There's
+      // nothing local to optimistically update or revert, but the mute/
+      // archive/pin action itself is still real and must reach the server —
+      // the next `loadChatRooms()`/`loadArchivedChatRooms()` will pick up the
+      // resulting state. (See also `ensureRoomInList`, which several detail
+      // pages now call via `ChatRoomScreen.initState` so this fallback is
+      // only needed for whatever window remains before that runs.)
+      try {
+        await _apiService.updateRoomState(
+          chatId,
+          isMuted: isMuted,
+          mutedUntil: mutedUntil,
+          isArchived: isArchived,
+          isPinned: isPinned,
+        );
+        return true;
+      } catch (e) {
+        _safeUpdateState((s) => s.copyWith(error: 'Failed to update chat: $e'));
+        return false;
+      }
+    }
 
     final originalChatRooms = state.chatRooms;
     final originalArchivedRooms = state.archivedChatRooms;
@@ -551,13 +619,36 @@ class ChatNotifier extends StateNotifier<ChatState> {
       return true;
     } catch (e) {
       // Revert to the pre-call snapshot — the optimistic update above never
-      // touched anything outside these two lists.
+      // touched anything outside these two lists. This snapshot was taken
+      // just above, inside this serialized call, so it can't clobber a
+      // later call that already completed.
       _safeUpdateState((s) => s.copyWith(
         chatRooms: originalChatRooms,
         archivedChatRooms: originalArchivedRooms,
         error: 'Failed to update chat: $e',
       ));
       return false;
+    }
+  }
+
+  /// 🔥 NEW: Task 19 (review round 1) — inserts [room] into `chatRooms` if it
+  /// isn't already present in either `chatRooms` or `archivedChatRooms`.
+  /// Rooms created via `ChatApiService.startFromListing()` (product/service/
+  /// real-estate detail pages) bypass the provider entirely — those pages
+  /// get a `ChatRoom` straight back from the API and push `ChatRoomScreen`
+  /// with it directly, so nothing ever added it to local state. Called from
+  /// `ChatRoomScreen.initState` (where the full object is available) so
+  /// mute/archive/pin actions taken from that screen have a local row to
+  /// update optimistically instead of relying on `updateRoomState`'s
+  /// server-only fallback.
+  void ensureRoomInList(ChatRoom room) {
+    if (_findRoomAnywhere(room.id) != null) return;
+    if (room.state.isArchived) {
+      final updated = List<ChatRoom>.from(state.archivedChatRooms)..insert(0, room);
+      _safeUpdateState((s) => s.copyWith(archivedChatRooms: updated));
+    } else {
+      final updated = List<ChatRoom>.from(state.chatRooms)..insert(0, room);
+      _safeUpdateState((s) => s.copyWith(chatRooms: updated));
     }
   }
 
