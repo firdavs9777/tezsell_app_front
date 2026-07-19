@@ -193,8 +193,20 @@ class ChatApiService {
         return ChatRoom.fromJson(data['room'] as Map<String, dynamic>);
       } else if (response.statusCode == 400) {
         final data = json.decode(utf8.decode(response.bodyBytes));
-        final detail = data is Map ? data['detail']?.toString() : null;
-        throw SelfChatException(detail ?? 'Cannot start this chat');
+        // Backend (`StartChatFromListingView`) puts the message under
+        // `error`, not `detail` -- fall back to `detail` in case that ever
+        // changes upstream.
+        final message =
+            data is Map ? (data['error'] ?? data['detail'])?.toString() : null;
+        // Only the self-chat case ("You cannot start a chat about your own
+        // listing") should surface as SelfChatException -- other 400s (bad
+        // listing_type, listing not found/inactive, etc.) should fall
+        // through to the generic exception so callers don't show a
+        // misleading self-chat snackbar for them.
+        if (message != null && message.contains('own listing')) {
+          throw SelfChatException(message);
+        }
+        throw Exception(message ?? 'Cannot start this chat');
       } else if (response.statusCode == 401) {
         throw Exception('Authentication failed');
       } else {

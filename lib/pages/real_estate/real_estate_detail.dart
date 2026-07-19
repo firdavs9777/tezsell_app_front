@@ -322,7 +322,12 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     if (property == null) return;
 
     final l10n = AppLocalizations.of(context)!;
-    final ownerId = property!.agent?.id ?? property!.owner.id;
+    // Chat ownership must key off the actual user account (`owner`), not the
+    // RealEstateAgent record PK -- for agent-managed listings `agent.id` is a
+    // different id space and the backend's self-chat check compares against
+    // `owner.id` (seller_id), so using `agent.id` here made the real owner
+    // see the "Chat with seller" button on their own listing.
+    final ownerId = property!.owner.id;
     final ownerName = property!.agent?.username ?? property!.owner.username;
 
     await ref.read(chatProvider.notifier).initialize();
@@ -1428,7 +1433,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final isDark = theme.brightness == Brightness.dark;
     // 🔥 NEW: Hide the "Contact" button on your own listing
     final currentUserId = ref.watch(chatProvider).currentUserId;
-    final ownerId = property!.agent?.id ?? property!.owner.id;
+    // Use `owner.id` (the actual user account), not `agent.id` (the
+    // RealEstateAgent record PK) -- see _startChatWithOwner for details.
+    final ownerId = property!.owner.id;
     final isOwnListing = currentUserId != null && currentUserId == ownerId;
 
     return Container(

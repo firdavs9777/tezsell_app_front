@@ -1,11 +1,9 @@
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/profile/widgets/sliver_tab_bar_delegate.dart';
 import 'package:app/pages/profile/widgets/user_profile_follow_list.dart';
 import 'package:app/pages/profile/widgets/user_profile_grids.dart';
 import 'package:app/pages/profile/widgets/user_profile_more_options.dart';
 import 'package:app/providers/provider_models/user_profile_model.dart';
-import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
@@ -268,17 +266,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                   const SizedBox(height: 16),
 
                   // Action Buttons
+                  // Chats start from listings (see 2026-07-19 chat spec); direct DM entry removed
                   if (!isOwnProfile)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildFollowButton(context, profile, colorScheme),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _buildMessageButton(context, profile, colorScheme),
-                        ),
-                      ],
+                    SizedBox(
+                      width: double.infinity,
+                      child: _buildFollowButton(context, profile, colorScheme),
                     )
                   else
                     SizedBox(
@@ -506,153 +498,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     );
   }
 
-  Widget _buildMessageButton(BuildContext context, UserProfile profile, ColorScheme colorScheme) {
-    final localizations = AppLocalizations.of(context);
-    return OutlinedButton(
-      onPressed: () => _startChatWithUser(context, profile),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        side: BorderSide(color: colorScheme.outline),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Text(
-        localizations?.profile_message ?? 'Message',
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-      ),
-    );
-  }
-
-  Future<void> _startChatWithUser(BuildContext context, UserProfile profile) async {
-    final targetUserId = profile.id;
-    final userName = profile.username;
-    final localizations = AppLocalizations.of(context);
-
-    // Initialize chat provider if not already initialized
-    await ref.read(chatProvider.notifier).initialize();
-
-    // Check authentication after initialization
-    final chatState = ref.read(chatProvider);
-    if (!chatState.isAuthenticated) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations?.chatLoginMessage ?? 'Please log in to start a chat'),
-            backgroundColor: const Color(0xFFFF9800),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
-      return;
-    }
-
-    // Prevent chatting with yourself
-    if (chatState.currentUserId == targetUserId) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations?.cannot_chat_with_yourself ?? 'You cannot chat with yourself'),
-            backgroundColor: const Color(0xFFFF9800),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
-      return;
-    }
-
-    // Show modern loading bottom sheet
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              localizations?.opening_chat_with(userName) ?? 'Opening chat with $userName...',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              localizations?.this_will_only_take_a_moment ?? 'This will only take a moment',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    try {
-      final chatRoom = await ref
-          .read(chatProvider.notifier)
-          .getOrCreateDirectChat(targetUserId);
-
-      if (mounted) Navigator.of(context).pop(); // Close bottom sheet
-
-      if (chatRoom != null && mounted) {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatRoomScreen(chatRoom: chatRoom),
-          ),
-        );
-      } else {
-        throw Exception('Failed to create or retrieve chat room');
-      }
-    } catch (e) {
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.of(context).pop();
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations?.unable_to_start_chat ?? 'Unable to start chat. Please try again.'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: localizations?.profile_retry ?? 'Retry',
-              textColor: Colors.white,
-              onPressed: () => _startChatWithUser(context, profile),
-            ),
-          ),
-        );
-      }
-    }
-  }
-
+  // Chats start from listings (see 2026-07-19 chat spec); direct DM entry
+  // removed -- `_buildMessageButton`/`_startChatWithUser` used to call the
+  // now-staff-only `/chats/direct/` endpoint, which would 403 for regular
+  // users.
 
   void _showFollowersSheet(BuildContext context, UserProfile profile) {
     final localizations = AppLocalizations.of(context);
