@@ -165,84 +165,7 @@ class ServiceList extends ConsumerWidget {
                               ],
                             ),
                             const SizedBox(height: 6),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                if (service.ratingCount > 0)
-                                  ServiceRatingBadge(
-                                    ratingAvg: service.ratingAvg,
-                                    ratingCount: service.ratingCount,
-                                  ),
-                                if (service.distanceKm != null)
-                                  _ServiceDistanceChip(
-                                      distanceKm: service.distanceKm!),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 3.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.surfaceContainerHighest
-                                        .withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.comment_rounded,
-                                        color: colorScheme.onSurface
-                                            .withValues(alpha: 0.7),
-                                        size: 12.0,
-                                      ),
-                                      const SizedBox(width: 3.0),
-                                      Text(
-                                        '${service.comments.length}',
-                                        style: TextStyle(
-                                          fontSize: 11.0,
-                                          fontWeight: FontWeight.w500,
-                                          color: colorScheme.onSurface
-                                              .withValues(alpha: 0.7),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 3.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.surfaceContainerHighest
-                                        .withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.favorite_rounded,
-                                        color: colorScheme.error,
-                                        size: 12.0,
-                                      ),
-                                      const SizedBox(width: 3.0),
-                                      Text(
-                                        '${service.likeCount}',
-                                        style: TextStyle(
-                                          fontSize: 11.0,
-                                          fontWeight: FontWeight.w500,
-                                          color: colorScheme.onSurface
-                                              .withValues(alpha: 0.7),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                            _ServiceStatsRow(service: service),
                           ],
                         ),
                       ],
@@ -253,6 +176,108 @@ class ServiceList extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Single-line badge row: rating, distance, likes, comments — in that
+/// priority order. Never wraps to a second line and never overflows the
+/// card's fixed-height right column: each badge sits in a `Flexible` slice
+/// (higher-priority badges get a larger flex share) with a `FittedBox`
+/// inside that scales the badge down to fit its slice rather than
+/// overflowing it. When space is tight, later (lower-priority) badges
+/// shrink first since they're allotted the smallest slices.
+class _ServiceStatsRow extends StatelessWidget {
+  const _ServiceStatsRow({required this.service});
+
+  final Services service;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final badges = <Widget>[
+      if (service.ratingCount > 0)
+        ServiceRatingBadge(
+          ratingAvg: service.ratingAvg,
+          ratingCount: service.ratingCount,
+        ),
+      if (service.distanceKm != null)
+        _ServiceDistanceChip(distanceKm: service.distanceKm!),
+      _ServiceCountBadge(
+        icon: Icons.favorite_rounded,
+        iconColor: colorScheme.error,
+        count: service.likeCount,
+      ),
+      _ServiceCountBadge(
+        icon: Icons.comment_rounded,
+        iconColor: colorScheme.onSurface.withValues(alpha: 0.7),
+        count: service.comments.length,
+      ),
+    ];
+
+    final children = <Widget>[];
+    for (var i = 0; i < badges.length; i++) {
+      if (i > 0) children.add(const SizedBox(width: 6));
+      children.add(
+        Flexible(
+          // Earlier (higher-priority) badges get a larger flex share, so
+          // they retain more space — and shrink less — than later ones
+          // when the row is squeezed.
+          flex: badges.length - i,
+          fit: FlexFit.loose,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: badges[i],
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
+    );
+  }
+}
+
+/// Small pill badge: an icon + a numeric count (likes, comments, ...).
+class _ServiceCountBadge extends StatelessWidget {
+  const _ServiceCountBadge({
+    required this.icon,
+    required this.iconColor,
+    required this.count,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: iconColor, size: 12.0),
+          const SizedBox(width: 3.0),
+          Text(
+            '$count',
+            style: TextStyle(
+              fontSize: 11.0,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+        ],
       ),
     );
   }

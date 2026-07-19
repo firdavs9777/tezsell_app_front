@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/real_estate/real_estate_detail.dart';
+import 'package:app/providers/provider_models/neighborhood.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
@@ -46,6 +47,35 @@ class NearbyFeedItem {
   String get key => '${type.name}_${type == NearbyFeedItemType.service ? service!.id : property!.id}';
 }
 
+/// Mirrors `NeighborhoodGate`'s semantics (`tab_bar.dart`): the child (here,
+/// the services fetch) is only allowed through when the user has at least
+/// one non-expired verified neighborhood. Real estate stays city-scale and
+/// is always fetched (per NeighborhoodGate's own doc comment: "Real estate
+/// is intentionally NOT wrapped"). Pure — extracted for unit testing, see
+/// `test/nearby_feed_strip_test.dart`.
+bool canFetchServices(List<VerifiedNeighborhood> verified) {
+  return verified.isNotEmpty && verified.any((v) => !v.isExpired);
+}
+
+/// Merges two already-fetched feed lists into one, sorted ascending by
+/// `distanceKm` (nulls sort last), capped at 10 items. Pure and side-effect
+/// free — extracted for unit testing, see `test/nearby_feed_strip_test.dart`.
+List<NearbyFeedItem> mergeNearbyItems(
+  List<NearbyFeedItem> a,
+  List<NearbyFeedItem> b,
+) {
+  final merged = [...a, ...b];
+  merged.sort((x, y) {
+    final dx = x.distanceKm;
+    final dy = y.distanceKm;
+    if (dx == null && dy == null) return 0;
+    if (dx == null) return 1;
+    if (dy == null) return -1;
+    return dx.compareTo(dy);
+  });
+  return merged.take(10).toList();
+}
+
 /// Fetches the two vertical feeds in parallel and merges them. Reactive to
 /// `activeNeighborhoodProvider`/`radiusProvider`/`verifiedNeighborhoodsProvider`
 /// via `ref.watch` (Riverpod re-runs this provider whenever any of those
@@ -56,11 +86,7 @@ final nearbyFeedProvider = FutureProvider.autoDispose<List<NearbyFeedItem>>((ref
 
   final radius = ref.watch(radiusProvider);
   final verified = ref.watch(verifiedNeighborhoodsProvider);
-  // Mirrors `NeighborhoodGate`'s semantics: services are only fetched when
-  // the user has at least one non-expired verified neighborhood. Real
-  // estate stays city-scale and is always fetched (per NeighborhoodGate's
-  // own doc comment: "Real estate is intentionally NOT wrapped").
-  final canFetchServices = verified.isNotEmpty && verified.any((v) => !v.isExpired);
+  final servicesAllowed = canFetchServices(verified);
 
   final lat = activeNbhd.neighborhood.centroidLat;
   final lng = activeNbhd.neighborhood.centroidLng;
@@ -69,7 +95,7 @@ final nearbyFeedProvider = FutureProvider.autoDispose<List<NearbyFeedItem>>((ref
   final realEstateService = ref.read(realEstateServiceProvider);
 
   Future<List<NearbyFeedItem>> fetchServices() async {
-    if (!canFetchServices) return const [];
+    if (!servicesAllowed) return const [];
     try {
       final results = await serviceProvider.getFilteredServices(
         pageSize: 5,
@@ -101,16 +127,7 @@ final nearbyFeedProvider = FutureProvider.autoDispose<List<NearbyFeedItem>>((ref
   }
 
   final fetched = await Future.wait([fetchServices(), fetchProperties()]);
-  final merged = [...fetched[0], ...fetched[1]];
-  merged.sort((a, b) {
-    final da = a.distanceKm;
-    final db = b.distanceKm;
-    if (da == null && db == null) return 0;
-    if (da == null) return 1;
-    if (db == null) return -1;
-    return da.compareTo(db);
-  });
-  return merged.take(10).toList();
+  return mergeNearbyItems(fetched[0], fetched[1]);
 });
 
 class NearbyFeedStrip extends ConsumerWidget {
