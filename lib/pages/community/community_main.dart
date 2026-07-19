@@ -261,6 +261,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
 
 class _PostCard extends StatefulWidget {
   const _PostCard({
+    super.key,
     required this.post,
     required this.categoryLabel,
     required this.isOwn,
