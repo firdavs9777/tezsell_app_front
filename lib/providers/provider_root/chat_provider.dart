@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/chat_api_service.dart';
 import 'package:app/service/websocket_service.dart';
+import 'package:app/service/connection_state_controller.dart';
+import 'package:app/service/message_outbox_service.dart';
 import 'dart:io';
 
 // Chat State
@@ -99,11 +102,24 @@ class ChatState {
 // Chat Notifier
 class ChatNotifier extends StateNotifier<ChatState> {
   ChatNotifier() : super(ChatState()) {
-
+    // 🔥 NEW: Drain the offline outbox whenever the chat socket comes back up.
+    _connStateSubscription =
+        ConnectionStateController.instance.stream.listen((connState) {
+      if (connState == ConnState.connected) {
+        _drainOutbox();
+      }
+    });
   }
 
   final ChatApiService _apiService = ChatApiService();
-  
+
+  // 🔥 NEW: Reliability core — offline outbox + optimistic send bookkeeping
+  MessageOutboxService? _outbox;
+  final Map<String, Timer> _ackTimeouts = {};
+  StreamSubscription<ConnState>? _connStateSubscription;
+  bool _isDraining = false;
+  final Random _random = Random();
+
   // 🔥 FIX: Safe state update that handles disposed widgets
   void _safeUpdateState(ChatState Function(ChatState) updateFn) {
     try {
@@ -727,6 +743,147 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  // 🔥 NEW: Reliability core helpers (optimistic send + offline outbox) ----
+
+  Future<MessageOutboxService> _ensureOutbox() async {
+    final existing = _outbox;
+    if (existing != null) return existing;
+    final prefs = await SharedPreferences.getInstance();
+    final created = MessageOutboxService(prefs);
+    _outbox = created;
+    return created;
+  }
+
+  /// Client-generated id for optimistic messages. Not a real UUID — the
+  /// `uuid` package isn't a direct dependency here, and timestamp + random
+  /// suffix is unique enough for a single-device outbox key.
+  String _generateLocalId() {
+    final ts = DateTime.now().microsecondsSinceEpoch;
+    final rand = _random.nextInt(1 << 32);
+    return '$ts-$rand';
+  }
+
+  void _updateMessageByLocalId(
+    String localId,
+    ChatMessage Function(ChatMessage) update,
+  ) {
+    final idx = state.messages.indexWhere((m) => m.localId == localId);
+    if (idx == -1) return;
+    final updated = List<ChatMessage>.from(state.messages);
+    updated[idx] = update(updated[idx]);
+    _safeUpdateState((s) => s.copyWith(messages: updated));
+  }
+
+  void _cancelAckTimeout(String localId) {
+    _ackTimeouts.remove(localId)?.cancel();
+  }
+
+  void _startAckTimeout(String localId, int roomId, String content) {
+    _cancelAckTimeout(localId);
+    _ackTimeouts[localId] = Timer(const Duration(seconds: 10), () {
+      _ackTimeouts.remove(localId);
+      _markFailedAndEnqueue(localId, roomId, content);
+    });
+  }
+
+  Future<void> _markFailedAndEnqueue(
+    String localId,
+    int roomId,
+    String content,
+  ) async {
+    _updateMessageByLocalId(
+      localId,
+      (m) => m.copyWith(deliveryStatus: DeliveryStatus.failed),
+    );
+    final outbox = await _ensureOutbox();
+    await outbox.enqueue(OutboxEntry(
+      localId: localId,
+      roomId: roomId,
+      content: content,
+      createdAt: DateTime.now(),
+    ));
+  }
+
+  /// Replays queued messages for the current room, sequentially, once the
+  /// connection is back up. Entries that have exhausted [MessageOutboxService.maxAttempts]
+  /// are dropped from the queue and left permanently `failed`.
+  Future<void> _drainOutbox() async {
+    if (_isDraining) return;
+    final roomId = state.currentChatRoomId;
+    if (roomId == null) return;
+
+    _isDraining = true;
+    try {
+      final outbox = await _ensureOutbox();
+      final pending = outbox.pendingFor(roomId);
+
+      for (final entry in pending) {
+        if (_chatRoomWS == null || !_chatRoomWS!.isConnected) break;
+
+        if (entry.attempts + 1 > MessageOutboxService.maxAttempts) {
+          await outbox.remove(entry.localId);
+          _updateMessageByLocalId(
+            entry.localId,
+            (m) => m.copyWith(deliveryStatus: DeliveryStatus.failed),
+          );
+          continue;
+        }
+
+        await outbox.incrementAttempts(entry.localId);
+        _updateMessageByLocalId(
+          entry.localId,
+          (m) => m.copyWith(deliveryStatus: DeliveryStatus.sending),
+        );
+        _chatRoomWS!.sendChatMessage(entry.content ?? '', localId: entry.localId);
+        _startAckTimeout(entry.localId, roomId, entry.content ?? '');
+
+        // Small pacing gap so we don't fire the whole queue in one frame.
+        await Future.delayed(const Duration(milliseconds: 250));
+      }
+    } finally {
+      _isDraining = false;
+    }
+  }
+
+  /// Tap-to-retry for a failed bubble: re-enqueues (if needed) and attempts
+  /// an immediate resend when connected.
+  Future<void> retryMessage(String localId) async {
+    ChatMessage? message;
+    for (final m in state.messages) {
+      if (m.localId == localId) {
+        message = m;
+        break;
+      }
+    }
+    final roomId = state.currentChatRoomId;
+    if (message == null || roomId == null) return;
+
+    _updateMessageByLocalId(
+      localId,
+      (m) => m.copyWith(deliveryStatus: DeliveryStatus.sending),
+    );
+
+    final outbox = await _ensureOutbox();
+    final alreadyQueued = outbox.all().any((e) => e.localId == localId);
+    if (!alreadyQueued) {
+      await outbox.enqueue(OutboxEntry(
+        localId: localId,
+        roomId: roomId,
+        content: message.content,
+        createdAt: DateTime.now(),
+      ));
+    }
+
+    if (_chatRoomWS != null && _chatRoomWS!.isConnected) {
+      await _drainOutbox();
+    } else {
+      _updateMessageByLocalId(
+        localId,
+        (m) => m.copyWith(deliveryStatus: DeliveryStatus.failed),
+      );
+    }
+  }
+
   void sendMessage(String content) {
     print('📤 ChatProvider.sendMessage called with: "$content"');
     final trimmedContent = content.trim();
@@ -742,23 +899,46 @@ class ChatNotifier extends StateNotifier<ChatState> {
       return;
     }
 
+    final roomId = state.currentChatRoomId;
+    if (roomId == null || state.currentUserId == null) {
+      _safeUpdateState((s) => s.copyWith(error: 'Not connected. Please wait...'));
+      return;
+    }
+
     print('📤 _chatRoomWS: ${_chatRoomWS != null ? "exists" : "null"}');
     print('📤 _chatRoomWS.isConnected: ${_chatRoomWS?.isConnected}');
 
-    if (_chatRoomWS == null || !_chatRoomWS!.isConnected) {
-      print('❌ Not connected to WebSocket');
-      _safeUpdateState((s) => s.copyWith(error: 'Not connected. Please wait...'));
+    // 🔥 NEW: Optimistic send — append a `sending` bubble immediately with a
+    // client-generated local_id, so the UI never blocks on the network.
+    final localId = _generateLocalId();
+    final optimisticMessage = ChatMessage(
+      id: null,
+      messageType: MessageType.text,
+      content: trimmedContent,
+      sender: User(
+        id: state.currentUserId!,
+        username: state.currentUsername ?? '',
+      ),
+      timestamp: DateTime.now(),
+      localId: localId,
+      deliveryStatus: DeliveryStatus.sending,
+    );
+    _safeUpdateState(
+      (s) => s.copyWith(messages: [...s.messages, optimisticMessage]),
+    );
+
+    final socketUp = _chatRoomWS != null && _chatRoomWS!.isConnected;
+    if (!socketUp) {
+      _markFailedAndEnqueue(localId, roomId, trimmedContent);
 
       // Try to reconnect
-      if (state.currentChatRoomId != null) {
-        print('🔄 Attempting to reconnect to room ${state.currentChatRoomId}');
-        connectToChatRoom(state.currentChatRoomId!);
-      }
+      connectToChatRoom(roomId);
       return;
     }
 
     print('📤 Calling _chatRoomWS.sendChatMessage');
-    _chatRoomWS!.sendChatMessage(trimmedContent);
+    _chatRoomWS!.sendChatMessage(trimmedContent, localId: localId);
+    _startAckTimeout(localId, roomId, trimmedContent);
   }
 
   void sendTypingStatus(bool isTyping) {
@@ -949,6 +1129,28 @@ class ChatNotifier extends StateNotifier<ChatState> {
       case 'message':
         try {
           final message = ChatMessage.fromJson(data);
+
+          // 🔥 NEW: Reliability core — if this message echoes a local_id we
+          // already have an optimistic (id == null) bubble for, replace that
+          // bubble in place instead of appending a duplicate. This is how
+          // both the direct-send ack and any drained-outbox resend resolve.
+          if (message.localId != null) {
+            _cancelAckTimeout(message.localId!);
+            final localIdx = state.messages.indexWhere(
+              (m) => m.localId == message.localId && m.id == null,
+            );
+            if (localIdx != -1) {
+              final updatedMessages = List<ChatMessage>.from(state.messages);
+              updatedMessages[localIdx] = message.copyWith(
+                deliveryStatus: message.deliveryStatus == DeliveryStatus.sending
+                    ? DeliveryStatus.sent
+                    : message.deliveryStatus,
+              );
+              _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
+              _ensureOutbox().then((o) => o.remove(message.localId!));
+              return;
+            }
+          }
 
           // 🔥 FIX: Check for duplicate messages by ID to prevent double sending
           final existingIndex = state.messages.indexWhere((m) => m.id == message.id);
@@ -1932,6 +2134,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     _chatListSubscription?.cancel();
     _chatRoomSubscription?.cancel();
+    _connStateSubscription?.cancel();
+    for (final timer in _ackTimeouts.values) {
+      timer.cancel();
+    }
+    _ackTimeouts.clear();
     _chatListWS?.disconnect();
     _chatRoomWS?.disconnect();
     super.dispose();

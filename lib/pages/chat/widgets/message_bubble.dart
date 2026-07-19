@@ -17,6 +17,10 @@ class MessageBubble extends StatelessWidget {
   final Function(int)?
   onReplyTap; // Callback when reply preview is tapped, receives message ID
 
+  /// 🔥 NEW: Reliability core — tap-to-retry for a `failed` bubble. Receives
+  /// the message's `localId`.
+  final Function(String)? onRetry;
+
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
   static const int _maxCacheSize = 100;
@@ -31,6 +35,7 @@ class MessageBubble extends StatelessWidget {
     this.currentUserId,
     this.onReactionTap,
     this.onReplyTap,
+    this.onRetry,
   });
 
   @override
@@ -243,10 +248,10 @@ class MessageBubble extends StatelessWidget {
                               ),
                             ),
                           ],
-                          // Read receipts (only for own messages)
+                          // Delivery ticks (only for own messages)
                           if (isOwnMessage) ...[
                             const SizedBox(width: 4),
-                            _buildReadReceipt(),
+                            _buildDeliveryTick(context),
                           ],
                         ],
                       ),
@@ -328,21 +333,53 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-  // 🔥 Read receipt widget (KakaoTalk + WhatsApp combined style)
-  Widget _buildReadReceipt() {
+  // 🔥 Delivery tick widget — reflects [ChatMessage.deliveryStatus] for the
+  // client-only lifecycle (sending/failed), falling back to the readBy-based
+  // read/delivered/sent logic for messages the server has already persisted.
+  Widget _buildDeliveryTick(BuildContext context) {
+    switch (message.deliveryStatus) {
+      case DeliveryStatus.sending:
+      case DeliveryStatus.queued:
+        return Icon(
+          Icons.schedule,
+          size: 14,
+          color: Colors.white.withValues(alpha: 0.7),
+        );
+
+      case DeliveryStatus.failed:
+        return GestureDetector(
+          onTap: message.localId != null
+              ? () => onRetry?.call(message.localId!)
+              : null,
+          child: Icon(
+            Icons.error_outline,
+            size: 16,
+            color: Theme.of(context).colorScheme.error,
+          ),
+        );
+
+      case DeliveryStatus.sent:
+      case DeliveryStatus.delivered:
+      case DeliveryStatus.read:
+        break;
+    }
+
     // Use actual ChatMessage properties: isRead and readBy
     // 🔥 FIX: Only count readers OTHER than the sender
     final senderId = message.sender.id;
     final otherReaders = message.readBy.where((id) => id != senderId).toList();
-    final hasBeenReadByOthers = message.isRead || otherReaders.isNotEmpty;
-    final isDelivered = message.id != null; // If message has ID, it was sent to server
+    final hasBeenReadByOthers = message.isRead ||
+        otherReaders.isNotEmpty ||
+        message.deliveryStatus == DeliveryStatus.read;
+    final isDelivered = message.id != null ||
+        message.deliveryStatus == DeliveryStatus.delivered; // If message has ID, it was sent to server
 
     if (hasBeenReadByOthers) {
-      // Read - double tick (bright white)
-      return const Icon(
+      // Read - double tick, primary-colored to stand out
+      return Icon(
         Icons.done_all,
         size: 16,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.primary,
       );
     } else if (isDelivered) {
       // Delivered but unread - double tick (dimmed)

@@ -100,6 +100,9 @@ class MessageList extends ConsumerWidget {
                   );
                 },
                 onReplyTap: onReplyTap,
+                onRetry: (localId) {
+                  ref.read(chatProvider.notifier).retryMessage(localId);
+                },
               ),
             ),
           ],

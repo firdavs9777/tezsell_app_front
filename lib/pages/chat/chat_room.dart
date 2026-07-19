@@ -12,6 +12,7 @@ import 'package:app/pages/chat/widgets/empty_message_state.dart';
 import 'package:app/pages/chat/widgets/media_options_sheet.dart';
 import 'package:app/pages/chat/widgets/message_options_sheet.dart';
 import 'package:app/pages/chat/widgets/reaction_picker.dart';
+import 'package:app/widgets/connection_banner.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -964,6 +965,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }) {
     return Column(
       children: [
+        // 🔥 NEW: Reconnect banner (shown after 3s continuous non-connected)
+        const ConnectionBanner(),
+
         // Blocked user banner
         if (isBlocked && otherUser != null)
           BlockedUserBanner(

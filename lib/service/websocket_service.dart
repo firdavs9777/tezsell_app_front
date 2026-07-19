@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/connection_state_controller.dart';
 
 class ChatListWebSocketService {
   WebSocketChannel? _channel;
@@ -35,8 +36,9 @@ class ChatListWebSocketService {
             // Mark as connected when we get connection_established
             if (message['type'] == 'connection_established') {
               _isConnected = true;
+              ConnectionStateController.instance.setSocketState(true);
             }
-            
+
             _messageController.add(message);
           } catch (e) {
 
@@ -45,16 +47,19 @@ class ChatListWebSocketService {
         onError: (error) {
 
           _isConnected = false;
+          ConnectionStateController.instance.setSocketState(false);
         },
         onDone: () {
 
           _isConnected = false;
+          ConnectionStateController.instance.setSocketState(false);
         },
       );
-      
+
       // Mark as connected after a short delay (connection is established)
       Future.delayed(const Duration(milliseconds: 500), () {
         _isConnected = true;
+        ConnectionStateController.instance.setSocketState(true);
       });
     } catch (e) {
 
@@ -157,6 +162,7 @@ class ChatRoomWebSocketService {
               print('✅ Connection established message received!');
               _isConnected = true;
               _isConnecting = false;
+              ConnectionStateController.instance.setSocketState(true);
               if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
                 _connectionCompleter!.complete();
               }
@@ -173,6 +179,7 @@ class ChatRoomWebSocketService {
           print('❌ WebSocket error: $error');
           _isConnected = false;
           _isConnecting = false;
+          ConnectionStateController.instance.setSocketState(false);
           if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
             _connectionCompleter!.completeError(error);
           }
@@ -182,6 +189,7 @@ class ChatRoomWebSocketService {
           print('🔌 WebSocket stream done (closed)');
           _isConnected = false;
           _isConnecting = false;
+          ConnectionStateController.instance.setSocketState(false);
           // Unblock any pending ready future so the caller doesn't wait 5s.
           if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
             _connectionCompleter!.completeError(
@@ -200,6 +208,7 @@ class ChatRoomWebSocketService {
           print('⏱️ Connection timeout - setting _isConnected = true anyway');
           _isConnected = true;
           _isConnecting = false;
+          ConnectionStateController.instance.setSocketState(true);
         },
       );
 
@@ -209,6 +218,7 @@ class ChatRoomWebSocketService {
       print('❌ Connection error: $e');
       _isConnected = false;
       _isConnecting = false;
+      ConnectionStateController.instance.setSocketState(false);
       if (_connectionCompleter != null && !_connectionCompleter!.isCompleted) {
         _connectionCompleter!.completeError(e);
       }
@@ -233,8 +243,12 @@ class ChatRoomWebSocketService {
     });
   }
 
-  void sendChatMessage(String content) {
-    print('📤 sendChatMessage called with: "$content"');
+  /// Sends a chat message. [localId] is a client-generated id (see
+  /// `ChatNotifier._generateLocalId`) echoed back by the backend in the ack /
+  /// broadcast so the sender can match its optimistic bubble to the
+  /// persisted message without creating a duplicate.
+  void sendChatMessage(String content, {String? localId}) {
+    print('📤 sendChatMessage called with: "$content", localId: $localId');
     print('📤 _isConnected: $_isConnected, _channel: ${_channel != null ? "exists" : "null"}');
 
     if (!_isConnected || _channel == null) {
@@ -250,6 +264,7 @@ class ChatRoomWebSocketService {
         'type': 'message',
         'message': content,
         'delivery_status': 'sent',  // Backend requires this field
+        if (localId != null) 'local_id': localId,
       });
 
       print('📤 Sending WebSocket message: $message');
@@ -260,6 +275,7 @@ class ChatRoomWebSocketService {
     } catch (e) {
       print('❌ Error sending message: $e');
       _isConnected = false;
+      ConnectionStateController.instance.setSocketState(false);
     }
   }
 
