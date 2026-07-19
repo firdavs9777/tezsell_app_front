@@ -83,7 +83,14 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
   }
 
   void _select(RealEstateMapPin? pin) {
-    setState(() => _selected = pin);
+    setState(() => _selectInternal(pin));
+  }
+
+  /// Bare state mutation shared by [_select] and call sites that are already
+  /// inside a `setState` callback (e.g. [_fetchBounds] dropping a pin that
+  /// scrolled out of view) so they don't nest a second `setState` call.
+  void _selectInternal(RealEstateMapPin? pin) {
+    _selected = pin;
     _selectedIdNotifier.value = pin?.id;
   }
 
@@ -138,8 +145,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
         _hasFetchedOnce = true;
         // Drop the preview if the selected pin scrolled out of the new set.
         if (_selected != null && !pins.any((p) => p.id == _selected!.id)) {
-          _selected = null;
-          _selectedIdNotifier.value = null;
+          _selectInternal(null);
         }
       });
     } catch (e) {
@@ -200,6 +206,8 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
               options: MarkerClusterLayerOptions(
                 maxClusterRadius: 70,
                 size: const Size(48, 48),
+                computeSize: (markers) =>
+                    ClusterBadge.clusterSizeFor(markers.length),
                 markers: _markers,
                 builder: (context, markers) =>
                     ClusterBadge(count: markers.length),

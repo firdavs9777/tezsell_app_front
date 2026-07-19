@@ -11,20 +11,28 @@ class ClusterBadge extends StatelessWidget {
 
   final int count;
 
+  /// Shared tier sizing so the badge's own rendering and each map's
+  /// `MarkerClusterLayerOptions.computeSize` (which controls the actual
+  /// tappable/layout bounds the badge is constrained into) can never drift
+  /// apart. 1-9 small, 10-99 medium, 100+ large.
+  static Size clusterSizeFor(int count) {
+    if (count < 10) return const Size(36, 36);
+    if (count < 100) return const Size(46, 46);
+    return const Size(56, 56);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final double size;
+    final Size boxSize = clusterSizeFor(count);
+    final double size = boxSize.width;
     final double fontSize;
     if (count < 10) {
-      size = 36;
       fontSize = 13;
     } else if (count < 100) {
-      size = 46;
       fontSize = 14;
     } else {
-      size = 56;
       fontSize = 15;
     }
 

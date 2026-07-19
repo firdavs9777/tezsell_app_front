@@ -77,6 +77,8 @@ class _ItemsMapViewState extends State<ItemsMapView> {
               options: MarkerClusterLayerOptions(
                 maxClusterRadius: 80,
                 size: const Size(44, 44),
+                computeSize: (markers) =>
+                    ClusterBadge.clusterSizeFor(markers.length),
                 markers: widget.items
                     .map((item) => Marker(
                           point: LatLng(item.lat, item.lng),
