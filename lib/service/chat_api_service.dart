@@ -668,6 +668,57 @@ class ChatApiService {
     }
   }
 
+  // 🔥 NEW: Task 16 — toggle pin state for a message. Returns the resulting
+  // `is_pinned` flag from `POST /chats/<chat_id>/messages/<id>/pin/`.
+  Future<bool> togglePinMessage(int chatId, int messageId) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/pin/'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return data is Map ? (data['is_pinned'] as bool? ?? false) : false;
+      } else {
+        throw Exception(_extractErrorDetail(response, 'Failed to toggle pin'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 16 — forward a message to another room via
+  // `POST /chats/<chat_id>/messages/<id>/forward/`. Returns the newly
+  // created message (broadcast to the target room over its own WS).
+  Future<ChatMessage> forwardMessage(
+    int chatId,
+    int messageId,
+    int targetRoomId,
+  ) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/forward/'),
+        headers: headers,
+        body: json.encode({'target_room_id': targetRoomId}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return ChatMessage.fromJson(data);
+      } else {
+        throw Exception(_extractErrorDetail(response, 'Failed to forward message'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // 🔥 NEW: Add/remove reaction
   Future<Map<String, List<int>>> toggleReaction(
       int chatId, int messageId, String emoji) async {

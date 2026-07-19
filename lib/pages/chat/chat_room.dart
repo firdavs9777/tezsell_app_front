@@ -14,6 +14,8 @@ import 'package:app/pages/chat/widgets/blocked_user_banner.dart';
 import 'package:app/pages/chat/widgets/empty_message_state.dart';
 import 'package:app/pages/chat/widgets/media_options_sheet.dart';
 import 'package:app/pages/chat/widgets/message_options_sheet.dart';
+import 'package:app/pages/chat/widgets/forward_picker_sheet.dart';
+import 'package:app/pages/chat/widgets/pinned_messages_bar.dart';
 import 'package:app/pages/chat/widgets/listing_card.dart';
 import 'package:app/pages/chat/widgets/quick_chips.dart';
 import 'package:app/widgets/connection_banner.dart';
@@ -383,9 +385,36 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         onCopy: message.content != null && !message.isDeleted
             ? () => _copyMessage(message.content!)
             : null,
-        // onPin / onForward / onTranslate intentionally omitted — Tasks
-        // 15/16/18 wire real Pin/Forward/Translate; the sheet already
-        // hides these rows whenever the callback is null.
+        // 🔥 NEW: Task 16 — Pin/Unpin + Forward. Both need a server id and
+        // never apply to deleted-for-everyone messages (the sheet hides the
+        // rows whenever the callback is null). onTranslate stays omitted —
+        // Task 18 wires Translate.
+        onPin: message.id != null && !message.isDeleted
+            ? () {
+                ref
+                    .read(chatProvider.notifier)
+                    .togglePinMessage(message.id!);
+              }
+            : null,
+        onForward: message.id != null && !message.isDeleted
+            ? () => _showForwardPicker(message)
+            : null,
+      ),
+    );
+  }
+
+  /// 🔥 NEW: Task 16 — opens the forward destination picker for [message].
+  /// The picker itself performs the forward API call, closes, and shows the
+  /// `chatForwarded` snackbar confirmation (no navigation to the target room).
+  void _showForwardPicker(ChatMessage message) {
+    if (message.id == null) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ForwardPickerSheet(
+        messageId: message.id!,
+        currentRoomId: widget.chatRoom.id,
       ),
     );
   }
@@ -1097,6 +1126,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         // 🔥 NEW: Pinned listing summary card (only when the room is
         // anchored to a product/service/property listing)
         if (effectiveListing != null) ListingCard(listing: effectiveListing),
+
+        // 🔥 NEW: Task 16 — pinned messages bar (renders nothing when no
+        // message in the loaded list is pinned). Tap cycles through pinned
+        // messages, scrolling to + flash-highlighting each; long-press
+        // offers to unpin the currently shown one.
+        PinnedMessagesBar(onTapMessage: _scrollToMessage),
 
         // Blocked user banner
         if (isBlocked && otherUser != null)

@@ -1403,7 +1403,22 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
         }
         break;
-        
+
+      // 🔥 NEW: Task 16 — pin/unpin broadcast. Keeps every connected client's
+      // pin state (and thus the pinned-messages bar) in sync live.
+      case 'message_pinned':
+        final pinnedMessageId = data['message_id'];
+        final isPinnedFlag = data['is_pinned'];
+        final pinnedByRaw = data['pinned_by'];
+        if (pinnedMessageId is int && isPinnedFlag is bool) {
+          _applyMessagePinned(
+            pinnedMessageId,
+            isPinnedFlag,
+            pinnedByRaw is int ? pinnedByRaw : null,
+          );
+        }
+        break;
+
       // 🔥 NEW: Typing indicator
       case 'typing':
         try {
@@ -2008,6 +2023,66 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // Revert the optimistic update on failure.
       _updateMessageReactions(messageId, originalReactions);
       _safeUpdateState((s) => s.copyWith(error: 'Failed to toggle reaction: $e'));
+      return false;
+    }
+  }
+
+  /// 🔥 NEW: Task 16 — applies a pin/unpin result to [messageId] in local
+  /// state. Shared by the direct API-driven toggle below and the
+  /// `message_pinned` WS relay so both paths converge on the same state.
+  void _applyMessagePinned(int messageId, bool isPinnedFlag, int? pinnedBy) {
+    final idx = state.messages.indexWhere((m) => m.id == messageId);
+    if (idx == -1) return;
+    final updated = List<ChatMessage>.from(state.messages);
+    updated[idx] = updated[idx].copyWith(
+      isPinned: isPinnedFlag,
+      pinnedAt: isPinnedFlag ? DateTime.now() : null,
+      pinnedBy: isPinnedFlag ? pinnedBy : null,
+    );
+    _safeUpdateState((s) => s.copyWith(messages: updated));
+  }
+
+  // 🔥 NEW: Task 16 — toggle pin state for a message (optimistic +
+  // reconciled with the server's authoritative `is_pinned`). The
+  // `message_pinned` WS relay (handled in [_handleChatRoomMessage]) keeps
+  // this in sync for any other connected client.
+  Future<bool> togglePinMessage(int messageId) async {
+    if (!state.isAuthenticated || state.currentChatRoomId == null) {
+      return false;
+    }
+
+    final roomId = state.currentChatRoomId!;
+    final msgIndex = state.messages.indexWhere((m) => m.id == messageId);
+    final wasPinned = msgIndex != -1 && state.messages[msgIndex].isPinned;
+
+    try {
+      final isPinnedFlag = await _apiService.togglePinMessage(roomId, messageId);
+      _applyMessagePinned(messageId, isPinnedFlag, state.currentUserId);
+      return true;
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(error: 'Failed to ${wasPinned ? 'unpin' : 'pin'} message: $e'));
+      return false;
+    }
+  }
+
+  // 🔥 NEW: Task 16 — forward a message to [targetRoomId]. The backend
+  // copies content/file/type/duration onto a new message with
+  // `is_forwarded=True` and broadcasts it to the target room over its own
+  // WebSocket — nothing to add locally here since we never navigate there.
+  Future<bool> forwardMessage(int messageId, int targetRoomId) async {
+    if (!state.isAuthenticated || state.currentChatRoomId == null) {
+      return false;
+    }
+
+    try {
+      await _apiService.forwardMessage(
+        state.currentChatRoomId!,
+        messageId,
+        targetRoomId,
+      );
+      return true;
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(error: 'Failed to forward message: $e'));
       return false;
     }
   }

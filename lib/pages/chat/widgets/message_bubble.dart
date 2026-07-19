@@ -268,6 +268,50 @@ class MessageBubble extends StatelessWidget {
                                 ),
                               ),
 
+                            // 🔥 NEW: Task 16 — small "Forwarded" label row
+                            // (italic, muted, with a forward icon) above the
+                            // content for forwarded messages.
+                            if (message.isForwarded)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.forward,
+                                      size: 14,
+                                      color: isOwnMessage
+                                          ? Colors.white.withValues(alpha: 0.7)
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Builder(
+                                      builder: (context) {
+                                        final l =
+                                            AppLocalizations.of(context)!;
+                                        return Text(
+                                          l.chatForwarded,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall
+                                              ?.copyWith(
+                                                fontStyle: FontStyle.italic,
+                                                color: isOwnMessage
+                                                    ? Colors.white
+                                                        .withValues(alpha: 0.7)
+                                                    : Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurfaceVariant,
+                                              ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+
                             // Message content
                             _buildMessageContent(context),
                           ],
