@@ -19,6 +19,19 @@ class SelfChatException implements Exception {
   String toString() => message;
 }
 
+/// 🔥 NEW: Result of `POST /chats/<id>/transaction/` (Task 13 — seller
+/// reserve/sold/available). `status` is the resulting listing status
+/// ('reserved'/'sold'/'available'), derived from the request `action` since
+/// the backend's success payload doesn't echo it back directly (it returns
+/// `is_reserved`/`is_sold` flags instead). `unchanged` mirrors the backend's
+/// idempotency guard (`{'status': 'unchanged'}` when the product is already
+/// in the target state — no new system messages were created).
+class TransactionResult {
+  final String status;
+  final bool unchanged;
+  const TransactionResult({required this.status, required this.unchanged});
+}
+
 class ChatApiService {
   static const String apiBaseUrl = baseUrl;
 
@@ -212,6 +225,45 @@ class ChatApiService {
       } else {
         throw Exception(
             'Failed to start chat from listing: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Seller reserve/sold/available action (Task 13). `action` is one
+  // of 'reserve' | 'sold' | 'available' — mirrors `RoomTransactionView.ACTIONS`.
+  Future<TransactionResult> updateTransactionStatus(
+      int chatId, String action) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/$chatId/transaction/'),
+        headers: headers,
+        body: json.encode({'action': action}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final unchanged = data is Map && data['status'] == 'unchanged';
+        // Mirrors `RoomTransactionView.post`'s
+        // `listing_status = 'reserved' if action == 'reserve' else action`.
+        final newStatus = action == 'reserve' ? 'reserved' : action;
+        return TransactionResult(status: newStatus, unchanged: unchanged);
+      } else if (response.statusCode == 403) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final message =
+            data is Map ? data['error']?.toString() : null;
+        throw Exception(
+            message ?? 'Only the seller can update this listing status');
+      } else if (response.statusCode == 400) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final message = data is Map ? data['error']?.toString() : null;
+        throw Exception(message ?? 'Cannot update this listing status');
+      } else {
+        throw Exception(
+            'Failed to update transaction status: ${response.statusCode}');
       }
     } catch (e) {
       rethrow;

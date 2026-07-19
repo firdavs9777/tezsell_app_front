@@ -939,6 +939,17 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           )
         : null;
 
+    // 🔥 NEW: Task 13 — apply any local listing-status override (from the
+    // transaction API response / `transaction_updated` WS event) on top of
+    // the listing summary `widget.chatRoom` was constructed with, so the
+    // pinned card's status chip re-renders without a full room refetch.
+    final baseListing = widget.chatRoom.listing;
+    final listingStatusOverride =
+        chatState.listingStatusOverrides[widget.chatRoom.id];
+    final effectiveListing = baseListing != null && listingStatusOverride != null
+        ? baseListing.copyWith(status: listingStatusOverride)
+        : baseListing;
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
@@ -972,6 +983,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             error: error,
             isBlocked: isBlocked,
             otherUser: otherUser,
+            effectiveListing: effectiveListing,
           ),
         ),
       ),
@@ -986,6 +998,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     required String? error,
     required bool isBlocked,
     required dynamic otherUser,
+    required ChatListing? effectiveListing,
   }) {
     return Column(
       children: [
@@ -994,8 +1007,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
         // 🔥 NEW: Pinned listing summary card (only when the room is
         // anchored to a product/service/property listing)
-        if (widget.chatRoom.listing != null)
-          ListingCard(listing: widget.chatRoom.listing!),
+        if (effectiveListing != null) ListingCard(listing: effectiveListing),
 
         // Blocked user banner
         if (isBlocked && otherUser != null)
@@ -1054,6 +1066,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             onAudioTap: _toggleAudioPlayback,
                             onMessageLongPress: _showMessageOptions,
                             onReplyTap: _scrollToMessage,
+                            listingSellerId: effectiveListing?.sellerId,
                             onMessageSwipeReply: (message) {
                               if (mounted && !_isDisposed) {
                                 setState(() {

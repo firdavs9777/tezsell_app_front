@@ -36,6 +36,19 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
           )
         : null;
 
+    // 🔥 NEW: Task 13 — seller reserve/sold/available menu, product rooms
+    // only. Status reflects any local override applied from the transaction
+    // API response / `transaction_updated` WS event ahead of a full refetch.
+    final listing = chatRoom.listing;
+    final listingStatusOverride = chatState.listingStatusOverrides[chatRoom.id];
+    final effectiveListingStatus =
+        listingStatusOverride ?? listing?.status ?? 'available';
+    final isSellerProductRoom = listing != null &&
+        listing.type == 'product' &&
+        currentUserId != null &&
+        listing.sellerId != null &&
+        currentUserId == listing.sellerId;
+
     return AppBar(
       titleSpacing: 0,
       title: InkWell(
@@ -182,6 +195,64 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
+              // 🔥 NEW: Task 13 — seller-only reserve/sold/available actions,
+              // items depend on the listing's current status.
+              if (isSellerProductRoom) ...[
+                if (effectiveListingStatus == 'available') ...[
+                  PopupMenuItem(
+                    value: 'reserve',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bookmark_add_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l?.chatReserve ?? 'Reserve'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'sold',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.sell_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l?.chatMarkSold ?? 'Mark as sold'),
+                      ],
+                    ),
+                  ),
+                ] else if (effectiveListingStatus == 'reserved') ...[
+                  PopupMenuItem(
+                    value: 'sold',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.sell_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l?.chatMarkSold ?? 'Mark as sold'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'available',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.restore_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l?.chatMarkAvailable ?? 'Back to available'),
+                      ],
+                    ),
+                  ),
+                ] else if (effectiveListingStatus == 'sold') ...[
+                  PopupMenuItem(
+                    value: 'available',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.restore_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l?.chatMarkAvailable ?? 'Back to available'),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
               PopupMenuItem(
                 value: 'delete',
                 child: Row(
@@ -206,11 +277,37 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               onBlockTap();
             } else if (value == 'profile' && otherUser != null) {
               context.push('/user/${otherUser.id}');
+            } else if (value == 'reserve' || value == 'sold' || value == 'available') {
+              _handleTransactionAction(context, ref, value);
             }
           },
         ),
       ],
     );
+  }
+
+  /// 🔥 NEW: Task 13 — seller reserve/sold/available action. The listing
+  /// status chip/menu update via [ChatNotifier.updateTransactionStatus]
+  /// (local override applied from the response) and the system message(s)
+  /// arrive over the room's existing WebSocket message stream.
+  void _handleTransactionAction(
+    BuildContext context,
+    WidgetRef ref,
+    String action,
+  ) async {
+    final success = await ref
+        .read(chatProvider.notifier)
+        .updateTransactionStatus(chatRoom.id, action);
+
+    if (!success && context.mounted) {
+      final l = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l?.something_went_wrong ?? 'Something went wrong'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
 }
 

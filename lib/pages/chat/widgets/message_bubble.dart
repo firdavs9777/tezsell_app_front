@@ -3,6 +3,7 @@ import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -21,6 +22,12 @@ class MessageBubble extends StatelessWidget {
   /// the message's `localId`.
   final Function(String)? onRetry;
 
+  /// 🔥 NEW: Task 13 — the anchored listing's seller id, used to decide
+  /// whether the current user is the buyer for a `review_cta` system
+  /// message (the CTA button is buyer-only). Null when the room has no
+  /// product listing or the seller id wasn't resolved.
+  final int? listingSellerId;
+
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
   static const int _maxCacheSize = 100;
@@ -36,10 +43,18 @@ class MessageBubble extends StatelessWidget {
     this.onReactionTap,
     this.onReplyTap,
     this.onRetry,
+    this.listingSellerId,
   });
 
   @override
   Widget build(BuildContext context) {
+    // 🔥 NEW: Task 13 — system messages (transaction reserve/sold/available,
+    // plus the sold-only review CTA) render as a centered pill, never a
+    // chat bubble, and aren't interactive (no reply/react/long-press).
+    if (message.messageType == MessageType.system) {
+      return _buildSystemMessage(context);
+    }
+
     // Show deleted message differently (Telegram style)
     if (message.isDeleted) {
       return Align(
@@ -279,6 +294,84 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
+  /// 🔥 NEW: Task 13 — centered pill for `message_type == 'system'` messages
+  /// (transaction reserve/sold/available). Text is localized client-side
+  /// from `metadata['transaction']`, falling back to the raw message content
+  /// for any system message this client doesn't recognize. When
+  /// `metadata['review_cta'] == true`, a "Leave a review" button is shown
+  /// below the pill — buyer-only (never shown to the seller themselves).
+  Widget _buildSystemMessage(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final transactionType = message.metadata['transaction'] as String?;
+    String label;
+    switch (transactionType) {
+      case 'reserve':
+        label = l.chatSysReserved;
+        break;
+      case 'sold':
+        label = l.chatSysSold;
+        break;
+      case 'available':
+        label = l.chatSysAvailable;
+        break;
+      default:
+        label = message.content ?? '';
+    }
+
+    final isReviewCta = message.metadata['review_cta'] == true;
+    final isBuyer = currentUserId != null &&
+        listingSellerId != null &&
+        currentUserId != listingSellerId;
+    final showReviewButton = isReviewCta && isBuyer;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          if (showReviewButton) ...[
+            const SizedBox(height: 8),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () {
+                final productId = message.metadata['product_id'];
+                if (productId == null) return;
+                // TODO(plan-e): route to a dedicated write-review screen
+                // once one exists — grepping the app found `submitReview`/
+                // `reviewsProvider` (lib/providers/provider_root/reviews_provider.dart)
+                // but no UI wired up to call them, so send the buyer to the
+                // product detail page for now.
+                context.push('/product/$productId');
+              },
+              child: Text(l.chatLeaveReview),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   // 🔥 NEW: Build reactions widget (Telegram-style)
   Widget _buildReactions(BuildContext context) {
     return Wrap(
@@ -481,6 +574,11 @@ class MessageBubble extends StatelessWidget {
 
       case MessageType.voice:
         return _buildVoiceMessage(context, onAudioTap);
+
+      case MessageType.system:
+        // Unreachable: `build()` returns `_buildSystemMessage` before ever
+        // reaching this switch for system messages.
+        return const SizedBox.shrink();
     }
   }
 

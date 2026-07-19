@@ -18,6 +18,11 @@ class MessageList extends ConsumerWidget {
   final Function(int)? onReplyTap; // Callback when reply preview is tapped
   final Function(ChatMessage)? onMessageSwipeReply; // Callback when message is swiped right to reply
 
+  /// 🔥 NEW: Task 13 — anchored listing's seller id, forwarded to
+  /// [MessageBubble] so it can tell whether the current user is the buyer
+  /// for a `review_cta` system message.
+  final int? listingSellerId;
+
   const MessageList({
     super.key,
     required this.scrollController,
@@ -27,6 +32,7 @@ class MessageList extends ConsumerWidget {
     required this.onMessageLongPress,
     this.onReplyTap,
     this.onMessageSwipeReply,
+    this.listingSellerId,
   });
 
   @override
@@ -64,6 +70,9 @@ class MessageList extends ConsumerWidget {
         final messageIndex = chatState.isLoadingOlderMessages ? index - 1 : index;
         final message = sortedMessages[messageIndex];
         final isOwnMessage = message.sender.id == currentUserId;
+        // 🔥 NEW: Task 13 — system messages (pill style) aren't interactive:
+        // no long-press options sheet, no swipe-to-reply.
+        final isSystemMessage = message.messageType == MessageType.system;
 
         // Determine if we should show date separator
         bool showDateSeparator = false;
@@ -77,39 +86,48 @@ class MessageList extends ConsumerWidget {
           );
         }
 
+        final bubble = MessageBubble(
+          message: message,
+          isOwnMessage: isOwnMessage,
+          currentlyPlayingMessageId: currentlyPlayingMessageId,
+          audioPlayerState: audioPlayerState,
+          onAudioTap: message.messageType == MessageType.voice
+              ? () => onAudioTap(message)
+              : null,
+          currentUserId: currentUserId,
+          onReactionTap: (emoji) {
+            ref.read(chatProvider.notifier).toggleReaction(
+              message.id!,
+              emoji,
+            );
+          },
+          onReplyTap: onReplyTap,
+          onRetry: (localId) {
+            ref.read(chatProvider.notifier).retryMessage(localId);
+          },
+          listingSellerId: listingSellerId,
+        );
+
         final messageWidget = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (showDateSeparator)
               DateSeparator(date: message.timestamp),
-            GestureDetector(
-              onLongPress: () => onMessageLongPress(message, currentUserId!),
-              child: MessageBubble(
-                message: message,
-                isOwnMessage: isOwnMessage,
-                currentlyPlayingMessageId: currentlyPlayingMessageId,
-                audioPlayerState: audioPlayerState,
-                onAudioTap: message.messageType == MessageType.voice
-                    ? () => onAudioTap(message)
-                    : null,
-                currentUserId: currentUserId,
-                onReactionTap: (emoji) {
-                  ref.read(chatProvider.notifier).toggleReaction(
-                    message.id!,
-                    emoji,
-                  );
-                },
-                onReplyTap: onReplyTap,
-                onRetry: (localId) {
-                  ref.read(chatProvider.notifier).retryMessage(localId);
-                },
+            if (isSystemMessage)
+              bubble
+            else
+              GestureDetector(
+                onLongPress: () => onMessageLongPress(message, currentUserId!),
+                child: bubble,
               ),
-            ),
           ],
         );
 
-        // Wrap in SwipeableMessage for swipe-to-reply (Telegram/WhatsApp style)
-        if (onMessageSwipeReply != null && message.id != null) {
+        // Wrap in SwipeableMessage for swipe-to-reply (Telegram/WhatsApp
+        // style) — system messages skip this, they're not repliable.
+        if (!isSystemMessage &&
+            onMessageSwipeReply != null &&
+            message.id != null) {
           return SwipeableMessage(
             key: Key('swipe_message_${message.id}'),
             onSwipeReply: () => onMessageSwipeReply!(message),

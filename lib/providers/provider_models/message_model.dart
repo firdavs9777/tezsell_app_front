@@ -156,6 +156,31 @@ class ChatListing {
       'seller_id': sellerId,
     };
   }
+
+  /// 🔥 NEW: Used to reflect a `transaction_updated` WS event / the direct
+  /// response of `RoomTransactionView` locally without waiting for a full
+  /// room refetch — only `status` is ever overridden by callers today.
+  ChatListing copyWith({
+    String? type,
+    String? id,
+    String? title,
+    String? price,
+    String? currency,
+    String? imageUrl,
+    String? status,
+    int? sellerId,
+  }) {
+    return ChatListing(
+      type: type ?? this.type,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      currency: currency ?? this.currency,
+      imageUrl: imageUrl ?? this.imageUrl,
+      status: status ?? this.status,
+      sellerId: sellerId ?? this.sellerId,
+    );
+  }
 }
 
 /// Per-user room preferences (mute/archive/pin), mirroring the backend's
@@ -485,7 +510,10 @@ class ChatRoom {
 enum MessageType {
   text,
   image,
-  voice;
+  voice,
+  // 🔥 NEW: Backend-generated messages (Task 13 — transaction reserve/sold/
+  // available), rendered as a centered pill, never a chat bubble.
+  system;
 
   String toJson() => name;
 
@@ -495,6 +523,8 @@ enum MessageType {
         return MessageType.image;
       case 'voice':
         return MessageType.voice;
+      case 'system':
+        return MessageType.system;
       case 'text':
       default:
         return MessageType.text;

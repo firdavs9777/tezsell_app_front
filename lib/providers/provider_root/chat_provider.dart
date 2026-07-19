@@ -28,7 +28,13 @@ class ChatState {
   final Map<int, User> onlineUsers; // userId -> User with online status
   final List<int> blockedUserIds; // List of blocked user IDs
   final Map<String, dynamic>? activeCall; // Current active call data
-  
+
+  // 🔥 NEW: Task 13 — local override of a room's listing status (roomId ->
+  // 'reserved'/'sold'/'available'), applied on top of `ChatRoom.listing` so
+  // the UI updates immediately from the transaction API response and/or the
+  // `transaction_updated` WS event without waiting for a full room refetch.
+  final Map<int, String> listingStatusOverrides;
+
   // 🔥 NEW: Pagination state
   final int currentPage; // Current page for messages
   final bool hasMoreMessages; // Whether there are more messages to load
@@ -53,6 +59,7 @@ class ChatState {
     this.currentPage = 1,
     this.hasMoreMessages = true,
     this.isLoadingOlderMessages = false,
+    this.listingStatusOverrides = const {},
   });
 
   ChatState copyWith({
@@ -74,6 +81,7 @@ class ChatState {
     int? currentPage,
     bool? hasMoreMessages,
     bool? isLoadingOlderMessages,
+    Map<int, String>? listingStatusOverrides,
   }) {
     return ChatState(
       chatRooms: chatRooms ?? this.chatRooms,
@@ -95,6 +103,7 @@ class ChatState {
       currentPage: currentPage ?? this.currentPage,
       hasMoreMessages: hasMoreMessages ?? this.hasMoreMessages,
       isLoadingOlderMessages: isLoadingOlderMessages ?? this.isLoadingOlderMessages,
+      listingStatusOverrides: listingStatusOverrides ?? this.listingStatusOverrides,
     );
   }
 }
@@ -947,6 +956,44 @@ class ChatNotifier extends StateNotifier<ChatState> {
     _startAckTimeout(localId, roomId, trimmedContent);
   }
 
+  // 🔥 NEW: Task 13 — seller reserve/sold/available action from the chat
+  // room app bar. Reflects the resulting status locally right away; the
+  // system message(s) + `transaction_updated` WS broadcast also arrive
+  // shortly after and are no-ops against this (same target status).
+  Future<bool> updateTransactionStatus(int chatId, String action) async {
+    if (!state.isAuthenticated) return false;
+
+    try {
+      final result = await _apiService.updateTransactionStatus(chatId, action);
+      _applyListingStatus(chatId, result.status);
+      return true;
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(error: e.toString()));
+      return false;
+    }
+  }
+
+  /// Applies a new listing status for [roomId] to both the override map
+  /// (read by `ChatRoomScreen`/`ChatAppBar` for the room currently open,
+  /// which may not be present in `chatRooms` yet) and, if present, the
+  /// matching entry in `chatRooms` (read by the chat list's listing chip).
+  void _applyListingStatus(int roomId, String status) {
+    final updatedOverrides = Map<int, String>.from(state.listingStatusOverrides);
+    updatedOverrides[roomId] = status;
+
+    final updatedRooms = state.chatRooms.map((room) {
+      if (room.id == roomId && room.listing != null) {
+        return room.copyWith(listing: room.listing!.copyWith(status: status));
+      }
+      return room;
+    }).toList();
+
+    _safeUpdateState((s) => s.copyWith(
+      listingStatusOverrides: updatedOverrides,
+      chatRooms: updatedRooms,
+    ));
+  }
+
   void sendTypingStatus(bool isTyping) {
     if (_chatRoomWS != null &&
         _chatRoomWS!.isConnected &&
@@ -1546,6 +1593,17 @@ class ChatNotifier extends StateNotifier<ChatState> {
         
       case 'connection_established':
         print('✅ [ChatProvider] Connection established');
+        break;
+
+      // 🔥 NEW: Task 13 — seller reserve/sold/available broadcast. The
+      // system message(s) themselves arrive as separate 'message' events
+      // (handled above); this just syncs the listing status chip/menu.
+      case 'transaction_updated':
+        final rawListingStatus = data['listing_status'];
+        final transactionRoomId = state.currentChatRoomId;
+        if (rawListingStatus is String && transactionRoomId != null) {
+          _applyListingStatus(transactionRoomId, rawListingStatus);
+        }
         break;
 
       // 🔥 NEW: Handle message status update (delivery/read status)
