@@ -2827,7 +2827,7 @@
   "chatUnpinChat": "Открепить чат",
   "chatTyping": "печатает…",
   "chatOnline": "в сети",
-  "chatLastSeen": "был(а) {time}",
+  "chatLastSeen": "был(а) в сети {time}",
   "chatConnecting": "Переподключение…",
   "chatSendFailed": "Не отправлено. Нажмите для повтора",
   "chatVoiceMessage": "Голосовое сообщение",

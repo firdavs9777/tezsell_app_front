@@ -4515,7 +4515,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String chatLastSeen(Object time) {
-    return 'был(а) $time';
+    return 'был(а) в сети $time';
   }
 
   @override
