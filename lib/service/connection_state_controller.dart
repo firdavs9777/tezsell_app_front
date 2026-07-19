@@ -34,8 +34,18 @@ enum ConnState {
 /// stream for UI.
 class ConnectionStateController {
   ConnectionStateController._internal() {
-    _connectivitySub =
-        Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
+    // 🔥 HOTFIX: connectivity_plus is a native plugin — after a hot restart
+    // on a binary built before the plugin was added (or on platforms where
+    // it isn't registered) every call throws MissingPluginException. Treat
+    // that as "assume network up" and rely on socket state alone rather
+    // than crashing app startup.
+    try {
+      _connectivitySub = Connectivity()
+          .onConnectivityChanged
+          .listen(_onConnectivityChanged, onError: (Object _) {});
+    } catch (_) {
+      _connectivitySub = null;
+    }
 
     // 🔥 FIX: Seed real connectivity instead of assuming online — otherwise
     // a device that's already offline at construction reports `connected`
@@ -45,6 +55,9 @@ class ConnectionStateController {
       if (_networkUp == networkUp) return;
       _networkUp = networkUp;
       _recompute();
+    }).catchError((Object _) {
+      // MissingPluginException or platform error: keep the assume-online
+      // default; the socket layer still drives ConnState transitions.
     });
 
     // 🔥 FIX: If the socket is already down at construction (e.g. app
