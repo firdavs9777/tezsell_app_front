@@ -1,4 +1,5 @@
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/utils/category_locale_utils.dart';
 import 'package:app/widgets/maps/map_view.dart';
 import 'package:app/widgets/service_rating_badge.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +29,8 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
   }
 
 
-  String getCategoryName() {
-    final locale = Localizations.localeOf(context).languageCode;
-    switch (locale) {
-      case 'uz':
-        return widget.service.category.nameUz ?? '';
-      case 'ru':
-        return widget.service.category.nameRu ?? '';
-      case 'en':
-      default:
-        return widget.service.category.nameEn ?? '';
-    }
-  }
+  String getCategoryName() =>
+      CategoryLocaleUtils.localizedName(context, widget.service.category);
 
   @override
   Widget build(BuildContext context) {

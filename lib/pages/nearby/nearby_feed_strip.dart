@@ -12,8 +12,10 @@ import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/utils/category_locale_utils.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/distance_chip.dart';
 import 'package:app/widgets/service_rating_badge.dart';
 import 'package:app/widgets/skeleton_loader.dart';
 
@@ -218,18 +220,8 @@ class _NearbyFeedCard extends StatelessWidget {
 
   final NearbyFeedItem item;
 
-  String _categoryName(BuildContext context, Services service) {
-    final locale = Localizations.localeOf(context).languageCode;
-    switch (locale) {
-      case 'uz':
-        return service.category.nameUz;
-      case 'ru':
-        return service.category.nameRu;
-      case 'en':
-      default:
-        return service.category.nameEn;
-    }
-  }
+  String _categoryName(BuildContext context, Services service) =>
+      CategoryLocaleUtils.localizedName(context, service.category);
 
   void _onTap(BuildContext context) {
     if (item.type == NearbyFeedItemType.service) {
@@ -327,7 +319,8 @@ class _NearbyFeedCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     subtitle,
-                    if (item.distanceKm != null) _DistanceChip(km: item.distanceKm!),
+                    if (item.distanceKm != null)
+                      DistanceChip(distanceKm: item.distanceKm!, pill: false),
                   ],
                 ),
               ),
@@ -339,30 +332,3 @@ class _NearbyFeedCard extends StatelessWidget {
   }
 }
 
-class _DistanceChip extends StatelessWidget {
-  const _DistanceChip({required this.km});
-
-  final double km;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final label =
-        AppLocalizations.of(context)?.distanceKm(km.toStringAsFixed(1)) ?? '${km.toStringAsFixed(1)} km';
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.location_on_rounded, size: 11, color: colorScheme.primary),
-        const SizedBox(width: 2),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10.5,
-            fontWeight: FontWeight.w500,
-            color: colorScheme.primary,
-          ),
-        ),
-      ],
-    );
-  }
-}

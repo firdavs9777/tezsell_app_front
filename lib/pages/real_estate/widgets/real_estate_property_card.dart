@@ -1,6 +1,6 @@
-import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/real_estate/real_estate_detail.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/widgets/distance_chip.dart';
 import 'package:flutter/material.dart';
 
 /// Shared property card — used by both the main browse list
@@ -167,7 +167,10 @@ class RealEstatePropertyCard extends StatelessWidget {
                         ),
                       ),
                       if (property.distanceKm != null)
-                        _buildDistanceChip(context, property.distanceKm!),
+                        DistanceChip(
+                          distanceKm: property.distanceKm!,
+                          margin: const EdgeInsets.only(left: 6),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -198,40 +201,6 @@ class RealEstatePropertyCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Small "📍 {km} km" chip shown on property cards when distance is known.
-  Widget _buildDistanceChip(BuildContext context, double distanceKm) {
-    final theme = Theme.of(context);
-    final label = AppLocalizations.of(context)
-            ?.distanceKm(distanceKm.toStringAsFixed(1)) ??
-        '${distanceKm.toStringAsFixed(1)} km';
-    return Container(
-      margin: const EdgeInsets.only(left: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.location_on_rounded,
-            color: theme.colorScheme.primary,
-            size: 12.0,
-          ),
-          const SizedBox(width: 3.0),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11.0,
-              fontWeight: FontWeight.w500,
-            ).copyWith(color: theme.colorScheme.primary),
-          ),
-        ],
       ),
     );
   }
