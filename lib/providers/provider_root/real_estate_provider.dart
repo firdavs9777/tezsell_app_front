@@ -155,14 +155,18 @@ class RealEstateService {
         queryParams['ordering'] = ordering;
       }
 
-      // Karrot geo-radius takes precedence when radius is finite.
-      // When radius=∞ (city-wide), fall back to neighborhood_id only.
-      if (centerLat != null && centerLng != null && radiusKm != null && radiusKm.isFinite) {
+      // Karrot geo-radius takes precedence when a center is known. When
+      // radius=∞ (city-wide) we still send the center with a 50km fallback —
+      // matching products/services — so `ordering=nearest` and distance_km
+      // keep working at the default radius instead of silently no-oping.
+      if (centerLat != null && centerLng != null) {
+        final effectiveRadius =
+            (radiusKm != null && radiusKm.isFinite) ? radiusKm : 50.0;
         queryParams['center_lat'] = centerLat.toStringAsFixed(6);
         queryParams['center_lng'] = centerLng.toStringAsFixed(6);
-        queryParams['radius_km'] = radiusKm.toStringAsFixed(0);
+        queryParams['radius_km'] = effectiveRadius.toStringAsFixed(0);
         if (kDebugMode) {
-          print('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${radiusKm}km');
+          print('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${effectiveRadius}km');
         }
       } else {
         if (neighborhoodId != null) {
