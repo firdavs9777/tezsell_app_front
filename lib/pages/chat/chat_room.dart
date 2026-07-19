@@ -21,6 +21,8 @@ import 'package:app/pages/chat/widgets/quick_chips.dart';
 import 'package:app/pages/chat/widgets/voice_recorder_bar.dart';
 import 'package:app/pages/chat/widgets/chat_search_bar.dart';
 import 'package:app/pages/chat/widgets/media_gallery_screen.dart';
+import 'package:app/pages/chat/widgets/quick_replies_panel.dart';
+import 'package:app/service/draft_store.dart';
 import 'package:app/widgets/connection_banner.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +103,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // 🔥 NEW: Timer for periodic read status refresh (fallback)
   Timer? _readStatusRefreshTimer;
 
+  // 🔥 NEW: Task 19 — debounced per-room draft save (SharedPreferences via
+  // DraftStore), restored into the composer on open and cleared on send.
+  Timer? _draftSaveTimer;
+
   final GlobalKey<VoiceMicButtonState> _voiceMicKey = GlobalKey();
 
   @override
@@ -143,8 +149,22 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       }
     });
 
+    // 🔥 NEW: Task 19 — restore any saved draft into the composer.
+    _restoreDraft();
+
     // 🔥 NEW: Start periodic read status refresh (fallback for WebSocket)
     _startReadStatusRefresh();
+  }
+
+  /// 🔥 NEW: Task 19 — loads the draft cache (no-op if already loaded) and,
+  /// if this room has a saved draft, puts it in the composer.
+  Future<void> _restoreDraft() async {
+    await DraftStore.instance.ensureLoaded();
+    if (!mounted) return;
+    final draft = DraftStore.instance.get(widget.chatRoom.id);
+    if (draft != null && draft.isNotEmpty) {
+      _messageController.text = draft;
+    }
   }
 
   /// 🔥 NEW: Periodic refresh of read status (every 10 seconds as fallback)
@@ -253,6 +273,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _typingTimer?.cancel();
     _readStatusRefreshTimer?.cancel();
     _highlightTimer?.cancel();
+    _draftSaveTimer?.cancel();
     _audioPlayerStateSubscription?.cancel();
     _audioPositionSubscription?.cancel();
     _scrollController.removeListener(_onScroll);
@@ -359,6 +380,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         print('📤 Calling chatProvider.sendMessage');
         ref.read(chatProvider.notifier).sendMessage(content);
       }
+      // 🔥 NEW: Task 19 — clear the persisted draft once handed off to send.
+      _draftSaveTimer?.cancel();
+      DraftStore.instance.clear(widget.chatRoom.id);
       _messageController.clear();
       _scrollToBottom();
     } else {
@@ -762,6 +786,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // Debounced typing indicator - prevents excessive WebSocket messages
   void _onTypingChanged(String text) {
     if (!mounted || _isDisposed) return;
+
+    // 🔥 NEW: Task 19 — debounced (500ms) draft save, independent of the
+    // typing-indicator debounce below.
+    _draftSaveTimer?.cancel();
+    _draftSaveTimer = Timer(const Duration(milliseconds: 500), () {
+      DraftStore.instance.set(widget.chatRoom.id, text);
+    });
 
     final isCurrentlyTyping = text.trim().isNotEmpty;
 
@@ -1488,6 +1519,22 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       _showMediaOptions = false;
                     });
                   }
+                },
+                // 🔥 NEW: Task 19 — quick-replies panel; inserts the tapped
+                // template's text into the composer without sending.
+                onQuickRepliesTap: () {
+                  if (!_isDisposed) {
+                    setState(() => _showMediaOptions = false);
+                  }
+                  showQuickRepliesPanel(
+                    context,
+                    onSelect: (text) {
+                      _messageController.text = text;
+                      _messageController.selection = TextSelection.collapsed(
+                        offset: text.length,
+                      );
+                    },
+                  );
                 },
               ),
 

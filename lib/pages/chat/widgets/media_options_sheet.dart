@@ -7,12 +7,17 @@ class MediaOptionsSheet extends StatelessWidget {
   final VoidCallback onVoiceTap;
   final VoidCallback onEmojiTap;
 
+  /// 🔥 NEW: Task 19 — opens the quick-replies panel. Null hides the option
+  /// (kept optional so existing call sites that don't wire it still compile).
+  final VoidCallback? onQuickRepliesTap;
+
   const MediaOptionsSheet({
     super.key,
     required this.onGalleryTap,
     required this.onCameraTap,
     required this.onVoiceTap,
     required this.onEmojiTap,
+    this.onQuickRepliesTap,
   });
 
   @override
@@ -62,6 +67,17 @@ class MediaOptionsSheet extends StatelessWidget {
               onTap: onEmojiTap,
             ),
           ),
+          // 🔥 NEW: Task 19 — quick replies panel entry point.
+          if (onQuickRepliesTap != null)
+            Expanded(
+              child: _buildMediaOption(
+                context: context,
+                icon: Icons.bolt,
+                label: l.chatQuickReplies,
+                color: colorScheme.primary,
+                onTap: onQuickRepliesTap!,
+              ),
+            ),
         ],
       ),
     );

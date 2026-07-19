@@ -2,6 +2,7 @@ import 'package:app/pages/chat/blocked_users_screen.dart';
 import 'package:app/pages/chat/widgets/chat_shimmer.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/service/draft_store.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/notification_bell.dart';
 import 'package:app/providers/provider_root/notification_provider.dart';
@@ -9,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:app/l10n/app_localizations.dart';
 
@@ -63,6 +65,12 @@ class _MessagesListState extends ConsumerState<MessagesList>
           _isInitialized = true;
         });
       }
+    });
+
+    // 🔥 NEW: Task 19 — populate the in-memory draft cache once so each row
+    // can read its draft synchronously; refresh the list once loaded.
+    DraftStore.instance.ensureLoaded().then((_) {
+      if (mounted) setState(() {});
     });
   }
 
@@ -121,10 +129,13 @@ class _MessagesListState extends ConsumerState<MessagesList>
       return true;
     }).toList();
 
-    // Sort: pinned first, then by last message time
+    // 🔥 FIX: Task 19 — sort by the backend-persisted `state.isPinned`
+    // (server already orders this way; this keeps client-side sort
+    // consistent after a local optimistic pin/unpin update), not the legacy
+    // client-local `isPinned` flag.
     chatRooms.sort((a, b) {
-      if (a.isPinned && !b.isPinned) return -1;
-      if (!a.isPinned && b.isPinned) return 1;
+      if (a.state.isPinned && !b.state.isPinned) return -1;
+      if (!a.state.isPinned && b.state.isPinned) return 1;
       final aTime = a.lastMessageTimestamp ?? a.createdAt ?? DateTime(2000);
       final bTime = b.lastMessageTimestamp ?? b.createdAt ?? DateTime(2000);
       return bTime.compareTo(aTime);
@@ -227,47 +238,71 @@ class _MessagesListState extends ConsumerState<MessagesList>
                   print('🔴 [ChatList] showing error state: "${chatState.error}"');
                   return _buildErrorState(ctx, chatState.error!);
                 })
-              : chatRooms.isEmpty
-                  ? _buildEmptyState(context)
-                  : Column(
-                      children: [
-                        _buildSearchField(context),
-                        Expanded(
-                          child: filteredRooms.isEmpty
-                              ? _buildNoSearchResults(context)
-                              : RefreshIndicator(
-                                  color: colorScheme.primary,
-                                  onRefresh: () async {
-                                    if (mounted) {
-                                      await ref
-                                          .read(chatProvider.notifier)
-                                          .loadChatRooms();
-                                      await ref
-                                          .read(chatProvider.notifier)
-                                          .loadBlockedUsers();
-                                    }
-                                  },
-                                  child: ListView.builder(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    itemCount: filteredRooms.length,
-                                    itemBuilder: (context, index) {
-                                      final chatRoom = filteredRooms[index];
-                                      return _buildSwipeableChatTile(
-                                        context,
-                                        chatRoom,
-                                        chatState.currentUserId!,
-                                        () {
-                                          if (mounted) {
-                                            context.push('/chat/${chatRoom.id}');
-                                          }
-                                        },
-                                      );
+              : Column(
+                  children: [
+                    _buildSearchField(context),
+                    Expanded(
+                      // 🔥 FIX: Task 19 — the Archived section must stay
+                      // reachable even when every active (non-archived) room
+                      // is gone (e.g. the user archived all of them), so the
+                      // old "chatRooms.isEmpty → full-screen empty state,
+                      // hiding everything else" branch is gone: the hero
+                      // empty message (when there's no active search) is now
+                      // just the list's first item, with the Archived
+                      // section always the last.
+                      child: (filteredRooms.isEmpty && searchQuery.isNotEmpty)
+                          ? _buildNoSearchResults(context)
+                          : RefreshIndicator(
+                              color: colorScheme.primary,
+                              onRefresh: () async {
+                                if (mounted) {
+                                  await ref
+                                      .read(chatProvider.notifier)
+                                      .loadChatRooms();
+                                  await ref
+                                      .read(chatProvider.notifier)
+                                      .loadBlockedUsers();
+                                }
+                              },
+                              child: ListView.builder(
+                                padding: const EdgeInsets.only(top: 4),
+                                // One extra trailing slot for the collapsed
+                                // "Archived" section, plus one leading slot
+                                // for the empty-state hero when there are no
+                                // active rooms at all.
+                                itemCount:
+                                    (filteredRooms.isEmpty ? 1 : filteredRooms.length) +
+                                        1,
+                                itemBuilder: (context, index) {
+                                  final archivedIndex =
+                                      filteredRooms.isEmpty ? 1 : filteredRooms.length;
+                                  if (index == archivedIndex) {
+                                    return _buildArchivedSection(
+                                      context,
+                                      chatState,
+                                      chatState.currentUserId!,
+                                    );
+                                  }
+                                  if (filteredRooms.isEmpty) {
+                                    return _buildEmptyState(context);
+                                  }
+                                  final chatRoom = filteredRooms[index];
+                                  return _buildSwipeableChatTile(
+                                    context,
+                                    chatRoom,
+                                    chatState.currentUserId!,
+                                    () {
+                                      if (mounted) {
+                                        context.push('/chat/${chatRoom.id}');
+                                      }
                                     },
-                                  ),
-                                ),
-                        ),
-                      ],
+                                  );
+                                },
+                              ),
+                            ),
                     ),
+                  ],
+                ),
     );
   }
 
@@ -319,95 +354,207 @@ class _MessagesListState extends ConsumerState<MessagesList>
     );
   }
 
+  /// 🔥 NEW: Task 19 — room management swipe actions (via
+  /// `POST /chats/<id>/state/`). Leading (swipe right): Pin/Unpin + Mute/
+  /// Unmute; trailing (swipe left): Archive (or Unarchive for rows already
+  /// in the Archived section). Delete moved to a long-press to make room for
+  /// these — see [_showDeleteConfirmation].
   Widget _buildSwipeableChatTile(
     BuildContext context,
     ChatRoom chatRoom,
     int currentUserId,
-    VoidCallback onTap,
+    VoidCallback onTap, {
+    bool isArchived = false,
+  }) {
+    final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isPinned = chatRoom.state.isPinned;
+    final isMuted = chatRoom.state.isMuted;
+
+    return Slidable(
+      key: Key('chat_${chatRoom.id}'),
+      startActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.5,
+        children: [
+          SlidableAction(
+            onPressed: (_) {
+              HapticFeedback.mediumImpact();
+              ref
+                  .read(chatProvider.notifier)
+                  .updateRoomState(chatRoom.id, isPinned: !isPinned);
+            },
+            backgroundColor: colorScheme.primary,
+            foregroundColor: Colors.white,
+            icon: isPinned ? Icons.push_pin_outlined : Icons.push_pin,
+            label: isPinned ? l.chatUnpinChat : l.chatPinChat,
+          ),
+          SlidableAction(
+            onPressed: (_) {
+              HapticFeedback.mediumImpact();
+              ref
+                  .read(chatProvider.notifier)
+                  .updateRoomState(chatRoom.id, isMuted: !isMuted);
+            },
+            backgroundColor: colorScheme.secondaryContainer,
+            foregroundColor: colorScheme.onSecondaryContainer,
+            icon: isMuted
+                ? Icons.notifications_active_outlined
+                : Icons.notifications_off_outlined,
+            label: isMuted ? l.chatUnmute : l.chatMute,
+          ),
+        ],
+      ),
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            onPressed: (_) async {
+              HapticFeedback.mediumImpact();
+              await ref
+                  .read(chatProvider.notifier)
+                  .updateRoomState(chatRoom.id, isArchived: !isArchived);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(isArchived ? l.chatUnarchive : l.chatArchive),
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            backgroundColor: colorScheme.tertiary,
+            foregroundColor: Colors.white,
+            icon: isArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
+            label: isArchived ? l.chatUnarchive : l.chatArchive,
+          ),
+        ],
+      ),
+      child: GestureDetector(
+        onLongPress: () => _showDeleteConfirmation(context, chatRoom),
+        child: ChatListTile(
+          chatRoom: chatRoom,
+          currentUserId: currentUserId,
+          onTap: onTap,
+        ),
+      ),
+    );
+  }
+
+  /// 🔥 NEW: Task 19 — delete confirmation, previously the swipe-left action;
+  /// now reached via long-press since swipe-left is Archive.
+  Future<void> _showDeleteConfirmation(
+    BuildContext context,
+    ChatRoom chatRoom,
+  ) async {
+    final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+    HapticFeedback.mediumImpact();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l.delete_chat),
+          content: Text(l.delete_chat_confirm(chatRoom.name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(
+                l.delete,
+                style: TextStyle(color: colorScheme.error),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    final success =
+        await ref.read(chatProvider.notifier).deleteChatRoom(chatRoom.id);
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l.chat_deleted(chatRoom.name)),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l.delete_failed),
+          backgroundColor: colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  /// 🔥 NEW: Task 19 — collapsed "Archived" section at the bottom of the
+  /// list; lazily fetches `?archived=1` on first expand.
+  Widget _buildArchivedSection(
+    BuildContext context,
+    ChatState chatState,
+    int currentUserId,
   ) {
     final l = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final archivedRooms = chatState.archivedChatRooms;
+    final isLoadingArchived = chatState.isLoadingArchived;
 
-    return Dismissible(
-      key: Key('chat_${chatRoom.id}'),
-      direction: DismissDirection.horizontal,
-      background: Container(
-        color: chatRoom.isPinned
-            ? colorScheme.surfaceContainerHighest
-            : colorScheme.primary,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 24),
-        child: Icon(
-          chatRoom.isPinned ? Icons.push_pin_outlined : Icons.push_pin,
-          color: chatRoom.isPinned ? colorScheme.onSurfaceVariant : Colors.white,
-          size: 24,
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        key: const PageStorageKey('chat_archived_section'),
+        leading: Icon(Icons.archive_outlined, color: colorScheme.onSurfaceVariant),
+        title: Text(
+          l.chatArchived,
+          style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
         ),
-      ),
-      secondaryBackground: Container(
-        color: colorScheme.error,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 24),
-        child: const Icon(Icons.delete_outline, color: Colors.white, size: 24),
-      ),
-      confirmDismiss: (direction) async {
-        HapticFeedback.mediumImpact();
-        if (direction == DismissDirection.startToEnd) {
-          await ref.read(chatProvider.notifier).togglePinChat(chatRoom.id);
-          return false;
-        }
-        final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) {
-            return AlertDialog(
-              title: Text(l.delete_chat),
-              content: Text(l.delete_chat_confirm(chatRoom.name)),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext, false),
-                  child: Text(l.cancel),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext, true),
-                  child: Text(
-                    l.delete,
-                    style: TextStyle(color: colorScheme.error),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-        return confirmed ?? false;
-      },
-      onDismissed: (direction) async {
-        if (mounted) {
-          final success = await ref
-              .read(chatProvider.notifier)
-              .deleteChatRoom(chatRoom.id);
-          if (mounted) {
-            if (success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l.chat_deleted(chatRoom.name)),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l.delete_failed),
-                  backgroundColor: colorScheme.error,
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
+        onExpansionChanged: (expanded) {
+          if (expanded && archivedRooms.isEmpty && !isLoadingArchived) {
+            ref.read(chatProvider.notifier).loadArchivedChatRooms();
           }
-        }
-      },
-      child: ChatListTile(
-        chatRoom: chatRoom,
-        currentUserId: currentUserId,
-        onTap: onTap,
+        },
+        children: [
+          if (isLoadingArchived && archivedRooms.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (archivedRooms.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  l.chatNoResults,
+                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                ),
+              ),
+            )
+          else
+            ...archivedRooms.map(
+              (room) => _buildSwipeableChatTile(
+                context,
+                room,
+                currentUserId,
+                () {
+                  if (mounted) context.push('/chat/${room.id}');
+                },
+                isArchived: true,
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -547,11 +694,19 @@ class ChatListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasUnread = chatRoom.unreadCount > 0;
+    // 🔥 FIX: Task 19 — a muted room's badge is visually suppressed here
+    // (the server already gates push for muted rooms); `hasUnread` still
+    // drives the pinned-first sort's tie-break elsewhere, unaffected.
+    final isMuted = chatRoom.state.isMuted;
+    final hasUnread = chatRoom.unreadCount > 0 && !isMuted;
     final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+
+    // 🔥 NEW: Task 19 — read once from the in-memory draft cache (populated
+    // by `DraftStore.ensureLoaded()` on chat-list build) — no per-row async read.
+    final draft = DraftStore.instance.get(chatRoom.id);
 
     final displayName = chatRoom.name.isNotEmpty ? chatRoom.name : l.unknown;
     final avatarLetter = displayName[0].toUpperCase();
@@ -567,7 +722,7 @@ class ChatListTile extends StatelessWidget {
     }
 
     return Material(
-      color: chatRoom.isPinned
+      color: chatRoom.state.isPinned
           ? (isDark ? colorScheme.surfaceContainerHigh : colorScheme.surfaceContainerLowest)
           : colorScheme.surface,
       child: InkWell(
@@ -599,11 +754,20 @@ class ChatListTile extends StatelessWidget {
                     // Top row: name + time
                     Row(
                       children: [
-                        if (chatRoom.isPinned) ...[
+                        if (chatRoom.state.isPinned) ...[
                           Icon(
                             Icons.push_pin,
                             size: 13,
                             color: colorScheme.primary,
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                        // 🔥 NEW: Task 19 — muted indicator.
+                        if (isMuted) ...[
+                          Icon(
+                            Icons.notifications_off,
+                            size: 13,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 4),
                         ],
@@ -647,20 +811,34 @@ class ChatListTile extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            chatRoom.lastMessagePreview?.isEmpty ?? true
-                                ? l.no_messages_yet
-                                : chatRoom.lastMessagePreview!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: hasUnread
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurfaceVariant,
-                              fontWeight: hasUnread ? FontWeight.w500 : FontWeight.w400,
-                              height: 1.3,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          // 🔥 NEW: Task 19 — a saved draft takes priority
+                          // over the last message preview, shown as a red
+                          // "Draft: <snippet>" line (Telegram/Karrot-style).
+                          child: draft != null && draft.isNotEmpty
+                              ? Text(
+                                  '${l.chatDraft}: $draft',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.error,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              : Text(
+                                  chatRoom.lastMessagePreview?.isEmpty ?? true
+                                      ? l.no_messages_yet
+                                      : chatRoom.lastMessagePreview!,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: hasUnread
+                                        ? colorScheme.onSurface
+                                        : colorScheme.onSurfaceVariant,
+                                    fontWeight: hasUnread ? FontWeight.w500 : FontWeight.w400,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                         ),
                         if (hasUnread) ...[
                           const SizedBox(width: 8),

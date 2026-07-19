@@ -32,6 +32,17 @@ class TransactionResult {
   const TransactionResult({required this.status, required this.unchanged});
 }
 
+/// 🔥 NEW: Task 19 — thrown by [ChatApiService.addQuickReply] when the
+/// backend's 20-template cap is hit (400). Callers surface [message]
+/// directly via a snackbar.
+class QuickReplyCapException implements Exception {
+  final String message;
+  QuickReplyCapException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 class ChatApiService {
   static const String apiBaseUrl = baseUrl;
 
@@ -936,6 +947,135 @@ class ChatApiService {
         return json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       } else {
         throw Exception(_extractErrorDetail(response, 'Failed to search messages'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 19 — mute/archive/pin a room via `POST /chats/<id>/state/`.
+  // Accepts any subset of the four fields (only non-null ones are sent) and
+  // returns the resulting effective `RoomState`.
+  Future<RoomState> updateRoomState(
+    int chatId, {
+    bool? isMuted,
+    DateTime? mutedUntil,
+    bool? isArchived,
+    bool? isPinned,
+  }) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+      final body = <String, dynamic>{
+        if (isMuted != null) 'is_muted': isMuted,
+        if (mutedUntil != null) 'muted_until': mutedUntil.toUtc().toIso8601String(),
+        if (isArchived != null) 'is_archived': isArchived,
+        if (isPinned != null) 'is_pinned': isPinned,
+      };
+
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/$chatId/state/'),
+        headers: headers,
+        body: json.encode(body),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return RoomState.fromJson(
+          data is Map ? Map<String, dynamic>.from(data) : null,
+        );
+      } else {
+        throw Exception(_extractErrorDetail(response, 'Failed to update chat state'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 19 — archived rooms only, via `GET /chats/?archived=1`
+  // (the default fetch excludes them). Used to lazily populate the chat
+  // list's collapsed "Archived" section on first expand.
+  Future<List<ChatRoom>> getArchivedChatRooms() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/chats/?archived=1'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final results = data['results'] as List;
+        return results.map((json) => ChatRoom.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load archived chats: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 19 — the current user's saved quick-reply templates.
+  Future<List<QuickReply>> getQuickReplies() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/chats/quick-replies/'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final list = data is List ? data : (data is Map ? (data['results'] as List? ?? []) : []);
+        return list
+            .map((e) => QuickReply.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList();
+      } else {
+        throw Exception('Failed to load quick replies: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 19 — adds a quick-reply template. Throws
+  // [QuickReplyCapException] when the backend's 20-template cap (400) is hit.
+  Future<QuickReply> addQuickReply(String text, {int order = 0}) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/quick-replies/'),
+        headers: headers,
+        body: json.encode({'text': text, 'order': order}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return QuickReply.fromJson(Map<String, dynamic>.from(data as Map));
+      } else if (response.statusCode == 400) {
+        throw QuickReplyCapException(
+          _extractErrorDetail(response, 'Cannot add quick reply'),
+        );
+      } else {
+        throw Exception('Failed to add quick reply: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 19 — deletes a quick-reply template.
+  Future<void> deleteQuickReply(int id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        Uri.parse('$apiBaseUrl/chats/quick-replies/$id/'),
+        headers: headers,
+      );
+
+      if (response.statusCode != 204 && response.statusCode != 200) {
+        throw Exception('Failed to delete quick reply: ${response.statusCode}');
       }
     } catch (e) {
       rethrow;

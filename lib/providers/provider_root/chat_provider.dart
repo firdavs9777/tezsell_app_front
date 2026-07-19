@@ -40,6 +40,12 @@ class ChatState {
   final bool hasMoreMessages; // Whether there are more messages to load
   final bool isLoadingOlderMessages; // Loading older messages flag
 
+  // 🔥 NEW: Task 19 — room management (mute/archive/pin) + quick replies
+  final List<ChatRoom> archivedChatRooms;
+  final bool isLoadingArchived;
+  final List<QuickReply> quickReplies;
+  final bool isLoadingQuickReplies;
+
   ChatState({
     this.chatRooms = const [],
     this.messages = const [],
@@ -60,6 +66,10 @@ class ChatState {
     this.hasMoreMessages = true,
     this.isLoadingOlderMessages = false,
     this.listingStatusOverrides = const {},
+    this.archivedChatRooms = const [],
+    this.isLoadingArchived = false,
+    this.quickReplies = const [],
+    this.isLoadingQuickReplies = false,
   });
 
   ChatState copyWith({
@@ -82,6 +92,10 @@ class ChatState {
     bool? hasMoreMessages,
     bool? isLoadingOlderMessages,
     Map<int, String>? listingStatusOverrides,
+    List<ChatRoom>? archivedChatRooms,
+    bool? isLoadingArchived,
+    List<QuickReply>? quickReplies,
+    bool? isLoadingQuickReplies,
   }) {
     return ChatState(
       chatRooms: chatRooms ?? this.chatRooms,
@@ -104,6 +118,10 @@ class ChatState {
       hasMoreMessages: hasMoreMessages ?? this.hasMoreMessages,
       isLoadingOlderMessages: isLoadingOlderMessages ?? this.isLoadingOlderMessages,
       listingStatusOverrides: listingStatusOverrides ?? this.listingStatusOverrides,
+      archivedChatRooms: archivedChatRooms ?? this.archivedChatRooms,
+      isLoadingArchived: isLoadingArchived ?? this.isLoadingArchived,
+      quickReplies: quickReplies ?? this.quickReplies,
+      isLoadingQuickReplies: isLoadingQuickReplies ?? this.isLoadingQuickReplies,
     );
   }
 }
@@ -385,35 +403,17 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       final chatRooms = await _apiService.getChatRooms();
 
-      // Apply local pin state
-      final prefs = await SharedPreferences.getInstance();
-      final pinnedIds = prefs.getStringList('pinned_chats') ?? [];
-      final roomsWithPins = chatRooms.map((room) {
-        if (pinnedIds.contains(room.id.toString())) {
-          return ChatRoom(
-            id: room.id,
-            name: room.name,
-            createdAt: room.createdAt,
-            updatedAt: room.updatedAt,
-            participants: room.participants,
-            lastMessagePreview: room.lastMessagePreview,
-            lastMessageTimestamp: room.lastMessageTimestamp,
-            unreadCount: room.unreadCount,
-            isGroup: room.isGroup,
-            isPinned: true,
-          );
-        }
-        return room;
-      }).toList();
-
       // 🔥 DEBUG: Log unread counts from API
-      for (var room in roomsWithPins) {
+      for (var room in chatRooms) {
         print('📬 [ChatProvider] Room ${room.id} (${room.name}): unread_count=${room.unreadCount}');
       }
 
       _safeUpdateState((s) => s.copyWith(
         isLoading: false,
-        chatRooms: roomsWithPins,
+        // 🔥 NEW: Task 19 — the backend-persisted `state.isPinned` (server
+        // already orders pinned-first) supersedes the legacy client-local
+        // `pinned_chats` SharedPreferences flag; no local pin overlay needed.
+        chatRooms: chatRooms,
         // Fresh server data supersedes any local transaction-status
         // overrides — clear them so a stale override can't shadow the
         // listing status the backend just returned.
@@ -465,37 +465,173 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
-  /// Toggle pin state for a chat room (stored locally)
-  Future<void> togglePinChat(int chatId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final pinnedIds = prefs.getStringList('pinned_chats') ?? [];
-
-    if (pinnedIds.contains(chatId.toString())) {
-      pinnedIds.remove(chatId.toString());
-    } else {
-      pinnedIds.add(chatId.toString());
+  /// 🔥 NEW: Task 19 — finds [chatId] in either the main or archived room
+  /// list (a room only ever lives in one of the two at a time).
+  ChatRoom? _findRoomAnywhere(int chatId) {
+    for (final r in state.chatRooms) {
+      if (r.id == chatId) return r;
     }
-    await prefs.setStringList('pinned_chats', pinnedIds);
+    for (final r in state.archivedChatRooms) {
+      if (r.id == chatId) return r;
+    }
+    return null;
+  }
 
-    final updatedRooms = state.chatRooms.map((room) {
-      if (room.id == chatId) {
-        return ChatRoom(
-          id: room.id,
-          name: room.name,
-          createdAt: room.createdAt,
-          updatedAt: room.updatedAt,
-          participants: room.participants,
-          lastMessagePreview: room.lastMessagePreview,
-          lastMessageTimestamp: room.lastMessageTimestamp,
-          unreadCount: room.unreadCount,
-          isGroup: room.isGroup,
-          isPinned: !room.isPinned,
-        );
+  /// 🔥 NEW: Task 19 — writes [updatedRoom] into whichever of
+  /// `chatRooms`/`archivedChatRooms` matches its `state.isArchived`, removing
+  /// it from the other list. Mirrors the server's default-fetch behavior
+  /// (excludes archived) so a room moves between the two lists exactly when
+  /// its archived flag flips, without a full reload.
+  void _applyRoomStateLocally(ChatRoom updatedRoom) {
+    final chatId = updatedRoom.id;
+    final nowArchived = updatedRoom.state.isArchived;
+
+    final newMain = List<ChatRoom>.from(state.chatRooms);
+    final newArchived = List<ChatRoom>.from(state.archivedChatRooms);
+
+    if (nowArchived) {
+      newMain.removeWhere((r) => r.id == chatId);
+      final idx = newArchived.indexWhere((r) => r.id == chatId);
+      if (idx != -1) {
+        newArchived[idx] = updatedRoom;
+      } else {
+        newArchived.insert(0, updatedRoom);
       }
-      return room;
-    }).toList();
+    } else {
+      newArchived.removeWhere((r) => r.id == chatId);
+      final idx = newMain.indexWhere((r) => r.id == chatId);
+      if (idx != -1) {
+        newMain[idx] = updatedRoom;
+      } else {
+        newMain.insert(0, updatedRoom);
+      }
+    }
 
-    _safeUpdateState((s) => s.copyWith(chatRooms: updatedRooms));
+    _safeUpdateState((s) => s.copyWith(chatRooms: newMain, archivedChatRooms: newArchived));
+  }
+
+  /// 🔥 NEW: Task 19 — mute/archive/pin a room via `POST /chats/<id>/state/`.
+  /// Applies an optimistic update to local state first (so swipe actions in
+  /// the list feel instant), then reconciles with the server's authoritative
+  /// `RoomState`; reverts to the pre-call snapshot on failure. Archiving
+  /// moves the room out of `chatRooms` into `archivedChatRooms` (mirroring
+  /// the server's default-fetch exclusion) and unarchiving does the reverse.
+  Future<bool> updateRoomState(
+    int chatId, {
+    bool? isMuted,
+    DateTime? mutedUntil,
+    bool? isArchived,
+    bool? isPinned,
+  }) async {
+    if (!state.isAuthenticated) return false;
+
+    final existingRoom = _findRoomAnywhere(chatId);
+    if (existingRoom == null) return false;
+
+    final originalChatRooms = state.chatRooms;
+    final originalArchivedRooms = state.archivedChatRooms;
+
+    final optimisticState = RoomState(
+      isMuted: isMuted ?? existingRoom.state.isMuted,
+      mutedUntil: (isMuted == false) ? null : (mutedUntil ?? existingRoom.state.mutedUntil),
+      isArchived: isArchived ?? existingRoom.state.isArchived,
+      isPinned: isPinned ?? existingRoom.state.isPinned,
+    );
+    _applyRoomStateLocally(existingRoom.copyWith(state: optimisticState));
+
+    try {
+      final serverState = await _apiService.updateRoomState(
+        chatId,
+        isMuted: isMuted,
+        mutedUntil: mutedUntil,
+        isArchived: isArchived,
+        isPinned: isPinned,
+      );
+      _applyRoomStateLocally(existingRoom.copyWith(state: serverState));
+      return true;
+    } catch (e) {
+      // Revert to the pre-call snapshot — the optimistic update above never
+      // touched anything outside these two lists.
+      _safeUpdateState((s) => s.copyWith(
+        chatRooms: originalChatRooms,
+        archivedChatRooms: originalArchivedRooms,
+        error: 'Failed to update chat: $e',
+      ));
+      return false;
+    }
+  }
+
+  /// 🔥 NEW: Task 19 — lazily fetches the archived room list
+  /// (`GET /chats/?archived=1`) for the chat list's collapsed "Archived"
+  /// section, on first expand.
+  Future<void> loadArchivedChatRooms() async {
+    if (!state.isAuthenticated) return;
+
+    try {
+      _safeUpdateState((s) => s.copyWith(isLoadingArchived: true));
+      final rooms = await _apiService.getArchivedChatRooms();
+      _safeUpdateState((s) => s.copyWith(isLoadingArchived: false, archivedChatRooms: rooms));
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(
+        isLoadingArchived: false,
+        error: 'Failed to load archived chats: $e',
+      ));
+    }
+  }
+
+  /// 🔥 NEW: Task 19 — loads the current user's saved quick-reply templates.
+  Future<void> loadQuickReplies() async {
+    if (!state.isAuthenticated) return;
+
+    try {
+      _safeUpdateState((s) => s.copyWith(isLoadingQuickReplies: true));
+      final replies = await _apiService.getQuickReplies();
+      _safeUpdateState((s) => s.copyWith(isLoadingQuickReplies: false, quickReplies: replies));
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(
+        isLoadingQuickReplies: false,
+        error: 'Failed to load quick replies: $e',
+      ));
+    }
+  }
+
+  /// 🔥 NEW: Task 19 — adds a quick-reply template. Returns `null` on
+  /// success, or a user-facing error message (e.g. the backend's 20-template
+  /// cap) the caller shows via a snackbar instead of the persistent error banner.
+  Future<String?> addQuickReply(String text) async {
+    if (!state.isAuthenticated) return 'Not authenticated';
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return null;
+
+    try {
+      final nextOrder = state.quickReplies.length;
+      final created = await _apiService.addQuickReply(trimmed, order: nextOrder);
+      _safeUpdateState((s) => s.copyWith(quickReplies: [...s.quickReplies, created]));
+      return null;
+    } on QuickReplyCapException catch (e) {
+      return e.message;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /// 🔥 NEW: Task 19 — deletes a quick-reply template (optimistic, reverted
+  /// on failure).
+  Future<bool> deleteQuickReply(int id) async {
+    if (!state.isAuthenticated) return false;
+
+    final original = state.quickReplies;
+    _safeUpdateState(
+      (s) => s.copyWith(quickReplies: original.where((q) => q.id != id).toList()),
+    );
+
+    try {
+      await _apiService.deleteQuickReply(id);
+      return true;
+    } catch (e) {
+      _safeUpdateState((s) => s.copyWith(quickReplies: original));
+      return false;
+    }
   }
 
   Future<bool> deleteChatRoom(int chatId) async {
@@ -565,20 +701,11 @@ class ChatNotifier extends StateNotifier<ChatState> {
       await loadChatMessages(roomId);
       
       // 🔥 NEW: Reset unread_count when opening a chat room (mark as read)
+      // 🔥 FIX: Task 19 — use copyWith so `listing`/`state` (mute/archive/pin)
+      // survive this update instead of resetting to defaults.
       final updatedRooms = state.chatRooms.map((room) {
         if (room.id == roomId) {
-          return ChatRoom(
-            id: room.id,
-            name: room.name,
-            createdAt: room.createdAt,
-            updatedAt: room.updatedAt,
-            participants: room.participants,
-            lastMessagePreview: room.lastMessagePreview,
-            lastMessageTimestamp: room.lastMessageTimestamp,
-            unreadCount: 0, // Reset unread count when viewing
-            isGroup: room.isGroup,
-            isPinned: room.isPinned,
-          );
+          return room.copyWith(unreadCount: 0); // Reset unread count when viewing
         }
         return room;
       }).toList();
@@ -1129,18 +1256,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 }).toList();
                 
                 // Update room with full participants
-                final updatedRoom = ChatRoom(
-                  id: room.id,
-                  name: room.name,
-                  createdAt: room.createdAt,
-                  updatedAt: room.updatedAt,
-                  participants: fullParticipants,
-                  lastMessagePreview: room.lastMessagePreview,
-                  lastMessageTimestamp: room.lastMessageTimestamp,
-                  unreadCount: room.unreadCount,
-                  isGroup: room.isGroup,
-                  isPinned: room.isPinned,
-                );
+                // 🔥 FIX: Task 19 — copyWith preserves `listing`/`state`
+                // (mute/archive/pin) already parsed by ChatRoom.fromJson.
+                final updatedRoom = room.copyWith(participants: fullParticipants);
                 chatRooms.add(updatedRoom);
               } else {
                 chatRooms.add(room);
@@ -1222,19 +1340,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
         final shouldIncrementUnread = isFromOtherUser &&
             (currentRoomId == null || currentRoomId != room.id);
 
-        return ChatRoom(
-          id: room.id,
-          name: room.name,
-          createdAt: room.createdAt,
-          updatedAt: room.updatedAt,
-          participants: room.participants,
+        // 🔥 FIX: Task 19 — copyWith preserves `listing`/`state`
+        // (mute/archive/pin) instead of resetting them to defaults.
+        return room.copyWith(
           lastMessagePreview: newPreview,
           lastMessageTimestamp: message.timestamp,
           unreadCount: shouldIncrementUnread
               ? room.unreadCount + 1
               : room.unreadCount,
-          isGroup: room.isGroup,
-          isPinned: room.isPinned,
         );
       }
       return room;
@@ -1522,18 +1635,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 return p;
               }).toList();
               
-              return ChatRoom(
-                id: room.id,
-                name: room.name,
-                createdAt: room.createdAt,
-                updatedAt: room.updatedAt,
-                participants: updatedParticipants,
-                lastMessagePreview: room.lastMessagePreview,
-                lastMessageTimestamp: room.lastMessageTimestamp,
-                unreadCount: room.unreadCount,
-                isGroup: room.isGroup,
-                isPinned: room.isPinned,
-              );
+              // 🔥 FIX: Task 19 — copyWith preserves `listing`/`state`
+              // (mute/archive/pin) instead of resetting them to defaults.
+              return room.copyWith(participants: updatedParticipants);
             }).toList();
 
             _safeUpdateState((s) => s.copyWith(
@@ -1678,19 +1782,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 final isFromOtherUser = senderId != state.currentUserId;
                 final shouldIncrementUnread = !isCurrentlyViewing && isFromOtherUser;
 
-                return ChatRoom(
-                  id: room.id,
-                  name: room.name,
-                  createdAt: room.createdAt,
-                  updatedAt: room.updatedAt,
-                  participants: room.participants,
+                // 🔥 FIX: Task 19 — copyWith preserves `listing`/`state`
+                // (mute/archive/pin) instead of resetting them to defaults.
+                return room.copyWith(
                   lastMessagePreview: messagePreview ?? room.lastMessagePreview,
                   lastMessageTimestamp: timestamp ?? room.lastMessageTimestamp,
                   unreadCount: unreadCountFromServer ?? (shouldIncrementUnread
                       ? room.unreadCount + 1
                       : room.unreadCount),
-                  isGroup: room.isGroup,
-                  isPinned: room.isPinned,
                 );
               }
               return room;

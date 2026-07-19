@@ -222,6 +222,27 @@ class RoomState {
   }
 }
 
+/// 🔥 NEW: Task 19 — a user's saved quick-reply template, mirroring
+/// `GET/POST /chats/quick-replies/` (`{id, text, order}`). Tapping one in the
+/// quick-replies panel inserts `text` into the composer without sending.
+class QuickReply {
+  final int id;
+  final String text;
+  final int order;
+
+  const QuickReply({required this.id, required this.text, this.order = 0});
+
+  factory QuickReply.fromJson(Map<String, dynamic> json) {
+    return QuickReply(
+      id: json['id'] as int,
+      text: json['text'] as String? ?? '',
+      order: json['order'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'id': id, 'text': text, 'order': order};
+}
+
 class ChatRoom {
   final int id;
   final String name;

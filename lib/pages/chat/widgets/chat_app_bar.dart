@@ -29,6 +29,23 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
     this.onMediaGalleryTap,
   });
 
+  /// 🔥 NEW: Task 19 — simple mute toggle (no duration picker in v1).
+  void _handleMuteToggle(BuildContext context, WidgetRef ref, bool wasMuted) async {
+    final success = await ref
+        .read(chatProvider.notifier)
+        .updateRoomState(chatRoom.id, isMuted: !wasMuted);
+
+    if (!success && context.mounted) {
+      final l = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l?.something_went_wrong ?? 'Something went wrong'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -57,6 +74,18 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
         currentUserId != null &&
         listing.sellerId != null &&
         currentUserId == listing.sellerId;
+
+    // 🔥 NEW: Task 19 — `widget.chatRoom` is a snapshot from navigation time;
+    // once mute is toggled, the live room (updated in the provider) is the
+    // source of truth, so look it up there first and fall back to the
+    // snapshot's state if the room isn't in either list yet.
+    final liveRoom = chatState.chatRooms
+            .cast<ChatRoom?>()
+            .firstWhere((r) => r?.id == chatRoom.id, orElse: () => null) ??
+        chatState.archivedChatRooms
+            .cast<ChatRoom?>()
+            .firstWhere((r) => r?.id == chatRoom.id, orElse: () => null);
+    final effectiveIsMuted = (liveRoom ?? chatRoom).state.isMuted;
 
     return AppBar(
       titleSpacing: 0,
@@ -203,6 +232,26 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
+              // 🔥 NEW: Task 19 — simple mute/unmute toggle (no duration
+              // picker in v1); reflects the live `RoomState` from the
+              // provider once toggled.
+              PopupMenuItem(
+                value: 'mute',
+                child: Row(
+                  children: [
+                    Icon(
+                      effectiveIsMuted
+                          ? Icons.notifications_off_outlined
+                          : Icons.notifications_none_outlined,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(effectiveIsMuted
+                        ? (l?.chatUnmute ?? 'Unmute')
+                        : (l?.chatMute ?? 'Mute')),
+                  ],
+                ),
+              ),
               // Block user option (for direct chats)
               if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty)
                 PopupMenuItem(
@@ -310,6 +359,8 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               _handleTransactionAction(context, ref, value);
             } else if (value == 'media_gallery') {
               onMediaGalleryTap?.call();
+            } else if (value == 'mute') {
+              _handleMuteToggle(context, ref, effectiveIsMuted);
             }
           },
         ),
