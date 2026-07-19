@@ -414,6 +414,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(
         isLoading: false,
         chatRooms: roomsWithPins,
+        // Fresh server data supersedes any local transaction-status
+        // overrides — clear them so a stale override can't shadow the
+        // listing status the backend just returned.
+        listingStatusOverrides: const {},
       ));
 
       // 🔥 NEW: Also request list refresh via WebSocket to ensure sync
