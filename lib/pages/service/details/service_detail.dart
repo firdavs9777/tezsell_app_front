@@ -12,6 +12,7 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/comments_providers.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/service_provider.dart';
+import 'package:app/service/chat_api_service.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/image_utils.dart';
@@ -232,19 +233,36 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     );
 
     try {
-      final chatRoom = await ref
-          .read(chatProvider.notifier)
-          .getOrCreateDirectChat(targetUserId);
+      // 🔥 NEW: Listing-anchored chat — start/fetch the room tied to this
+      // service rather than a bare user-to-user chat (the old
+      // getOrCreateDirectChat endpoint is now staff-only on the backend).
+      final chatRoom = await ChatApiService().startFromListing(
+        listingType: 'service',
+        listingId: widget.service.id,
+      );
 
       if (mounted) Navigator.of(context).pop();
 
-      if (chatRoom != null && mounted) {
+      if (mounted) {
         await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChatRoomScreen(chatRoom: chatRoom)),
         );
-      } else {
-        throw Exception('Failed to create chat room');
+      }
+    } on SelfChatException {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations?.chatSelfChatError ?? "You can't chat about your own listing"),
+            backgroundColor: Colors.orange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
       }
     } catch (e) {
       if (mounted && Navigator.canPop(context)) {
@@ -427,6 +445,10 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final service = _serviceData ?? widget.service;
+    // 🔥 NEW: Hide the "Chat" button on the provider's own listing
+    final currentUserId = ref.watch(chatProvider).currentUserId;
+    final isOwnListing =
+        currentUserId != null && currentUserId == widget.service.userName.id;
 
     final List<String> imageUrls = service.images.isNotEmpty
         ? service.images.map((image) => ImageUtils.buildImageUrl(image.image)).toList()
@@ -492,7 +514,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomWidget(service),
+      bottomNavigationBar: _buildBottomWidget(service, isOwnListing),
     );
   }
 
@@ -690,7 +712,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     );
   }
 
-  Widget _buildBottomWidget(Services service) {
+  Widget _buildBottomWidget(Services service, bool isOwnListing) {
     if (isEditingComment) {
       return EditCommentWidget(
         commentText: editingCommentText,
@@ -710,6 +732,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
       return ServiceDetailCarrotBottomBar(
         isLiked: _isLiked ?? false,
         isLiking: _isLiking,
+        isOwnListing: isOwnListing,
         onToggleLike: _toggleLike,
         onStartChat: _startChat,
       );

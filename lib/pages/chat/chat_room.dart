@@ -12,6 +12,8 @@ import 'package:app/pages/chat/widgets/empty_message_state.dart';
 import 'package:app/pages/chat/widgets/media_options_sheet.dart';
 import 'package:app/pages/chat/widgets/message_options_sheet.dart';
 import 'package:app/pages/chat/widgets/reaction_picker.dart';
+import 'package:app/pages/chat/widgets/listing_card.dart';
+import 'package:app/pages/chat/widgets/quick_chips.dart';
 import 'package:app/widgets/connection_banner.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -308,6 +310,28 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     } else {
       print('❌ Message not sent: content empty or not mounted');
     }
+  }
+
+  /// 🔥 NEW: Quick chips only make sense on listing-anchored rooms, for the
+  /// buyer (not the seller), and only before the conversation has really
+  /// gotten going (fewer than 2 messages sent by the current user so far).
+  bool _shouldShowQuickChips(int? currentUserId, List<ChatMessage> messages) {
+    final listing = widget.chatRoom.listing;
+    if (listing == null || currentUserId == null) return false;
+    if (listing.sellerId != null && currentUserId == listing.sellerId) {
+      return false;
+    }
+    final ownMessageCount =
+        messages.where((m) => m.sender.id == currentUserId).length;
+    return ownMessageCount < 2;
+  }
+
+  /// 🔥 NEW: Sends a quick-reply chip's text via the normal send path (same
+  /// as typing it and hitting send) — reuses `_sendMessage` so reply/edit
+  /// state, scrolling, etc. all behave identically.
+  void _sendQuickReply(String text) {
+    _messageController.text = text;
+    _sendMessage();
   }
 
   void _showMessageOptions(ChatMessage message, int currentUserId) {
@@ -968,6 +992,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         // 🔥 NEW: Reconnect banner (shown after 3s continuous non-connected)
         const ConnectionBanner(),
 
+        // 🔥 NEW: Pinned listing summary card (only when the room is
+        // anchored to a product/service/property listing)
+        if (widget.chatRoom.listing != null)
+          ListingCard(listing: widget.chatRoom.listing!),
+
         // Blocked user banner
         if (isBlocked && otherUser != null)
           BlockedUserBanner(
@@ -1057,6 +1086,14 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                   ],
                 ),
         ),
+
+        // 🔥 NEW: Quick-reply chips — listing rooms only, hidden for the
+        // seller themselves and once the buyer has already sent 2+ messages
+        if (!isBlocked && _shouldShowQuickChips(currentUserId, messages))
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: QuickChips(onChipTap: _sendQuickReply),
+          ),
 
         // Message input
         _buildMessageInput(),

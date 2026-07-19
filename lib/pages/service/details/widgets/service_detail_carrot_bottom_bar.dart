@@ -8,12 +8,15 @@ class ServiceDetailCarrotBottomBar extends StatelessWidget {
     required this.isLiking,
     required this.onToggleLike,
     required this.onStartChat,
+    this.isOwnListing = false,
   });
 
   final bool isLiked;
   final bool isLiking;
   final VoidCallback onToggleLike;
   final VoidCallback onStartChat;
+  // 🔥 NEW: Hides the "Chat" button when viewing your own listing
+  final bool isOwnListing;
 
   @override
   Widget build(BuildContext context) {
@@ -82,28 +85,30 @@ class ServiceDetailCarrotBottomBar extends StatelessWidget {
                       ),
                 ),
               ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 48,
-                child: FilledButton(
-                  onPressed: onStartChat,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6F0F),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              if (!isOwnListing) ...[
+                const SizedBox(width: 12),
+                SizedBox(
+                  height: 48,
+                  child: FilledButton(
+                    onPressed: onStartChat,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF6F0F),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                  ),
-                  child: Text(
-                    localizations?.chat ?? 'Chat',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                    child: Text(
+                      '\u{1F4AC} ${localizations?.chatWithSeller ?? 'Chat with seller'}',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

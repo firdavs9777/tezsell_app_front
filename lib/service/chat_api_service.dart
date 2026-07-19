@@ -7,6 +7,18 @@ import 'dart:io';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
+/// 🔥 NEW: Thrown by [ChatApiService.startFromListing] when the backend
+/// returns 400 — in practice this is the requester trying to chat about
+/// their own listing (`ChatSelfChatError` guard in `chat/views.py`), so
+/// callers should surface `l.chatSelfChatError` for it.
+class SelfChatException implements Exception {
+  final String message;
+  SelfChatException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 class ChatApiService {
   static const String apiBaseUrl = baseUrl;
 
@@ -147,6 +159,49 @@ class ChatApiService {
       }
     } catch (e) {
 
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Listing-anchored chat (Karrot-style "Chat with seller") — starts
+  // or fetches the existing room anchored to a product/service/property
+  // listing via `POST /chats/start-from-listing/`.
+  //
+  // `listingId` is `dynamic` because product/service ids are ints while
+  // property ids are UUID strings; the backend's `_resolve_listing` coerces
+  // via `int(listing_id)` for product/service and `str(listing_id)` for
+  // property, so either representation the caller already has on hand
+  // (int or String) is forwarded as-is.
+  Future<ChatRoom> startFromListing({
+    required String listingType,
+    required dynamic listingId,
+  }) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/start-from-listing/'),
+        headers: headers,
+        body: json.encode({
+          'listing_type': listingType,
+          'listing_id': listingId,
+        }),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return ChatRoom.fromJson(data['room'] as Map<String, dynamic>);
+      } else if (response.statusCode == 400) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final detail = data is Map ? data['detail']?.toString() : null;
+        throw SelfChatException(detail ?? 'Cannot start this chat');
+      } else if (response.statusCode == 401) {
+        throw Exception('Authentication failed');
+      } else {
+        throw Exception(
+            'Failed to start chat from listing: ${response.statusCode}');
+      }
+    } catch (e) {
       rethrow;
     }
   }

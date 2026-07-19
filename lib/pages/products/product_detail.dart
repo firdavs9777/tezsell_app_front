@@ -4,6 +4,7 @@ import 'package:app/pages/products/main_products.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/service/chat_api_service.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
@@ -223,19 +224,37 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     );
 
     try {
-      final chatRoom = await ref
-          .read(chatProvider.notifier)
-          .getOrCreateDirectChat(targetUserId);
+      // 🔥 NEW: Listing-anchored chat — start/fetch the room tied to this
+      // product rather than a bare user-to-user chat (the old
+      // getOrCreateDirectChat endpoint is now staff-only on the backend).
+      final chatRoom = await ChatApiService().startFromListing(
+        listingType: 'product',
+        listingId: widget.product.id,
+      );
 
       if (mounted) Navigator.of(context).pop();
 
-      if (chatRoom != null && mounted) {
+      if (mounted) {
         await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChatRoomScreen(chatRoom: chatRoom)),
         );
-      } else {
-        throw Exception('Failed to create chat room');
+      }
+    } on SelfChatException {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+      if (mounted) {
+        final snackColorScheme = Theme.of(context).colorScheme;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations?.chatSelfChatError ?? "You can't chat about your own listing"),
+            backgroundColor: snackColorScheme.tertiary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
       }
     } catch (e) {
       if (mounted && Navigator.canPop(context)) {
@@ -304,6 +323,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    // 🔥 NEW: Hide the "Chat with seller" button on the seller's own listing
+    final currentUserId = ref.watch(chatProvider).currentUserId;
+    final isOwnListing =
+        currentUserId != null && currentUserId == widget.product.userName.id;
 
     final List<String> imageUrls = widget.product.images.isNotEmpty
         ? widget.product.images
@@ -360,7 +383,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           ),
         ],
       ),
-      bottomNavigationBar: _buildCarrotBottomBar(),
+      bottomNavigationBar: _buildCarrotBottomBar(isOwnListing: isOwnListing),
     );
   }
 
@@ -804,7 +827,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
   }
 
   // Carrot-style bottom bar
-  Widget _buildCarrotBottomBar() {
+  Widget _buildCarrotBottomBar({required bool isOwnListing}) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
@@ -883,28 +906,30 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              // Chat button (Carrot style - orange)
-              SizedBox(
-                height: 48,
-                child: FilledButton(
-                  onPressed: _startChat,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6F0F), // Carrot orange
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              // Chat button (Carrot style - orange) — hidden on your own listing
+              if (!isOwnListing) ...[
+                const SizedBox(width: 12),
+                SizedBox(
+                  height: 48,
+                  child: FilledButton(
+                    onPressed: _startChat,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF6F0F), // Carrot orange
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                  ),
-                  child: Text(
-                    localizations?.chat ?? 'Chat',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: Colors.white,
+                    child: Text(
+                      '\u{1F4AC} ${localizations?.chatWithSeller ?? 'Chat with seller'}',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

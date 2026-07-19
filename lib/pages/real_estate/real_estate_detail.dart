@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/service/chat_api_service.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/real_estate/property_inquiry_dialog.dart';
 import 'package:app/pages/chat/chat_room.dart' show ChatRoomScreen;
@@ -389,19 +390,36 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     );
 
     try {
-      final chatRoom = await ref
-          .read(chatProvider.notifier)
-          .getOrCreateDirectChat(ownerId);
+      // 🔥 NEW: Listing-anchored chat — start/fetch the room tied to this
+      // property rather than a bare user-to-user chat (the old
+      // getOrCreateDirectChat endpoint is now staff-only on the backend).
+      final chatRoom = await ChatApiService().startFromListing(
+        listingType: 'property',
+        listingId: property!.id,
+      );
 
       if (mounted) Navigator.of(context).pop();
 
-      if (chatRoom != null && mounted) {
+      if (mounted) {
         await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ChatRoomScreen(chatRoom: chatRoom)),
         );
-      } else {
-        throw Exception('Failed to create chat room');
+      }
+    } on SelfChatException {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.chatSelfChatError),
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
       }
     } catch (e) {
       if (mounted && Navigator.canPop(context)) {
@@ -1408,6 +1426,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    // 🔥 NEW: Hide the "Contact" button on your own listing
+    final currentUserId = ref.watch(chatProvider).currentUserId;
+    final ownerId = property!.agent?.id ?? property!.owner.id;
+    final isOwnListing = currentUserId != null && currentUserId == ownerId;
 
     return Container(
       padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
@@ -1489,24 +1511,25 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ),
           ),
 
-          // Orange inquiry button
-          GestureDetector(
-            onTap: _startChatWithOwner,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              decoration: BoxDecoration(
-                color: colorScheme.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                l10n.contact_send_inquiry ?? 'Contact',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: colorScheme.onPrimary,
-                  fontWeight: FontWeight.w600,
+          // Orange "Chat with seller" button — hidden on your own listing
+          if (!isOwnListing)
+            GestureDetector(
+              onTap: _startChatWithOwner,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '\u{1F4AC} ${l10n.chatWithSeller}',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

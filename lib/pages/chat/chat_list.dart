@@ -1,8 +1,8 @@
-import 'package:app/pages/chat/user_list.dart';
 import 'package:app/pages/chat/blocked_users_screen.dart';
 import 'package:app/pages/chat/widgets/chat_shimmer.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/notification_bell.dart';
 import 'package:app/providers/provider_root/notification_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -168,17 +168,6 @@ class _MessagesListState extends ConsumerState<MessagesList>
           NotificationBell(
             provider: chatNotificationProvider,
             iconColor: null,
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit_square),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UserListScreen()),
-              );
-            },
-            tooltip: l.new_message,
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_horiz),
@@ -380,21 +369,6 @@ class _MessagesListState extends ConsumerState<MessagesList>
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 28),
-            FilledButton.icon(
-              onPressed: () {
-                if (mounted) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserListScreen(),
-                    ),
-                  );
-                }
-              },
-              icon: const Icon(Icons.add, size: 20),
-              label: Text(l.start_conversation),
-            ),
           ],
         ),
       ),
@@ -522,9 +496,11 @@ class ChatListTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              // Avatar with online indicator
-              _buildAvatar(
+              // Listing thumbnail (falls back to the user avatar when the
+              // room isn't anchored to a listing, or the listing has none)
+              _buildLeadingImage(
                 context,
+                listing: chatRoom.listing,
                 avatarLetter: avatarLetter,
                 bgColor: bgColor,
                 isOnline: otherUser?.isOnline ?? false,
@@ -571,6 +547,18 @@ class ChatListTile extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (chatRoom.listing != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        _listingSubtitle(chatRoom.listing!),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                     const SizedBox(height: 4),
                     // Bottom row: message preview + unread badge
                     Row(
@@ -629,6 +617,51 @@ class ChatListTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // 🔥 NEW: "$title · $price $currency" preview line for listing-anchored
+  // rooms, shown under the participant name.
+  String _listingSubtitle(ChatListing listing) {
+    final title = listing.title;
+    if (listing.price == null || listing.price!.isEmpty) return title;
+    final currency = listing.currency ?? '';
+    final priceLine = currency.isNotEmpty
+        ? '${listing.price} $currency'
+        : listing.price!;
+    return '$title · $priceLine';
+  }
+
+  // 🔥 NEW: Listing thumbnail when the room is anchored to a product/
+  // service/property listing with an image; falls back to the normal
+  // per-user avatar otherwise.
+  Widget _buildLeadingImage(
+    BuildContext context, {
+    required ChatListing? listing,
+    required String avatarLetter,
+    required Color bgColor,
+    required bool isOnline,
+    required bool isDark,
+    required ColorScheme colorScheme,
+  }) {
+    if (listing != null && (listing.imageUrl?.isNotEmpty ?? false)) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: CachedNetworkImageWidget(
+          imageUrl: listing.imageUrl,
+          width: 54,
+          height: 54,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+    return _buildAvatar(
+      context,
+      avatarLetter: avatarLetter,
+      bgColor: bgColor,
+      isOnline: isOnline,
+      isDark: isDark,
+      colorScheme: colorScheme,
     );
   }
 
