@@ -46,6 +46,11 @@ class _MessagesListState extends ConsumerState<MessagesList>
     with WidgetsBindingObserver {
   bool _isInitialized = false;
 
+  // 🔥 NEW: Task 18 — chat-list search (participant name OR listing title),
+  // filtered client-side over the already-loaded room list.
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +69,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -123,6 +129,22 @@ class _MessagesListState extends ConsumerState<MessagesList>
       final bTime = b.lastMessageTimestamp ?? b.createdAt ?? DateTime(2000);
       return bTime.compareTo(aTime);
     });
+
+    // 🔥 NEW: Task 18 — chat-list search, filtered client-side by
+    // participant display name OR the room's anchored listing title.
+    final searchQuery = _searchQuery.trim().toLowerCase();
+    final filteredRooms = searchQuery.isEmpty
+        ? chatRooms
+        : chatRooms.where((room) {
+            final nameMatch = room.name.toLowerCase().contains(searchQuery);
+            final participantMatch = room.participants.any((p) =>
+                p.displayName.toLowerCase().contains(searchQuery) ||
+                p.username.toLowerCase().contains(searchQuery));
+            final listingMatch =
+                room.listing?.title.toLowerCase().contains(searchQuery) ??
+                    false;
+            return nameMatch || participantMatch || listingMatch;
+          }).toList();
 
     if (!_isInitialized) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -207,32 +229,93 @@ class _MessagesListState extends ConsumerState<MessagesList>
                 })
               : chatRooms.isEmpty
                   ? _buildEmptyState(context)
-                  : RefreshIndicator(
-                      color: colorScheme.primary,
-                      onRefresh: () async {
-                        if (mounted) {
-                          await ref.read(chatProvider.notifier).loadChatRooms();
-                          await ref.read(chatProvider.notifier).loadBlockedUsers();
-                        }
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.only(top: 4),
-                        itemCount: chatRooms.length,
-                        itemBuilder: (context, index) {
-                          final chatRoom = chatRooms[index];
-                          return _buildSwipeableChatTile(
-                            context,
-                            chatRoom,
-                            chatState.currentUserId!,
-                            () {
-                              if (mounted) {
-                                context.push('/chat/${chatRoom.id}');
-                              }
-                            },
-                          );
-                        },
-                      ),
+                  : Column(
+                      children: [
+                        _buildSearchField(context),
+                        Expanded(
+                          child: filteredRooms.isEmpty
+                              ? _buildNoSearchResults(context)
+                              : RefreshIndicator(
+                                  color: colorScheme.primary,
+                                  onRefresh: () async {
+                                    if (mounted) {
+                                      await ref
+                                          .read(chatProvider.notifier)
+                                          .loadChatRooms();
+                                      await ref
+                                          .read(chatProvider.notifier)
+                                          .loadBlockedUsers();
+                                    }
+                                  },
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    itemCount: filteredRooms.length,
+                                    itemBuilder: (context, index) {
+                                      final chatRoom = filteredRooms[index];
+                                      return _buildSwipeableChatTile(
+                                        context,
+                                        chatRoom,
+                                        chatState.currentUserId!,
+                                        () {
+                                          if (mounted) {
+                                            context.push('/chat/${chatRoom.id}');
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ),
+                      ],
                     ),
+    );
+  }
+
+  /// 🔥 NEW: Task 18 — small search field above the room list; filters
+  /// client-side by participant name or the room's anchored listing title.
+  Widget _buildSearchField(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (value) => setState(() => _searchQuery = value),
+        decoration: InputDecoration(
+          hintText: l.chatSearchInChat,
+          prefixIcon: const Icon(Icons.search, size: 20),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, size: 18),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() => _searchQuery = '');
+                  },
+                )
+              : null,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          filled: true,
+          fillColor: colorScheme.surfaceContainerHighest,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoSearchResults(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Center(
+      child: Text(
+        l.chatNoResults,
+        style: TextStyle(color: colorScheme.onSurfaceVariant),
+      ),
     );
   }
 

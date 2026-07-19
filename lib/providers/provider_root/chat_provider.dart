@@ -2093,6 +2093,41 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
   }
 
+  // 🔥 NEW: Task 18 — translate [messageId]'s text content into [target]
+  // (current app locale's language code), caching the result on the message
+  // (`ChatMessage.translation`) so the bubble can render it immediately.
+  // Returns false on any failure (503 not configured / 502 provider / 400 /
+  // network) — callers show a generic `chatTranslationFailed` snackbar for
+  // all of them per the Task 18 contract.
+  Future<bool> translateMessage(int messageId, String target) async {
+    if (!state.isAuthenticated) return false;
+
+    try {
+      final translatedText =
+          await _apiService.translateMessage(messageId, target);
+      final idx = state.messages.indexWhere((m) => m.id == messageId);
+      if (idx != -1) {
+        final updated = List<ChatMessage>.from(state.messages);
+        updated[idx] = updated[idx].copyWith(translation: translatedText);
+        _safeUpdateState((s) => s.copyWith(messages: updated));
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// 🔥 NEW: Task 18 — reverts a message's bubble back to its original text
+  /// by clearing the cached translation (the "Show original" toggle, both
+  /// on the bubble itself and via the actions sheet once translated).
+  void clearMessageTranslation(int messageId) {
+    final idx = state.messages.indexWhere((m) => m.id == messageId);
+    if (idx == -1) return;
+    final updated = List<ChatMessage>.from(state.messages);
+    updated[idx] = updated[idx].copyWith(clearTranslation: true);
+    _safeUpdateState((s) => s.copyWith(messages: updated));
+  }
+
   // 🔥 NEW: Block user
   Future<bool> blockUser(int userId) async {
     if (!state.isAuthenticated) {

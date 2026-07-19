@@ -19,6 +19,8 @@ import 'package:app/pages/chat/widgets/pinned_messages_bar.dart';
 import 'package:app/pages/chat/widgets/listing_card.dart';
 import 'package:app/pages/chat/widgets/quick_chips.dart';
 import 'package:app/pages/chat/widgets/voice_recorder_bar.dart';
+import 'package:app/pages/chat/widgets/chat_search_bar.dart';
+import 'package:app/pages/chat/widgets/media_gallery_screen.dart';
 import 'package:app/widgets/connection_banner.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +83,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // quoted-reply block scrolls the list to it.
   int? _highlightedMessageId;
   Timer? _highlightTimer;
+
+  // 🔥 NEW: Task 18 — true while the inline in-room search bar replaces the
+  // normal app bar.
+  bool _isSearching = false;
 
   // Flag to track if widget is disposed
   bool _isDisposed = false;
@@ -422,8 +428,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             : null,
         // 🔥 NEW: Task 16 — Pin/Unpin + Forward. Both need a server id and
         // never apply to deleted-for-everyone messages (the sheet hides the
-        // rows whenever the callback is null). onTranslate stays omitted —
-        // Task 18 wires Translate.
+        // rows whenever the callback is null).
         onPin: message.id != null && !message.isDeleted
             ? () {
                 ref
@@ -434,8 +439,45 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         onForward: message.id != null && !message.isDeleted
             ? () => _showForwardPicker(message)
             : null,
+        // 🔥 NEW: Task 18 — Translate/Show original. Never offered for own
+        // messages (gated in the sheet itself) or messages without a server
+        // id / text content.
+        onTranslate: message.id != null &&
+                !message.isDeleted &&
+                message.messageType == MessageType.text
+            ? () => _translateMessage(message)
+            : null,
       ),
     );
+  }
+
+  /// 🔥 NEW: Task 18 — fetches (or reverts) a translation for [message] via
+  /// the actions sheet's Translate / Show original row. Target language is
+  /// the app's current locale; the 503 "not configured" / 502 provider /
+  /// 400 cases from the backend all surface the same generic
+  /// `chatTranslationFailed` snackbar per the task contract.
+  Future<void> _translateMessage(ChatMessage message) async {
+    if (message.id == null) return;
+
+    if (message.translation != null) {
+      ref.read(chatProvider.notifier).clearMessageTranslation(message.id!);
+      return;
+    }
+
+    final target = Localizations.localeOf(context).languageCode;
+    final success = await ref
+        .read(chatProvider.notifier)
+        .translateMessage(message.id!, target);
+
+    if (!success && mounted) {
+      final l = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l.chatTranslationFailed),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
   }
 
   /// 🔥 NEW: Task 16 — opens the forward destination picker for [message].
@@ -934,6 +976,15 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _handleVoiceRecordingStarted();
   }
 
+  /// 🔥 NEW: Task 18 — opens the shared media gallery (Images/Voice tabs)
+  /// for this room, built from whatever messages are already loaded.
+  void _openMediaGallery() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const MediaGalleryScreen()),
+    );
+  }
+
   void _showChatInfo() {
     final l = AppLocalizations.of(context);
     showDialog(
@@ -1130,12 +1181,24 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           }
         },
         child: Scaffold(
-          appBar: ChatAppBar(
-            chatRoom: widget.chatRoom,
-            onInfoTap: _showChatInfo,
-            onBlockTap: _handleBlockUser,
-            onDeleteTap: _showDeleteConfirmation,
-          ),
+          appBar: _isSearching
+              ? ChatSearchBar(
+                  chatId: widget.chatRoom.id,
+                  onClose: () {
+                    if (!_isDisposed) setState(() => _isSearching = false);
+                  },
+                  onNavigateToMessage: _scrollToMessage,
+                )
+              : ChatAppBar(
+                  chatRoom: widget.chatRoom,
+                  onInfoTap: _showChatInfo,
+                  onBlockTap: _handleBlockUser,
+                  onDeleteTap: _showDeleteConfirmation,
+                  onSearchTap: () {
+                    if (!_isDisposed) setState(() => _isSearching = true);
+                  },
+                  onMediaGalleryTap: _openMediaGallery,
+                ),
           backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
           body: _buildChatBody(
             chatState: chatState,

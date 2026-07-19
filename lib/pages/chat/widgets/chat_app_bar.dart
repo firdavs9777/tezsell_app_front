@@ -12,12 +12,21 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final VoidCallback onBlockTap;
   final VoidCallback onDeleteTap;
 
+  /// 🔥 NEW: Task 18 — opens the inline in-room search bar (replaces this
+  /// app bar entirely while active).
+  final VoidCallback? onSearchTap;
+
+  /// 🔥 NEW: Task 18 — opens the media gallery screen (room menu entry).
+  final VoidCallback? onMediaGalleryTap;
+
   const ChatAppBar({
     super.key,
     required this.chatRoom,
     required this.onInfoTap,
     required this.onBlockTap,
     required this.onDeleteTap,
+    this.onSearchTap,
+    this.onMediaGalleryTap,
   });
 
   @override
@@ -148,6 +157,13 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
+        // 🔥 NEW: Task 18 — in-room search icon (swaps this app bar for
+        // ChatSearchBar).
+        if (onSearchTap != null)
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: onSearchTap,
+          ),
         PopupMenuButton(
           itemBuilder: (context) {
             final l = AppLocalizations.of(context);
@@ -174,6 +190,19 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
+              // 🔥 NEW: Task 18 — media gallery (Images/Voice tabs) built
+              // from the loaded messages of this room.
+              if (onMediaGalleryTap != null)
+                PopupMenuItem(
+                  value: 'media_gallery',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.perm_media_outlined, size: 20),
+                      const SizedBox(width: 8),
+                      Text(l?.chatMediaGallery ?? 'Media'),
+                    ],
+                  ),
+                ),
               // Block user option (for direct chats)
               if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty)
                 PopupMenuItem(
@@ -279,6 +308,8 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               context.push('/user/${otherUser.id}');
             } else if (value == 'reserve' || value == 'sold' || value == 'available') {
               _handleTransactionAction(context, ref, value);
+            } else if (value == 'media_gallery') {
+              onMediaGalleryTap?.call();
             }
           },
         ),

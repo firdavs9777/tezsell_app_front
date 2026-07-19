@@ -882,6 +882,66 @@ class ChatApiService {
     }
   }
 
+  // 🔥 NEW: Task 18 — translate a message's text content into [target]
+  // (BCP-47-ish language code, e.g. 'en'/'ru'/'uz'). Backend caches per
+  // (message, target) so repeat calls are cheap. Surfaces the backend's
+  // `detail` message (503 "Translation not configured.", 502 provider
+  // failure, 400 bad target/empty/deleted/non-text) via the thrown
+  // Exception's message so callers can decide how to present it.
+  Future<String> translateMessage(int messageId, String target) async {
+    try {
+      final headers = await _getHeaders(includeCharset: true);
+
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/chats/messages/$messageId/translate/'),
+        headers: headers,
+        body: json.encode({'target': target}),
+        encoding: utf8,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        return data['translated_text'] as String;
+      } else {
+        throw Exception(_extractErrorDetail(response, 'Failed to translate message'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // 🔥 NEW: Task 18 — in-room message search via
+  // `GET /chats/<chat_id>/search/?q=`. Returns the raw decoded response
+  // ({results, query, page, page_size, total_count, has_more}) so the
+  // caller can both list matches and show the server's total count.
+  Future<Map<String, dynamic>> searchMessagesInChat(
+    int chatId,
+    String query, {
+    int page = 1,
+    int pageSize = 20,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      final uri = Uri.parse('$apiBaseUrl/chats/$chatId/search/').replace(
+        queryParameters: {
+          'q': query,
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
+        },
+      );
+
+      final response = await http.get(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        return json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      } else {
+        throw Exception(_extractErrorDetail(response, 'Failed to search messages'));
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // 🔥 NEW: Get call history
   Future<List<Map<String, dynamic>>> getCallHistory(int chatId) async {
     try {

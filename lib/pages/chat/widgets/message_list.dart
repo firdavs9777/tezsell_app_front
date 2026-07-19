@@ -138,6 +138,13 @@ class MessageList extends ConsumerWidget {
                       .toggleReaction(message.id!, '❤️');
                 }
               : null,
+          // 🔥 NEW: Task 18 — "Show original" row under a translated bubble
+          // clears the cached translation via the provider.
+          onShowOriginal: message.id != null
+              ? () => ref
+                  .read(chatProvider.notifier)
+                  .clearMessageTranslation(message.id!)
+              : null,
         );
 
         final messageWidget = Column(

@@ -3,6 +3,7 @@ import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/chat/widgets/voice_bubble.dart';
+import 'package:app/pages/chat/widgets/link_preview_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -49,6 +50,12 @@ class MessageBubble extends StatelessWidget {
   /// fading background flash so the target is easy to spot.
   final bool isHighlighted;
 
+  /// 🔥 NEW: Task 18 — tap handler for the small "Show original" row shown
+  /// under a translated text bubble (only rendered when
+  /// `message.translation != null`). Clears the cached translation so the
+  /// bubble reverts to the original text.
+  final VoidCallback? onShowOriginal;
+
   // Memoization cache for emoji detection (LRU-style with max size)
   static final Map<String, bool> _emojiCache = {};
   static const int _maxCacheSize = 100;
@@ -68,6 +75,7 @@ class MessageBubble extends StatelessWidget {
     this.listingSellerId,
     this.isHighlighted = false,
     this.onDoubleTap,
+    this.onShowOriginal,
   });
 
   @override
@@ -661,19 +669,55 @@ class MessageBubble extends StatelessWidget {
         // Check if message is mostly emoji - make it larger (Telegram style)
         final content = message.content!;
         final isEmojiMessage = _isEmojiOnly(content);
+        // 🔥 NEW: Task 18 — a cached translation (fetched via the actions
+        // sheet's Translate action) takes over the bubble's displayed text;
+        // the original is still one tap away via the "Show original" row.
+        final displayText = message.translation ?? content;
+        final firstUrl = isEmojiMessage ? null : extractFirstUrl(content);
 
-        return Text(
-          content,
-          style: isEmojiMessage
-              ? const TextStyle(fontSize: 48, height: 1.0)
-              : Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.onSurface,
-                  height: 1.4,
-                  letterSpacing: 0.1,
+        return Column(
+          crossAxisAlignment:
+              isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              displayText,
+              style: isEmojiMessage
+                  ? const TextStyle(fontSize: 48, height: 1.0)
+                  : Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: isOwnMessage ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                      height: 1.4,
+                      letterSpacing: 0.1,
+                    ),
+              textAlign: isEmojiMessage ? TextAlign.center : TextAlign.start,
+              maxLines: isEmojiMessage ? null : 50, // Limit text messages to 50 lines
+              overflow: isEmojiMessage ? null : TextOverflow.ellipsis,
+            ),
+            if (message.translation != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: GestureDetector(
+                  onTap: onShowOriginal,
+                  child: Builder(
+                    builder: (context) {
+                      final l = AppLocalizations.of(context)!;
+                      return Text(
+                        l.chatShowOriginal,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                          decoration: TextDecoration.underline,
+                          color: isOwnMessage
+                              ? Colors.white.withOpacity(0.75)
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-          textAlign: isEmojiMessage ? TextAlign.center : TextAlign.start,
-          maxLines: isEmojiMessage ? null : 50, // Limit text messages to 50 lines
-          overflow: isEmojiMessage ? null : TextOverflow.ellipsis,
+              ),
+            if (firstUrl != null) LinkPreviewCard(url: firstUrl),
+          ],
         );
 
       case MessageType.image:
