@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/community/community_labels.dart';
+import 'package:app/pages/community/widgets/poll_card.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
 import 'package:app/widgets/report_content_dialog.dart';
@@ -254,7 +255,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
   }
 }
 
-class _PostCard extends StatelessWidget {
+class _PostCard extends StatefulWidget {
   const _PostCard({
     required this.post,
     required this.categoryLabel,
@@ -275,13 +276,39 @@ class _PostCard extends StatelessWidget {
   final VoidCallback onShare;
 
   @override
+  State<_PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<_PostCard> {
+  // The feed list comes from a FutureProvider that isn't refetched on every
+  // poll vote, so this card holds its own mutable copy of the post — voting
+  // updates it locally (via the server's returned poll payload) rather than
+  // invalidating and re-fetching the whole feed.
+  late CommunityPost _post;
+
+  @override
+  void initState() {
+    super.initState();
+    _post = widget.post;
+  }
+
+  @override
+  void didUpdateWidget(covariant _PostCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.post, widget.post)) {
+      _post = widget.post;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final post = _post;
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -311,7 +338,7 @@ class _PostCard extends StatelessWidget {
                   ],
                   const SizedBox(width: 8),
                   Chip(
-                    label: Text(categoryLabel),
+                    label: Text(widget.categoryLabel),
                     visualDensity: VisualDensity.compact,
                     padding: EdgeInsets.zero,
                   ),
@@ -321,21 +348,21 @@ class _PostCard extends StatelessWidget {
                     onSelected: (value) {
                       switch (value) {
                         case 'edit':
-                          onEdit();
+                          widget.onEdit();
                           break;
                         case 'delete':
-                          onDelete();
+                          widget.onDelete();
                           break;
                         case 'report':
-                          onReport();
+                          widget.onReport();
                           break;
                         case 'share':
-                          onShare();
+                          widget.onShare();
                           break;
                       }
                     },
                     itemBuilder: (context) => [
-                      if (isOwn) ...[
+                      if (widget.isOwn) ...[
                         PopupMenuItem(value: 'edit', child: Text(l?.chatEdit ?? 'Edit')),
                         PopupMenuItem(value: 'delete', child: Text(l?.chatDelete ?? 'Delete')),
                       ] else
@@ -354,6 +381,13 @@ class _PostCard extends StatelessWidget {
                   child: Image.network(post.imageUrls.first, height: 140, width: double.infinity, fit: BoxFit.cover),
                 ),
               ],
+              if (post.poll != null)
+                PollCard(
+                  postId: post.id,
+                  poll: post.poll!,
+                  compact: true,
+                  onVoted: (updated) => setState(() => _post = _post.copyWith(poll: updated)),
+                ),
               const SizedBox(height: 8),
               Row(children: [
                 Icon(post.isLiked ? Icons.favorite : Icons.favorite_border, size: 15, color: theme.colorScheme.primary),

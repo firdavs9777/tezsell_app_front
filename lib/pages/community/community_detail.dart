@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/community/community_labels.dart';
+import 'package:app/pages/community/widgets/poll_card.dart';
 import 'package:app/providers/provider_models/community_comment_model.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
@@ -477,6 +478,12 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
             ),
           ),
         ],
+        if (post.poll != null)
+          PollCard(
+            postId: post.id,
+            poll: post.poll!,
+            onVoted: (updated) => setState(() => _post = post.copyWith(poll: updated)),
+          ),
         const SizedBox(height: 8),
         Row(
           children: [

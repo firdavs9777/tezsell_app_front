@@ -1,3 +1,82 @@
+/// One option within a [CommunityPoll], with its current vote tally.
+///
+/// `percent` is served pre-computed by the backend (as an int, may sum to
+/// <100 across options due to rounding) — rendered as given, never
+/// renormalized client-side.
+class CommunityPollOption {
+  final int id;
+  final String text;
+  final int voteCount;
+  final int percent;
+
+  const CommunityPollOption({
+    required this.id,
+    required this.text,
+    required this.voteCount,
+    required this.percent,
+  });
+
+  factory CommunityPollOption.fromJson(Map<String, dynamic> json) {
+    return CommunityPollOption(
+      id: json['id'] as int,
+      text: json['text'] as String? ?? '',
+      voteCount: json['vote_count'] as int? ?? 0,
+      percent: json['percent'] as int? ?? 0,
+    );
+  }
+
+  CommunityPollOption copyWith({int? voteCount, int? percent}) {
+    return CommunityPollOption(
+      id: id,
+      text: text,
+      voteCount: voteCount ?? this.voteCount,
+      percent: percent ?? this.percent,
+    );
+  }
+}
+
+/// A poll attached to a [CommunityPost]. `myOptionId` is null when the
+/// signed-in user hasn't voted yet; voting (or revoting, which simply
+/// changes the option) always returns a full, fresh [CommunityPoll].
+class CommunityPoll {
+  final String question;
+  final int totalVotes;
+  final int? myOptionId;
+  final List<CommunityPollOption> options;
+
+  const CommunityPoll({
+    required this.question,
+    required this.totalVotes,
+    required this.myOptionId,
+    required this.options,
+  });
+
+  factory CommunityPoll.fromJson(Map<String, dynamic> json) {
+    final options = (json['options'] as List?) ?? const [];
+    return CommunityPoll(
+      question: json['question'] as String? ?? '',
+      totalVotes: json['total_votes'] as int? ?? 0,
+      myOptionId: json['my_option_id'] as int?,
+      options: options
+          .map((e) => CommunityPollOption.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  CommunityPoll copyWith({
+    int? totalVotes,
+    int? myOptionId,
+    List<CommunityPollOption>? options,
+  }) {
+    return CommunityPoll(
+      question: question,
+      totalVotes: totalVotes ?? this.totalVotes,
+      myOptionId: myOptionId ?? this.myOptionId,
+      options: options ?? this.options,
+    );
+  }
+}
+
 class CommunityPost {
   final int id;
   final String category;
@@ -13,9 +92,9 @@ class CommunityPost {
   final int viewCount;
   final bool isEdited;
 
-  /// Raw poll payload (question/options/votes shape TBD) — parsed as-is for
-  /// now; Task C9 builds the typed poll model + voting UI on top of this.
-  final Map<String, dynamic>? poll;
+  /// The post's poll, if any — question, per-option tallies/percents, and
+  /// the signed-in user's current vote (`null` when they haven't voted).
+  final CommunityPoll? poll;
 
   CommunityPost({
     required this.id,
@@ -55,7 +134,9 @@ class CommunityPost {
           DateTime.now(),
       viewCount: json['view_count'] as int? ?? 0,
       isEdited: json['is_edited'] as bool? ?? false,
-      poll: json['poll'] as Map<String, dynamic>?,
+      poll: json['poll'] != null
+          ? CommunityPoll.fromJson(json['poll'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -67,7 +148,7 @@ class CommunityPost {
     int? commentCount,
     int? viewCount,
     bool? isEdited,
-    Map<String, dynamic>? poll,
+    CommunityPoll? poll,
   }) {
     return CommunityPost(
       id: id,

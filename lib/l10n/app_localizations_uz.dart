@@ -4410,6 +4410,11 @@ class AppLocalizationsUz extends AppLocalizations {
   String get communityPollValidation => 'Savol va 2-5 variant kiriting';
 
   @override
+  String communityPollVotes(int n) {
+    return '$n ta ovoz';
+  }
+
+  @override
   String get communityMaxImages => 'Ko\'pi bilan 5 ta rasm';
 
   @override

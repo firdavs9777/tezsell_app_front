@@ -8338,6 +8338,12 @@ abstract class AppLocalizations {
   /// **'Add a question and 2-5 options'**
   String get communityPollValidation;
 
+  /// Total vote count footer on a poll card
+  ///
+  /// In en, this message translates to:
+  /// **'{n} votes'**
+  String communityPollVotes(int n);
+
   /// Snackbar/hint message about the maximum number of photos allowed
   ///
   /// In en, this message translates to:

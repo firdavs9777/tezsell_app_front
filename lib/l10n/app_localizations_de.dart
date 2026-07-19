@@ -4457,6 +4457,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get communityPollValidation => 'Add a question and 2-5 options';
 
   @override
+  String communityPollVotes(int n) {
+    return '$n votes';
+  }
+
+  @override
   String get communityMaxImages => 'Up to 5 photos';
 
   @override

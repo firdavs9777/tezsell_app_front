@@ -3195,6 +3195,8 @@
   "@communityAddOption": {"description": "Button label to add another poll option"},
   "communityPollValidation": "Add a question and 2-5 options",
   "@communityPollValidation": {"description": "Inline validation error when the poll fields are incomplete"},
+  "communityPollVotes": "{n} votes",
+  "@communityPollVotes": {"description": "Total vote count footer on a poll card", "placeholders": {"n": {"type": "int"}}},
   "communityMaxImages": "Up to 5 photos",
   "@communityMaxImages": {"description": "Snackbar/hint message about the maximum number of photos allowed"},
   "communitySearchHint": "Search posts…",

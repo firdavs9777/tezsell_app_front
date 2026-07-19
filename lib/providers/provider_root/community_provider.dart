@@ -139,6 +139,24 @@ class CommunityProvider {
     throw Exception('Failed to load post (${resp.statusCode})');
   }
 
+  /// Casts (or changes) the signed-in user's vote on a post's poll, and
+  /// returns the fresh poll payload (question/options/percents/my_option_id)
+  /// so the caller can reconcile its optimistic local state.
+  Future<CommunityPoll> votePoll(int postId, int optionId) async {
+    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/poll/vote/');
+    final headers = await _authHeaders();
+    headers['Content-Type'] = 'application/json';
+    final resp = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode({'option_id': optionId}),
+    );
+    if (resp.statusCode == 200) {
+      return CommunityPoll.fromJson(json.decode(resp.body) as Map<String, dynamic>);
+    }
+    throw Exception('Failed to vote (${resp.statusCode})');
+  }
+
   Future<Map<String, dynamic>> toggleLike(int postId) async {
     final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/like/');
     final resp = await http.post(uri, headers: await _authHeaders());

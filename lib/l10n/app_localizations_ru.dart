@@ -4388,6 +4388,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get communityPollValidation => 'Добавьте вопрос и 2-5 вариантов';
 
   @override
+  String communityPollVotes(int n) {
+    return '$n голосов';
+  }
+
+  @override
   String get communityMaxImages => 'До 5 фото';
 
   @override

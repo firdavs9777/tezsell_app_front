@@ -44,14 +44,95 @@ void main() {
       'is_edited': true,
       'poll': {
         'question': 'Best day?',
-        'options': ['Saturday', 'Sunday'],
+        'total_votes': 3,
+        'my_option_id': 101,
+        'options': [
+          {'id': 101, 'text': 'Saturday', 'vote_count': 2, 'percent': 66},
+          {'id': 102, 'text': 'Sunday', 'vote_count': 1, 'percent': 33},
+        ],
       },
     };
     final post = CommunityPost.fromJson(json);
     expect(post.viewCount, 42);
     expect(post.isEdited, true);
     expect(post.poll, isNotNull);
-    expect(post.poll!['question'], 'Best day?');
+    expect(post.poll!.question, 'Best day?');
+    expect(post.poll!.totalVotes, 3);
+    expect(post.poll!.myOptionId, 101);
+    expect(post.poll!.options, hasLength(2));
+    expect(post.poll!.options[0].id, 101);
+    expect(post.poll!.options[0].text, 'Saturday');
+    expect(post.poll!.options[0].voteCount, 2);
+    expect(post.poll!.options[0].percent, 66);
+    expect(post.poll!.options[1].percent, 33);
+  });
+
+  test('CommunityPost.fromJson parses a poll with no votes yet (my_option_id null)', () {
+    final json = {
+      'id': 9,
+      'category': 'general',
+      'body': 'Pick a day',
+      'author': {'id': 4, 'username': 'bek'},
+      'region_name': 'Tashkent',
+      'images': [],
+      'like_count': 0,
+      'comment_count': 0,
+      'is_liked': false,
+      'created_at': '2026-07-19T10:00:00Z',
+      'poll': {
+        'question': 'Best day?',
+        'total_votes': 0,
+        'my_option_id': null,
+        'options': [
+          {'id': 201, 'text': 'Saturday', 'vote_count': 0, 'percent': 0},
+          {'id': 202, 'text': 'Sunday', 'vote_count': 0, 'percent': 0},
+        ],
+      },
+    };
+    final post = CommunityPost.fromJson(json);
+    expect(post.poll!.myOptionId, isNull);
+    expect(post.poll!.totalVotes, 0);
+  });
+
+  test('CommunityPost.copyWith swaps in a fresh poll', () {
+    const oldPoll = CommunityPoll(
+      question: 'Best day?',
+      totalVotes: 1,
+      myOptionId: 101,
+      options: [
+        CommunityPollOption(id: 101, text: 'Saturday', voteCount: 1, percent: 100),
+        CommunityPollOption(id: 102, text: 'Sunday', voteCount: 0, percent: 0),
+      ],
+    );
+    const newPoll = CommunityPoll(
+      question: 'Best day?',
+      totalVotes: 2,
+      myOptionId: 102,
+      options: [
+        CommunityPollOption(id: 101, text: 'Saturday', voteCount: 1, percent: 50),
+        CommunityPollOption(id: 102, text: 'Sunday', voteCount: 1, percent: 50),
+      ],
+    );
+    final original = CommunityPost(
+      id: 1,
+      category: 'general',
+      body: 'Pick a day',
+      authorId: 4,
+      authorName: 'bek',
+      regionName: 'Tashkent',
+      imageUrls: const [],
+      likeCount: 0,
+      commentCount: 0,
+      isLiked: false,
+      createdAt: DateTime.parse('2026-07-19T10:00:00Z'),
+      poll: oldPoll,
+    );
+
+    final updated = original.copyWith(poll: newPoll);
+
+    expect(updated.poll!.myOptionId, 102);
+    expect(updated.poll!.totalVotes, 2);
+    expect(updated.poll!.options[1].voteCount, 1);
   });
 
   test('CommunityPost.copyWith overrides only the given fields', () {

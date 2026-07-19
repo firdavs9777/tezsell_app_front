@@ -2782,6 +2782,7 @@
   "communityPollOption": "Вариант {n}",
   "communityAddOption": "Добавить вариант",
   "communityPollValidation": "Добавьте вопрос и 2-5 вариантов",
+  "communityPollVotes": "{n} голосов",
   "communityMaxImages": "До 5 фото",
   "communitySearchHint": "Поиск постов…",
   "errorGeneric": "Что-то пошло не так",
