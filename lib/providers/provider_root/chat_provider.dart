@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:app/providers/provider_models/message_model.dart';
+import 'package:app/models/notification_model.dart';
+import 'package:app/providers/provider_root/notification_provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/chat_api_service.dart';
@@ -128,7 +132,9 @@ class ChatState {
 
 // Chat Notifier
 class ChatNotifier extends StateNotifier<ChatState> {
-  ChatNotifier() : super(ChatState()) {
+  final Ref _ref;
+
+  ChatNotifier(this._ref) : super(ChatState()) {
     // 🔥 NEW: Drain the offline outbox whenever the chat socket comes back up.
     _connStateSubscription =
         ConnectionStateController.instance.stream.listen((connState) {
@@ -136,6 +142,65 @@ class ChatNotifier extends StateNotifier<ChatState> {
         _drainOutbox();
       }
     });
+
+    // 🔥 NEW: Keep the conversation LIST live. The chat-list socket only
+    // pushes full `chatroom_list` snapshots, so a message landing in a room
+    // you're not currently inside never moved the list. The notification
+    // socket already delivers those events live (that's what updates the
+    // bell), so we piggy-back on it to bump the matching room's preview,
+    // unread count and order in real time.
+    _subscribeToChatNotifications();
+  }
+
+  /// Live subscription to the shared notification socket, used only to keep
+  /// the chat-room list fresh (see constructor note).
+  StreamSubscription<NotificationModel>? _notificationSub;
+
+  void _subscribeToChatNotifications() {
+    try {
+      final service = _ref.read(notificationWebSocketServiceProvider);
+      _notificationSub =
+          service.notificationStream.listen(_onIncomingChatNotification);
+    } catch (e) {
+      if (kDebugMode) {
+        print('[ChatProvider] Could not subscribe to notifications: $e');
+      }
+    }
+  }
+
+  void _onIncomingChatNotification(NotificationModel n) {
+    if (n.type != 'chat' || n.objectId == null) return;
+    final roomId = n.objectId!;
+
+    final idx = state.chatRooms.indexWhere((r) => r.id == roomId);
+    if (idx == -1) {
+      // A conversation we don't have in the list yet (brand-new thread) —
+      // pull a fresh snapshot rather than guessing its shape.
+      loadChatRooms();
+      return;
+    }
+
+    // The notification body is "Username: message"; strip the sender prefix
+    // for a clean list preview.
+    var preview = n.body;
+    final uname = n.senderUsername;
+    if (uname != null && uname.isNotEmpty && preview.startsWith('$uname: ')) {
+      preview = preview.substring(uname.length + 2);
+    }
+
+    // Don't bump unread for the room the user is actively viewing — the room
+    // socket already handles read state there.
+    final isViewing = state.currentChatRoomId == roomId;
+
+    final rooms = List<ChatRoom>.from(state.chatRooms);
+    final room = rooms.removeAt(idx);
+    final updated = room.copyWith(
+      lastMessagePreview: preview.isNotEmpty ? preview : room.lastMessagePreview,
+      lastMessageTimestamp: n.createdAt,
+      unreadCount: isViewing ? room.unreadCount : room.unreadCount + 1,
+    );
+    rooms.insert(0, updated); // bump to top
+    _safeUpdateState((s) => s.copyWith(chatRooms: rooms));
   }
 
   final ChatApiService _apiService = ChatApiService();
@@ -153,16 +218,42 @@ class ChatNotifier extends StateNotifier<ChatState> {
   /// (backgrounded app, flaky connection, etc.).
   final Map<int, Timer> _typingSafetyTimers = {};
 
-  // 🔥 FIX: Safe state update that handles disposed widgets
+  // 🔥 FIX: Safe state update that handles disposed widgets.
+  //
+  // Also guards against "Tried to modify a provider while the widget tree was
+  // building": if a widget's build path synchronously reaches a notifier
+  // mutation (so `state =` would run mid-frame), Riverpod throws. We detect
+  // the build/layout phase and defer the write to just after the frame —
+  // preserving order, never crashing. In debug we log the offending caller's
+  // stack once so the true build-phase trigger can still be tracked down.
   void _safeUpdateState(ChatState Function(ChatState) updateFn) {
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    final midFrame = phase == SchedulerPhase.persistentCallbacks ||
+        phase == SchedulerPhase.midFrameMicrotasks;
+    if (midFrame) {
+      assert(() {
+        debugPrint(
+          '⚠️ [ChatProvider] state write reached during $phase — deferring to '
+          'post-frame. Build-phase caller:\n${StackTrace.current}',
+        );
+        return true;
+      }());
+      SchedulerBinding.instance.addPostFrameCallback((_) => _applyStateUpdate(updateFn));
+      return;
+    }
+    _applyStateUpdate(updateFn);
+  }
+
+  void _applyStateUpdate(ChatState Function(ChatState) updateFn) {
+    if (!mounted) return; // notifier disposed between schedule and apply
     try {
       state = updateFn(state);
     } catch (e) {
       // Ignore assertion errors when widgets are disposed
       // This happens when WebSocket updates arrive after widget disposal
       final errorStr = e.toString().toLowerCase();
-      if (e is AssertionError && 
-          (errorStr.contains('defunct') || 
+      if (e is AssertionError &&
+          (errorStr.contains('defunct') ||
            errorStr.contains('_lifecyclestate') ||
            errorStr.contains('markneedsbuild'))) {
         // Silently ignore - widget is disposed, no need to update
@@ -2470,6 +2561,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
     _chatListSubscription?.cancel();
     _chatRoomSubscription?.cancel();
     _connStateSubscription?.cancel();
+    _notificationSub?.cancel();
     for (final timer in _ackTimeouts.values) {
       timer.cancel();
     }
@@ -2486,7 +2578,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
 // Provider
 final chatProvider = StateNotifierProvider<ChatNotifier, ChatState>((ref) {
-  return ChatNotifier();
+  return ChatNotifier(ref);
 });
 
 // Helper providers for specific states

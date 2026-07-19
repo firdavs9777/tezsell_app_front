@@ -53,7 +53,12 @@ class MessageOptionsSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
-        child: Column(
+        // 🔥 FIX: The sheet's content (quick-react row + optional preview +
+        // up to ~6 option rows) can exceed the modal's max height on smaller
+        // screens or when every option is present, overflowing the Column.
+        // Let it scroll instead of clipping.
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drag handle
@@ -224,6 +229,7 @@ class MessageOptionsSheet extends StatelessWidget {
             
             const SizedBox(height: 8),
           ],
+          ),
         ),
       ),
     );

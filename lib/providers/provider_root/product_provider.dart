@@ -570,6 +570,38 @@ class ProductsService {
   }
 
   // Optimized product creation with better error handling
+  /// Builds a multipart image part whose filename extension AND content-type
+  /// match the file's ACTUAL bytes. The backend validates that the declared
+  /// extension matches the real format and rejects e.g. a `.jpg` name on PNG
+  /// data — which is exactly what happened when we hardcoded `.jpg`.
+  Future<MultipartFile> _buildImagePart(File file, String baseName) async {
+    final bytes = await file.readAsBytes();
+    String ext = 'jpg';
+    String sub = 'jpeg';
+    if (bytes.length >= 8 &&
+        bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
+      ext = 'png'; sub = 'png';
+    } else if (bytes.length >= 3 &&
+        bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
+      ext = 'jpg'; sub = 'jpeg';
+    } else if (bytes.length >= 6 &&
+        bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46) {
+      ext = 'gif'; sub = 'gif';
+    } else if (bytes.length >= 12 &&
+        bytes[0] == 0x52 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x46 &&
+        bytes[8] == 0x57 && bytes[9] == 0x45 && bytes[10] == 0x42 && bytes[11] == 0x50) {
+      ext = 'webp'; sub = 'webp';
+    } else if (bytes.length >= 12 &&
+        bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70) {
+      ext = 'heic'; sub = 'heic'; // ftyp box → HEIF/HEIC family
+    }
+    return MultipartFile.fromBytes(
+      bytes,
+      filename: '$baseName.$ext',
+      contentType: DioMediaType('image', sub),
+    );
+  }
+
   Future<Products> createProduct({
     required String title,
     required String description,
@@ -638,12 +670,21 @@ class ProductsService {
         locationId = userLocation != null ? int.tryParse(userLocation) : null;
       }
 
-      if (locationId == null || locationId == 0) {
+      // The legacy District `location_id` is optional on the backend
+      // (null=True, and location_id/userAddress_id are required=False in the
+      // serializer). Products are placed by the Karrot-style geo fields
+      // (latitude/longitude/place_id/…). So only block when we have NEITHER a
+      // profile location NOR picked coordinates — otherwise proceed with the
+      // place fields and simply omit the legacy FK.
+      if ((locationId == null || locationId == 0) &&
+          (latitude == null || longitude == null)) {
         throw Exception('User location not set. Please update your location in settings.');
       }
+      if (locationId == 0) locationId = null;
 
       if (kDebugMode) {
-        print('[ProductProvider] Creating product with location_id: $locationId');
+        print('[ProductProvider] Creating product with location_id: $locationId '
+            '(lat=$latitude, lng=$longitude)');
       }
 
       final formData = FormData.fromMap({
@@ -653,8 +694,8 @@ class ProductsService {
         'category_id': categoryId,
         'price': price,
         'currency': currency,
-        'location_id': locationId,
-        'userAddress_id': locationId,
+        if (locationId != null) 'location_id': locationId,
+        if (locationId != null) 'userAddress_id': locationId,
         'userName_id': userIdInt,
         'description': description,
         // Backend DecimalField caps at 6 decimal places — round before send.
@@ -667,14 +708,12 @@ class ProductsService {
         if (cityName != null) 'city_name': cityName,
       });
 
-      // Add images efficiently
+      // Add images efficiently — detect the real format so the filename
+      // extension matches the bytes (backend rejects a mismatch).
       for (int i = 0; i < imageFiles.length; i++) {
         formData.files.add(MapEntry(
           'images',
-          await MultipartFile.fromFile(
-            imageFiles[i].path,
-            filename: 'image_$i.jpg',
-          ),
+          await _buildImagePart(imageFiles[i], 'image_$i'),
         ));
       }
 
@@ -761,9 +800,11 @@ class ProductsService {
       final locationId = userLocation != null ? int.tryParse(userLocation) : null;
       final userIdInt = userId != null ? int.tryParse(userId) : null;
 
-      if (locationId == null || locationId == 0) {
-        throw Exception('User location not set. Please update your location in settings.');
-      }
+      // Editing a product doesn't change its location — the backend keeps the
+      // existing value when location_id is omitted (it's required=False). So
+      // never block an edit on a missing legacy location; only pass it through
+      // when we actually have one cached.
+      final hasLocation = locationId != null && locationId != 0;
 
       final formData = FormData.fromMap({
         'title': title,
@@ -773,9 +814,9 @@ class ProductsService {
         'in_stock': inStock,
         'price': price,
         'category_id': categoryId,
-        'location_id': locationId,
+        if (hasLocation) 'location_id': locationId,
         'userName_id': userIdInt,
-        'userAddress_id': locationId,
+        if (hasLocation) 'userAddress_id': locationId,
       });
 
       // FIXED: Add existing image IDs - this matches your Django serializer expectation
@@ -790,9 +831,9 @@ class ProductsService {
         for (int i = 0; i < newImageFiles.length; i++) {
           formData.files.add(MapEntry(
             'new_images', // Changed from 'images' to 'new_images' to match serializer
-            await MultipartFile.fromFile(
-              newImageFiles[i].path,
-              filename: 'image_${DateTime.now().millisecondsSinceEpoch}_$i.jpg',
+            await _buildImagePart(
+              newImageFiles[i],
+              'image_${DateTime.now().millisecondsSinceEpoch}_$i',
             ),
           ));
         }

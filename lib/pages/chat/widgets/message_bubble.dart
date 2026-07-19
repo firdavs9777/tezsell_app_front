@@ -432,8 +432,8 @@ class MessageBubble extends StatelessWidget {
                   ),
                 ),
 
-                // Add spacing for reactions if they exist
-                if (message.reactions.isNotEmpty) const SizedBox(height: 16),
+                // Add spacing for reactions if they exist (compact pill now)
+                if (message.reactions.isNotEmpty) const SizedBox(height: 10),
               ],
             ),
           ),
@@ -441,7 +441,7 @@ class MessageBubble extends StatelessWidget {
             // Reactions (overlapping bottom-right/left - Telegram-style)
             if (message.reactions.isNotEmpty)
               Positioned(
-                bottom: -8,
+                bottom: -4,
                 right: isOwnMessage ? 12 : null,
                 left: !isOwnMessage ? 12 : null,
                 child: _buildReactions(context),
@@ -558,30 +558,32 @@ class MessageBubble extends StatelessWidget {
         return GestureDetector(
           onTap: () => onReactionTap?.call(emoji),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: hasMyReaction ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: hasMyReaction
                   ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5)
                   : null,
               boxShadow: [
                 BoxShadow(
                   color: Theme.of(context).shadowColor.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+                  blurRadius: 3,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(emoji, style: const TextStyle(fontSize: 32)),
-                const SizedBox(width: 6),
+                // 🔥 FIX: reaction badge was fontSize 32 — a huge pill
+                // overwhelming the bubble. Telegram-style badges are compact.
+                Text(emoji, style: const TextStyle(fontSize: 14)),
+                const SizedBox(width: 4),
                 Text(
                   '${userIds.length}',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 11,
                     fontWeight: FontWeight.bold,
                     color: hasMyReaction
                         ? Theme.of(context).colorScheme.onPrimaryContainer
@@ -805,26 +807,35 @@ class MessageBubble extends StatelessWidget {
 
   Widget _buildImageMessage(BuildContext context) {
     final imageUrl = message.fileUrl ?? message.file;
+    final theme = Theme.of(context);
+    final mq = MediaQuery.of(context);
+    // Bubble-sized image: wide enough to read, capped so tall/pano shots
+    // don't dominate the thread.
+    final maxWidth = mq.size.width * 0.66;
+    final maxHeight = mq.size.height * 0.5;
+    // Stable box shown while the image streams in so the bubble doesn't
+    // pop from 0-height to full-height (which also yanks the scroll).
+    final loadingHeight = maxWidth * 0.72;
 
     if (imageUrl == null || imageUrl.isEmpty) {
       return Container(
-        width: 200,
-        height: 200,
+        width: maxWidth,
+        height: loadingHeight,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(12),
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.image_not_supported, size: 50, color: Theme.of(context).colorScheme.onSurfaceVariant),
+            Icon(Icons.image_not_supported, size: 44, color: theme.colorScheme.onSurfaceVariant),
             const SizedBox(height: 8),
             Builder(
               builder: (context) {
                 final l = AppLocalizations.of(context)!;
                 return Text(
                   l.image_unavailable,
-                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant),
                 );
               },
             ),
@@ -841,20 +852,39 @@ class MessageBubble extends StatelessWidget {
         );
       },
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(
-          8,
-        ), // Telegram-style rounded corners
+        borderRadius: BorderRadius.circular(16), // softer, chat-app corners
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.7,
-            maxHeight: MediaQuery.of(context).size.height * 0.4, // Max 40% of screen height
+            minWidth: 120,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
           ),
           child: CachedNetworkImageWidget(
             imageUrl: imageUrl,
-            width: 250, // Default size
-            height: 250,
+            // Fill the bubble width and let height follow the image's real
+            // aspect ratio (capped by maxHeight above) instead of forcing a
+            // cropped 250×250 square.
+            width: maxWidth,
+            height: null,
             fit: BoxFit.cover,
-            borderRadius: BorderRadius.circular(8),
+            // Keep a stable, rounded placeholder while loading.
+            placeholder: Container(
+              width: maxWidth,
+              height: loadingHeight,
+              color: theme.colorScheme.surfaceContainerHighest,
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
