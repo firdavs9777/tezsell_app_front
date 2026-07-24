@@ -2673,9 +2673,54 @@
   "@profile_user_no_reviews": {
     "description": "Empty state subtitle on the user reviews list screen"
   },
+  "profile_no_given_reviews": "Siz hali hech kimga sharh qoldirmadingiz",
+  "@profile_no_given_reviews": {
+    "description": "Empty state subtitle on the \"Given\" tab of the current user's own reviews screen"
+  },
   "no_more_reviews": "Boshqa sharhlar yo'q",
   "@no_more_reviews": {
     "description": "Footer text shown at the end of a paginated reviews list"
+  },
+  "myReviewsTitle": "Mening sharhlarim",
+  "@myReviewsTitle": {
+    "description": "Title of the current user's own Received/Given reviews screen, and its profile menu entry"
+  },
+  "myReviewsSubtitle": "Siz bergan va olgan sharhlar",
+  "@myReviewsSubtitle": {
+    "description": "Subtitle of the \"My Reviews\" profile menu entry"
+  },
+  "myReviewsReceivedTab": "Olingan",
+  "@myReviewsReceivedTab": {
+    "description": "Tab label for reviews the current user has received"
+  },
+  "myReviewsGivenTab": "Berilgan",
+  "@myReviewsGivenTab": {
+    "description": "Tab label for reviews the current user has given"
+  },
+  "pendingReviewsNudgeTitle": "Kutilayotgan sharhlar ({count})",
+  "@pendingReviewsNudgeTitle": {
+    "description": "Profile menu row shown only when the user has transactions awaiting their review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pendingReviewsNudgeSubtitle": "So'nggi bitimlaringizni baholash uchun bosing",
+  "@pendingReviewsNudgeSubtitle": {
+    "description": "Subtitle of the pending-reviews profile menu row"
+  },
+  "pendingReviewsSheetTitle": "Kutilayotgan sharhlar",
+  "@pendingReviewsSheetTitle": {
+    "description": "Title of the bottom sheet listing multiple transactions awaiting a review"
+  },
+  "sellerAnalyticsTitle": "Sotuvchi tahlili",
+  "@sellerAnalyticsTitle": {
+    "description": "Profile menu entry linking to the seller analytics screen"
+  },
+  "sellerAnalyticsSubtitle": "Ko'rishlar, takliflar va sotuvlar statistikasi",
+  "@sellerAnalyticsSubtitle": {
+    "description": "Subtitle of the seller analytics profile menu entry"
   },
   "linkCopied": "Havola nusxalandi",
   "@linkCopied": {

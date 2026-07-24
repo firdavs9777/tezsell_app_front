@@ -3,7 +3,9 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/reviews_provider.dart';
 import 'package:app/widgets/image_viewer.dart';
+import 'package:app/widgets/trust_score_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -93,7 +95,23 @@ class ProfileHeader extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Text(user.username, style: theme.textTheme.titleMedium),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  user.username,
+                  style: theme.textTheme.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (currentUserId != null) ...[
+                const SizedBox(width: 8),
+                _TrustChip(userId: currentUserId!),
+              ],
+            ],
+          ),
           const SizedBox(height: 4),
           Row(
             children: [
@@ -248,6 +266,26 @@ class _Avatar extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Own-profile manner temperature chip, fed by the `userTrustScoreProvider`
+/// family (E3). Renders nothing while loading or on error so a slow/failed
+/// trust-score fetch never blocks or breaks the rest of the header.
+class _TrustChip extends ConsumerWidget {
+  const _TrustChip({required this.userId});
+
+  final int userId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trustAsync = ref.watch(userTrustScoreProvider(userId));
+    return trustAsync.when(
+      data: (trustScore) =>
+          TrustBadgeCompact(temperature: trustScore.temperature),
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }

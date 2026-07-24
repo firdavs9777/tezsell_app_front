@@ -4156,7 +4156,42 @@ class AppLocalizationsUz extends AppLocalizations {
   String get profile_user_no_reviews => 'Bu foydalanuvchi hali sharh olmagan';
 
   @override
+  String get profile_no_given_reviews =>
+      'Siz hali hech kimga sharh qoldirmadingiz';
+
+  @override
   String get no_more_reviews => 'Boshqa sharhlar yo\'q';
+
+  @override
+  String get myReviewsTitle => 'Mening sharhlarim';
+
+  @override
+  String get myReviewsSubtitle => 'Siz bergan va olgan sharhlar';
+
+  @override
+  String get myReviewsReceivedTab => 'Olingan';
+
+  @override
+  String get myReviewsGivenTab => 'Berilgan';
+
+  @override
+  String pendingReviewsNudgeTitle(int count) {
+    return 'Kutilayotgan sharhlar ($count)';
+  }
+
+  @override
+  String get pendingReviewsNudgeSubtitle =>
+      'So\'nggi bitimlaringizni baholash uchun bosing';
+
+  @override
+  String get pendingReviewsSheetTitle => 'Kutilayotgan sharhlar';
+
+  @override
+  String get sellerAnalyticsTitle => 'Sotuvchi tahlili';
+
+  @override
+  String get sellerAnalyticsSubtitle =>
+      'Ko\'rishlar, takliflar va sotuvlar statistikasi';
 
   @override
   String get linkCopied => 'Havola nusxalandi';

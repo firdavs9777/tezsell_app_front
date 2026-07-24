@@ -4135,7 +4135,40 @@ class AppLocalizationsRu extends AppLocalizations {
       'Этот пользователь ещё не получал отзывов';
 
   @override
+  String get profile_no_given_reviews => 'Вы ещё не оставляли отзывов';
+
+  @override
   String get no_more_reviews => 'Больше отзывов нет';
+
+  @override
+  String get myReviewsTitle => 'Мои отзывы';
+
+  @override
+  String get myReviewsSubtitle => 'Отзывы, которые вы оставили и получили';
+
+  @override
+  String get myReviewsReceivedTab => 'Полученные';
+
+  @override
+  String get myReviewsGivenTab => 'Оставленные';
+
+  @override
+  String pendingReviewsNudgeTitle(int count) {
+    return 'Ожидают отзыва ($count)';
+  }
+
+  @override
+  String get pendingReviewsNudgeSubtitle =>
+      'Нажмите, чтобы оценить недавние сделки';
+
+  @override
+  String get pendingReviewsSheetTitle => 'Ожидающие отзывы';
+
+  @override
+  String get sellerAnalyticsTitle => 'Аналитика продавца';
+
+  @override
+  String get sellerAnalyticsSubtitle => 'Просмотры, предложения и продажи';
 
   @override
   String get linkCopied => 'Ссылка скопирована';

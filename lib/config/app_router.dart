@@ -39,6 +39,7 @@ import '../pages/shaxsiy/properties/saved_properties.dart';
 import '../pages/admin/admin_dashboard.dart';
 import '../pages/profile/user_profile_screen.dart';
 import '../pages/profile/user_reviews_screen.dart';
+import '../pages/profile/my_reviews_screen.dart';
 import '../pages/offers/offers_screen.dart';
 import '../pages/analytics/seller_analytics_screen.dart';
 import '../pages/onboarding/location_setup.dart';
@@ -373,6 +374,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           final userId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
           return UserReviewsScreen(userId: userId);
         },
+      ),
+      // Current user's own Received/Given reviews tabs
+      GoRoute(
+        path: '/profile/my-reviews',
+        name: 'my-reviews',
+        builder: (context, state) => const MyReviewsScreen(),
       ),
       // Other routes
       GoRoute(

@@ -46,6 +46,17 @@ class MessageBubble extends StatelessWidget {
   /// product listing or the seller id wasn't resolved.
   final int? listingSellerId;
 
+  /// 🔥 NEW: Task 13/E4 — the room's other participant's username and the
+  /// anchored listing's title/image, used to pre-fill the write-review
+  /// screen's counterparty/item context when the buyer taps "Leave a
+  /// review" on a `review_cta` system message. Best-effort: all null when
+  /// the room has no listing or the other participant couldn't be resolved,
+  /// in which case the write-review screen falls back to resolving the
+  /// details itself from the transaction.
+  final String? reviewCounterpartyName;
+  final String? reviewItemTitle;
+  final String? reviewItemImage;
+
   /// 🔥 NEW: Task 14 — true for a brief window after the user taps a
   /// quoted-reply block that scrolled the list to this message; renders a
   /// fading background flash so the target is easy to spot.
@@ -88,6 +99,9 @@ class MessageBubble extends StatelessWidget {
     this.onReplyTap,
     this.onRetry,
     this.listingSellerId,
+    this.reviewCounterpartyName,
+    this.reviewItemTitle,
+    this.reviewItemImage,
     this.isHighlighted = false,
     this.onDoubleTap,
     this.onShowOriginal,
@@ -527,13 +541,27 @@ class MessageBubble extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () {
+                // The backend attaches `transaction_id` to a `review_cta`
+                // system message so the buyer can go straight to the
+                // write-review screen. Legacy/no-buyer rooms (or messages
+                // sent before the backend attached this field) won't have
+                // it — fall back to the product page so tapping the button
+                // never dead-ends.
+                final transactionId = message.metadata['transaction_id'];
+                if (transactionId != null) {
+                  context.push(
+                    '/review/write/$transactionId',
+                    extra: {
+                      'isBuyerReview': isBuyer,
+                      'counterpartyName': reviewCounterpartyName,
+                      'itemTitle': reviewItemTitle,
+                      'itemImage': reviewItemImage,
+                    },
+                  );
+                  return;
+                }
                 final productId = message.metadata['product_id'];
                 if (productId == null) return;
-                // TODO(plan-e): route to a dedicated write-review screen
-                // once one exists — grepping the app found `submitReview`/
-                // `reviewsProvider` (lib/providers/provider_root/reviews_provider.dart)
-                // but no UI wired up to call them, so send the buyer to the
-                // product detail page for now.
                 context.push('/product/$productId');
               },
               child: Text(l.chatLeaveReview),

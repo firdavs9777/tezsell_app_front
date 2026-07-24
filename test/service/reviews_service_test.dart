@@ -155,6 +155,35 @@ void main() {
       expect(result.reviews, isEmpty);
       expect(result.hasMore, isFalse);
     });
+
+    // MyReviewsScreen's "Given" tab (E4) relies on this query param to fetch
+    // reviews the user has written rather than received.
+    test('requests type=given for the "Given" tab', () async {
+      late Uri requestedUri;
+      final client = MockClient((req) async {
+        requestedUri = req.url;
+        return http.Response(
+          jsonEncode({
+            'success': true,
+            'data': {
+              'reviews': [],
+              'pagination': {
+                'page': 1,
+                'page_size': 10,
+                'total': 0,
+                'total_pages': 1,
+              },
+            },
+          }),
+          200,
+        );
+      });
+
+      final service = ReviewsService(client: client);
+      await service.getUserReviewsPage(5, type: 'given');
+
+      expect(requestedUri.queryParameters['type'], 'given');
+    });
   });
 
   group('ReviewsService.getPendingReviews', () {

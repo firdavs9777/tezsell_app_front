@@ -4010,7 +4010,40 @@ class AppLocalizationsKo extends AppLocalizations {
       'This user hasn\'t received any reviews yet';
 
   @override
+  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+
+  @override
   String get no_more_reviews => 'No more reviews to load';
+
+  @override
+  String get myReviewsTitle => 'My Reviews';
+
+  @override
+  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+
+  @override
+  String get myReviewsReceivedTab => 'Received';
+
+  @override
+  String get myReviewsGivenTab => 'Given';
+
+  @override
+  String pendingReviewsNudgeTitle(int count) {
+    return 'Pending reviews ($count)';
+  }
+
+  @override
+  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+
+  @override
+  String get pendingReviewsSheetTitle => 'Pending Reviews';
+
+  @override
+  String get sellerAnalyticsTitle => 'Seller Analytics';
+
+  @override
+  String get sellerAnalyticsSubtitle =>
+      'Track views, offers, and sales performance';
 
   @override
   String get linkCopied => '링크가 클립보드에 복사되었습니다.';

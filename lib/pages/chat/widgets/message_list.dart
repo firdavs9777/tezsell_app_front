@@ -29,6 +29,12 @@ class MessageList extends ConsumerWidget {
   /// for a `review_cta` system message.
   final int? listingSellerId;
 
+  /// 🔥 NEW: E4 — forwarded to [MessageBubble] to pre-fill the write-review
+  /// screen's counterparty/item context for a `review_cta` system message.
+  final String? reviewCounterpartyName;
+  final String? reviewItemTitle;
+  final String? reviewItemImage;
+
   /// 🔥 NEW: Task 14 — id of the message currently flashed after a
   /// tap-to-scroll from a quoted reply block, forwarded to [MessageBubble]
   /// so it can render a brief highlight.
@@ -51,6 +57,9 @@ class MessageList extends ConsumerWidget {
     this.onReplyTap,
     this.onMessageSwipeReply,
     this.listingSellerId,
+    this.reviewCounterpartyName,
+    this.reviewItemTitle,
+    this.reviewItemImage,
     this.highlightedMessageId,
     this.unreadDividerMessageId,
   });
@@ -138,6 +147,9 @@ class MessageList extends ConsumerWidget {
             ref.read(chatProvider.notifier).retryMessage(localId);
           },
           listingSellerId: listingSellerId,
+          reviewCounterpartyName: reviewCounterpartyName,
+          reviewItemTitle: reviewItemTitle,
+          reviewItemImage: reviewItemImage,
           isHighlighted: message.id != null && message.id == highlightedMessageId,
           // 🔥 NEW: Task 20 — grouped-bubble corner treatment for
           // consecutive same-sender messages.

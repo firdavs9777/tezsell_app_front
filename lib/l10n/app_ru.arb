@@ -2676,9 +2676,54 @@
   "@profile_user_no_reviews": {
     "description": "Empty state subtitle on the user reviews list screen"
   },
+  "profile_no_given_reviews": "Вы ещё не оставляли отзывов",
+  "@profile_no_given_reviews": {
+    "description": "Empty state subtitle on the \"Given\" tab of the current user's own reviews screen"
+  },
   "no_more_reviews": "Больше отзывов нет",
   "@no_more_reviews": {
     "description": "Footer text shown at the end of a paginated reviews list"
+  },
+  "myReviewsTitle": "Мои отзывы",
+  "@myReviewsTitle": {
+    "description": "Title of the current user's own Received/Given reviews screen, and its profile menu entry"
+  },
+  "myReviewsSubtitle": "Отзывы, которые вы оставили и получили",
+  "@myReviewsSubtitle": {
+    "description": "Subtitle of the \"My Reviews\" profile menu entry"
+  },
+  "myReviewsReceivedTab": "Полученные",
+  "@myReviewsReceivedTab": {
+    "description": "Tab label for reviews the current user has received"
+  },
+  "myReviewsGivenTab": "Оставленные",
+  "@myReviewsGivenTab": {
+    "description": "Tab label for reviews the current user has given"
+  },
+  "pendingReviewsNudgeTitle": "Ожидают отзыва ({count})",
+  "@pendingReviewsNudgeTitle": {
+    "description": "Profile menu row shown only when the user has transactions awaiting their review",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pendingReviewsNudgeSubtitle": "Нажмите, чтобы оценить недавние сделки",
+  "@pendingReviewsNudgeSubtitle": {
+    "description": "Subtitle of the pending-reviews profile menu row"
+  },
+  "pendingReviewsSheetTitle": "Ожидающие отзывы",
+  "@pendingReviewsSheetTitle": {
+    "description": "Title of the bottom sheet listing multiple transactions awaiting a review"
+  },
+  "sellerAnalyticsTitle": "Аналитика продавца",
+  "@sellerAnalyticsTitle": {
+    "description": "Profile menu entry linking to the seller analytics screen"
+  },
+  "sellerAnalyticsSubtitle": "Просмотры, предложения и продажи",
+  "@sellerAnalyticsSubtitle": {
+    "description": "Subtitle of the seller analytics profile menu entry"
   },
   "linkCopied": "Ссылка скопирована",
   "@linkCopied": {

@@ -7906,11 +7906,71 @@ abstract class AppLocalizations {
   /// **'This user hasn\'t received any reviews yet'**
   String get profile_user_no_reviews;
 
+  /// Empty state subtitle on the "Given" tab of the current user's own reviews screen
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t given any reviews yet'**
+  String get profile_no_given_reviews;
+
   /// Footer text shown at the end of a paginated reviews list
   ///
   /// In en, this message translates to:
   /// **'No more reviews to load'**
   String get no_more_reviews;
+
+  /// Title of the current user's own Received/Given reviews screen, and its profile menu entry
+  ///
+  /// In en, this message translates to:
+  /// **'My Reviews'**
+  String get myReviewsTitle;
+
+  /// Subtitle of the "My Reviews" profile menu entry
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews you\'ve given and received'**
+  String get myReviewsSubtitle;
+
+  /// Tab label for reviews the current user has received
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get myReviewsReceivedTab;
+
+  /// Tab label for reviews the current user has given
+  ///
+  /// In en, this message translates to:
+  /// **'Given'**
+  String get myReviewsGivenTab;
+
+  /// Profile menu row shown only when the user has transactions awaiting their review
+  ///
+  /// In en, this message translates to:
+  /// **'Pending reviews ({count})'**
+  String pendingReviewsNudgeTitle(int count);
+
+  /// Subtitle of the pending-reviews profile menu row
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to rate your recent trades'**
+  String get pendingReviewsNudgeSubtitle;
+
+  /// Title of the bottom sheet listing multiple transactions awaiting a review
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Reviews'**
+  String get pendingReviewsSheetTitle;
+
+  /// Profile menu entry linking to the seller analytics screen
+  ///
+  /// In en, this message translates to:
+  /// **'Seller Analytics'**
+  String get sellerAnalyticsTitle;
+
+  /// Subtitle of the seller analytics profile menu entry
+  ///
+  /// In en, this message translates to:
+  /// **'Track views, offers, and sales performance'**
+  String get sellerAnalyticsSubtitle;
 
   /// Message shown when a link is copied
   ///

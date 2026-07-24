@@ -13,10 +13,14 @@ import 'package:app/pages/shaxsiy/widgets/profile_theme_dialog.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/reviews_provider.dart';
+import 'package:app/providers/provider_root/vacation_mode_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
+import 'package:app/widgets/vacation_mode_widget.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
@@ -254,6 +258,24 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     iconColor: const Color(0xFFFF9800),
                     onTap: () => context.push('/profile/favorites/services'),
                   ),
+                  _PendingReviewsNudge(currentUserId: _currentUserId),
+                  ProfileMenuCard(
+                    icon: Icons.reviews_rounded,
+                    title: localizations?.myReviewsTitle ?? 'My Reviews',
+                    subtitle: localizations?.myReviewsSubtitle ??
+                        "Reviews you've given and received",
+                    iconColor: const Color(0xFF00BCD4),
+                    onTap: () => context.push('/profile/my-reviews'),
+                  ),
+                  ProfileMenuCard(
+                    icon: Icons.insights_rounded,
+                    title:
+                        localizations?.sellerAnalyticsTitle ?? 'Seller Analytics',
+                    subtitle: localizations?.sellerAnalyticsSubtitle ??
+                        'Track views, offers, and sales performance',
+                    iconColor: const Color(0xFF3F51B5),
+                    onTap: () => context.push('/analytics'),
+                  ),
                   ProfileSavedPropertiesCard(localizations: localizations),
                   ProfileAgentCard(
                     localizations: localizations,
@@ -296,6 +318,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                           builder: (context) => const SecuritySettingsPage()),
                     ),
                   ),
+                  const _VacationModeSection(),
                   ProfileSectionTitle(
                       localizations?.customer_support ?? 'Support'),
                   ProfileMenuCard(
@@ -338,6 +361,197 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// Menu-row nudge shown only when the current user has at least one
+/// transaction awaiting their review (E2's `pendingReviewsProvider`). A
+/// single pending transaction routes straight to its write-review screen;
+/// more than one opens a bottom sheet to pick which one.
+class _PendingReviewsNudge extends ConsumerWidget {
+  const _PendingReviewsNudge({required this.currentUserId});
+
+  final int? currentUserId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pending = ref.watch(pendingReviewsProvider);
+    if (pending.count <= 0) return const SizedBox.shrink();
+
+    final localizations = AppLocalizations.of(context);
+
+    return ProfileMenuCard(
+      icon: Icons.rate_review_rounded,
+      title: localizations?.pendingReviewsNudgeTitle(pending.count) ??
+          'Pending reviews (${pending.count})',
+      subtitle: localizations?.pendingReviewsNudgeSubtitle ??
+          'Tap to rate your recent trades',
+      iconColor: const Color(0xFFFFC107),
+      onTap: () => _handleTap(context, pending),
+    );
+  }
+
+  void _handleTap(BuildContext context, PendingReviewsState pending) {
+    if (pending.transactions.length == 1) {
+      _pushWriteReview(context, pending.transactions.first);
+      return;
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => _PendingReviewsSheet(
+        transactions: pending.transactions,
+        currentUserId: currentUserId,
+        onSelect: (transaction) {
+          Navigator.of(sheetContext).pop();
+          _pushWriteReview(context, transaction);
+        },
+      ),
+    );
+  }
+
+  void _pushWriteReview(BuildContext context, Transaction transaction) {
+    final isBuyer = transaction.isBuyerFor(currentUserId);
+    final counterpartyName = isBuyer == true
+        ? transaction.sellerName
+        : (isBuyer == false ? transaction.buyerName : null);
+    context.push(
+      '/review/write/${transaction.id}',
+      extra: {
+        'isBuyerReview': isBuyer,
+        'counterpartyName': counterpartyName,
+        'itemTitle': transaction.itemTitle,
+        'itemImage': transaction.itemImage,
+      },
+    );
+  }
+}
+
+/// Bottom sheet listing every transaction awaiting a review from the
+/// current user, shown when there is more than one (see
+/// [_PendingReviewsNudge]).
+class _PendingReviewsSheet extends StatelessWidget {
+  const _PendingReviewsSheet({
+    required this.transactions,
+    required this.currentUserId,
+    required this.onSelect,
+  });
+
+  final List<Transaction> transactions;
+  final int? currentUserId;
+  final ValueChanged<Transaction> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.5,
+      minChildSize: 0.3,
+      maxChildSize: 0.9,
+      expand: false,
+      builder: (context, scrollController) => Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colorScheme.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                localizations?.pendingReviewsSheetTitle ?? 'Pending Reviews',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Divider(height: 1, color: colorScheme.outlineVariant),
+            Expanded(
+              child: ListView.separated(
+                controller: scrollController,
+                itemCount: transactions.length,
+                separatorBuilder: (_, __) => Divider(
+                  height: 1,
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+                ),
+                itemBuilder: (context, index) {
+                  final transaction = transactions[index];
+                  final isBuyer = transaction.isBuyerFor(currentUserId);
+                  final counterpartyName = isBuyer == true
+                      ? transaction.sellerName
+                      : transaction.buyerName;
+                  return ListTile(
+                    leading: const Icon(Icons.rate_review_outlined),
+                    title: Text(
+                      transaction.itemTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: counterpartyName.isNotEmpty
+                        ? Text(
+                            counterpartyName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : null,
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => onSelect(transaction),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Own-vacation-mode toggle in the Settings section, bound to
+/// `vacationModeProvider` (the CURRENT user's vacation state -- distinct
+/// from the read-only `VacationBadge` shown on a public profile).
+class _VacationModeSection extends ConsumerStatefulWidget {
+  const _VacationModeSection();
+
+  @override
+  ConsumerState<_VacationModeSection> createState() =>
+      _VacationModeSectionState();
+}
+
+class _VacationModeSectionState extends ConsumerState<_VacationModeSection> {
+  String? _draftMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = ref.watch(isOnVacationProvider);
+    final savedMessage = ref.watch(vacationMessageProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: VacationModeToggle(
+        isActive: isActive,
+        message: _draftMessage ?? savedMessage,
+        onToggle: (value) {
+          final notifier = ref.read(vacationModeProvider.notifier);
+          if (value) {
+            notifier.enableVacationMode(message: _draftMessage);
+          } else {
+            notifier.disableVacationMode();
+          }
+        },
+        onMessageChange: (value) => setState(() => _draftMessage = value),
       ),
     );
   }

@@ -1503,6 +1503,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                             onMessageLongPress: _showMessageOptions,
                             onReplyTap: _scrollToMessage,
                             listingSellerId: effectiveListing?.sellerId,
+                            reviewCounterpartyName: otherUser?.username,
+                            reviewItemTitle: effectiveListing?.title,
+                            reviewItemImage: effectiveListing?.imageUrl,
                             highlightedMessageId: _highlightedMessageId,
                             unreadDividerMessageId: _unreadDividerMessageId,
                             onMessageSwipeReply: (message) {
