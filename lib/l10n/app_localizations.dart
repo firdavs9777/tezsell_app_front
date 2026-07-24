@@ -9003,6 +9003,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No reviews yet'**
   String get sellerNoReviews;
+
+  /// Tooltip for the AppBar icon on the product search screen that saves the current search
+  ///
+  /// In en, this message translates to:
+  /// **'Save search'**
+  String get savedSearchSaveTooltip;
+
+  /// Tooltip for the AppBar icon on the product search screen that opens the saved searches / alerts manage screen
+  ///
+  /// In en, this message translates to:
+  /// **'Saved searches'**
+  String get savedSearchesManageTooltip;
+
+  /// Title of the bottom sheet shown when saving a search
+  ///
+  /// In en, this message translates to:
+  /// **'Save this search'**
+  String get savedSearchSheetTitle;
+
+  /// Title of the switch in the save-search sheet that also creates a keyword alert
+  ///
+  /// In en, this message translates to:
+  /// **'Notify me about new matches'**
+  String get savedSearchNotifyToggleTitle;
+
+  /// Subtitle explaining the notify toggle in the save-search sheet
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll alert you when new listings match this search'**
+  String get savedSearchNotifyToggleSubtitle;
+
+  /// Snackbar shown after a search is saved without an alert
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved'**
+  String get savedSearchSavedSuccess;
+
+  /// Snackbar shown after a search is saved and a keyword alert was also enabled
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved. You\'ll be notified about new matches.'**
+  String get savedSearchSavedWithAlertSuccess;
+
+  /// Snackbar shown when the user tries to save a search identical to one already saved
+  ///
+  /// In en, this message translates to:
+  /// **'You already saved this search'**
+  String get savedSearchAlreadySaved;
+
+  /// Fallback error message when saving a search fails without a specific server message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save search'**
+  String get savedSearchSaveGenericError;
+
+  /// Fallback error message when creating a keyword alert fails without a specific server message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to enable alert'**
+  String get searchAlertCreateGenericError;
+
+  /// Title of the saved searches & alerts management screen
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Searches'**
+  String get savedSearchesScreenTitle;
+
+  /// Tab label for the saved searches list on the manage screen
+  ///
+  /// In en, this message translates to:
+  /// **'Searches'**
+  String get savedSearchesTabLabel;
+
+  /// Tab label for the keyword alerts list on the manage screen
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get searchAlertsTabLabel;
+
+  /// Empty state title on the saved searches tab
+  ///
+  /// In en, this message translates to:
+  /// **'No saved searches yet'**
+  String get savedSearchesEmptyTitle;
+
+  /// Empty state subtitle on the saved searches tab
+  ///
+  /// In en, this message translates to:
+  /// **'Save a search to quickly find it again later'**
+  String get savedSearchesEmptySubtitle;
+
+  /// Empty state title on the keyword alerts tab
+  ///
+  /// In en, this message translates to:
+  /// **'No alerts yet'**
+  String get searchAlertsEmptyTitle;
+
+  /// Empty state subtitle on the keyword alerts tab
+  ///
+  /// In en, this message translates to:
+  /// **'Save a search and turn on notifications to get alerted about new matches'**
+  String get searchAlertsEmptySubtitle;
+
+  /// Shows how many times a saved search has been re-run
+  ///
+  /// In en, this message translates to:
+  /// **'Used {count} times'**
+  String savedSearchUseCount(int count);
+
+  /// Icon button tooltip to delete a saved search row
+  ///
+  /// In en, this message translates to:
+  /// **'Delete saved search'**
+  String get savedSearchDeleteTooltip;
+
+  /// Icon button tooltip to delete a keyword alert row
+  ///
+  /// In en, this message translates to:
+  /// **'Delete alert'**
+  String get searchAlertDeleteTooltip;
+
+  /// Confirmation dialog title before deleting a saved search
+  ///
+  /// In en, this message translates to:
+  /// **'Delete saved search?'**
+  String get savedSearchDeleteConfirmTitle;
+
+  /// Confirmation dialog message before deleting a saved search
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the saved search. This action cannot be undone.'**
+  String get savedSearchDeleteConfirmMessage;
+
+  /// Confirmation dialog title before deleting a keyword alert
+  ///
+  /// In en, this message translates to:
+  /// **'Delete alert?'**
+  String get searchAlertDeleteConfirmTitle;
+
+  /// Confirmation dialog message before deleting a keyword alert
+  ///
+  /// In en, this message translates to:
+  /// **'You will no longer be notified about new matches for this keyword.'**
+  String get searchAlertDeleteConfirmMessage;
+
+  /// Snackbar shown after a saved search is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Saved search deleted'**
+  String get savedSearchDeletedSuccess;
+
+  /// Snackbar shown after a keyword alert is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Alert deleted'**
+  String get searchAlertDeletedSuccess;
+
+  /// Snackbar shown when deleting a saved search fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete saved search'**
+  String get savedSearchDeleteError;
+
+  /// Snackbar shown when deleting a keyword alert fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete alert'**
+  String get searchAlertDeleteError;
+
+  /// Snackbar shown when toggling a keyword alert's active state fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update alert'**
+  String get searchAlertToggleError;
+
+  /// Inline error shown when fetching saved searches fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load saved searches'**
+  String get savedSearchesLoadError;
+
+  /// Inline error shown when fetching keyword alerts fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load alerts'**
+  String get searchAlertsLoadError;
 }
 
 class _AppLocalizationsDelegate

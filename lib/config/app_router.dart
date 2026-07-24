@@ -12,6 +12,7 @@ import '../pages/tab_bar/tab_bar.dart';
 import '../pages/products/product_detail.dart';
 import '../pages/products/product_new.dart';
 import '../pages/products/product_search.dart';
+import '../pages/products/saved_searches_screen.dart';
 import '../pages/products/products_list.dart';
 import '../pages/products/filtered_products.dart';
 import '../pages/products/product_category.dart';
@@ -180,8 +181,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           final countryCode = state.uri.queryParameters['country'] ?? '';
           final regionName = state.uri.queryParameters['region'] ?? '';
           final districtName = state.uri.queryParameters['district'] ?? '';
-          return ProductSearch(countryCode: countryCode, regionName: regionName, districtName: districtName);
+          final query = state.uri.queryParameters['q'] ?? '';
+          return ProductSearch(
+            countryCode: countryCode,
+            regionName: regionName,
+            districtName: districtName,
+            initialQuery: query,
+          );
         },
+      ),
+      // Saved searches + keyword alerts management
+      GoRoute(
+        path: '/saved-searches',
+        name: 'saved-searches',
+        builder: (context, state) => const SavedSearchesScreen(),
       ),
       GoRoute(
         path: '/product/categories',

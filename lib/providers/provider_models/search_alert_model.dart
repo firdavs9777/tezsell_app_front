@@ -79,6 +79,42 @@ class SearchAlert {
     };
   }
 
+  SearchAlert copyWith({
+    int? id,
+    String? keyword,
+    String? itemType,
+    int? categoryId,
+    String? region,
+    String? district,
+    String? minPrice,
+    String? maxPrice,
+    bool? isActive,
+    bool? notifyPush,
+    bool? notifyEmail,
+    int? matchesFound,
+    DateTime? lastChecked,
+    DateTime? lastNotified,
+    DateTime? createdAt,
+  }) {
+    return SearchAlert(
+      id: id ?? this.id,
+      keyword: keyword ?? this.keyword,
+      itemType: itemType ?? this.itemType,
+      categoryId: categoryId ?? this.categoryId,
+      region: region ?? this.region,
+      district: district ?? this.district,
+      minPrice: minPrice ?? this.minPrice,
+      maxPrice: maxPrice ?? this.maxPrice,
+      isActive: isActive ?? this.isActive,
+      notifyPush: notifyPush ?? this.notifyPush,
+      notifyEmail: notifyEmail ?? this.notifyEmail,
+      matchesFound: matchesFound ?? this.matchesFound,
+      lastChecked: lastChecked ?? this.lastChecked,
+      lastNotified: lastNotified ?? this.lastNotified,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   /// Get item type display name
   String get itemTypeDisplay {
     switch (itemType) {

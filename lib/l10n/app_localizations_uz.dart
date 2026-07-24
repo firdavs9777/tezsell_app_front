@@ -4759,4 +4759,110 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get sellerNoReviews => 'Hozircha sharhlar yo\'q';
+
+  @override
+  String get savedSearchSaveTooltip => 'Qidiruvni saqlash';
+
+  @override
+  String get savedSearchesManageTooltip => 'Saqlangan qidiruvlar';
+
+  @override
+  String get savedSearchSheetTitle => 'Ushbu qidiruvni saqlash';
+
+  @override
+  String get savedSearchNotifyToggleTitle =>
+      'Yangi mos e\'lonlar haqida xabar bering';
+
+  @override
+  String get savedSearchNotifyToggleSubtitle =>
+      'Ushbu qidiruvga mos yangi e\'lonlar chiqsa, sizga xabar beramiz';
+
+  @override
+  String get savedSearchSavedSuccess => 'Qidiruv saqlandi';
+
+  @override
+  String get savedSearchSavedWithAlertSuccess =>
+      'Qidiruv saqlandi. Yangi mos e\'lonlar haqida xabar olasiz.';
+
+  @override
+  String get savedSearchAlreadySaved =>
+      'Siz bu qidiruvni allaqachon saqlagansiz';
+
+  @override
+  String get savedSearchSaveGenericError => 'Qidiruvni saqlab bo\'lmadi';
+
+  @override
+  String get searchAlertCreateGenericError => 'Ogohlantirishni yoqib bo\'lmadi';
+
+  @override
+  String get savedSearchesScreenTitle => 'Saqlangan qidiruvlar';
+
+  @override
+  String get savedSearchesTabLabel => 'Qidiruvlar';
+
+  @override
+  String get searchAlertsTabLabel => 'Ogohlantirishlar';
+
+  @override
+  String get savedSearchesEmptyTitle => 'Hozircha saqlangan qidiruvlar yo\'q';
+
+  @override
+  String get savedSearchesEmptySubtitle =>
+      'Keyinroq tezda topish uchun qidiruvni saqlang';
+
+  @override
+  String get searchAlertsEmptyTitle => 'Hozircha ogohlantirishlar yo\'q';
+
+  @override
+  String get searchAlertsEmptySubtitle =>
+      'Yangi mos e\'lonlar haqida xabar olish uchun qidiruvni saqlang va bildirishnomalarni yoqing';
+
+  @override
+  String savedSearchUseCount(int count) {
+    return '$count marta ishlatilgan';
+  }
+
+  @override
+  String get savedSearchDeleteTooltip => 'Saqlangan qidiruvni o\'chirish';
+
+  @override
+  String get searchAlertDeleteTooltip => 'Ogohlantirishni o\'chirish';
+
+  @override
+  String get savedSearchDeleteConfirmTitle =>
+      'Saqlangan qidiruv o\'chirilsinmi?';
+
+  @override
+  String get savedSearchDeleteConfirmMessage =>
+      'Saqlangan qidiruv o\'chiriladi. Bu amalni bekor qilib bo\'lmaydi.';
+
+  @override
+  String get searchAlertDeleteConfirmTitle => 'Ogohlantirish o\'chirilsinmi?';
+
+  @override
+  String get searchAlertDeleteConfirmMessage =>
+      'Endi ushbu kalit so\'z bo\'yicha yangi mos e\'lonlar haqida xabar olmaysiz.';
+
+  @override
+  String get savedSearchDeletedSuccess => 'Saqlangan qidiruv o\'chirildi';
+
+  @override
+  String get searchAlertDeletedSuccess => 'Ogohlantirish o\'chirildi';
+
+  @override
+  String get savedSearchDeleteError =>
+      'Saqlangan qidiruvni o\'chirib bo\'lmadi';
+
+  @override
+  String get searchAlertDeleteError => 'Ogohlantirishni o\'chirib bo\'lmadi';
+
+  @override
+  String get searchAlertToggleError => 'Ogohlantirishni yangilab bo\'lmadi';
+
+  @override
+  String get savedSearchesLoadError =>
+      'Saqlangan qidiruvlarni yuklab bo\'lmadi';
+
+  @override
+  String get searchAlertsLoadError => 'Ogohlantirishlarni yuklab bo\'lmadi';
 }

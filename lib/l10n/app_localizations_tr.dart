@@ -4707,4 +4707,105 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sellerNoReviews => 'No reviews yet';
+
+  @override
+  String get savedSearchSaveTooltip => 'Save search';
+
+  @override
+  String get savedSearchesManageTooltip => 'Saved searches';
+
+  @override
+  String get savedSearchSheetTitle => 'Save this search';
+
+  @override
+  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+
+  @override
+  String get savedSearchNotifyToggleSubtitle =>
+      'We\'ll alert you when new listings match this search';
+
+  @override
+  String get savedSearchSavedSuccess => 'Search saved';
+
+  @override
+  String get savedSearchSavedWithAlertSuccess =>
+      'Search saved. You\'ll be notified about new matches.';
+
+  @override
+  String get savedSearchAlreadySaved => 'You already saved this search';
+
+  @override
+  String get savedSearchSaveGenericError => 'Failed to save search';
+
+  @override
+  String get searchAlertCreateGenericError => 'Failed to enable alert';
+
+  @override
+  String get savedSearchesScreenTitle => 'Saved Searches';
+
+  @override
+  String get savedSearchesTabLabel => 'Searches';
+
+  @override
+  String get searchAlertsTabLabel => 'Alerts';
+
+  @override
+  String get savedSearchesEmptyTitle => 'No saved searches yet';
+
+  @override
+  String get savedSearchesEmptySubtitle =>
+      'Save a search to quickly find it again later';
+
+  @override
+  String get searchAlertsEmptyTitle => 'No alerts yet';
+
+  @override
+  String get searchAlertsEmptySubtitle =>
+      'Save a search and turn on notifications to get alerted about new matches';
+
+  @override
+  String savedSearchUseCount(int count) {
+    return 'Used $count times';
+  }
+
+  @override
+  String get savedSearchDeleteTooltip => 'Delete saved search';
+
+  @override
+  String get searchAlertDeleteTooltip => 'Delete alert';
+
+  @override
+  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+
+  @override
+  String get savedSearchDeleteConfirmMessage =>
+      'This will remove the saved search. This action cannot be undone.';
+
+  @override
+  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+
+  @override
+  String get searchAlertDeleteConfirmMessage =>
+      'You will no longer be notified about new matches for this keyword.';
+
+  @override
+  String get savedSearchDeletedSuccess => 'Saved search deleted';
+
+  @override
+  String get searchAlertDeletedSuccess => 'Alert deleted';
+
+  @override
+  String get savedSearchDeleteError => 'Failed to delete saved search';
+
+  @override
+  String get searchAlertDeleteError => 'Failed to delete alert';
+
+  @override
+  String get searchAlertToggleError => 'Failed to update alert';
+
+  @override
+  String get savedSearchesLoadError => 'Failed to load saved searches';
+
+  @override
+  String get searchAlertsLoadError => 'Failed to load alerts';
 }

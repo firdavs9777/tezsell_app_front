@@ -4736,4 +4736,106 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sellerNoReviews => 'Пока нет отзывов';
+
+  @override
+  String get savedSearchSaveTooltip => 'Сохранить поиск';
+
+  @override
+  String get savedSearchesManageTooltip => 'Сохранённые поиски';
+
+  @override
+  String get savedSearchSheetTitle => 'Сохранить этот поиск';
+
+  @override
+  String get savedSearchNotifyToggleTitle => 'Уведомлять о новых совпадениях';
+
+  @override
+  String get savedSearchNotifyToggleSubtitle =>
+      'Мы оповестим вас, когда появятся новые объявления по этому поиску';
+
+  @override
+  String get savedSearchSavedSuccess => 'Поиск сохранён';
+
+  @override
+  String get savedSearchSavedWithAlertSuccess =>
+      'Поиск сохранён. Вы получите уведомление о новых совпадениях.';
+
+  @override
+  String get savedSearchAlreadySaved => 'Вы уже сохранили этот поиск';
+
+  @override
+  String get savedSearchSaveGenericError => 'Не удалось сохранить поиск';
+
+  @override
+  String get searchAlertCreateGenericError => 'Не удалось включить оповещение';
+
+  @override
+  String get savedSearchesScreenTitle => 'Сохранённые поиски';
+
+  @override
+  String get savedSearchesTabLabel => 'Поиски';
+
+  @override
+  String get searchAlertsTabLabel => 'Оповещения';
+
+  @override
+  String get savedSearchesEmptyTitle => 'Пока нет сохранённых поисков';
+
+  @override
+  String get savedSearchesEmptySubtitle =>
+      'Сохраните поиск, чтобы быстро найти его позже';
+
+  @override
+  String get searchAlertsEmptyTitle => 'Пока нет оповещений';
+
+  @override
+  String get searchAlertsEmptySubtitle =>
+      'Сохраните поиск и включите уведомления, чтобы узнавать о новых совпадениях';
+
+  @override
+  String savedSearchUseCount(int count) {
+    return 'Использовано $count раз';
+  }
+
+  @override
+  String get savedSearchDeleteTooltip => 'Удалить сохранённый поиск';
+
+  @override
+  String get searchAlertDeleteTooltip => 'Удалить оповещение';
+
+  @override
+  String get savedSearchDeleteConfirmTitle => 'Удалить сохранённый поиск?';
+
+  @override
+  String get savedSearchDeleteConfirmMessage =>
+      'Сохранённый поиск будет удалён. Это действие нельзя отменить.';
+
+  @override
+  String get searchAlertDeleteConfirmTitle => 'Удалить оповещение?';
+
+  @override
+  String get searchAlertDeleteConfirmMessage =>
+      'Вы больше не будете получать уведомления о новых совпадениях по этому ключевому слову.';
+
+  @override
+  String get savedSearchDeletedSuccess => 'Сохранённый поиск удалён';
+
+  @override
+  String get searchAlertDeletedSuccess => 'Оповещение удалено';
+
+  @override
+  String get savedSearchDeleteError => 'Не удалось удалить сохранённый поиск';
+
+  @override
+  String get searchAlertDeleteError => 'Не удалось удалить оповещение';
+
+  @override
+  String get searchAlertToggleError => 'Не удалось обновить оповещение';
+
+  @override
+  String get savedSearchesLoadError =>
+      'Не удалось загрузить сохранённые поиски';
+
+  @override
+  String get searchAlertsLoadError => 'Не удалось загрузить оповещения';
 }
