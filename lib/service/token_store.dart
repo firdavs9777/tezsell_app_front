@@ -121,7 +121,11 @@ class TokenStore {
       final legacyExpiresAt = prefs.getString('token_expires_at');
       final legacyRefreshExpiresAt = prefs.getString('refresh_token_expires_at');
 
-      await _storage.write(_kAccessToken, legacyAccess);
+      // Write the access token LAST: it is the skip-guard checked on the next
+      // launch (a non-empty secure access token means "already migrated"). If
+      // any refresh/expiry write throws first, the access token is never
+      // written, so the next boot re-attempts the full migration instead of
+      // stranding the refresh token in plaintext SP.
       if (legacyRefresh != null && legacyRefresh.isNotEmpty) {
         await _storage.write(_kRefreshToken, legacyRefresh);
       }
@@ -131,6 +135,7 @@ class TokenStore {
       if (legacyRefreshExpiresAt != null && legacyRefreshExpiresAt.isNotEmpty) {
         await _storage.write(_kRefreshExpiresAt, legacyRefreshExpiresAt);
       }
+      await _storage.write(_kAccessToken, legacyAccess);
 
       // Only delete the legacy plaintext keys after the copy succeeded.
       await Future.wait([
