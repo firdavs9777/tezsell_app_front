@@ -127,16 +127,19 @@ class _LoginHistoryTile extends StatelessWidget {
     }
   }
 
-  String get _methodLabel {
-    switch (entry['login_method'] as String? ?? 'password') {
+  String _methodLabel(AppLocalizations? localizations) {
+    final method = entry['login_method'] as String? ?? 'password';
+    switch (method) {
       case 'google':
-        return 'Google';
+        return localizations?.securityMethodGoogle ?? 'Google';
       case 'apple':
-        return 'Apple';
+        return localizations?.securityMethodApple ?? 'Apple';
       case 'token_refresh':
-        return 'Token refresh';
+        return localizations?.securityMethodTokenRefresh ?? 'Token refresh';
+      case 'password':
+        return localizations?.password ?? 'Password';
       default:
-        return 'Password';
+        return method.isNotEmpty ? method : (localizations?.password ?? 'Password');
     }
   }
 
@@ -180,7 +183,7 @@ class _LoginHistoryTile extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        _methodLabel,
+                        _methodLabel(localizations),
                         style: theme.textTheme.bodyMedium
                             ?.copyWith(fontWeight: FontWeight.w600),
                         overflow: TextOverflow.ellipsis,

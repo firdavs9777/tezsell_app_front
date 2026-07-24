@@ -6100,6 +6100,24 @@ abstract class AppLocalizations {
   /// **'No login history yet'**
   String get securityNoHistory;
 
+  /// No description provided for @securityMethodGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google'**
+  String get securityMethodGoogle;
+
+  /// No description provided for @securityMethodApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple'**
+  String get securityMethodApple;
+
+  /// No description provided for @securityMethodTokenRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Token refresh'**
+  String get securityMethodTokenRefresh;
+
   /// No description provided for @securitySignedOutEverywhere.
   ///
   /// In en, this message translates to:

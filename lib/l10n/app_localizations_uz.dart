@@ -3158,11 +3158,20 @@ class AppLocalizationsUz extends AppLocalizations {
   String get securityNoHistory => 'Hozircha kirish tarixi yo\'q';
 
   @override
+  String get securityMethodGoogle => 'Google';
+
+  @override
+  String get securityMethodApple => 'Apple';
+
+  @override
+  String get securityMethodTokenRefresh => 'Sessiyani yangilash';
+
+  @override
   String get securitySignedOutEverywhere =>
       'Siz barcha qurilmalardan tizimdan chiqdingiz';
 
   @override
-  String get delete_account_confirm => 'Delete Account?';
+  String get delete_account_confirm => 'Hisobni o\'chirasizmi?';
 
   @override
   String get delete_account_warning =>

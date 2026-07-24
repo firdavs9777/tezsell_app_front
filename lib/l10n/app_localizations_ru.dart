@@ -3140,6 +3140,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get securityNoHistory => 'История входов пока пуста';
 
   @override
+  String get securityMethodGoogle => 'Google';
+
+  @override
+  String get securityMethodApple => 'Apple';
+
+  @override
+  String get securityMethodTokenRefresh => 'Обновление сессии';
+
+  @override
   String get securitySignedOutEverywhere =>
       'Вы вышли из системы на всех устройствах';
 

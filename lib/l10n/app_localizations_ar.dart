@@ -3099,6 +3099,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get securityNoHistory => 'No login history yet';
 
   @override
+  String get securityMethodGoogle => 'Google';
+
+  @override
+  String get securityMethodApple => 'Apple';
+
+  @override
+  String get securityMethodTokenRefresh => 'Token refresh';
+
+  @override
   String get securitySignedOutEverywhere =>
       'You\'ve been signed out of all devices';
 
