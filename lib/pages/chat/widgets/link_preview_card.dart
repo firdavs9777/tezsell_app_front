@@ -169,6 +169,11 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
   Future<void> _openUrl() async {
     final uri = Uri.tryParse(widget.url);
     if (uri == null) return;
+    // 🔥 FIX: the URL comes from chat message content, so it's attacker
+    // controlled — only ever launch it for http(s); other schemes
+    // (e.g. `javascript:`, `file:`, `intent:`, custom app schemes) could be
+    // used to trigger unintended actions and must be silently ignored.
+    if (uri.scheme != 'http' && uri.scheme != 'https') return;
     try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (_) {
