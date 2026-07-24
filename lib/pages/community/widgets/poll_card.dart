@@ -54,37 +54,11 @@ class _PollCardState extends ConsumerState<PollCard> {
     }
   }
 
-  /// Builds a locally-adjusted poll so the UI reflects the new vote
-  /// immediately, without waiting on the network round-trip. Percents are
-  /// recomputed from the adjusted counts; the server's response (which wins
-  /// once it lands) is the source of truth.
-  CommunityPoll _optimisticVote(int optionId) {
-    final previousOptionId = _poll.myOptionId;
-    if (previousOptionId == optionId) return _poll;
-
-    final addedFirstVote = previousOptionId == null;
-    final newTotal = addedFirstVote ? _poll.totalVotes + 1 : _poll.totalVotes;
-
-    final adjustedOptions = _poll.options.map((o) {
-      var count = o.voteCount;
-      if (o.id == previousOptionId) count -= 1;
-      if (o.id == optionId) count += 1;
-      final percent = newTotal > 0 ? ((count * 100) / newTotal).round() : 0;
-      return o.copyWith(voteCount: count, percent: percent);
-    }).toList();
-
-    return _poll.copyWith(
-      totalVotes: newTotal,
-      myOptionId: optionId,
-      options: adjustedOptions,
-    );
-  }
-
   Future<void> _vote(int optionId) async {
     if (_voting) return;
     final previous = _poll;
     setState(() {
-      _poll = _optimisticVote(optionId);
+      _poll = _poll.optimisticVote(optionId);
       _voting = true;
     });
     try {

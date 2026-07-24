@@ -75,6 +75,39 @@ class CommunityPoll {
       options: options ?? this.options,
     );
   }
+
+  /// Pure math for an optimistic vote/revote: builds a locally-adjusted
+  /// poll so the UI can reflect a new vote immediately, without waiting on
+  /// the network round-trip. Percents are recomputed from the adjusted
+  /// counts; the server's response (which wins once it lands) is the
+  /// source of truth.
+  ///
+  /// - First vote (no prior [myOptionId]): total votes +1, the chosen
+  ///   option's count +1.
+  /// - Switched vote (prior [myOptionId] differs from [optionId]): total
+  ///   votes unchanged, old option's count -1, new option's count +1.
+  /// - Same option tapped again: returns `this` unchanged.
+  CommunityPoll optimisticVote(int optionId) {
+    final previousOptionId = myOptionId;
+    if (previousOptionId == optionId) return this;
+
+    final addedFirstVote = previousOptionId == null;
+    final newTotal = addedFirstVote ? totalVotes + 1 : totalVotes;
+
+    final adjustedOptions = options.map((o) {
+      var count = o.voteCount;
+      if (o.id == previousOptionId) count -= 1;
+      if (o.id == optionId) count += 1;
+      final percent = newTotal > 0 ? ((count * 100) / newTotal).round() : 0;
+      return o.copyWith(voteCount: count, percent: percent);
+    }).toList();
+
+    return copyWith(
+      totalVotes: newTotal,
+      myOptionId: optionId,
+      options: adjustedOptions,
+    );
+  }
 }
 
 class CommunityPost {
