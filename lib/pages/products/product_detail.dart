@@ -679,10 +679,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                       if (trust != null &&
                           trust.reviewCount > 0 &&
                           trust.ratingAvg != null)
-                        ServiceRatingBadge(
-                          ratingAvg: trust.ratingAvg,
-                          ratingCount: trust.reviewCount,
-                          compact: false,
+                        Flexible(
+                          child: ServiceRatingBadge(
+                            ratingAvg: trust.ratingAvg,
+                            ratingCount: trust.reviewCount,
+                            compact: false,
+                          ),
                         )
                       else
                         Flexible(
@@ -696,25 +698,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                         ),
                     ],
                   ),
-                  if (trust?.responseLabel != null) ...[
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        trust!.responseLabel!,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
