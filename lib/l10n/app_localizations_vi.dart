@@ -9,6 +9,10 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
+  String get sessionExpired =>
+      'Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.';
+
+  @override
   String get welcome => 'Chào mừng';
 
   @override

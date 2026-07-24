@@ -18,7 +18,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer' as developer;
 
 class Login extends ConsumerStatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({Key? key, this.sessionExpired = false}) : super(key: key);
+
+  /// True when this screen was reached via [SessionManager.onSessionExpired]
+  /// (a 401 refresh-retry failed) rather than a normal logout/cold-start
+  /// redirect — shows a one-time "session expired" snackbar so the user
+  /// understands why they were bounced here.
+  final bool sessionExpired;
 
   @override
   ConsumerState<Login> createState() => _LoginState();
@@ -60,6 +66,16 @@ class _LoginState extends ConsumerState<Login> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _authService = ref.read(authenticationServiceProvider);
+
+    if (widget.sessionExpired) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final l = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l.sessionExpired)),
+        );
+      });
+    }
 
     initTimer.stop();
     _logPerformance('Widget Initialization', initTimer.elapsed.inMilliseconds);

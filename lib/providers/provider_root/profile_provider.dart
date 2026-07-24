@@ -16,6 +16,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/auth_interceptor.dart';
 
 class ProfileService {
   Future<UserInfo> getUserInfo() async {
@@ -94,7 +95,8 @@ class ProfileService {
       ));
     }
 
-    final dio = Dio();
+    // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
+    final dio = buildAuthedDio(baseUrl);
 
     print('[ProfileService] Sending PUT to: $baseUrl$USER_INFO');
     final response = await dio.put(

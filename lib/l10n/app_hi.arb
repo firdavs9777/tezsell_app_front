@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "आपका सत्र समाप्त हो गया है। कृपया फिर से साइन इन करें।",
   "@@locale": "hi",
   "@@x-machine-translated": true,
   "welcome": "स्वागत",

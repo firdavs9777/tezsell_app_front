@@ -9,6 +9,9 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
+  String get sessionExpired => 'Sesi Anda telah berakhir. Silakan masuk lagi.';
+
+  @override
   String get welcome => 'Selamat datang';
 
   @override

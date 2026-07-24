@@ -9,6 +9,9 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get sessionExpired => '세션이 만료되었습니다. 다시 로그인해 주세요.';
+
+  @override
   String get welcome => '환영';
 
   @override

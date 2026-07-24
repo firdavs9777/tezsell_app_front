@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get sessionExpired => 'Your session expired. Please sign in again.';
+
+  @override
   String get welcome => 'Welcome';
 
   @override

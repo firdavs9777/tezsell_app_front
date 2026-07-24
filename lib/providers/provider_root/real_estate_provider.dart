@@ -7,6 +7,7 @@ import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/auth_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -95,7 +96,8 @@ class SavedPropertiesResponse {
 // ============= SERVICE CLASS =============
 
 class RealEstateService {
-  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+  // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
+  final Dio dio = buildAuthedDio(baseUrl);
   final Map<String, Future> _pendingRequests = {};
 
   void _logPerformance(String operation, int milliseconds) {

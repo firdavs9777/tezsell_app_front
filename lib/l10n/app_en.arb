@@ -1,4 +1,8 @@
 {
+  "sessionExpired": "Your session expired. Please sign in again.",
+  "@sessionExpired": {
+    "description": "Snackbar shown on the login screen after a 401 refresh-retry failed and the user was force-logged-out (F Task 5 session-expiry flow)."
+  },
   "@@locale": "en",
   "welcome": "Welcome",
   "welcomeBack": "Welcome back!",

@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
   "@@locale": "de",
   "@@x-machine-translated": true,
   "welcome": "Willkommen",

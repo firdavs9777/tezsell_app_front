@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "您的会话已过期。请重新登录。",
   "@@locale": "zh",
   "@@x-machine-translated": true,
   "welcome": "欢迎",

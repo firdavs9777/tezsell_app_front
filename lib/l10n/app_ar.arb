@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
   "@@locale": "ar",
   "@@x-machine-translated": true,
   "welcome": "مرحباً",

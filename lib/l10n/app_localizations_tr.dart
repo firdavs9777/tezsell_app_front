@@ -9,6 +9,10 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get sessionExpired =>
+      'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.';
+
+  @override
   String get welcome => 'Hoş geldin';
 
   @override

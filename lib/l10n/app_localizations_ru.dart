@@ -9,6 +9,10 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get sessionExpired =>
+      'Ваша сессия истекла. Пожалуйста, войдите снова.';
+
+  @override
   String get welcome => 'Добро пожаловать';
 
   @override

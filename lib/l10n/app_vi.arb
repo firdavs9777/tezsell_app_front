@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.",
   "@@locale": "vi",
   "@@x-machine-translated": true,
   "welcome": "Chào mừng",

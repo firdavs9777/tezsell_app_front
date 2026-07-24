@@ -9,10 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/auth_interceptor.dart';
 
 class ServiceProvider {
-  // Initialize Dio instance with base URL
-  final Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
+  // Initialize Dio instance with base URL.
+  // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
+  final Dio dio = buildAuthedDio(baseUrl);
 
   // Properties for caching and performance tracking
   final Map<String, Future> _pendingRequests = {};
@@ -169,7 +171,7 @@ class ServiceProvider {
     String? token = await TokenStore.instance.getAccessToken();
     String? userLocation = prefs.getString('userLocation');
     String? userId = prefs.getString('userId');
-    Dio dio = Dio();
+    Dio dio = buildAuthedDio(baseUrl);
 
     // Always fetch fresh location from backend to ensure we have the latest
     int? locationId;
@@ -294,7 +296,7 @@ class ServiceProvider {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = await TokenStore.instance.getAccessToken();
     String? userId = prefs.getString('userId');
-    Dio dio = Dio();
+    Dio dio = buildAuthedDio(baseUrl);
 
     // Create FormData for the update
     Map<String, dynamic> formDataMap = {

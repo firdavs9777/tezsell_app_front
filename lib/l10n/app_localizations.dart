@@ -124,6 +124,12 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// Snackbar shown on the login screen after a 401 refresh-retry failed and the user was force-logged-out (F Task 5 session-expiry flow).
+  ///
+  /// In en, this message translates to:
+  /// **'Your session expired. Please sign in again.'**
+  String get sessionExpired;
+
   /// Welcome message
   ///
   /// In en, this message translates to:

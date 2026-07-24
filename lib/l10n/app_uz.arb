@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Sessiyangiz tugadi. Iltimos, qaytadan tizimga kiring.",
   "@@locale": "uz",
   "welcome": "Xush kelibsiz",
   "welcomeBack": "Xush kelibsiz!",

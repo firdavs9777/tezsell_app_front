@@ -9,6 +9,9 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get sessionExpired => '您的会话已过期。请重新登录。';
+
+  @override
   String get welcome => '欢迎';
 
   @override

@@ -114,7 +114,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         name: 'login',
-        builder: (context, state) => const Login(),
+        builder: (context, state) {
+          final extra = state.extra;
+          final sessionExpired = extra is Map && extra['sessionExpired'] == true;
+          return Login(sessionExpired: sessionExpired);
+        },
       ),
       GoRoute(
         path: '/welcome',

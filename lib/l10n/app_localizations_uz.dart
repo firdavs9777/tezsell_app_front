@@ -9,6 +9,10 @@ class AppLocalizationsUz extends AppLocalizations {
   AppLocalizationsUz([String locale = 'uz']) : super(locale);
 
   @override
+  String get sessionExpired =>
+      'Sessiyangiz tugadi. Iltimos, qaytadan tizimga kiring.';
+
+  @override
   String get welcome => 'Xush kelibsiz';
 
   @override

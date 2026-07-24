@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "セッションの有効期限が切れました。もう一度サインインしてください。",
   "@@locale": "ja",
   "@@x-machine-translated": true,
   "welcome": "いらっしゃいませ",

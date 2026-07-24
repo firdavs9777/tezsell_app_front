@@ -39,6 +39,11 @@ class PushNotificationService {
   /// Pending notification for deep linking when router is not yet available
   RemoteMessage? _pendingNotification;
 
+  /// The live [GoRouter] instance (set once [Welcome] builds), or `null`
+  /// before that first frame. Used by [SessionManager] to redirect to
+  /// `/login` on session expiry.
+  GoRouter? get router => _router;
+
   /// Set the router instance for navigation
   /// Also handles any pending notification that arrived before router was set
   void setRouter(GoRouter router) {

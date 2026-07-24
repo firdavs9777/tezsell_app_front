@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Sua sessão expirou. Por favor, faça login novamente.",
   "@@locale": "pt",
   "@@x-machine-translated": true,
   "welcome": "Bem-vindo",

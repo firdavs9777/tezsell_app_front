@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Sesi Anda telah berakhir. Silakan masuk lagi.",
   "@@locale": "id",
   "@@x-machine-translated": true,
   "welcome": "Selamat datang",

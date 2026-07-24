@@ -1,4 +1,5 @@
 {
+  "sessionExpired": "Oturumunuz sona erdi. Lütfen tekrar giriş yapın.",
   "@@locale": "tr",
   "@@x-machine-translated": true,
   "welcome": "Hoş geldin",

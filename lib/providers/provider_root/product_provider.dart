@@ -10,6 +10,7 @@ import 'package:app/providers/provider_models/product_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/auth_interceptor.dart';
 
 class ProductsService {
   // Singleton Dio instance for better performance
@@ -33,23 +34,27 @@ class ProductsService {
   }
 
   static void _initializeDio() {
-    _dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 30), // Increased for mobile
-      receiveTimeout: const Duration(seconds: 30), // Increased for mobile
-      sendTimeout: const Duration(seconds: 60), // Increased for file uploads
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'User-Agent': 'FlutterApp/1.0 (${Platform.operatingSystem})',
-      },
-      validateStatus: (status) {
-        // Accept all status codes < 500 to handle them manually
-        return status != null && status < 500;
-      },
-    ));
+    // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
+    _dio = buildAuthedDio(
+      baseUrl,
+      options: BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 30), // Increased for mobile
+        receiveTimeout: const Duration(seconds: 30), // Increased for mobile
+        sendTimeout: const Duration(seconds: 60), // Increased for file uploads
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
+          'User-Agent': 'FlutterApp/1.0 (${Platform.operatingSystem})',
+        },
+        validateStatus: (status) {
+          // Accept all status codes < 500 to handle them manually
+          return status != null && status < 500;
+        },
+      ),
+    );
 
     // Add performance logging and retry logic in debug mode
     if (kDebugMode) {

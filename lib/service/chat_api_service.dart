@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/session_manager.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:mime/mime.dart';
@@ -58,31 +59,36 @@ class ChatApiService {
     }
 
     try {
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/chats/$roomId/messages/'),
-      );
+      // Rebuilt fresh on every call so a post-refresh retry doesn't replay
+      // an already-consumed MultipartRequest (they're single-use).
+      final response = await authedHttp(() async {
+        final freshToken = await _getToken();
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse('$baseUrl/chats/$roomId/messages/'),
+        );
 
-      // Add headers
-      request.headers['Authorization'] = 'Token $token';
+        // Add headers
+        request.headers['Authorization'] = 'Token $freshToken';
 
-      // Add message type
-      request.fields['message_type'] = 'image';
+        // Add message type
+        request.fields['message_type'] = 'image';
 
-      // Add image file
-      final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
-      final mimeTypeData = mimeType.split('/');
+        // Add image file
+        final mimeType = lookupMimeType(imageFile.path) ?? 'image/jpeg';
+        final mimeTypeData = mimeType.split('/');
 
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          imageFile.path,
-          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
-        ),
-      );
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            imageFile.path,
+            contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+          ),
+        );
 
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
+        final streamedResponse = await request.send();
+        return http.Response.fromStream(streamedResponse);
+      });
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final decoded = json.decode(utf8.decode(response.bodyBytes));
@@ -116,29 +122,34 @@ class ChatApiService {
       final mimeType = lookupMimeType(audioFile.path) ?? 'audio/m4a';
       print('🎙️ [VoiceAPI] uploading — room:$roomId duration:${duration}s size:${fileSize}B mime:$mimeType path:${audioFile.path}');
 
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/chats/$roomId/messages/'),
-      );
+      // Rebuilt fresh on every call so a post-refresh retry doesn't replay
+      // an already-consumed MultipartRequest (they're single-use).
+      final response = await authedHttp(() async {
+        final freshToken = await _getToken();
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse('$baseUrl/chats/$roomId/messages/'),
+        );
 
-      request.headers['Authorization'] = 'Token $token';
-      request.fields['message_type'] = 'voice';
-      request.fields['duration'] = duration.toString();
-      if (waveform != null && waveform.isNotEmpty) {
-        request.fields['metadata'] = json.encode({'waveform': waveform});
-      }
+        request.headers['Authorization'] = 'Token $freshToken';
+        request.fields['message_type'] = 'voice';
+        request.fields['duration'] = duration.toString();
+        if (waveform != null && waveform.isNotEmpty) {
+          request.fields['metadata'] = json.encode({'waveform': waveform});
+        }
 
-      final mimeTypeData = mimeType.split('/');
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          audioFile.path,
-          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
-        ),
-      );
+        final mimeTypeData = mimeType.split('/');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            audioFile.path,
+            contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+          ),
+        );
 
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
+        final streamedResponse = await request.send();
+        return http.Response.fromStream(streamedResponse);
+      });
 
       print('🎙️ [VoiceAPI] response ${response.statusCode}: ${response.body}');
 
@@ -171,13 +182,27 @@ class ChatApiService {
     };
   }
 
+  /// 401 refresh-retry-or-logout via [authedHttp] (Plan F Task 5): builds
+  /// fresh headers (with whatever token is current at call time) for both
+  /// the initial attempt and, if a refresh happens, the retry — a stale
+  /// `headers` map captured before the refresh would defeat the retry.
+  Future<http.Response> _authedRequest(
+    Future<http.Response> Function(Map<String, String> headers) request, {
+    bool includeCharset = false,
+  }) {
+    return authedHttp(
+      () async => request(await _getHeaders(includeCharset: includeCharset)),
+    );
+  }
+
   // Get all chat rooms
   Future<List<ChatRoom>> getChatRooms() async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -209,15 +234,17 @@ class ChatApiService {
     required dynamic listingId,
   }) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/start-from-listing/'),
-        headers: headers,
-        body: json.encode({
-          'listing_type': listingType,
-          'listing_id': listingId,
-        }),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/start-from-listing/'),
+          headers: headers,
+          body: json.encode({
+            'listing_type': listingType,
+            'listing_id': listingId,
+          }),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -255,12 +282,14 @@ class ChatApiService {
   Future<TransactionResult> updateTransactionStatus(
       int chatId, String action) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/transaction/'),
-        headers: headers,
-        body: json.encode({'action': action}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/transaction/'),
+          headers: headers,
+          body: json.encode({'action': action}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -293,17 +322,18 @@ class ChatApiService {
   Future<ChatRoom> getOrCreateDirectChat(int targetUserId) async {
     try {
       print('🔍 [ChatAPI] getOrCreateDirectChat called for userId: $targetUserId');
-      final headers = await _getHeaders();
       print('🔍 [ChatAPI] Making POST to: $apiBaseUrl/chats/direct/');
 
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/direct/'),
-        headers: headers,
-        body: json.encode({'target_user_id': targetUserId}),
-      ).timeout(const Duration(seconds: 30), onTimeout: () {
-        print('❌ [ChatAPI] getOrCreateDirectChat timed out');
-        throw Exception('Request timed out');
-      });
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/direct/'),
+          headers: headers,
+          body: json.encode({'target_user_id': targetUserId}),
+        ).timeout(const Duration(seconds: 30), onTimeout: () {
+          print('❌ [ChatAPI] getOrCreateDirectChat timed out');
+          throw Exception('Request timed out');
+        }),
+      );
 
       print('🔍 [ChatAPI] getOrCreateDirectChat response: ${response.statusCode}');
 
@@ -328,14 +358,15 @@ class ChatApiService {
   // Create group chat
   Future<ChatRoom> createChatRoom(String name, List<int> participantIds) async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/'),
-        headers: headers,
-        body: json.encode({
-          'name': name,
-          'participants': participantIds,
-        }),
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/'),
+          headers: headers,
+          body: json.encode({
+            'name': name,
+            'participants': participantIds,
+          }),
+        ),
       );
 
       if (response.statusCode == 201) {
@@ -354,10 +385,11 @@ class ChatApiService {
   // Delete chat room
   Future<void> deleteChatRoom(int chatId) async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.delete(
-        Uri.parse('$apiBaseUrl/chats/$chatId/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.delete(
+          Uri.parse('$apiBaseUrl/chats/$chatId/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode != 204 && response.statusCode != 200) {
@@ -373,16 +405,14 @@ class ChatApiService {
   Future<List<ChatMessage>> getChatMessages(int roomId,
       {int page = 1, int pageSize = 50}) async {
     try {
-      final headers = await _getHeaders();
       final uri =
           Uri.parse('$apiBaseUrl/chats/$roomId/').replace(queryParameters: {
         'page': page.toString(),
         'page_size': pageSize.toString(),
       });
 
-      final response = await http.get(
-        uri,
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(uri, headers: headers),
       );
 
       if (response.statusCode == 200) {
@@ -416,16 +446,14 @@ class ChatApiService {
   Future<Map<String, dynamic>> getChatMessagesPaginated(int roomId,
       {int page = 1, int pageSize = 50}) async {
     try {
-      final headers = await _getHeaders();
       final uri =
           Uri.parse('$apiBaseUrl/chats/$roomId/').replace(queryParameters: {
         'page': page.toString(),
         'page_size': pageSize.toString(),
       });
 
-      final response = await http.get(
-        uri,
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(uri, headers: headers),
       );
 
       if (response.statusCode == 200) {
@@ -481,10 +509,11 @@ class ChatApiService {
   // Get all users (for creating chats)
   Future<List<User>> getUsers() async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/users/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/users/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -511,8 +540,6 @@ class ChatApiService {
   Future<List<Map<String, dynamic>>> searchUsers(
       {String? query, int? userId}) async {
     try {
-      final headers = await _getHeaders();
-
       final uri = Uri.parse('$apiBaseUrl/chats/search-users/').replace(
         queryParameters: {
           if (query != null && query.isNotEmpty) 'q': query,
@@ -520,7 +547,9 @@ class ChatApiService {
         },
       );
 
-      final response = await http.get(uri, headers: headers);
+      final response = await _authedRequest(
+        (headers) => http.get(uri, headers: headers),
+      );
 
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
@@ -553,16 +582,17 @@ class ChatApiService {
   Future<Map<String, dynamic>> startChatWithUser(int userId) async {
     try {
       print('🔍 [ChatAPI] startChatWithUser called for userId: $userId');
-      final headers = await _getHeaders();
-      print('🔍 [ChatAPI] Headers ready, making request to: $apiBaseUrl/chats/start/$userId/');
+      print('🔍 [ChatAPI] making request to: $apiBaseUrl/chats/start/$userId/');
 
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/start/$userId/'),
-        headers: headers,
-      ).timeout(const Duration(seconds: 30), onTimeout: () {
-        print('❌ [ChatAPI] Request timed out after 30 seconds');
-        throw Exception('Request timed out');
-      });
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/start/$userId/'),
+          headers: headers,
+        ).timeout(const Duration(seconds: 30), onTimeout: () {
+          print('❌ [ChatAPI] Request timed out after 30 seconds');
+          throw Exception('Request timed out');
+        }),
+      );
 
       print('🔍 [ChatAPI] Response status: ${response.statusCode}');
 
@@ -585,8 +615,6 @@ class ChatApiService {
   Future<ChatMessage> sendMessageWithReply(
       int chatId, String content, int? replyToMessageId) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
       final body = <String, dynamic>{
         'content': content,
         'message_type': 'text',
@@ -597,11 +625,14 @@ class ChatApiService {
         body['reply_to'] = replyToMessageId;
       }
 
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/'),
-        headers: headers,
-        body: json.encode(body),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/'),
+          headers: headers,
+          body: json.encode(body),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 201) {
@@ -620,13 +651,14 @@ class ChatApiService {
   Future<ChatMessage> editMessage(
       int chatId, int messageId, String newContent) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.put(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/'),
-        headers: headers,
-        body: json.encode({'content': newContent}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.put(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/'),
+          headers: headers,
+          body: json.encode({'content': newContent}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -671,11 +703,11 @@ class ChatApiService {
     String mode = 'for_me',
   }) async {
     try {
-      final headers = await _getHeaders();
-
-      final response = await http.delete(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/?mode=$mode'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.delete(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/?mode=$mode'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode != 200 && response.statusCode != 204) {
@@ -691,11 +723,12 @@ class ChatApiService {
   // `is_pinned` flag from `POST /chats/<chat_id>/messages/<id>/pin/`.
   Future<bool> togglePinMessage(int chatId, int messageId) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/pin/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/pin/'),
+          headers: headers,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -718,13 +751,14 @@ class ChatApiService {
     int targetRoomId,
   ) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/forward/'),
-        headers: headers,
-        body: json.encode({'target_room_id': targetRoomId}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/forward/'),
+          headers: headers,
+          body: json.encode({'target_room_id': targetRoomId}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -742,13 +776,14 @@ class ChatApiService {
   Future<Map<String, List<int>>> toggleReaction(
       int chatId, int messageId, String emoji) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/reaction/'),
-        headers: headers,
-        body: json.encode({'emoji': emoji}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/messages/$messageId/reaction/'),
+          headers: headers,
+          body: json.encode({'emoji': emoji}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -776,13 +811,14 @@ class ChatApiService {
   // 🔥 NEW: Block user
   Future<void> blockUser(int userId) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/block/'),
-        headers: headers,
-        body: json.encode({'user_id': userId}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/block/'),
+          headers: headers,
+          body: json.encode({'user_id': userId}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -797,16 +833,18 @@ class ChatApiService {
   // 🔥 NEW: Unblock user
   Future<void> unblockUser(int userId) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
+      // http.delete doesn't support body, so use Request directly. Rebuilt
+      // fresh on every call (http.Request is also single-use).
+      final response = await authedHttp(() async {
+        final headers = await _getHeaders(includeCharset: true);
+        final request =
+            http.Request('DELETE', Uri.parse('$apiBaseUrl/chats/block/'));
+        request.headers.addAll(headers);
+        request.body = json.encode({'user_id': userId});
 
-      // http.delete doesn't support body, so use Request directly
-      final request =
-          http.Request('DELETE', Uri.parse('$apiBaseUrl/chats/block/'));
-      request.headers.addAll(headers);
-      request.body = json.encode({'user_id': userId});
-
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
+        final streamedResponse = await request.send();
+        return http.Response.fromStream(streamedResponse);
+      });
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         throw Exception('Failed to unblock user: ${response.statusCode}');
@@ -820,11 +858,11 @@ class ChatApiService {
   // 🔥 NEW: Get blocked users list
   Future<List<User>> getBlockedUsers() async {
     try {
-      final headers = await _getHeaders();
-
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/blocked/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/blocked/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -848,13 +886,14 @@ class ChatApiService {
   // 🔥 NEW: Initiate call
   Future<Map<String, dynamic>> initiateCall(int chatId, String callType) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/call/'),
-        headers: headers,
-        body: json.encode({'call_type': callType}), // 'voice' or 'video'
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/call/'),
+          headers: headers,
+          body: json.encode({'call_type': callType}), // 'voice' or 'video'
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 201) {
@@ -872,13 +911,14 @@ class ChatApiService {
   Future<Map<String, dynamic>> updateCall(
       int chatId, int callId, String action) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.put(
-        Uri.parse('$apiBaseUrl/chats/$chatId/call/$callId/'),
-        headers: headers,
-        body: json.encode({'action': action}), // 'answer', 'reject', or 'end'
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.put(
+          Uri.parse('$apiBaseUrl/chats/$chatId/call/$callId/'),
+          headers: headers,
+          body: json.encode({'action': action}), // 'answer', 'reject', or 'end'
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -900,13 +940,14 @@ class ChatApiService {
   // Exception's message so callers can decide how to present it.
   Future<String> translateMessage(int messageId, String target) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/messages/$messageId/translate/'),
-        headers: headers,
-        body: json.encode({'target': target}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/messages/$messageId/translate/'),
+          headers: headers,
+          body: json.encode({'target': target}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -931,7 +972,6 @@ class ChatApiService {
     int pageSize = 20,
   }) async {
     try {
-      final headers = await _getHeaders();
       final uri = Uri.parse('$apiBaseUrl/chats/$chatId/search/').replace(
         queryParameters: {
           'q': query,
@@ -940,7 +980,9 @@ class ChatApiService {
         },
       );
 
-      final response = await http.get(uri, headers: headers);
+      final response = await _authedRequest(
+        (headers) => http.get(uri, headers: headers),
+      );
 
       if (response.statusCode == 200) {
         return json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
@@ -963,7 +1005,6 @@ class ChatApiService {
     bool? isPinned,
   }) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
       final body = <String, dynamic>{
         if (isMuted != null) 'is_muted': isMuted,
         if (mutedUntil != null) 'muted_until': mutedUntil.toUtc().toIso8601String(),
@@ -971,11 +1012,14 @@ class ChatApiService {
         if (isPinned != null) 'is_pinned': isPinned,
       };
 
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/$chatId/state/'),
-        headers: headers,
-        body: json.encode(body),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/$chatId/state/'),
+          headers: headers,
+          body: json.encode(body),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 200) {
@@ -996,10 +1040,11 @@ class ChatApiService {
   // list's collapsed "Archived" section on first expand.
   Future<List<ChatRoom>> getArchivedChatRooms() async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/?archived=1'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/?archived=1'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -1017,10 +1062,11 @@ class ChatApiService {
   // 🔥 NEW: Task 19 — the current user's saved quick-reply templates.
   Future<List<QuickReply>> getQuickReplies() async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/quick-replies/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/quick-replies/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -1041,12 +1087,14 @@ class ChatApiService {
   // [QuickReplyCapException] when the backend's 20-template cap (400) is hit.
   Future<QuickReply> addQuickReply(String text, {int order = 0}) async {
     try {
-      final headers = await _getHeaders(includeCharset: true);
-      final response = await http.post(
-        Uri.parse('$apiBaseUrl/chats/quick-replies/'),
-        headers: headers,
-        body: json.encode({'text': text, 'order': order}),
-        encoding: utf8,
+      final response = await _authedRequest(
+        (headers) => http.post(
+          Uri.parse('$apiBaseUrl/chats/quick-replies/'),
+          headers: headers,
+          body: json.encode({'text': text, 'order': order}),
+          encoding: utf8,
+        ),
+        includeCharset: true,
       );
 
       if (response.statusCode == 201) {
@@ -1067,10 +1115,11 @@ class ChatApiService {
   // 🔥 NEW: Task 19 — deletes a quick-reply template.
   Future<void> deleteQuickReply(int id) async {
     try {
-      final headers = await _getHeaders();
-      final response = await http.delete(
-        Uri.parse('$apiBaseUrl/chats/quick-replies/$id/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.delete(
+          Uri.parse('$apiBaseUrl/chats/quick-replies/$id/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode != 204 && response.statusCode != 200) {
@@ -1084,11 +1133,11 @@ class ChatApiService {
   // 🔥 NEW: Get call history
   Future<List<Map<String, dynamic>>> getCallHistory(int chatId) async {
     try {
-      final headers = await _getHeaders();
-
-      final response = await http.get(
-        Uri.parse('$apiBaseUrl/chats/$chatId/calls/'),
-        headers: headers,
+      final response = await _authedRequest(
+        (headers) => http.get(
+          Uri.parse('$apiBaseUrl/chats/$chatId/calls/'),
+          headers: headers,
+        ),
       );
 
       if (response.statusCode == 200) {
