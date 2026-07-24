@@ -6070,6 +6070,42 @@ abstract class AppLocalizations {
   /// **'Logout All'**
   String get logout_all;
 
+  /// No description provided for @securityLoginHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Login History'**
+  String get securityLoginHistory;
+
+  /// No description provided for @securityLogoutAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout All Devices'**
+  String get securityLogoutAll;
+
+  /// No description provided for @securityLogoutAllConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will sign you out on every device where you\'re currently logged in, including this one.'**
+  String get securityLogoutAllConfirm;
+
+  /// No description provided for @securityNewDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'New device'**
+  String get securityNewDevice;
+
+  /// No description provided for @securityNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No login history yet'**
+  String get securityNoHistory;
+
+  /// No description provided for @securitySignedOutEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve been signed out of all devices'**
+  String get securitySignedOutEverywhere;
+
   /// No description provided for @delete_account_confirm.
   ///
   /// In en, this message translates to:

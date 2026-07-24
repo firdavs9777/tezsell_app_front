@@ -3124,6 +3124,26 @@ class AppLocalizationsRu extends AppLocalizations {
   String get logout_all => 'Выйти со всех';
 
   @override
+  String get securityLoginHistory => 'История входов';
+
+  @override
+  String get securityLogoutAll => 'Выйти со всех устройств';
+
+  @override
+  String get securityLogoutAllConfirm =>
+      'Это завершит сеанс на всех устройствах, где вы сейчас вошли в систему, включая это.';
+
+  @override
+  String get securityNewDevice => 'Новое устройство';
+
+  @override
+  String get securityNoHistory => 'История входов пока пуста';
+
+  @override
+  String get securitySignedOutEverywhere =>
+      'Вы вышли из системы на всех устройствах';
+
+  @override
   String get delete_account_confirm => 'Удалить аккаунт?';
 
   @override

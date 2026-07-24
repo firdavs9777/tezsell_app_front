@@ -3033,6 +3033,26 @@ class AppLocalizationsJa extends AppLocalizations {
   String get logout_all => 'すべてログアウト';
 
   @override
+  String get securityLoginHistory => 'Login History';
+
+  @override
+  String get securityLogoutAll => 'Logout All Devices';
+
+  @override
+  String get securityLogoutAllConfirm =>
+      'This will sign you out on every device where you\'re currently logged in, including this one.';
+
+  @override
+  String get securityNewDevice => 'New device';
+
+  @override
+  String get securityNoHistory => 'No login history yet';
+
+  @override
+  String get securitySignedOutEverywhere =>
+      'You\'ve been signed out of all devices';
+
+  @override
   String get delete_account_confirm => 'アカウントを削除しますか?';
 
   @override

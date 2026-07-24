@@ -3142,7 +3142,27 @@ class AppLocalizationsUz extends AppLocalizations {
   String get logout_all => 'Barchasidan chiqish';
 
   @override
-  String get delete_account_confirm => 'Hisobni o\'chirasizmi?';
+  String get securityLoginHistory => 'Kirish tarixi';
+
+  @override
+  String get securityLogoutAll => 'Barcha qurilmalardan chiqish';
+
+  @override
+  String get securityLogoutAllConfirm =>
+      'Bu hozir tizimga kirgan barcha qurilmalardan, jumladan shu qurilmadan ham chiqishga olib keladi.';
+
+  @override
+  String get securityNewDevice => 'Yangi qurilma';
+
+  @override
+  String get securityNoHistory => 'Hozircha kirish tarixi yo\'q';
+
+  @override
+  String get securitySignedOutEverywhere =>
+      'Siz barcha qurilmalardan tizimdan chiqdingiz';
+
+  @override
+  String get delete_account_confirm => 'Delete Account?';
 
   @override
   String get delete_account_warning =>

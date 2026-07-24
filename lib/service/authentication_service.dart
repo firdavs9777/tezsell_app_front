@@ -991,6 +991,100 @@ class AuthenticationService {
         unawaited(_revokeTokensOnBackend(accessToken, refreshToken));
       }
 
+      await _clearLocalAuthState();
+
+      AppLogger.info('User logged out successfully (including location data)');
+    } catch (e) {
+      AppLogger.error('Error during logout: $e');
+    }
+  }
+
+  /// Sign the user out of every device: revokes ALL of the user's access +
+  /// refresh tokens on the backend (this device included), then clears
+  /// local session state the same way [logout] does.
+  ///
+  /// Returns `{'success': true, ...}` on success, or
+  /// `{'success': false, 'error': ...}` if the backend call failed --
+  /// local session state is cleared regardless, since the user's intent is
+  /// to be signed out either way.
+  Future<Map<String, dynamic>> logoutAll() async {
+    Map<String, dynamic> result;
+    try {
+      final accessToken = await getStoredToken();
+      if (accessToken == null || accessToken.isEmpty) {
+        result = {'success': false, 'error': 'Authentication required'};
+      } else {
+        final response = await httpClient
+            .post(
+              Uri.parse('$baseUrl/accounts/logout-all/'),
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token $accessToken',
+              },
+            )
+            .timeout(const Duration(seconds: 10));
+
+        final data = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          result = {
+            'success': true,
+            'message': data['message'] ?? 'Logged out of all devices',
+          };
+        } else {
+          result = {
+            'success': false,
+            'error': data['error'] ?? data['message'] ?? 'Logout failed',
+          };
+        }
+      }
+    } catch (e) {
+      result = {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+
+    // Local session is cleared regardless of backend outcome: the user's
+    // intent is to be signed out, and stale local tokens must not linger.
+    await _clearLocalAuthState();
+    return result;
+  }
+
+  /// Fetch the user's recent login history (security screen), newest-first.
+  Future<Map<String, dynamic>> getLoginHistory() async {
+    try {
+      final accessToken = await getStoredToken();
+      if (accessToken == null || accessToken.isEmpty) {
+        return {'success': false, 'error': 'Authentication required'};
+      }
+
+      final response = await httpClient
+          .get(
+            Uri.parse('$baseUrl/accounts/login-history/'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Token $accessToken',
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'results': (data['results'] as List?) ?? [],
+        };
+      } else {
+        return {
+          'success': false,
+          'error': data['error'] ?? data['message'] ?? 'Failed to load login history',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.toString()}'};
+    }
+  }
+
+  /// Shared local-session cleanup used by both [logout] and [logoutAll].
+  Future<void> _clearLocalAuthState() async {
+    try {
       final prefs = await _getPrefs();
       await Future.wait([
         TokenStore.instance.clear(),
@@ -1010,10 +1104,8 @@ class AuthenticationService {
 
       // Clear pending requests
       _pendingRequests.clear();
-
-      AppLogger.info('User logged out successfully (including location data)');
     } catch (e) {
-      AppLogger.error('Error during logout: $e');
+      AppLogger.error('Error clearing local auth state: $e');
     }
   }
 

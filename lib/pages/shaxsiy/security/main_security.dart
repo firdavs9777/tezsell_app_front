@@ -1,11 +1,19 @@
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/shaxsiy/security/widgets/security_change_password_flow.dart';
 import 'package:app/pages/shaxsiy/security/widgets/security_delete_account_flow.dart';
+import 'package:app/pages/shaxsiy/security/widgets/security_login_history_section.dart';
 import 'package:app/pages/shaxsiy/security/widgets/security_logout_all_dialog.dart';
 import 'package:app/pages/shaxsiy/security/widgets/security_option_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Security settings screen.
+///
+/// Only shows controls that are actually backed by something real: change
+/// password, this device's login history, "logout all devices" (backed by
+/// `POST /accounts/logout-all/`), and account deletion. There is
+/// deliberately no 2FA/biometric toggle or "security score" here -- those
+/// flows don't exist yet, and showing them would be misleading.
 class SecuritySettingsPage extends ConsumerStatefulWidget {
   const SecuritySettingsPage({super.key});
 
@@ -15,18 +23,6 @@ class SecuritySettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
-  final bool _isTwoFactorEnabled = false;
-  final bool _isBiometricEnabled = false;
-  final bool _isLoginAlertsEnabled = true;
-
-  int get _securityScore {
-    int score = 50;
-    if (_isTwoFactorEnabled) score += 25;
-    if (_isBiometricEnabled) score += 15;
-    if (_isLoginAlertsEnabled) score += 10;
-    return score;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -62,7 +58,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildSecurityScoreCard(theme, primary, localizations),
+            const SizedBox(height: 8),
             SecuritySection(
               title: localizations?.password_security ??
                   'Password & Authentication',
@@ -71,71 +67,19 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
                 SecurityOption(
                   icon: Icons.key,
                   title: localizations?.change_password ?? 'Change Password',
-                  subtitle: localizations?.last_changed_days ??
-                      'Last changed 30 days ago',
+                  subtitle: localizations?.verification_code_message ??
+                      "We'll send a verification code to confirm it's you.",
                   trailing:
                       const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () => showChangePasswordFlow(context, ref),
                 ),
               ],
             ),
+            const SecurityLoginHistorySection(),
             _buildDangerZone(theme, localizations),
             const SizedBox(height: 32),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSecurityScoreCard(
-    ThemeData theme,
-    Color primary,
-    AppLocalizations? localizations,
-  ) {
-    final isSecure = _securityScore >= 70;
-    final accentColor = isSecure ? primary : const Color(0xFFFF9800);
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primary.withValues(alpha: 0.1), primary.withValues(alpha: 0.05)],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primary.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            isSecure ? Icons.verified_user : Icons.warning,
-            size: 48,
-            color: accentColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            isSecure
-                ? (localizations?.account_secure ?? 'Account Secure')
-                : (localizations?.improve_security ?? 'Improve Security'),
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: accentColor,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${localizations?.security_score ?? "Security Score"}: '
-            '$_securityScore/100',
-          ),
-          const SizedBox(height: 16),
-          LinearProgressIndicator(
-            value: _securityScore / 100,
-            minHeight: 8,
-            backgroundColor: theme.colorScheme.outlineVariant,
-            valueColor: AlwaysStoppedAnimation(accentColor),
-          ),
-        ],
       ),
     );
   }
@@ -167,7 +111,7 @@ class _SecuritySettingsPageState extends ConsumerState<SecuritySettingsPage> {
           const SizedBox(height: 16),
           SecurityDangerOption(
             icon: Icons.logout,
-            title: localizations?.logout_all_devices ?? 'Logout All Devices',
+            title: localizations?.securityLogoutAll ?? 'Logout All Devices',
             subtitle: localizations?.end_all_sessions ?? 'End all sessions',
             onTap: () => showLogoutAllDialog(context, ref),
           ),

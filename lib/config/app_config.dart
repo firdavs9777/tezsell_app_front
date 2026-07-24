@@ -31,6 +31,8 @@ class AppConfig {
   static const String refreshTokenPath = '/accounts/refresh-token/';
   static const String verifyTokenPath = '/accounts/verify-token/';
   static const String logoutPath = '/accounts/logout/';
+  static const String logoutAllPath = '/accounts/logout-all/';
+  static const String loginHistoryPath = '/accounts/login-history/';
 
   // Products Endpoints
   static const String productsPath = '/products/api/products/';
