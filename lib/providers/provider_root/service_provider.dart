@@ -342,6 +342,61 @@ class ServiceProvider {
     }
   }
 
+  /// Lightweight owner-only partial update of a service's `is_active` flag
+  /// -- sends ONLY that flag as JSON to `PUT /services/api/services/:id/`
+  /// (the owner-gated `ServiceDetailView.put`, `partial=True` on the
+  /// backend), mirroring `ProductsService.setListingStatus`. Deliberately
+  /// does NOT reuse [updateService], which is a heavy FormData PUT
+  /// requiring name/description/etc. Services have no is_sold/is_reserved
+  /// equivalent (they're ongoing offerings, not a single per-listing
+  /// transaction), so hide/unhide is the only status action they support.
+  Future<Services> setServiceActive({
+    required int serviceId,
+    required bool isActive,
+  }) async {
+    final token = await TokenStore.instance.getAccessToken();
+    if (token == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final response = await dio.put(
+      '$SERVICES_URL/$serviceId/',
+      data: {'is_active': isActive},
+      options: Options(
+        headers: {
+          'Authorization': 'Token $token',
+          'Content-Type': 'application/json',
+        },
+        validateStatus: (status) => status != null && status < 500,
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = response.data;
+      final serviceJson = (data is Map && data['data'] is Map)
+          ? data['data'] as Map<String, dynamic>
+          : data as Map<String, dynamic>;
+      return Services.fromJson(serviceJson);
+    }
+
+    String errorMessage = 'Failed to update listing status';
+    if (response.data is Map) {
+      final errorData = response.data as Map;
+      if (errorData['error'] != null) {
+        errorMessage = errorData['error'].toString();
+      } else if (errorData['detail'] != null) {
+        errorMessage = errorData['detail'].toString();
+      } else if (errorData['message'] != null) {
+        errorMessage = errorData['message'].toString();
+      }
+    }
+    throw DioException(
+      requestOptions: response.requestOptions,
+      response: response,
+      message: errorMessage,
+    );
+  }
+
 // Delete service method
   Future<bool> deleteService(int serviceId) async {
     final url = '$baseUrl$SERVICES_URL/$serviceId/';

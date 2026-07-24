@@ -56,7 +56,11 @@ class _MyServicesState extends ConsumerState<MyServices> {
         _services.clear();
       });
 
-      final services = await ref.read(profileServiceProvider).getUserServices();
+      // includeInactive: the owner needs to see their own hidden services
+      // too, not just the public active-only set.
+      final services = await ref
+          .read(profileServiceProvider)
+          .getUserServices(includeInactive: true);
 
       if (mounted) {
         setState(() {
@@ -162,9 +166,9 @@ class _MyServicesState extends ConsumerState<MyServices> {
             const SizedBox(height: 16),
             Text(
               localizations?.delete_service ?? 'Delete Service',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
@@ -172,8 +176,8 @@ class _MyServicesState extends ConsumerState<MyServices> {
                   'Are you sure you want to delete "${service.name}"?',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -213,6 +217,7 @@ class _MyServicesState extends ConsumerState<MyServices> {
     );
 
     if (confirmed != true) return;
+    if (!mounted) return;
 
     // Show loading
     showDialog(
@@ -233,7 +238,11 @@ class _MyServicesState extends ConsumerState<MyServices> {
           _services.removeWhere((s) => s.id == service.id);
           _hasChanges = true;
         });
-        _showSuccess('Service deleted successfully');
+        if (!mounted) return;
+        _showSuccess(
+          AppLocalizations.of(context)?.service_deleted_successfully ??
+              'Service deleted successfully',
+        );
       }
     } catch (e) {
       if (mounted) Navigator.pop(context);
@@ -244,9 +253,7 @@ class _MyServicesState extends ConsumerState<MyServices> {
   void _editService(Services service) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ServiceEdit(service: service),
-      ),
+      MaterialPageRoute(builder: (context) => ServiceEdit(service: service)),
     ).then((updatedService) {
       if (updatedService != null && updatedService is Services) {
         setState(() {
@@ -263,6 +270,31 @@ class _MyServicesState extends ConsumerState<MyServices> {
 
   void _viewService(Services service) {
     context.push('/service/${service.id}');
+  }
+
+  /// Hide/Unhide is the only status action services support -- unlike
+  /// products, services have no is_sold/is_reserved equivalent (they're
+  /// ongoing offerings, not a single per-listing transaction).
+  Future<void> _setServiceActive(Services service, bool isActive) async {
+    final l = AppLocalizations.of(context);
+    try {
+      await ref
+          .read(serviceMainProvider)
+          .setServiceActive(serviceId: service.id, isActive: isActive);
+      _hasChanges = true;
+      await _loadServices();
+      if (!mounted) return;
+      _showSuccess(
+        isActive
+            ? (l?.listing_unhidden ?? 'Listing is visible again')
+            : (l?.listing_hidden ?? 'Listing hidden'),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      _showError(
+        '${l?.failed_to_update_listing ?? 'Failed to update listing'}: $e',
+      );
+    }
   }
 
   @override
@@ -289,17 +321,17 @@ class _MyServicesState extends ConsumerState<MyServices> {
             children: [
               Text(
                 localizations?.my_services ?? 'My Services',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               if (_services.isNotEmpty)
                 Text(
                   '${_services.length} ${_services.length == 1 ? 'item' : 'items'}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.normal,
-                      ),
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
             ],
           ),
@@ -342,14 +374,16 @@ class _MyServicesState extends ConsumerState<MyServices> {
           }
           final service = _services[index];
           return MyServicesCard(
+            key: ValueKey(service.id),
             service: service,
             onView: () => _viewService(service),
             onEdit: () => _editService(service),
             onDelete: () => _deleteService(service),
+            onHide: () => _setServiceActive(service, false),
+            onUnhide: () => _setServiceActive(service, true),
           );
         },
       ),
     );
   }
-
 }

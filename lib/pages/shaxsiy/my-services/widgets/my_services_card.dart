@@ -6,6 +6,8 @@ import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+enum _ServiceMenuAction { hide, unhide, edit, delete }
+
 class MyServicesCard extends StatelessWidget {
   const MyServicesCard({
     super.key,
@@ -13,12 +15,16 @@ class MyServicesCard extends StatelessWidget {
     required this.onView,
     required this.onEdit,
     required this.onDelete,
+    required this.onHide,
+    required this.onUnhide,
   });
 
   final Services service;
   final VoidCallback onView;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onHide;
+  final VoidCallback onUnhide;
 
   String _categoryName(BuildContext context, CategoryModel category) {
     switch (Localizations.localeOf(context).languageCode) {
@@ -48,6 +54,7 @@ class MyServicesCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final l = AppLocalizations.of(context);
     final imageUrl = service.images.isNotEmpty
         ? ImageUtils.buildImageUrl(service.images.first.image)
         : null;
@@ -64,86 +71,108 @@ class MyServicesCard extends StatelessWidget {
           onTap: onView,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Hero(
-                      tag: 'service-${service.id}',
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: colorScheme.surfaceContainerHighest,
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: imageUrl != null
-                            ? CachedNetworkImageWidget(
-                                imageUrl: imageUrl,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                                errorWidget:
-                                    _Placeholder(colorScheme: colorScheme),
-                              )
-                            : _Placeholder(colorScheme: colorScheme),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            service.name,
-                            style: theme.textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+              Opacity(
+                // Dim the whole row when hidden, mirroring the products
+                // card's sold/inactive treatment.
+                opacity: service.isActive ? 1.0 : 0.7,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Hero(
+                        tag: 'service-${service.id}',
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: colorScheme.surfaceContainerHighest,
                           ),
-                          const SizedBox(height: 6),
-                          Text(
-                            service.description,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-                          if (service.location.district.isNotEmpty)
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  size: 14,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${service.location.district}, '
-                                    '${service.location.region}',
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                          clipBehavior: Clip.antiAlias,
+                          child: imageUrl != null
+                              ? CachedNetworkImageWidget(
+                                  imageUrl: imageUrl,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                  errorWidget: _Placeholder(
+                                    colorScheme: colorScheme,
                                   ),
+                                )
+                              : _Placeholder(colorScheme: colorScheme),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              service.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              service.description,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 8),
+                            if (service.location.district.isNotEmpty)
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    size: 14,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      '${service.location.district}, '
+                                      '${service.location.region}',
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: [
+                                _CategoryBadge(
+                                  text: _categoryName(
+                                    context,
+                                    service.category,
+                                  ),
+                                  color: colorScheme.primary,
                                 ),
+                                if (!service.isActive)
+                                  _CategoryBadge(
+                                    text: l?.hidden_badge ?? 'HIDDEN',
+                                    color: Colors.grey,
+                                  ),
                               ],
                             ),
-                          const SizedBox(height: 8),
-                          _CategoryBadge(
-                            text: _categoryName(context, service.category),
-                            color: colorScheme.primary,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Divider(
@@ -151,8 +180,7 @@ class MyServicesCard extends StatelessWidget {
                 color: colorScheme.outlineVariant.withValues(alpha: 0.5),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Row(
                   children: [
                     Padding(
@@ -168,29 +196,68 @@ class MyServicesCard extends StatelessWidget {
                     TextButton.icon(
                       onPressed: onView,
                       icon: const Icon(Icons.visibility_outlined, size: 18),
-                      label: const Text('View'),
+                      label: Text(l?.view ?? 'View'),
                       style: TextButton.styleFrom(
                         foregroundColor: colorScheme.onSurfaceVariant,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                       ),
                     ),
-                    TextButton.icon(
-                      onPressed: onEdit,
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      label: const Text('Edit'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: onDelete,
+                    PopupMenuButton<_ServiceMenuAction>(
                       icon: Icon(
-                        Icons.delete_outline_rounded,
-                        size: 20,
-                        color: colorScheme.error,
+                        Icons.more_vert_rounded,
+                        color: colorScheme.onSurfaceVariant,
                       ),
-                      tooltip: 'Delete',
+                      tooltip: l?.more_options ?? 'More options',
+                      onSelected: (action) {
+                        switch (action) {
+                          case _ServiceMenuAction.hide:
+                            onHide();
+                            break;
+                          case _ServiceMenuAction.unhide:
+                            onUnhide();
+                            break;
+                          case _ServiceMenuAction.edit:
+                            onEdit();
+                            break;
+                          case _ServiceMenuAction.delete:
+                            onDelete();
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        if (service.isActive)
+                          PopupMenuItem(
+                            value: _ServiceMenuAction.hide,
+                            child: _MenuRow(
+                              icon: Icons.visibility_off_outlined,
+                              label: l?.hide_listing ?? 'Hide',
+                            ),
+                          )
+                        else
+                          PopupMenuItem(
+                            value: _ServiceMenuAction.unhide,
+                            child: _MenuRow(
+                              icon: Icons.visibility_outlined,
+                              label: l?.unhide_listing ?? 'Unhide',
+                            ),
+                          ),
+                        PopupMenuItem(
+                          value: _ServiceMenuAction.edit,
+                          child: _MenuRow(
+                            icon: Icons.edit_outlined,
+                            label: l?.edit ?? 'Edit',
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem(
+                          value: _ServiceMenuAction.delete,
+                          child: _MenuRow(
+                            icon: Icons.delete_outline_rounded,
+                            label: l?.delete ?? 'Delete',
+                            color: colorScheme.error,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -221,6 +288,29 @@ class _Placeholder extends StatelessWidget {
   }
 }
 
+/// Icon + label row used inside [PopupMenuItem]s for the per-listing
+/// overflow menu. [color] tints both the icon and label (e.g. for the
+/// destructive "Delete" entry); defaults to the theme's body text color.
+class _MenuRow extends StatelessWidget {
+  const _MenuRow({required this.icon, required this.label, this.color});
+
+  final IconData icon;
+  final String label;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 18, color: color),
+        const SizedBox(width: 12),
+        Text(label, style: TextStyle(color: color)),
+      ],
+    );
+  }
+}
+
 class _CategoryBadge extends StatelessWidget {
   const _CategoryBadge({required this.text, required this.color});
 
@@ -238,9 +328,9 @@ class _CategoryBadge extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: color.withValues(alpha: 0.8),
-            ),
+          fontWeight: FontWeight.w600,
+          color: color.withValues(alpha: 0.8),
+        ),
       ),
     );
   }
@@ -278,8 +368,9 @@ class MyServicesEmptyState extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               localizations?.no_services_found ?? 'No services yet',
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -297,7 +388,9 @@ class MyServicesEmptyState extends StatelessWidget {
               label: const Text('Add Service'),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 24, vertical: 14),
+                  horizontal: 24,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

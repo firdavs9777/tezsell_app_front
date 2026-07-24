@@ -4933,4 +4933,58 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reviewWriteRetry => 'Повторить';
+
+  @override
+  String get view => 'Просмотр';
+
+  @override
+  String get more_options => 'Ещё';
+
+  @override
+  String get mark_as_sold => 'Отметить как продано';
+
+  @override
+  String get back_to_available => 'Снова в продаже';
+
+  @override
+  String get hide_listing => 'Скрыть';
+
+  @override
+  String get unhide_listing => 'Показать';
+
+  @override
+  String get hidden_badge => 'СКРЫТО';
+
+  @override
+  String get who_did_you_sell_to => 'Кому вы продали?';
+
+  @override
+  String get sold_elsewhere => 'Продано в другом месте';
+
+  @override
+  String get marked_as_sold => 'Отмечено как продано';
+
+  @override
+  String get listing_available_again => 'Объявление снова доступно';
+
+  @override
+  String get listing_hidden => 'Объявление скрыто';
+
+  @override
+  String get listing_unhidden => 'Объявление снова видно';
+
+  @override
+  String get failed_to_update_listing => 'Не удалось обновить объявление';
+
+  @override
+  String get active_tab => 'Активные';
+
+  @override
+  String get sold_tab => 'Проданные';
+
+  @override
+  String get no_active_listings => 'Нет активных объявлений';
+
+  @override
+  String get no_sold_listings => 'Пока нет проданных товаров';
 }

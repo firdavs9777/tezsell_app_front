@@ -194,13 +194,40 @@ class ProfileService {
     }
   }
 
-  Future<List<Products>> getUserProducts() async {
+  /// Fetches the CURRENT user's own products via the owner-aware
+  /// `GET /accounts/profile/:userId/products/` endpoint (Plan E Task 5) --
+  /// unlike the legacy `/products/api/user/products/` endpoint this
+  /// previously called, this one's `ProductSerializer` actually returns
+  /// `is_sold`/`is_active`/`is_reserved`, which the my-listings screen
+  /// needs to split into Active/Sold tabs and show a Hidden indicator.
+  ///
+  /// [includeInactive] adds `?include_inactive=true`, which the backend
+  /// only honors for the authenticated owner viewing their own profile --
+  /// it drops the default active-only filter so hidden/sold listings show
+  /// up too. Requests `page_size=50` (the endpoint's max) since this
+  /// screen has no "load more" and a seller's full listing set should fit
+  /// in one page for the common case.
+  Future<List<Products>> getUserProducts({bool includeInactive = false}) async {
     final String? token = await TokenStore.instance.getAccessToken();
-    final response =
-        await http.get(Uri.parse('$baseUrl$USER_PRODUCT'), headers: {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userIdStr = prefs.getString('userId');
+    final int? userId = userIdStr != null ? int.tryParse(userIdStr) : null;
+
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final uri = Uri.parse(AppConfig.getUserProductsUrl(userId)).replace(
+      queryParameters: {
+        'page_size': '50',
+        if (includeInactive) 'include_inactive': 'true',
+      },
+    );
+
+    final response = await http.get(uri, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Token $token',
+      if (token != null) 'Authorization': 'Token $token',
     });
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -213,13 +240,35 @@ class ProfileService {
     }
   }
 
-  Future<List<Services>> getUserServices() async {
+  /// Fetches the CURRENT user's own services via the owner-aware
+  /// `GET /accounts/profile/:userId/services/` endpoint (Plan E Task 5) --
+  /// mirrors [getUserProducts]: the legacy `/services/api/user/services/`
+  /// endpoint this previously called never exposed `is_active` at all, so
+  /// the my-services screen's Hide/Unhide couldn't reflect real state.
+  ///
+  /// [includeInactive] adds `?include_inactive=true`, honored by the
+  /// backend only for the authenticated owner viewing their own profile.
+  Future<List<Services>> getUserServices({bool includeInactive = false}) async {
     final String? token = await TokenStore.instance.getAccessToken();
-    final response =
-        await http.get(Uri.parse('$baseUrl$USER_SERVICE'), headers: {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userIdStr = prefs.getString('userId');
+    final int? userId = userIdStr != null ? int.tryParse(userIdStr) : null;
+
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final uri = Uri.parse(AppConfig.getUserServicesUrl(userId)).replace(
+      queryParameters: {
+        'page_size': '50',
+        if (includeInactive) 'include_inactive': 'true',
+      },
+    );
+
+    final response = await http.get(uri, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Authorization': 'Token $token',
+      if (token != null) 'Authorization': 'Token $token',
     });
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

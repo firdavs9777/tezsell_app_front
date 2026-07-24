@@ -5003,4 +5003,58 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reviewWriteRetry => 'Retry';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get more_options => 'More options';
+
+  @override
+  String get mark_as_sold => 'Mark as sold';
+
+  @override
+  String get back_to_available => 'Back to available';
+
+  @override
+  String get hide_listing => 'Hide';
+
+  @override
+  String get unhide_listing => 'Unhide';
+
+  @override
+  String get hidden_badge => 'HIDDEN';
+
+  @override
+  String get who_did_you_sell_to => 'Who did you sell to?';
+
+  @override
+  String get sold_elsewhere => 'Sold elsewhere';
+
+  @override
+  String get marked_as_sold => 'Marked as sold';
+
+  @override
+  String get listing_available_again => 'Listing is available again';
+
+  @override
+  String get listing_hidden => 'Listing hidden';
+
+  @override
+  String get listing_unhidden => 'Listing is visible again';
+
+  @override
+  String get failed_to_update_listing => 'Failed to update listing';
+
+  @override
+  String get active_tab => 'Active';
+
+  @override
+  String get sold_tab => 'Sold';
+
+  @override
+  String get no_active_listings => 'No active listings';
+
+  @override
+  String get no_sold_listings => 'No sold items yet';
 }

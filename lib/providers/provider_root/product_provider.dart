@@ -918,6 +918,105 @@ class ProductsService {
     }
   }
 
+  /// Lightweight owner-only partial update of a listing's state — sends
+  /// ONLY the provided flag(s) as JSON to `PUT /products/api/products/:id/`
+  /// (the owner-gated `ProductDetailView.put`, `partial=True` on the
+  /// backend). Deliberately does NOT reuse [updateProduct], which is a
+  /// heavy FormData PUT requiring title/price/etc. `is_reserved` is not
+  /// settable here — it's exclusively managed by the chat-anchored
+  /// reserve/sold/available transaction flow.
+  Future<Products> setListingStatus({
+    required int productId,
+    bool? isSold,
+    bool? isActive,
+  }) async {
+    assert(isSold != null || isActive != null,
+        'setListingStatus requires at least one of isSold/isActive');
+
+    final token = await TokenStore.instance.getAccessToken();
+    if (token == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final body = <String, dynamic>{
+      if (isSold != null) 'is_sold': isSold,
+      if (isActive != null) 'is_active': isActive,
+    };
+
+    final response = await dio.put(
+      '$PRODUCTS_URL$productId/',
+      data: body,
+      options: Options(
+        headers: {
+          'Authorization': 'Token $token',
+          'Content-Type': 'application/json',
+        },
+        validateStatus: (status) => status != null && status < 500,
+      ),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      _productsCache.clear();
+      final data = response.data;
+      final productJson = (data is Map && data['data'] is Map)
+          ? data['data'] as Map<String, dynamic>
+          : data as Map<String, dynamic>;
+      return Products.fromJson(productJson);
+    }
+
+    String errorMessage = 'Failed to update listing status';
+    if (response.data is Map) {
+      final errorData = response.data as Map;
+      if (errorData['error'] != null) {
+        errorMessage = errorData['error'].toString();
+      } else if (errorData['detail'] != null) {
+        errorMessage = errorData['detail'].toString();
+      } else if (errorData['message'] != null) {
+        errorMessage = errorData['message'].toString();
+      }
+    }
+    throw DioException(
+      requestOptions: response.requestOptions,
+      response: response,
+      message: errorMessage,
+    );
+  }
+
+  /// Owner-only: distinct buyers with an existing product-anchored chat
+  /// for [productId], via `GET /products/api/products/:pk/chat-buyers/`.
+  /// Powers the "who did you sell to?" mark-sold picker.
+  Future<List<ChatBuyer>> getProductChatBuyers(int productId) async {
+    final token = await TokenStore.instance.getAccessToken();
+    if (token == null) {
+      throw Exception('User not authenticated');
+    }
+
+    final response = await dio.get(
+      '$PRODUCTS_URL$productId/chat-buyers/',
+      options: Options(
+        headers: {'Authorization': 'Token $token'},
+        validateStatus: (status) => status != null && status < 500,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = response.data;
+      final buyersJson = (data is Map && data['data'] is Map)
+          ? data['data']['buyers']
+          : null;
+      if (buyersJson is List) {
+        return buyersJson
+            .map((b) => ChatBuyer.fromJson(b as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } else if (response.statusCode == 403) {
+      throw Exception('You can only view chat buyers for your own listings.');
+    } else {
+      throw Exception('Failed to load chat buyers: ${response.statusCode}');
+    }
+  }
+
   Future<bool> deleteProduct({
     required int productId,
   }) async {

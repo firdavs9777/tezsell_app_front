@@ -4960,4 +4960,58 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get reviewWriteRetry => 'Qayta urinish';
+
+  @override
+  String get view => 'Ko\'rish';
+
+  @override
+  String get more_options => 'Yana';
+
+  @override
+  String get mark_as_sold => 'Sotilgan deb belgilash';
+
+  @override
+  String get back_to_available => 'Qayta faollashtirish';
+
+  @override
+  String get hide_listing => 'Yashirish';
+
+  @override
+  String get unhide_listing => 'Ko\'rsatish';
+
+  @override
+  String get hidden_badge => 'YASHIRIN';
+
+  @override
+  String get who_did_you_sell_to => 'Kimga sotdingiz?';
+
+  @override
+  String get sold_elsewhere => 'Boshqa joyda sotildi';
+
+  @override
+  String get marked_as_sold => 'Sotilgan deb belgilandi';
+
+  @override
+  String get listing_available_again => 'E\'lon qayta faollashtirildi';
+
+  @override
+  String get listing_hidden => 'E\'lon yashirildi';
+
+  @override
+  String get listing_unhidden => 'E\'lon qayta ko\'rinadi';
+
+  @override
+  String get failed_to_update_listing => 'E\'lonni yangilab bo\'lmadi';
+
+  @override
+  String get active_tab => 'Faol';
+
+  @override
+  String get sold_tab => 'Sotilgan';
+
+  @override
+  String get no_active_listings => 'Faol e\'lonlar yo\'q';
+
+  @override
+  String get no_sold_listings => 'Hali sotilgan mahsulotlar yo\'q';
 }

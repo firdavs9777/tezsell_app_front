@@ -9357,6 +9357,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get reviewWriteRetry;
+
+  /// Button label to view a listing's detail page
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// Tooltip for the per-listing overflow menu button on my-listings screens
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get more_options;
+
+  /// Overflow menu action / bottom sheet title to mark an owned listing as sold
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as sold'**
+  String get mark_as_sold;
+
+  /// Overflow menu action to un-mark a sold/reserved listing, making it available again
+  ///
+  /// In en, this message translates to:
+  /// **'Back to available'**
+  String get back_to_available;
+
+  /// Overflow menu action to hide an owned listing from public view
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get hide_listing;
+
+  /// Overflow menu action to make a hidden listing publicly visible again
+  ///
+  /// In en, this message translates to:
+  /// **'Unhide'**
+  String get unhide_listing;
+
+  /// Badge text shown on an owner's own hidden (inactive) listing card
+  ///
+  /// In en, this message translates to:
+  /// **'HIDDEN'**
+  String get hidden_badge;
+
+  /// Title of the mark-as-sold buyer picker bottom sheet when buyers with an existing chat exist
+  ///
+  /// In en, this message translates to:
+  /// **'Who did you sell to?'**
+  String get who_did_you_sell_to;
+
+  /// Mark-as-sold option for a sale not attributed to any in-app chat buyer
+  ///
+  /// In en, this message translates to:
+  /// **'Sold elsewhere'**
+  String get sold_elsewhere;
+
+  /// Snackbar shown after successfully marking a listing as sold
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as sold'**
+  String get marked_as_sold;
+
+  /// Snackbar shown after moving a sold/reserved listing back to available
+  ///
+  /// In en, this message translates to:
+  /// **'Listing is available again'**
+  String get listing_available_again;
+
+  /// Snackbar shown after hiding an owned listing
+  ///
+  /// In en, this message translates to:
+  /// **'Listing hidden'**
+  String get listing_hidden;
+
+  /// Snackbar shown after unhiding an owned listing
+  ///
+  /// In en, this message translates to:
+  /// **'Listing is visible again'**
+  String get listing_unhidden;
+
+  /// Error snackbar prefix when a listing status change (sold/hide/unhide) fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update listing'**
+  String get failed_to_update_listing;
+
+  /// Tab label for the seller's active (not-yet-sold) listings on the my-listings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active_tab;
+
+  /// Tab label for the seller's sold listings on the my-listings screen
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get sold_tab;
+
+  /// Empty state text for the Active tab on the my-listings screen
+  ///
+  /// In en, this message translates to:
+  /// **'No active listings'**
+  String get no_active_listings;
+
+  /// Empty state text for the Sold tab on the my-listings screen
+  ///
+  /// In en, this message translates to:
+  /// **'No sold items yet'**
+  String get no_sold_listings;
 }
 
 class _AppLocalizationsDelegate

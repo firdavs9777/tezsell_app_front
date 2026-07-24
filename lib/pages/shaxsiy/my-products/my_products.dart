@@ -1,9 +1,12 @@
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/pages/shaxsiy/my-products/my_products_helpers.dart';
 import 'package:app/pages/shaxsiy/my-products/product_edit.dart';
+import 'package:app/pages/shaxsiy/my-products/widgets/mark_sold_sheet.dart';
 import 'package:app/pages/shaxsiy/my-products/widgets/my_products_card.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/service/chat_api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,79 +18,53 @@ class MyProducts extends ConsumerStatefulWidget {
   ConsumerState<MyProducts> createState() => _MyProductsState();
 }
 
-class _MyProductsState extends ConsumerState<MyProducts> {
+class _MyProductsState extends ConsumerState<MyProducts>
+    with SingleTickerProviderStateMixin {
   final List<Products> _products = [];
-  final ScrollController _scrollController = ScrollController();
+  late final TabController _tabController;
   bool _isLoading = true;
-  bool _isLoadingMore = false;
-  bool _hasMore = true;
   bool _hasChanges = false;
-  int _currentPage = 1;
-  static const int _pageSize = 20;
+
+  List<Products> get _activeProducts => activeListings(_products);
+  List<Products> get _soldProducts => soldListings(_products);
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _loadProducts();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      if (!_isLoadingMore && _hasMore) {
-        _loadMoreProducts();
-      }
-    }
   }
 
   Future<void> _loadProducts() async {
     try {
       setState(() {
         _isLoading = true;
-        _currentPage = 1;
-        _products.clear();
       });
 
-      final products = await ref.read(profileServiceProvider).getUserProducts();
+      // includeInactive: the owner needs to see hidden/sold listings too,
+      // not just the public active-only set.
+      final products = await ref
+          .read(profileServiceProvider)
+          .getUserProducts(includeInactive: true);
 
       if (mounted) {
         setState(() {
-          _products.addAll(products);
+          _products
+            ..clear()
+            ..addAll(products);
           _isLoading = false;
-          _hasMore = products.length >= _pageSize;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
         _showError('Error loading products: $e');
-      }
-    }
-  }
-
-  Future<void> _loadMoreProducts() async {
-    if (_isLoadingMore) return;
-
-    setState(() => _isLoadingMore = true);
-
-    try {
-      // Note: If your API supports pagination, update the provider call here
-      // For now, we assume all products are loaded at once
-      setState(() {
-        _isLoadingMore = false;
-        _hasMore = false;
-      });
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isLoadingMore = false);
       }
     }
   }
@@ -162,9 +139,9 @@ class _MyProductsState extends ConsumerState<MyProducts> {
             const SizedBox(height: 16),
             Text(
               localizations?.delete_product ?? 'Delete Product',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
@@ -172,8 +149,8 @@ class _MyProductsState extends ConsumerState<MyProducts> {
                   'Are you sure you want to delete "${product.title}"?',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -213,6 +190,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
     );
 
     if (confirmed != true) return;
+    if (!mounted) return;
 
     // Show loading
     showDialog(
@@ -233,7 +211,11 @@ class _MyProductsState extends ConsumerState<MyProducts> {
           _products.removeWhere((p) => p.id == product.id);
           _hasChanges = true;
         });
-        _showSuccess('Product deleted successfully');
+        if (!mounted) return;
+        _showSuccess(
+          AppLocalizations.of(context)?.product_deleted_success ??
+              'Product deleted successfully',
+        );
       }
     } catch (e) {
       if (mounted) Navigator.pop(context);
@@ -244,9 +226,7 @@ class _MyProductsState extends ConsumerState<MyProducts> {
   void _editProduct(Products product) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ProductEdit(product: product),
-      ),
+      MaterialPageRoute(builder: (context) => ProductEdit(product: product)),
     ).then((updatedProduct) {
       if (updatedProduct != null && updatedProduct is Products) {
         setState(() {
@@ -265,6 +245,126 @@ class _MyProductsState extends ConsumerState<MyProducts> {
     context.push('/product/${product.id}');
   }
 
+  /// Shared handler for the Hide/Unhide/Back-to-available actions: all three
+  /// are a lightweight `setListingStatus` PATCH followed by a full reload
+  /// (so the Active/Sold split and Hidden indicator immediately reflect the
+  /// new state) and a snackbar. Guards `context` across every await.
+  Future<void> _updateStatus(
+    Products product, {
+    bool? isSold,
+    bool? isActive,
+    required String successMessage,
+  }) async {
+    try {
+      await ref
+          .read(productsServiceProvider)
+          .setListingStatus(
+            productId: product.id,
+            isSold: isSold,
+            isActive: isActive,
+          );
+      _hasChanges = true;
+      await _loadProducts();
+      if (!mounted) return;
+      _showSuccess(successMessage);
+    } catch (e) {
+      if (!mounted) return;
+      final l = AppLocalizations.of(context);
+      _showError(
+        '${l?.failed_to_update_listing ?? 'Failed to update listing'}: $e',
+      );
+    }
+  }
+
+  Future<void> _backToAvailable(Products product) async {
+    final l = AppLocalizations.of(context);
+    await _updateStatus(
+      product,
+      isSold: false,
+      successMessage:
+          l?.listing_available_again ?? 'Listing is available again',
+    );
+  }
+
+  Future<void> _hideProduct(Products product) async {
+    final l = AppLocalizations.of(context);
+    await _updateStatus(
+      product,
+      isActive: false,
+      successMessage: l?.listing_hidden ?? 'Listing hidden',
+    );
+  }
+
+  Future<void> _unhideProduct(Products product) async {
+    final l = AppLocalizations.of(context);
+    await _updateStatus(
+      product,
+      isActive: true,
+      successMessage: l?.listing_unhidden ?? 'Listing is visible again',
+    );
+  }
+
+  /// "Mark as sold" flow: fetches buyers with an existing chat for this
+  /// listing, shows the "who did you sell to?" picker, then either POSTs
+  /// the chat transaction endpoint (buyer-attributed -- also creates the
+  /// completed-transaction review CTA) or falls back to a bare
+  /// `setListingStatus(isSold: true)` for "Sold elsewhere".
+  Future<void> _markAsSold(Products product) async {
+    final l = AppLocalizations.of(context);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    List<ChatBuyer> buyers = [];
+    try {
+      buyers = await ref
+          .read(productsServiceProvider)
+          .getProductChatBuyers(product.id);
+    } catch (_) {
+      // Non-fatal: fall back to "Sold elsewhere" only.
+      buyers = [];
+    }
+
+    if (!mounted) return;
+    Navigator.pop(context); // close loading dialog
+
+    if (!mounted) return;
+    final selection = await showMarkSoldSheet(context, buyers: buyers);
+    if (selection == null || !mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      if (selection.chatId != null) {
+        await ChatApiService().updateTransactionStatus(
+          selection.chatId!,
+          'sold',
+        );
+      } else {
+        await ref
+            .read(productsServiceProvider)
+            .setListingStatus(productId: product.id, isSold: true);
+      }
+      if (mounted) Navigator.pop(context); // close loading
+      _hasChanges = true;
+      await _loadProducts();
+      if (!mounted) return;
+      _showSuccess(l?.marked_as_sold ?? 'Marked as sold');
+    } catch (e) {
+      if (mounted) Navigator.pop(context);
+      if (!mounted) return;
+      _showError(
+        '${l?.failed_to_update_listing ?? 'Failed to update listing'}: $e',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,16 +390,16 @@ class _MyProductsState extends ConsumerState<MyProducts> {
             children: [
               Text(
                 localizations?.my_products ?? 'My Products',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               if (_products.isNotEmpty)
                 Text(
                   '${_products.length} ${_products.length == 1 ? 'item' : 'items'}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
             ],
           ),
@@ -310,6 +410,27 @@ class _MyProductsState extends ConsumerState<MyProducts> {
               tooltip: 'Add Product',
             ),
           ],
+          bottom: (_isLoading || _products.isEmpty)
+              ? null
+              : TabBar(
+                  controller: _tabController,
+                  labelColor: colorScheme.primary,
+                  unselectedLabelColor: colorScheme.onSurfaceVariant,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        '${localizations?.active_tab ?? 'Active'} (${_activeProducts.length})',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        '${localizations?.sold_tab ?? 'Sold'} (${_soldProducts.length})',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
         ),
         body: _buildBody(),
       ),
@@ -327,29 +448,67 @@ class _MyProductsState extends ConsumerState<MyProducts> {
       );
     }
 
+    final localizations = AppLocalizations.of(context);
+
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        _buildProductList(
+          _activeProducts,
+          emptyText: localizations?.no_active_listings ?? 'No active listings',
+        ),
+        _buildProductList(
+          _soldProducts,
+          emptyText: localizations?.no_sold_listings ?? 'No sold items yet',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductList(
+    List<Products> products, {
+    required String emptyText,
+  }) {
+    if (products.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: _refreshProducts,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            const SizedBox(height: 120),
+            Center(
+              child: Text(
+                emptyText,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return RefreshIndicator(
       onRefresh: _refreshProducts,
       child: ListView.builder(
-        controller: _scrollController,
         padding: const EdgeInsets.all(16),
-        itemCount: _products.length + (_isLoadingMore ? 1 : 0),
+        itemCount: products.length,
         itemBuilder: (context, index) {
-          if (index == _products.length) {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          final product = _products[index];
+          final product = products[index];
           return MyProductsCard(
+            key: ValueKey(product.id),
             product: product,
             onView: () => _viewProduct(product),
             onEdit: () => _editProduct(product),
             onDelete: () => _deleteProduct(product),
+            onMarkSold: () => _markAsSold(product),
+            onBackToAvailable: () => _backToAvailable(product),
+            onHide: () => _hideProduct(product),
+            onUnhide: () => _unhideProduct(product),
           );
         },
       ),
     );
   }
-
 }

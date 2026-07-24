@@ -234,3 +234,31 @@ double? _toDouble(dynamic v) {
   if (v is num) return v.toDouble();
   return double.tryParse(v.toString());
 }
+
+/// A buyer with an existing product-anchored chat for one of the seller's
+/// own listings (Plan E Task 5 — mark-sold buyer picker). Sourced from
+/// `GET /products/api/products/:pk/chat-buyers/`, which lists distinct
+/// buyers so the seller can pick "who did you sell to?" and attribute the
+/// sale to that chat's transaction instead of a bare status flip.
+class ChatBuyer {
+  const ChatBuyer({
+    required this.chatId,
+    required this.buyerId,
+    required this.buyerUsername,
+    this.buyerAvatar,
+  });
+
+  final int chatId;
+  final int buyerId;
+  final String buyerUsername;
+  final String? buyerAvatar;
+
+  factory ChatBuyer.fromJson(Map<String, dynamic> json) {
+    return ChatBuyer(
+      chatId: json['chat_id'] ?? 0,
+      buyerId: json['buyer_id'] ?? 0,
+      buyerUsername: json['buyer_username'] ?? '',
+      buyerAvatar: json['buyer_avatar'] as String?,
+    );
+  }
+}
