@@ -394,7 +394,10 @@ class _PendingReviewsNudge extends ConsumerWidget {
   }
 
   void _handleTap(BuildContext context, PendingReviewsState pending) {
-    if (pending.transactions.length == 1) {
+    // Branch on `count` (the authoritative total, consistent with the
+    // nudge's visibility check) but guard `.first` so a future paginated
+    // pending endpoint can't crash here.
+    if (pending.count == 1 && pending.transactions.isNotEmpty) {
       _pushWriteReview(context, pending.transactions.first);
       return;
     }
@@ -533,6 +536,26 @@ class _VacationModeSection extends ConsumerStatefulWidget {
 class _VacationModeSectionState extends ConsumerState<_VacationModeSection> {
   String? _draftMessage;
 
+  // The backend endpoint is a blind flip (every POST toggles), so a second
+  // tap before the first request resolves would flip twice and land in the
+  // opposite of the user's intent. Ignore taps while one is in flight.
+  bool _isToggling = false;
+
+  Future<void> _onToggle(bool value) async {
+    if (_isToggling) return;
+    setState(() => _isToggling = true);
+    try {
+      final notifier = ref.read(vacationModeProvider.notifier);
+      if (value) {
+        await notifier.enableVacationMode(message: _draftMessage);
+      } else {
+        await notifier.disableVacationMode();
+      }
+    } finally {
+      if (mounted) setState(() => _isToggling = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isActive = ref.watch(isOnVacationProvider);
@@ -543,14 +566,7 @@ class _VacationModeSectionState extends ConsumerState<_VacationModeSection> {
       child: VacationModeToggle(
         isActive: isActive,
         message: _draftMessage ?? savedMessage,
-        onToggle: (value) {
-          final notifier = ref.read(vacationModeProvider.notifier);
-          if (value) {
-            notifier.enableVacationMode(message: _draftMessage);
-          } else {
-            notifier.disableVacationMode();
-          }
-        },
+        onToggle: _isToggling ? (_) {} : _onToggle,
         onMessageChange: (value) => setState(() => _draftMessage = value),
       ),
     );

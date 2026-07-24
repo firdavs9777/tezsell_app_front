@@ -159,6 +159,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final l = AppLocalizations.of(context);
 
     if (review != null) {
+      // This transaction is no longer pending for the reviewer, and the
+      // reviewed user's manner temperature just moved — drop the caches so
+      // the profile nudge count and the counterparty's trust dial refresh
+      // instead of showing stale data (and re-routing here for an
+      // already-reviewed transaction).
+      ref.invalidate(pendingReviewsProvider);
+      ref.invalidate(userTrustScoreProvider(review.reviewedUser.id));
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l?.reviewWriteSuccess ?? 'Review submitted successfully'),
