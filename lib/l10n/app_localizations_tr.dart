@@ -4701,4 +4701,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get offerLoginRequired => 'Please log in to make an offer';
+
+  @override
+  String get offerOpenChatError => 'Unable to open chat';
 }

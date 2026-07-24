@@ -8991,6 +8991,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please log in to make an offer'**
   String get offerLoginRequired;
+
+  /// Snackbar shown when opening the chat room tied to an offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open chat'**
+  String get offerOpenChatError;
 }
 
 class _AppLocalizationsDelegate

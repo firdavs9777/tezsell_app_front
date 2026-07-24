@@ -3405,5 +3405,7 @@
   "offerSendSuccess": "Offer sent!",
   "@offerSendSuccess": {"description": "Snackbar confirming an offer was submitted to the seller"},
   "offerLoginRequired": "Please log in to make an offer",
-  "@offerLoginRequired": {"description": "Message shown when a signed-out user taps Make Offer"}
+  "@offerLoginRequired": {"description": "Message shown when a signed-out user taps Make Offer"},
+  "offerOpenChatError": "Unable to open chat",
+  "@offerOpenChatError": {"description": "Snackbar shown when opening the chat room tied to an offer fails"}
 }

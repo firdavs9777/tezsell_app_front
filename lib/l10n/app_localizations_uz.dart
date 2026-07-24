@@ -4753,4 +4753,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get offerLoginRequired => 'Taklif berish uchun tizimga kiring';
+
+  @override
+  String get offerOpenChatError => 'Chatni ochib bo\'lmadi';
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/offer_model.dart';
 import 'package:app/providers/provider_root/offers_provider.dart';
+import 'package:app/utils/app_logger.dart';
 import 'package:app/widgets/offer_widgets.dart';
 import 'package:app/widgets/skeleton_loader.dart';
 import 'package:app/pages/chat/chat_room.dart';
@@ -24,10 +26,12 @@ Future<void> _continueOfferChat(BuildContext context, Offer offer) async {
       );
     }
   } catch (e) {
+    AppLogger.error('Failed to open chat from offer', e);
     if (context.mounted) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Unable to open chat: $e'),
+          content: Text(l10n?.offerOpenChatError ?? 'Unable to open chat'),
           backgroundColor: Colors.red,
         ),
       );

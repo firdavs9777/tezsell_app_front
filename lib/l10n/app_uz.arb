@@ -2889,5 +2889,6 @@
   "offersMenuSubtitle": "Narx savdolarini kuzating",
   "offerContinueChat": "Chatga o'tish",
   "offerSendSuccess": "Taklif yuborildi!",
-  "offerLoginRequired": "Taklif berish uchun tizimga kiring"
+  "offerLoginRequired": "Taklif berish uchun tizimga kiring",
+  "offerOpenChatError": "Chatni ochib bo'lmadi"
 }

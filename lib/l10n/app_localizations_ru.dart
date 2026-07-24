@@ -4730,4 +4730,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get offerLoginRequired => 'Войдите, чтобы сделать предложение';
+
+  @override
+  String get offerOpenChatError => 'Не удалось открыть чат';
 }

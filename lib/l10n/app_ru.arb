@@ -2892,5 +2892,6 @@
   "offersMenuSubtitle": "Отслеживайте торги по цене",
   "offerContinueChat": "Перейти в чат",
   "offerSendSuccess": "Предложение отправлено!",
-  "offerLoginRequired": "Войдите, чтобы сделать предложение"
+  "offerLoginRequired": "Войдите, чтобы сделать предложение",
+  "offerOpenChatError": "Не удалось открыть чат"
 }
