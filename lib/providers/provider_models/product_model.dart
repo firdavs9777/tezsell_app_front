@@ -32,6 +32,8 @@ class Products {
     this.cityName,
     this.showExactPin = false,
     this.distanceKm,
+    this.acceptsOffers = true,
+    this.minimumOfferPercent = 70,
   });
 
   final int id;
@@ -69,6 +71,15 @@ class Products {
   /// Distance from the active geo center (km, 1dp), when the request was
   /// made with center_lat/center_lng. Null otherwise.
   final double? distanceKm;
+
+  /// Whether the seller allows buyers to make price offers. Defaults to
+  /// true (matches the backend `Product.accepts_offers` default).
+  final bool acceptsOffers;
+
+  /// Minimum offer as a percentage of the asking price (e.g. 70 = reject
+  /// offers below 70%). Defaults to 70 (matches the backend
+  /// `Product.minimum_offer_percent` default).
+  final int minimumOfferPercent;
 
   /// Returns localized condition label
   String get conditionLabel {
@@ -145,6 +156,10 @@ class Products {
       cityName: json['city_name'] as String?,
       showExactPin: (json['show_exact_pin'] as bool?) ?? false,
       distanceKm: _toDouble(json['distance_km']),
+      acceptsOffers: (json['accepts_offers'] as bool?) ?? true,
+      minimumOfferPercent: (json['minimum_offer_percent'] is num)
+          ? (json['minimum_offer_percent'] as num).toInt()
+          : 70,
     );
   }
 }

@@ -308,9 +308,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       builder: (_) => MakeOfferDialog(
         itemTitle: product.title,
         currentPrice: priceValue,
-        // Product model has no accepts_offers/minimum_offer_percent field yet
-        // (verified in provider_models/product_model.dart) — fall back to the
-        // widget's default minimum (70%) until the backend/model expose it.
+        minimumPercent: product.minimumOfferPercent,
         onSubmit: _submitOffer,
       ),
     );
@@ -958,8 +956,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               const SizedBox(width: 12),
               // Price — Flexible (not Expanded) so it shrinks instead of
               // overflowing now that up to two action buttons can share
-              // this row (Make Offer + Chat with seller).
+              // this row (Make Offer + Chat with seller). Given a small
+              // flex relative to the action buttons below so it yields
+              // most of the narrow-width row to the CTAs while still
+              // getting a guaranteed minimum share (never fully collapses).
               Flexible(
+                flex: 2,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -975,33 +977,51 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   ],
                 ),
               ),
-              // Make Offer button — hidden on your own listing and once sold
-              if (!isOwnListing && !product.isSold) ...[
-                const SizedBox(width: 12),
-                MakeOfferButton(
-                  currentPrice: (double.tryParse(product.price) ?? 0),
-                  onPressed: _showMakeOfferDialog,
+              // Make Offer button — hidden on your own listing, once sold,
+              // or when the seller has disabled offers on this listing.
+              // Wrapped in Expanded (rather than sized-to-content) so the
+              // two action buttons structurally cannot overflow the row:
+              // they always split whatever space remains after the fixed
+              // heart/divider and the Flexible price column, at ~360dp
+              // width, with both buttons visible.
+              if (!isOwnListing && !product.isSold && product.acceptsOffers) ...[
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: MakeOfferButton(
+                    currentPrice: (double.tryParse(product.price) ?? 0),
+                    minimumPercent: product.minimumOfferPercent,
+                    acceptsOffers: product.acceptsOffers,
+                    onPressed: _showMakeOfferDialog,
+                  ),
                 ),
               ],
               // Chat button (Carrot style - orange) — hidden on your own listing
               if (!isOwnListing) ...[
-                const SizedBox(width: 12),
-                SizedBox(
-                  height: 48,
-                  child: FilledButton(
-                    onPressed: _startChat,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF6F0F), // Carrot orange
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: SizedBox(
+                    height: 48,
+                    child: FilledButton(
+                      onPressed: _startChat,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF6F0F), // Carrot orange
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                    child: Text(
-                      '\u{1F4AC} ${localizations?.chatWithSeller ?? 'Chat with seller'}',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '\u{1F4AC} ${localizations?.chatWithSeller ?? 'Chat with seller'}',
+                          maxLines: 1,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),

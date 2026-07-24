@@ -26,14 +26,37 @@ class MakeOfferButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final localizations = AppLocalizations.of(context);
 
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      icon: const Icon(Icons.local_offer_rounded, size: 18),
-      label: Text(localizations?.inquiry_make_offer ?? 'Make Offer'),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: colorScheme.primary,
-        side: BorderSide(color: colorScheme.primary),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    // Built from the base constructor (not `.icon`) so the label can be
+    // wrapped in Flexible+FittedBox — this button is meant to sit inside an
+    // Expanded slot on the PDP bottom bar alongside the chat button, and a
+    // long localized label (e.g. Russian/Uzbek) must shrink instead of
+    // overflowing when both buttons share a narrow (~360dp) row.
+    return SizedBox(
+      height: 48,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          side: BorderSide(color: colorScheme.primary),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.local_offer_rounded, size: 18),
+            const SizedBox(width: 6),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  localizations?.inquiry_make_offer ?? 'Make Offer',
+                  maxLines: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
