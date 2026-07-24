@@ -409,17 +409,19 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                     color: colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 6),
-                  Text(
-                    trustScore.reviewsReceived > 0
-                        ? (localizations
-                                ?.profile_reviews_count(trustScore.reviewsReceived) ??
-                            'Reviews (${trustScore.reviewsReceived})')
-                        : (localizations?.profile_no_reviews_yet ??
-                            'No reviews yet'),
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                  Expanded(
+                    child: Text(
+                      trustScore.reviewsReceived > 0
+                          ? (localizations
+                                  ?.profile_reviews_count(trustScore.reviewsReceived) ??
+                              'Reviews (${trustScore.reviewsReceived})')
+                          : (localizations?.profile_no_reviews_yet ??
+                              'No reviews yet'),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  const Spacer(),
                   if (trustScore.reviewsReceived > 0) ...[
                     ServiceRatingBadge(
                       ratingAvg: trustScore.averageRating,
