@@ -108,16 +108,15 @@ class TransactionsState {
     return result;
   }
 
-  // "Pending" = an in-progress deal that is neither completed nor cancelled
-  // (the TransactionStatus enum has no dedicated `pending` member).
-  List<Transaction> get pendingTransactions => transactions
-      .where((t) =>
-          t.status != TransactionStatus.completed &&
-          t.status != TransactionStatus.cancelled)
-      .toList();
+  // `Transaction.status` is a String, so compare via the model's own
+  // string-backed getters, not the TransactionStatus enum (an enum-vs-String
+  // `==` is always false / `!=` always true — silently wrong).
+  // "Pending" = an in-progress deal that is neither completed nor cancelled.
+  List<Transaction> get pendingTransactions =>
+      transactions.where((t) => t.isActive).toList();
 
   List<Transaction> get completedTransactions =>
-      transactions.where((t) => t.status == TransactionStatus.completed).toList();
+      transactions.where((t) => t.isCompleted).toList();
 
   List<Transaction> get awaitingReview =>
       transactions.where((t) => t.canReview).toList();
