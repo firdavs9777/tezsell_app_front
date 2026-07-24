@@ -398,6 +398,7 @@
   "price": "سعر",
   "condition": "حالة",
   "condition_new": "جديد",
+  "condition_like_new": "شبه جديد",
   "condition_used": "مستخدم",
   "condition_refurbished": "مجدد",
   "currency": "عملة",

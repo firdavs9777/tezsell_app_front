@@ -1262,6 +1262,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get condition_new => 'Yangi';
 
   @override
+  String get condition_like_new => 'Deyarli yangi';
+
+  @override
   String get condition_used => 'Ishlatilgan';
 
   @override
@@ -4673,6 +4676,12 @@ class AppLocalizationsUz extends AppLocalizations {
   String get sortPopular => 'Ommabop';
 
   @override
+  String get sortPriceAsc => 'Narx: arzondan qimmatga';
+
+  @override
+  String get sortPriceDesc => 'Narx: qimmatdan arzonga';
+
+  @override
   String get communityDeleteConfirm => 'Bu postni o\'chirishmi?';
 
   @override
@@ -4705,4 +4714,28 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get communityLoadMoreComments => 'Ko\'proq izohlarni ko\'rish';
+
+  @override
+  String get productFiltersTitle => 'Filtrlar';
+
+  @override
+  String get productFiltersTooltip => 'Filtrlar';
+
+  @override
+  String get productFilterPriceRange => 'Narx oralig\'i';
+
+  @override
+  String get productFilterPriceMin => 'Dan';
+
+  @override
+  String get productFilterPriceMax => 'Gacha';
+
+  @override
+  String get productFilterCondition => 'Holat';
+
+  @override
+  String get productFilterApply => 'Qo\'llash';
+
+  @override
+  String get productFilterReset => 'Tozalash';
 }

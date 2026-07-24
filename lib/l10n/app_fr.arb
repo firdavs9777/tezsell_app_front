@@ -398,6 +398,7 @@
   "price": "Prix",
   "condition": "Condition",
   "condition_new": "Nouveau",
+  "condition_like_new": "Comme neuf",
   "condition_used": "Utilisé",
   "condition_refurbished": "Remis à neuf",
   "currency": "Devise",

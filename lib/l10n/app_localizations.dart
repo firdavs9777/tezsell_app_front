@@ -2506,6 +2506,12 @@ abstract class AppLocalizations {
   /// **'New'**
   String get condition_new;
 
+  /// No description provided for @condition_like_new.
+  ///
+  /// In en, this message translates to:
+  /// **'Like New'**
+  String get condition_like_new;
+
   /// No description provided for @condition_used.
   ///
   /// In en, this message translates to:
@@ -8836,6 +8842,18 @@ abstract class AppLocalizations {
   /// **'Popular'**
   String get sortPopular;
 
+  /// Sort option: listings ordered by ascending price
+  ///
+  /// In en, this message translates to:
+  /// **'Price: low to high'**
+  String get sortPriceAsc;
+
+  /// Sort option: listings ordered by descending price
+  ///
+  /// In en, this message translates to:
+  /// **'Price: high to low'**
+  String get sortPriceDesc;
+
   /// Confirmation prompt shown before deleting the current user's own community post
   ///
   /// In en, this message translates to:
@@ -8895,6 +8913,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Load more comments'**
   String get communityLoadMoreComments;
+
+  /// Title of the product list filter bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get productFiltersTitle;
+
+  /// Tooltip/label for the icon button that opens the product filter sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get productFiltersTooltip;
+
+  /// Section label for the min/max price inputs in the product filter sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Price range'**
+  String get productFilterPriceRange;
+
+  /// Label for the minimum price input field
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get productFilterPriceMin;
+
+  /// Label for the maximum price input field
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get productFilterPriceMax;
+
+  /// Section label for the condition chip selector in the product filter sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Condition'**
+  String get productFilterCondition;
+
+  /// Button that applies the selected filters and closes the sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get productFilterApply;
+
+  /// Button that clears all filters
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get productFilterReset;
 }
 
 class _AppLocalizationsDelegate

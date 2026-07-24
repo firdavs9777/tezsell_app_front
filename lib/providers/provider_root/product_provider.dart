@@ -278,9 +278,12 @@ class ProductsService {
     double? centerLat,
     double? centerLng,
     String? sort,
+    double? priceMin,
+    double? priceMax,
+    String? condition,
   }) async {
     final cacheKey =
-        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${sort ?? ""}_$productTitle';
+        'filtered_${currentPage}_${pageSize}_${categoryName}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${radiusKm ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${sort ?? ""}_${priceMin ?? ""}_${priceMax ?? ""}_${condition ?? ""}_$productTitle';
 
     // Check for pending request
     if (_pendingRequests.containsKey(cacheKey)) {
@@ -304,6 +307,9 @@ class ProductsService {
       centerLat: centerLat,
       centerLng: centerLng,
       sort: sort,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      condition: condition,
     );
 
     _pendingRequests[cacheKey] = future;
@@ -333,6 +339,9 @@ class ProductsService {
     double? centerLat,
     double? centerLng,
     String? sort,
+    double? priceMin,
+    double? priceMax,
+    String? condition,
   }) async {
     try {
       final queryParams = <String, String>{
@@ -387,6 +396,14 @@ class ProductsService {
 
       if (categoryName.isNotEmpty) queryParams['category_name'] = categoryName;
       if (productTitle.isNotEmpty) queryParams['product_title'] = productTitle;
+
+      // Plan D Task 4: price range + condition filters (decimals as
+      // fixed-2dp strings, matching the backend's DecimalField parsing).
+      if (priceMin != null) queryParams['price_min'] = priceMin.toStringAsFixed(2);
+      if (priceMax != null) queryParams['price_max'] = priceMax.toStringAsFixed(2);
+      if (condition != null && condition.isNotEmpty) {
+        queryParams['condition'] = condition;
+      }
 
       // Nearest sort requires an active geo center; backend defaults to
       // fresh (recency) sort when center is missing/invalid.

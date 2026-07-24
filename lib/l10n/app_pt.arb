@@ -398,6 +398,7 @@
   "price": "Preço",
   "condition": "Doença",
   "condition_new": "Novo",
+  "condition_like_new": "Seminovo",
   "condition_used": "Usado",
   "condition_refurbished": "Remodelado",
   "currency": "Moeda",

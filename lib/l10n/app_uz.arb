@@ -1397,6 +1397,7 @@
   "price": "Narx",
   "condition": "Holat",
   "condition_new": "Yangi",
+  "condition_like_new": "Deyarli yangi",
   "condition_used": "Ishlatilgan",
   "condition_refurbished": "Qayta tiklangan",
   "currency": "Valyuta",
@@ -2863,6 +2864,8 @@
   "sortFresh": "Avval yangilari",
   "sortNearest": "Avval yaqinlari",
   "sortPopular": "Ommabop",
+  "sortPriceAsc": "Narx: arzondan qimmatga",
+  "sortPriceDesc": "Narx: qimmatdan arzonga",
   "communityDeleteConfirm": "Bu postni o'chirishmi?",
   "distanceKm": "{km} km",
   "mapLoadError": "Xaritada e'lonlarni yuklab bo'lmadi",
@@ -2873,5 +2876,13 @@
   "communityViewReplies": "{n} ta javobni ko'rish",
   "communityAuthorBadge": "Muallif",
   "communityDeleteCommentConfirm": "Bu izohni o'chirishmi?",
-  "communityLoadMoreComments": "Ko'proq izohlarni ko'rish"
+  "communityLoadMoreComments": "Ko'proq izohlarni ko'rish",
+  "productFiltersTitle": "Filtrlar",
+  "productFiltersTooltip": "Filtrlar",
+  "productFilterPriceRange": "Narx oralig'i",
+  "productFilterPriceMin": "Dan",
+  "productFilterPriceMax": "Gacha",
+  "productFilterCondition": "Holat",
+  "productFilterApply": "Qo'llash",
+  "productFilterReset": "Tozalash"
 }

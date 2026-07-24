@@ -8,7 +8,7 @@ import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
-import 'package:app/widgets/fresh_nearest_toggle.dart';
+import 'package:app/pages/products/widgets/product_filter_sheet.dart';
 import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
 import 'package:app/widgets/skeleton_loader.dart';
@@ -37,6 +37,11 @@ class ProductsList extends ConsumerStatefulWidget {
 
 enum _BrowseMode { list, map }
 
+/// Plan D Task 4 — full sort selector for the products list. Distinct from
+/// the shared `ListingSort` (`fresh`/`nearest`) used by services/real-estate
+/// so those pages are unaffected by the extra price/popularity options.
+enum ProductSort { fresh, nearest, priceAsc, priceDesc, popular }
+
 class _ProductsListState extends ConsumerState<ProductsList> {
   final ScrollController _scrollController = ScrollController();
   List<Products> _allProducts = [];
@@ -51,7 +56,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   int _loadGeneration = 0; // Prevents stale requests from overwriting newer ones
   _BrowseMode _browseMode = _BrowseMode.list;
   // In-memory only (per-screen) — resets on navigation away, per Plan B Task 3.
-  ListingSort _sortMode = ListingSort.fresh;
+  ProductSort _sortMode = ProductSort.fresh;
+  // In-memory only (per-screen), Plan D Task 4 — price range + condition.
+  ProductFilter _filter = ProductFilter.empty;
 
   @override
   void initState() {
@@ -116,11 +123,53 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     }
   }
 
-  void _onSortChanged(ListingSort mode) {
+  void _onSortChanged(ProductSort mode) {
     if (_sortMode == mode) return;
+    // Nearest requires an active geo center; ignore taps on a disabled item.
+    if (mode == ProductSort.nearest &&
+        ref.read(activeNeighborhoodProvider) == null) {
+      return;
+    }
     HapticFeedback.selectionClick();
     setState(() => _sortMode = mode);
     _loadInitialProducts();
+  }
+
+  /// Maps [_sortMode] to the backend's `sort` query param
+  /// (fresh|price_asc|price_desc|popular|nearest). `fresh` omits the param
+  /// entirely (backend default), matching Plan B's existing convention.
+  String? _sortQueryParam(bool useNeighborhood) {
+    switch (_sortMode) {
+      case ProductSort.nearest:
+        return useNeighborhood ? 'nearest' : null;
+      case ProductSort.priceAsc:
+        return 'price_asc';
+      case ProductSort.priceDesc:
+        return 'price_desc';
+      case ProductSort.popular:
+        return 'popular';
+      case ProductSort.fresh:
+        return null;
+    }
+  }
+
+  void _updateFilter(ProductFilter next) {
+    if (_filter == next) return;
+    HapticFeedback.selectionClick();
+    setState(() => _filter = next);
+    _loadInitialProducts();
+  }
+
+  Future<void> _openFilterSheet() async {
+    final result = await showModalBottomSheet<ProductFilter>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => ProductFilterSheet(initialFilter: _filter),
+    );
+    if (result != null) _updateFilter(result);
   }
 
   @override
@@ -188,9 +237,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
                 centerLng:
                     useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
-                sort: (useNeighborhood && _sortMode == ListingSort.nearest)
-                    ? 'nearest'
-                    : null,
+                sort: _sortQueryParam(useNeighborhood),
+                priceMin: _filter.priceMin,
+                priceMax: _filter.priceMax,
+                condition: _filter.condition,
               );
 
       // Ignore if a newer load was triggered while this was in-flight
@@ -254,9 +304,10 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     useNeighborhood ? activeNbhd.neighborhood.centroidLat : null,
                 centerLng:
                     useNeighborhood ? activeNbhd.neighborhood.centroidLng : null,
-                sort: (useNeighborhood && _sortMode == ListingSort.nearest)
-                    ? 'nearest'
-                    : null,
+                sort: _sortQueryParam(useNeighborhood),
+                priceMin: _filter.priceMin,
+                priceMax: _filter.priceMax,
+                condition: _filter.condition,
               );
 
       final serverHasMore = rawNewProducts.length >= 12;
@@ -345,8 +396,8 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       if (prev?.neighborhood.id != next?.neighborhood.id) {
         // A geo center is required for "nearest" — fall back to fresh when
         // it's cleared so the toggle doesn't sit on a disabled option.
-        if (next == null && _sortMode == ListingSort.nearest) {
-          setState(() => _sortMode = ListingSort.fresh);
+        if (next == null && _sortMode == ProductSort.nearest) {
+          setState(() => _sortMode = ProductSort.fresh);
         }
         _loadInitialProducts();
       }
@@ -410,10 +461,32 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                             setState(() => _browseMode = m),
                       ),
                       const SizedBox(width: 8),
-                      FreshNearestToggle(
+                      _ProductSortButton(
                         mode: _sortMode,
                         nearestEnabled: hasGeoCenter,
                         onChanged: _onSortChanged,
+                      ),
+                      const SizedBox(width: 8),
+                      Material(
+                        color: colorScheme.surfaceVariant.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(12),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: _openFilterSheet,
+                          child: Container(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Badge(
+                              isLabelVisible: _filter.isActive,
+                              label: Text('${_filter.activeCount}'),
+                              backgroundColor: colorScheme.primary,
+                              child: Icon(
+                                Icons.tune_rounded,
+                                size: 22,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 8),
                       // Location Badge
@@ -470,6 +543,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                   const SizedBox(height: 10),
                   // Quick Category Chips
                   _buildCategoryChips(colorScheme),
+                  if (_filter.isActive) _buildAppliedFiltersRow(colorScheme),
                 ],
               ),
             ),
@@ -640,6 +714,78 @@ class _ProductsListState extends ConsumerState<ProductsList> {
           );
         },
       ),
+    );
+  }
+
+  /// Plan D Task 4 — row of dismissible chips for the currently active
+  /// price/condition filters, each clearable individually, plus a trailing
+  /// "clear all" chip.
+  Widget _buildAppliedFiltersRow(ColorScheme colorScheme) {
+    final localizations = AppLocalizations.of(context);
+    final chips = <Widget>[];
+
+    if (_filter.priceMin != null) {
+      chips.add(_filterChip(
+        colorScheme,
+        label:
+            '${localizations?.productFilterPriceMin ?? 'Min'}: ${_filter.priceMin!.toStringAsFixed(0)}',
+        onDeleted: () =>
+            _updateFilter(_filter.copyWith(clearPriceMin: true)),
+      ));
+    }
+    if (_filter.priceMax != null) {
+      chips.add(_filterChip(
+        colorScheme,
+        label:
+            '${localizations?.productFilterPriceMax ?? 'Max'}: ${_filter.priceMax!.toStringAsFixed(0)}',
+        onDeleted: () =>
+            _updateFilter(_filter.copyWith(clearPriceMax: true)),
+      ));
+    }
+    if (_filter.condition != null && _filter.condition!.isNotEmpty) {
+      chips.add(_filterChip(
+        colorScheme,
+        label: productConditionLabel(localizations, _filter.condition!),
+        onDeleted: () =>
+            _updateFilter(_filter.copyWith(clearCondition: true)),
+      ));
+    }
+
+    if (chips.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: SizedBox(
+        height: 32,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            for (final chip in chips)
+              Padding(padding: const EdgeInsets.only(right: 6), child: chip),
+            ActionChip(
+              label: Text(localizations?.productFilterReset ?? 'Reset'),
+              onPressed: () => _updateFilter(ProductFilter.empty),
+              backgroundColor: colorScheme.errorContainer.withOpacity(0.3),
+              side: BorderSide.none,
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filterChip(
+    ColorScheme colorScheme, {
+    required String label,
+    required VoidCallback onDeleted,
+  }) {
+    return InputChip(
+      label: Text(label, style: const TextStyle(fontSize: 12)),
+      onDeleted: onDeleted,
+      backgroundColor: colorScheme.primaryContainer.withOpacity(0.3),
+      side: BorderSide.none,
+      visualDensity: VisualDensity.compact,
     );
   }
 
@@ -832,6 +978,113 @@ class _ProductBrowseModeToggle extends StatelessWidget {
           btn(Icons.list, _BrowseMode.list),
           btn(Icons.map_outlined, _BrowseMode.map),
         ],
+      ),
+    );
+  }
+}
+
+/// Plan D Task 4 — compact sort-selector button (replaces the Plan B
+/// Fresh|Nearest segmented toggle) offering Fresh, Nearest (disabled
+/// without a geo center), Price ↑, Price ↓ and Popular via a dropdown menu.
+class _ProductSortButton extends StatelessWidget {
+  const _ProductSortButton({
+    required this.mode,
+    required this.nearestEnabled,
+    required this.onChanged,
+  });
+
+  final ProductSort mode;
+  final bool nearestEnabled;
+  final ValueChanged<ProductSort> onChanged;
+
+  String _label(AppLocalizations? l, ProductSort s) {
+    switch (s) {
+      case ProductSort.fresh:
+        return l?.sortFresh ?? 'Newest';
+      case ProductSort.nearest:
+        return l?.sortNearest ?? 'Nearest';
+      case ProductSort.priceAsc:
+        return l?.sortPriceAsc ?? 'Price: low to high';
+      case ProductSort.priceDesc:
+        return l?.sortPriceDesc ?? 'Price: high to low';
+      case ProductSort.popular:
+        return l?.sortPopular ?? 'Popular';
+    }
+  }
+
+  IconData _icon(ProductSort s) {
+    switch (s) {
+      case ProductSort.fresh:
+        return Icons.new_releases_outlined;
+      case ProductSort.nearest:
+        return Icons.near_me_outlined;
+      case ProductSort.priceAsc:
+        return Icons.arrow_upward_rounded;
+      case ProductSort.priceDesc:
+        return Icons.arrow_downward_rounded;
+      case ProductSort.popular:
+        return Icons.local_fire_department_outlined;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l = AppLocalizations.of(context);
+
+    return PopupMenuButton<ProductSort>(
+      initialValue: mode,
+      tooltip: l?.sortFresh ?? 'Sort',
+      onSelected: onChanged,
+      itemBuilder: (context) => ProductSort.values.map((s) {
+        final enabled = s != ProductSort.nearest || nearestEnabled;
+        final selected = mode == s;
+        return PopupMenuItem<ProductSort>(
+          value: s,
+          enabled: enabled,
+          child: Row(
+            children: [
+              Icon(
+                _icon(s),
+                size: 18,
+                color: !enabled
+                    ? colorScheme.onSurfaceVariant.withOpacity(0.4)
+                    : selected
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                _label(l, s),
+                style: TextStyle(
+                  color: !enabled
+                      ? colorScheme.onSurfaceVariant.withOpacity(0.4)
+                      : null,
+                ),
+              ),
+              if (selected) ...[
+                const Spacer(),
+                Icon(Icons.check, size: 16, color: colorScheme.primary),
+              ],
+            ],
+          ),
+        );
+      }).toList(),
+      child: Material(
+        color: colorScheme.surfaceVariant.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(_icon(mode), size: 18, color: colorScheme.primary),
+              const SizedBox(width: 2),
+              Icon(Icons.arrow_drop_down_rounded,
+                  size: 18, color: colorScheme.primary),
+            ],
+          ),
+        ),
       ),
     );
   }

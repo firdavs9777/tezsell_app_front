@@ -398,6 +398,7 @@
   "price": "Fiyat",
   "condition": "Durum",
   "condition_new": "Yeni",
+  "condition_like_new": "Yeni gibi",
   "condition_used": "Kullanılmış",
   "condition_refurbished": "Yenilenmiş",
   "currency": "Para birimi",

@@ -1397,6 +1397,7 @@
   "price": "Цена",
   "condition": "Состояние",
   "condition_new": "Новый",
+  "condition_like_new": "Почти новый",
   "condition_used": "Б/у",
   "condition_refurbished": "Восстановленный",
   "currency": "Валюта",
@@ -2866,6 +2867,8 @@
   "sortFresh": "Сначала новые",
   "sortNearest": "Сначала ближние",
   "sortPopular": "Популярные",
+  "sortPriceAsc": "Цена: сначала дешевле",
+  "sortPriceDesc": "Цена: сначала дороже",
   "communityDeleteConfirm": "Удалить этот пост?",
   "distanceKm": "{km} км",
   "mapLoadError": "Не удалось загрузить объекты на карте",
@@ -2876,5 +2879,13 @@
   "communityViewReplies": "Показать {n} ответов",
   "communityAuthorBadge": "Автор",
   "communityDeleteCommentConfirm": "Удалить этот комментарий?",
-  "communityLoadMoreComments": "Показать ещё комментарии"
+  "communityLoadMoreComments": "Показать ещё комментарии",
+  "productFiltersTitle": "Фильтры",
+  "productFiltersTooltip": "Фильтры",
+  "productFilterPriceRange": "Диапазон цен",
+  "productFilterPriceMin": "От",
+  "productFilterPriceMax": "До",
+  "productFilterCondition": "Состояние",
+  "productFilterApply": "Применить",
+  "productFilterReset": "Сбросить"
 }

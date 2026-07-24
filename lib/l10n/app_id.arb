@@ -398,6 +398,7 @@
   "price": "Harga",
   "condition": "Kondisi",
   "condition_new": "Baru",
+  "condition_like_new": "Seperti baru",
   "condition_used": "Digunakan",
   "condition_refurbished": "Diperbaharui",
   "currency": "Mata uang",

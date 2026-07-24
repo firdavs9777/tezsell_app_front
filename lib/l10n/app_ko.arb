@@ -398,6 +398,7 @@
   "price": "가격",
   "condition": "상태",
   "condition_new": "새로운",
+  "condition_like_new": "거의 새것",
   "condition_used": "사용된",
   "condition_refurbished": "리퍼브 상품",
   "currency": "통화",

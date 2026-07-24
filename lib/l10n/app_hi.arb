@@ -398,6 +398,7 @@
   "price": "कीमत",
   "condition": "स्थिति",
   "condition_new": "नया",
+  "condition_like_new": "लगभग नया",
   "condition_used": "इस्तेमाल किया गया",
   "condition_refurbished": "ठीक करके नए जैसा बनाया गया",
   "currency": "मुद्रा",

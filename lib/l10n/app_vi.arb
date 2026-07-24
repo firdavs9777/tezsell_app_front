@@ -398,6 +398,7 @@
   "price": "Giá",
   "condition": "Tình trạng",
   "condition_new": "Mới",
+  "condition_like_new": "Như mới",
   "condition_used": "Đã sử dụng",
   "condition_refurbished": "tân trang lại",
   "currency": "Tiền tệ",

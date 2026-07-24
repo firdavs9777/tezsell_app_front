@@ -398,6 +398,7 @@
   "price": "価格",
   "condition": "状態",
   "condition_new": "新しい",
+  "condition_like_new": "ほぼ新品",
   "condition_used": "使用済み",
   "condition_refurbished": "改装済み",
   "currency": "通貨",

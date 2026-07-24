@@ -1289,6 +1289,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get condition_new => 'Nouveau';
 
   @override
+  String get condition_like_new => 'Comme neuf';
+
+  @override
   String get condition_used => 'Utilisé';
 
   @override
@@ -4724,6 +4727,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sortPopular => 'Popular';
 
   @override
+  String get sortPriceAsc => 'Price: low to high';
+
+  @override
+  String get sortPriceDesc => 'Price: high to low';
+
+  @override
   String get communityDeleteConfirm => 'Delete this post?';
 
   @override
@@ -4756,4 +4765,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get communityLoadMoreComments => 'Load more comments';
+
+  @override
+  String get productFiltersTitle => 'Filters';
+
+  @override
+  String get productFiltersTooltip => 'Filters';
+
+  @override
+  String get productFilterPriceRange => 'Price range';
+
+  @override
+  String get productFilterPriceMin => 'Min';
+
+  @override
+  String get productFilterPriceMax => 'Max';
+
+  @override
+  String get productFilterCondition => 'Condition';
+
+  @override
+  String get productFilterApply => 'Apply';
+
+  @override
+  String get productFilterReset => 'Reset';
 }

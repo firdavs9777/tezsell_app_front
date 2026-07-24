@@ -1258,6 +1258,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get condition_new => 'Новый';
 
   @override
+  String get condition_like_new => 'Почти новый';
+
+  @override
   String get condition_used => 'Б/у';
 
   @override
@@ -4650,6 +4653,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sortPopular => 'Популярные';
 
   @override
+  String get sortPriceAsc => 'Цена: сначала дешевле';
+
+  @override
+  String get sortPriceDesc => 'Цена: сначала дороже';
+
+  @override
   String get communityDeleteConfirm => 'Удалить этот пост?';
 
   @override
@@ -4682,4 +4691,28 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get communityLoadMoreComments => 'Показать ещё комментарии';
+
+  @override
+  String get productFiltersTitle => 'Фильтры';
+
+  @override
+  String get productFiltersTooltip => 'Фильтры';
+
+  @override
+  String get productFilterPriceRange => 'Диапазон цен';
+
+  @override
+  String get productFilterPriceMin => 'От';
+
+  @override
+  String get productFilterPriceMax => 'До';
+
+  @override
+  String get productFilterCondition => 'Состояние';
+
+  @override
+  String get productFilterApply => 'Применить';
+
+  @override
+  String get productFilterReset => 'Сбросить';
 }
