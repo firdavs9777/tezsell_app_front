@@ -1,6 +1,5 @@
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/profile/widgets/sliver_tab_bar_delegate.dart';
-import 'package:app/pages/profile/widgets/user_profile_follow_list.dart';
 import 'package:app/pages/profile/widgets/user_profile_grids.dart';
 import 'package:app/pages/profile/widgets/user_profile_more_options.dart';
 import 'package:app/providers/provider_models/trust_score_model.dart';
@@ -9,6 +8,7 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/reviews_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/widgets/follow_list_sheet.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/service_rating_badge.dart';
 import 'package:app/widgets/trust_score_widget.dart';
@@ -666,7 +666,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) => UserProfileFollowListSheet(
+      builder: (sheetContext) => FollowListSheet(
         title: localizations?.profile_followers ?? 'Followers',
         userId: profile.id,
         isFollowers: true,
@@ -680,7 +680,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) => UserProfileFollowListSheet(
+      builder: (sheetContext) => FollowListSheet(
         title: localizations?.profile_following ?? 'Following',
         userId: profile.id,
         isFollowers: false,

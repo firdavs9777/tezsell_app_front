@@ -3,7 +3,6 @@ import 'package:app/pages/shaxsiy/customer_center/customer_center.dart';
 import 'package:app/pages/shaxsiy/inquires/main_inquiries.dart';
 import 'package:app/pages/shaxsiy/profile-terms/terms_and_conditions.dart';
 import 'package:app/pages/shaxsiy/security/main_security.dart';
-import 'package:app/pages/shaxsiy/widgets/profile_follow_list_sheet.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_header.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_language_dialog.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_menu_card.dart';
@@ -19,6 +18,7 @@ import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/reviews_provider.dart';
 import 'package:app/providers/provider_root/vacation_mode_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/widgets/follow_list_sheet.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
 import 'package:app/widgets/vacation_mode_widget.dart';
 import 'package:app/service/authentication_service.dart';
@@ -83,7 +83,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => ProfileFollowListSheet(
+      builder: (context) => FollowListSheet(
         title: localizations?.profile_followers ?? 'Obunachilar',
         userId: _currentUserId!,
         isFollowers: true,
@@ -98,7 +98,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => ProfileFollowListSheet(
+      builder: (context) => FollowListSheet(
         title: localizations?.profile_following ?? 'Obunalar',
         userId: _currentUserId!,
         isFollowers: false,
