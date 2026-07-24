@@ -3,11 +3,15 @@ import 'package:app/pages/products/product_new.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/neighborhood.dart';
+import 'package:app/providers/provider_models/recently_viewed_model.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/radius_provider.dart';
+import 'package:app/providers/provider_root/recently_viewed_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
+import 'package:app/utils/image_utils.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/pages/products/widgets/product_filter_sheet.dart';
 import 'package:app/widgets/maps/items_map_view.dart';
 import 'package:app/widgets/maps/radius_slider.dart';
@@ -587,6 +591,9 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               );
             },
           ),
+          // Karrot-style horizontal "Recently viewed" strip — self-hides
+          // whenever the recently-viewed history is empty.
+          const _RecentlyViewedStrip(),
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
@@ -1086,6 +1093,119 @@ class _ProductSortButton extends StatelessWidget {
               const SizedBox(width: 2),
               Icon(Icons.arrow_drop_down_rounded,
                   size: 18, color: colorScheme.primary),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Karrot-style horizontal "Recently viewed" strip shown above the feed.
+/// Renders nothing (no empty state) whenever the history is empty, and
+/// stays lightweight by only watching the `products`-filtered slice of
+/// [recentlyViewedProvider].
+class _RecentlyViewedStrip extends ConsumerWidget {
+  const _RecentlyViewedStrip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(recentlyViewedProvider).products;
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final localizations = AppLocalizations.of(context);
+
+    return Container(
+      color: theme.cardColor,
+      padding: const EdgeInsets.only(top: 10, bottom: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              localizations?.recently_viewed_title ?? 'Recently viewed',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 122,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return _RecentlyViewedTile(item: items[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RecentlyViewedTile extends StatelessWidget {
+  const _RecentlyViewedTile({required this.item});
+
+  final RecentlyViewedItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final details = item.itemDetails;
+    final title = details?.title ?? '';
+    final price = details?.price;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: SizedBox(
+        width: 96,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () => context.push('/product/${item.itemId}'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImageWidget(
+                  imageUrl: ImageUtils.buildImageUrl(details?.image),
+                  width: 96,
+                  height: 80,
+                  fit: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              if (price != null && price.isNotEmpty)
+                Text(
+                  price,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.primary,
+                  ),
+                ),
             ],
           ),
         ),

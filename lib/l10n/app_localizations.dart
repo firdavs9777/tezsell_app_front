@@ -7936,6 +7936,18 @@ abstract class AppLocalizations {
   /// **'SOLD'**
   String get sold_badge;
 
+  /// Badge text for reserved (not yet sold) products
+  ///
+  /// In en, this message translates to:
+  /// **'RESERVED'**
+  String get reserved_badge;
+
+  /// Section header for the recently-viewed items strip
+  ///
+  /// In en, this message translates to:
+  /// **'Recently viewed'**
+  String get recently_viewed_title;
+
   /// Button to show more categories
   ///
   /// In en, this message translates to:

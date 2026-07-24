@@ -6,7 +6,9 @@ import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/offers_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/recently_viewed_provider.dart';
 import 'package:app/service/chat_api_service.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
@@ -49,6 +51,21 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     _pageController = PageController();
     _currentProduct = widget.product;
     _loadLikeStatus();
+    _recordRecentlyViewed();
+  }
+
+  /// Fire-and-forget: records this PDP open for the "Recently viewed" strip
+  /// on the products feed. Guarded by a cheap cached-token check since the
+  /// endpoint requires auth — skips the call entirely for logged-out users
+  /// rather than relying solely on the service's graceful no-op. Never
+  /// blocks the PDP render.
+  void _recordRecentlyViewed() {
+    final token = TokenStore.instance.accessTokenCached;
+    if (token == null || token.isEmpty) return;
+    ref.read(recentlyViewedProvider.notifier).recordView(
+          itemType: 'product',
+          itemId: widget.product.id,
+        );
   }
 
   Future<void> _loadLikeStatus({bool forceRefresh = false}) async {

@@ -4019,6 +4019,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sold_badge => '販売済み';
 
   @override
+  String get reserved_badge => 'RESERVED';
+
+  @override
+  String get recently_viewed_title => 'Recently viewed';
+
+  @override
   String get more_categories => 'もっと';
 
   @override

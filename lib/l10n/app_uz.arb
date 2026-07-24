@@ -2688,6 +2688,14 @@
   "@sold_badge": {
     "description": "Badge text for sold products"
   },
+  "reserved_badge": "BAND QILINGAN",
+  "@reserved_badge": {
+    "description": "Badge text for reserved (not yet sold) products"
+  },
+  "recently_viewed_title": "Yaqinda ko'rilganlar",
+  "@recently_viewed_title": {
+    "description": "Section header for the recently-viewed items strip"
+  },
   "more_categories": "Yana",
   "@more_categories": {
     "description": "Button to show more categories"

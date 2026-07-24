@@ -4222,6 +4222,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sold_badge => 'VENDU';
 
   @override
+  String get reserved_badge => 'RESERVED';
+
+  @override
+  String get recently_viewed_title => 'Recently viewed';
+
+  @override
   String get more_categories => 'Plus';
 
   @override

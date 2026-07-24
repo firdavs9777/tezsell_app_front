@@ -109,6 +109,32 @@ class ProductMain extends ConsumerWidget {
                             ),
                           ),
                         ),
+                      // Reserved badge overlay — only when not sold (sold
+                      // always takes visual precedence; never show both).
+                      if (!product.isSold && product.isReserved)
+                        Positioned(
+                          left: 6,
+                          top: 6,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.shade700,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)?.reserved_badge ??
+                                  'RESERVED',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 const SizedBox(width: 14.0),

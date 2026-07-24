@@ -4148,6 +4148,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sold_badge => 'ПРОДАНО';
 
   @override
+  String get reserved_badge => 'ЗАБРОНИРОВАНО';
+
+  @override
+  String get recently_viewed_title => 'Недавно просмотренные';
+
+  @override
   String get more_categories => 'Ещё';
 
   @override

@@ -4170,6 +4170,12 @@ class AppLocalizationsUz extends AppLocalizations {
   String get sold_badge => 'SOTILGAN';
 
   @override
+  String get reserved_badge => 'BAND QILINGAN';
+
+  @override
+  String get recently_viewed_title => 'Yaqinda ko\'rilganlar';
+
+  @override
   String get more_categories => 'Yana';
 
   @override

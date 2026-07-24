@@ -64,6 +64,7 @@ class Products {
     required this.inStock,
     required this.isActive,
     required this.isSold,
+    this.isReserved = false,
     required this.images,
     required this.rating,
     required this.likeCount,
@@ -97,6 +98,11 @@ class Products {
   final bool inStock;
   final bool isActive;
   final bool isSold;
+
+  /// Seller-marked "reserved for a buyer" flag — distinct from [isSold].
+  /// Suppressed on the card whenever [isSold] is true (sold takes
+  /// precedence and only one badge is ever shown).
+  final bool isReserved;
   final List<ImageData> images;
   final double rating;
   final int likeCount;
@@ -184,6 +190,7 @@ class Products {
       inStock: json['in_stock'] ?? false,
       isActive: json['is_active'] ?? true,  // NEW
       isSold: json['is_sold'] ?? false,      // NEW
+      isReserved: json['is_reserved'] ?? false,
       images: (json['images'] as List<dynamic>?)
               ?.map((imageJson) => ImageData.fromJson(imageJson))
               .toList() ??

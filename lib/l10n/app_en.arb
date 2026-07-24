@@ -2984,6 +2984,14 @@
   "@sold_badge": {
     "description": "Badge text for sold products"
   },
+  "reserved_badge": "RESERVED",
+  "@reserved_badge": {
+    "description": "Badge text for reserved (not yet sold) products"
+  },
+  "recently_viewed_title": "Recently viewed",
+  "@recently_viewed_title": {
+    "description": "Section header for the recently-viewed items strip"
+  },
   "more_categories": "More",
   "@more_categories": {
     "description": "Button to show more categories"

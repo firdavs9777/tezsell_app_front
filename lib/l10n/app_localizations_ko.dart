@@ -4022,6 +4022,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sold_badge => '판매된';
 
   @override
+  String get reserved_badge => 'RESERVED';
+
+  @override
+  String get recently_viewed_title => 'Recently viewed';
+
+  @override
   String get more_categories => '더';
 
   @override
