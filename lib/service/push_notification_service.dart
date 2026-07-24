@@ -202,6 +202,11 @@ class PushNotificationService {
           case 'real_estate':
             if (objectId != null) targetRoute = '/real-estate/$objectId';
             break;
+          case 'community_like':
+          case 'community_comment':
+          case 'community_reply':
+            if (objectId != null) targetRoute = '/community/$objectId';
+            break;
           case 'chat':
           case 'message':
           case 'new_message':

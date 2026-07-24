@@ -56,6 +56,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
       ref.read(chatNotificationProvider);
       ref.read(realEstateNotificationProvider);
       ref.read(commentNotificationProvider);
+      ref.read(communityNotificationProvider);
       print('✅ All notification providers initialized');
 
       ref.read(chatProvider.notifier).initialize();
@@ -395,8 +396,10 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   }
 
   bool _shouldShowNotification() {
-    // Home + Nearby show a bell; Community bell is deferred to the deep-spec.
-    return _selectedPageIndex == 0 || _selectedPageIndex == 2;
+    // Home, Community, and Nearby show a bell.
+    return _selectedPageIndex == 0 ||
+        _selectedPageIndex == 1 ||
+        _selectedPageIndex == 2;
   }
 
   StateNotifierProvider<NotificationNotifier, NotificationState>?
@@ -404,6 +407,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
     switch (_selectedPageIndex) {
       case 0:
         return productNotificationProvider;
+      case 1:
+        // Community: likes/comments/replies on your posts.
+        return communityNotificationProvider;
       case 2:
         // Nearby: reuse the services notification stream in v1.
         return serviceNotificationProvider;

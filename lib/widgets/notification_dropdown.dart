@@ -179,6 +179,13 @@ class NotificationDropdown extends ConsumerWidget {
         context.push('/real-estate/${notification.objectId}');
         break;
 
+      case 'community_like':
+      case 'community_comment':
+      case 'community_reply':
+        // object_id is the community post id.
+        context.push('/community/${notification.objectId}');
+        break;
+
       case 'chat':
         context.push('/chat/${notification.objectId}');
         break;

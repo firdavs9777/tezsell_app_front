@@ -62,11 +62,13 @@ class NotificationState {
   }
 
   List<NotificationModel> get filteredNotifications {
-    if (filter == null || filter == 'all') return notifications;
     if (filter == 'unread') {
       return notifications.where((n) => !n.isRead).toList();
     }
-    return notifications.where((n) => n.type == filter).toList();
+    // 'all', null, or a provider-scoped type label: notifications are
+    // already restricted to this provider's type(s) upstream (fetch +
+    // WebSocket filter), so no further type filtering is needed here.
+    return notifications;
   }
 
   /// Get unread count for a specific notification type
@@ -84,16 +86,34 @@ class NotificationState {
 class NotificationNotifier extends StateNotifier<NotificationState> {
   final NotificationApiService _apiService;
   final NotificationWebSocketService _webSocketService;
-  final String? _notificationType; // Filter type for this provider instance
+  final String? _notificationType; // Single-type filter for this provider
+  // Multi-type filter (e.g. Community spans community_like/comment/reply).
+  // When set, [_notificationType] is null but this is still a *typed* (not
+  // global) provider, so it must NOT touch the OS badge / global-only paths.
+  final Set<String>? _notificationTypes;
   Timer? _refreshTimer;
   StreamSubscription<NotificationModel>? _webSocketSubscription;
   final NotificationService _notificationService = NotificationService();
+
+  /// A provider is "global" (owns the OS badge, all-notifications view) only
+  /// when it has neither a single-type nor a multi-type filter.
+  bool get _isGlobal => _notificationType == null && _notificationTypes == null;
+
+  /// Does [type] belong to this provider's scope?
+  bool _matchesType(String? type) {
+    if (_notificationTypes != null) {
+      return type != null && _notificationTypes!.contains(type);
+    }
+    return _notificationType == null || type == _notificationType;
+  }
 
   NotificationNotifier(
     this._apiService,
     this._webSocketService, {
     String? notificationType,
+    Set<String>? notificationTypes,
   })  : _notificationType = notificationType,
+        _notificationTypes = notificationTypes,
         super(NotificationState(filter: notificationType)) {
     _initializeWebSocket();
     // Auto-refresh unread count every 30 seconds
@@ -112,8 +132,8 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     // Subscribe to the WebSocket stream
     _webSocketSubscription = _webSocketService.notificationStream.listen(
       (notification) {
-        // Only add notification if it matches this provider's type
-        if (_notificationType == null || notification.type == _notificationType) {
+        // Only add notification if it matches this provider's scope
+        if (_matchesType(notification.type)) {
           // Check if notification already exists (avoid duplicates)
           final exists = state.notifications.any((n) => n.id == notification.id);
           if (!exists) {
@@ -130,7 +150,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
             print('✅ [$_notificationType] State updated: unreadCount=${state.unreadCount}, total=${state.notifications.length}');
 
             // Update OS badge count for unread notifications (only for global provider)
-            if (_notificationType == null && !notification.isRead) {
+            if (_isGlobal && !notification.isRead) {
               PushNotificationService().updateBadgeCount(newUnreadCount);
             }
 
@@ -183,14 +203,18 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      // Always use the provider's notification type for filtering
+      // Single-type providers filter server-side; multi-type (Community)
+      // fetches all and filters client-side since the API takes one type.
       final response = await _apiService.getNotifications(
-        type: _notificationType,
+        type: _notificationTypes == null ? _notificationType : null,
         isRead: null, // Fetch all (read and unread) for this type
       );
+      final fetched = _notificationTypes == null
+          ? response.results
+          : response.results.where((n) => _matchesType(n.type)).toList();
 
       state = state.copyWith(
-        notifications: refresh ? response.results : [...state.notifications, ...response.results],
+        notifications: refresh ? fetched : [...state.notifications, ...fetched],
         isLoading: false,
         error: null,
       );
@@ -209,20 +233,22 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     try {
       int newUnreadCount = 0;
 
-      if (_notificationType != null) {
-        // For typed providers, calculate unread count from notifications
-        // But also fetch from API to ensure accuracy
+      if (!_isGlobal) {
+        // For typed providers (single- or multi-type), calculate unread count
+        // from notifications, but also fetch from API to ensure accuracy.
         final localUnreadCount = state.notifications
-            .where((n) => !n.isRead && n.type == _notificationType)
+            .where((n) => !n.isRead && _matchesType(n.type))
             .length;
 
         // Try to get accurate count from API
         try {
           final response = await _apiService.getNotifications(
-            type: _notificationType,
+            type: _notificationTypes == null ? _notificationType : null,
             isRead: false, // Only unread
           );
-          final apiUnreadCount = response.results.length;
+          final apiUnreadCount = _notificationTypes == null
+              ? response.results.length
+              : response.results.where((n) => _matchesType(n.type)).length;
           // Use the higher of the two counts to ensure we don't miss any
           newUnreadCount = apiUnreadCount > localUnreadCount
               ? apiUnreadCount
@@ -273,7 +299,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       );
 
       // Update OS badge count (only for global provider)
-      if (_notificationType == null) {
+      if (_isGlobal) {
         await PushNotificationService().updateBadgeCount(newUnreadCount);
       }
     } catch (e) {
@@ -295,7 +321,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       );
 
       // Clear OS badge count (only for global provider)
-      if (_notificationType == null) {
+      if (_isGlobal) {
         await PushNotificationService().clearBadgeCount();
       }
     } catch (e) {
@@ -483,6 +509,27 @@ final recommendedServiceNotificationProvider =
     apiService,
     webSocketService,
     notificationType: 'recommended_service',
+  );
+  notifier.fetchNotifications(refresh: true);
+  notifier.fetchUnreadCount();
+  notifier.connectWebSocket();
+  return notifier;
+});
+
+// Community spans three backend notification types (likes, comments, replies
+// on your posts), so it uses the multi-type filter.
+final communityNotificationProvider =
+    StateNotifierProvider<NotificationNotifier, NotificationState>((ref) {
+  final apiService = ref.watch(notificationApiServiceProvider);
+  final webSocketService = ref.watch(notificationWebSocketServiceProvider);
+  final notifier = NotificationNotifier(
+    apiService,
+    webSocketService,
+    notificationTypes: const {
+      'community_like',
+      'community_comment',
+      'community_reply',
+    },
   );
   notifier.fetchNotifications(refresh: true);
   notifier.fetchUnreadCount();
