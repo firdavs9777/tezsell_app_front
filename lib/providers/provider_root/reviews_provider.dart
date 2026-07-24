@@ -280,19 +280,26 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
     required int rating,
     String? reviewText,
     List<String> tags = const [],
+    bool? isBuyerReview,
   }) async {
+    state = state.copyWith(error: null);
     try {
       final review = await _service.submitReview(
         transactionId: transactionId,
         rating: rating,
         reviewText: reviewText,
         tags: tags,
+        isBuyerReview: isBuyerReview,
       );
 
       if (review != null) {
         state = state.copyWith(
           reviews: [review, ...state.reviews],
         );
+      } else {
+        // Service swallows non-2xx responses and returns null without
+        // throwing, so surface a generic error for the UI to display.
+        state = state.copyWith(error: 'Failed to submit review');
       }
 
       return review;
@@ -342,6 +349,60 @@ class ReviewTagsNotifier extends StateNotifier<List<ReviewTag>> {
       if (isBuyer) return t.forBuyer;
       return t.forSeller;
     }).toList();
+  }
+}
+
+// ==================== Pending Reviews Provider ====================
+
+class PendingReviewsState {
+  final List<Transaction> transactions;
+  final int count;
+  final bool isLoading;
+  final String? error;
+
+  PendingReviewsState({
+    this.transactions = const [],
+    this.count = 0,
+    this.isLoading = false,
+    this.error,
+  });
+
+  PendingReviewsState copyWith({
+    List<Transaction>? transactions,
+    int? count,
+    bool? isLoading,
+    String? error,
+  }) {
+    return PendingReviewsState(
+      transactions: transactions ?? this.transactions,
+      count: count ?? this.count,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+    );
+  }
+}
+
+class PendingReviewsNotifier extends StateNotifier<PendingReviewsState> {
+  final ReviewsService _service;
+
+  PendingReviewsNotifier(this._service) : super(PendingReviewsState());
+
+  Future<void> fetchPendingReviews() async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      final result = await _service.getPendingReviews();
+      state = state.copyWith(
+        transactions: result['transactions'] as List<Transaction>? ?? [],
+        count: result['count'] as int? ?? 0,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
   }
 }
 
@@ -399,6 +460,14 @@ final badgesProvider =
   final service = ref.watch(reviewsServiceProvider);
   final notifier = BadgesNotifier(service);
   notifier.fetchBadges();
+  return notifier;
+});
+
+final pendingReviewsProvider =
+    StateNotifierProvider<PendingReviewsNotifier, PendingReviewsState>((ref) {
+  final service = ref.watch(reviewsServiceProvider);
+  final notifier = PendingReviewsNotifier(service);
+  notifier.fetchPendingReviews();
   return notifier;
 });
 

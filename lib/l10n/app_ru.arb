@@ -2933,5 +2933,15 @@
   "searchAlertDeleteError": "Не удалось удалить оповещение",
   "searchAlertToggleError": "Не удалось обновить оповещение",
   "savedSearchesLoadError": "Не удалось загрузить сохранённые поиски",
-  "searchAlertsLoadError": "Не удалось загрузить оповещения"
+  "searchAlertsLoadError": "Не удалось загрузить оповещения",
+  "reviewWriteTitle": "Написать отзыв",
+  "reviewWriteRatingLabel": "Как прошла сделка?",
+  "reviewWriteRatingRequiredHint": "Выберите хотя бы 1 звезду, чтобы отправить",
+  "reviewWriteTagsLabel": "Что понравилось? (необязательно)",
+  "reviewWriteCommentLabel": "Дополнительный комментарий (необязательно)",
+  "reviewWriteCommentHint": "Поделитесь подробностями о своём опыте…",
+  "reviewWriteSubmitButton": "Отправить отзыв",
+  "reviewWriteSuccess": "Отзыв успешно отправлен",
+  "reviewWriteError": "Не удалось отправить отзыв. Попробуйте ещё раз.",
+  "reviewWriteLoadingTransaction": "Загрузка данных о сделке…"
 }

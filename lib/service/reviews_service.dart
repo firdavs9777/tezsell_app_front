@@ -174,6 +174,7 @@ class ReviewsService {
     required int rating,
     String? reviewText,
     List<String> tags = const [],
+    bool? isBuyerReview,
   }) async {
     try {
       final headers = await _getAuthHeaders();
@@ -184,6 +185,7 @@ class ReviewsService {
           'rating': rating,
           if (reviewText != null) 'review_text': reviewText,
           'tags': tags,
+          if (isBuyerReview != null) 'is_buyer_review': isBuyerReview,
         }),
       );
 
@@ -267,6 +269,37 @@ class ReviewsService {
     } catch (e) {
       print('Error getting review tags: $e');
       return ReviewTags.all;
+    }
+  }
+
+  /// Get transactions awaiting a review from the current user.
+  /// Returns a map with `transactions` (List<Transaction>) and `count` (int),
+  /// matching the `{success, data: {transactions, count}}` envelope.
+  Future<Map<String, dynamic>> getPendingReviews() async {
+    try {
+      final headers = await _getAuthHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/reviews/pending/'),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true && data['data'] != null) {
+          final pendingData = data['data'];
+          return {
+            'transactions': (pendingData['transactions'] as List?)
+                    ?.map((t) => Transaction.fromJson(t))
+                    .toList() ??
+                <Transaction>[],
+            'count': pendingData['count'] ?? 0,
+          };
+        }
+      }
+      return {'transactions': <Transaction>[], 'count': 0};
+    } catch (e) {
+      print('Error getting pending reviews: $e');
+      return {'transactions': <Transaction>[], 'count': 0};
     }
   }
 }

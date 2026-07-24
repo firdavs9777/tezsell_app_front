@@ -4871,4 +4871,37 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get searchAlertsLoadError => 'Ogohlantirishlarni yuklab bo\'lmadi';
+
+  @override
+  String get reviewWriteTitle => 'Sharh yozish';
+
+  @override
+  String get reviewWriteRatingLabel => 'Tajribangiz qanday bo\'ldi?';
+
+  @override
+  String get reviewWriteRatingRequiredHint =>
+      'Yuborish uchun kamida 1 ta yulduzcha tanlang';
+
+  @override
+  String get reviewWriteTagsLabel => 'Nima yaxshi bo\'ldi? (ixtiyoriy)';
+
+  @override
+  String get reviewWriteCommentLabel => 'Qo\'shimcha izoh (ixtiyoriy)';
+
+  @override
+  String get reviewWriteCommentHint => 'Tajribangiz haqida ko\'proq yozing…';
+
+  @override
+  String get reviewWriteSubmitButton => 'Sharhni yuborish';
+
+  @override
+  String get reviewWriteSuccess => 'Sharh muvaffaqiyatli yuborildi';
+
+  @override
+  String get reviewWriteError =>
+      'Sharhni yuborib bo\'lmadi. Qaytadan urinib ko\'ring.';
+
+  @override
+  String get reviewWriteLoadingTransaction =>
+      'Bitim ma\'lumotlari yuklanmoqda…';
 }

@@ -47,6 +47,7 @@ import '../pages/community/community_detail.dart';
 import '../pages/community/community_composer.dart';
 import '../pages/community/community_edit.dart';
 import '../providers/provider_models/community_post_model.dart';
+import '../pages/reviews/write_review_screen.dart';
 
 // Providers
 import '../service/authentication_service.dart';
@@ -423,6 +424,40 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           return CommunityDetail(
             postId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+          );
+        },
+      ),
+      // Write-review route. `extra` may carry a Map with richer context
+      // (isBuyerReview, counterpartyName, counterpartyAvatar, itemTitle,
+      // itemImage) so the screen can render immediately; if omitted (e.g. a
+      // bare deep link with only the transaction id) the screen resolves
+      // those details itself from the transactions list.
+      GoRoute(
+        path: '/review/write/:transactionId',
+        name: 'write-review',
+        builder: (context, state) {
+          final transactionId =
+              int.tryParse(state.pathParameters['transactionId'] ?? '') ?? 0;
+          final extra = state.extra;
+          bool? isBuyerReview;
+          String? counterpartyName;
+          String? counterpartyAvatar;
+          String? itemTitle;
+          String? itemImage;
+          if (extra is Map) {
+            isBuyerReview = extra['isBuyerReview'] as bool?;
+            counterpartyName = extra['counterpartyName'] as String?;
+            counterpartyAvatar = extra['counterpartyAvatar'] as String?;
+            itemTitle = extra['itemTitle'] as String?;
+            itemImage = extra['itemImage'] as String?;
+          }
+          return WriteReviewScreen(
+            transactionId: transactionId,
+            isBuyerReview: isBuyerReview,
+            counterpartyName: counterpartyName,
+            counterpartyAvatar: counterpartyAvatar,
+            itemTitle: itemTitle,
+            itemImage: itemImage,
           );
         },
       ),

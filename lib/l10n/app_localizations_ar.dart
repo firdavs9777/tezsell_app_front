@@ -4779,4 +4779,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchAlertsLoadError => 'Failed to load alerts';
+
+  @override
+  String get reviewWriteTitle => 'Write a review';
+
+  @override
+  String get reviewWriteRatingLabel => 'How was your experience?';
+
+  @override
+  String get reviewWriteRatingRequiredHint =>
+      'Select at least 1 star to submit';
+
+  @override
+  String get reviewWriteTagsLabel => 'What went well? (optional)';
+
+  @override
+  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+
+  @override
+  String get reviewWriteCommentHint => 'Share more about your experience…';
+
+  @override
+  String get reviewWriteSubmitButton => 'Submit review';
+
+  @override
+  String get reviewWriteSuccess => 'Review submitted successfully';
+
+  @override
+  String get reviewWriteError => 'Failed to submit review. Please try again.';
+
+  @override
+  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
 }

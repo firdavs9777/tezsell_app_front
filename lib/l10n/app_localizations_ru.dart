@@ -4844,4 +4844,38 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get searchAlertsLoadError => 'Не удалось загрузить оповещения';
+
+  @override
+  String get reviewWriteTitle => 'Написать отзыв';
+
+  @override
+  String get reviewWriteRatingLabel => 'Как прошла сделка?';
+
+  @override
+  String get reviewWriteRatingRequiredHint =>
+      'Выберите хотя бы 1 звезду, чтобы отправить';
+
+  @override
+  String get reviewWriteTagsLabel => 'Что понравилось? (необязательно)';
+
+  @override
+  String get reviewWriteCommentLabel =>
+      'Дополнительный комментарий (необязательно)';
+
+  @override
+  String get reviewWriteCommentHint =>
+      'Поделитесь подробностями о своём опыте…';
+
+  @override
+  String get reviewWriteSubmitButton => 'Отправить отзыв';
+
+  @override
+  String get reviewWriteSuccess => 'Отзыв успешно отправлен';
+
+  @override
+  String get reviewWriteError =>
+      'Не удалось отправить отзыв. Попробуйте ещё раз.';
+
+  @override
+  String get reviewWriteLoadingTransaction => 'Загрузка данных о сделке…';
 }

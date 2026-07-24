@@ -9201,6 +9201,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load alerts'**
   String get searchAlertsLoadError;
+
+  /// AppBar title for the write-review screen
+  ///
+  /// In en, this message translates to:
+  /// **'Write a review'**
+  String get reviewWriteTitle;
+
+  /// Label above the 1-5 star rating selector on the write-review screen
+  ///
+  /// In en, this message translates to:
+  /// **'How was your experience?'**
+  String get reviewWriteRatingLabel;
+
+  /// Assistive text shown under the star selector when no rating has been chosen yet
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least 1 star to submit'**
+  String get reviewWriteRatingRequiredHint;
+
+  /// Label above the quick review tag chips on the write-review screen
+  ///
+  /// In en, this message translates to:
+  /// **'What went well? (optional)'**
+  String get reviewWriteTagsLabel;
+
+  /// Label above the free-text review field on the write-review screen
+  ///
+  /// In en, this message translates to:
+  /// **'Additional comments (optional)'**
+  String get reviewWriteCommentLabel;
+
+  /// Placeholder text inside the free-text review field
+  ///
+  /// In en, this message translates to:
+  /// **'Share more about your experience…'**
+  String get reviewWriteCommentHint;
+
+  /// Button label to submit a review
+  ///
+  /// In en, this message translates to:
+  /// **'Submit review'**
+  String get reviewWriteSubmitButton;
+
+  /// Snackbar shown after a review is submitted successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Review submitted successfully'**
+  String get reviewWriteSuccess;
+
+  /// Snackbar shown when submitting a review fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit review. Please try again.'**
+  String get reviewWriteError;
+
+  /// Loading indicator label while the write-review screen resolves missing transaction details
+  ///
+  /// In en, this message translates to:
+  /// **'Loading transaction details…'**
+  String get reviewWriteLoadingTransaction;
 }
 
 class _AppLocalizationsDelegate

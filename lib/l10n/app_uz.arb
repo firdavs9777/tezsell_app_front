@@ -2930,5 +2930,15 @@
   "searchAlertDeleteError": "Ogohlantirishni o'chirib bo'lmadi",
   "searchAlertToggleError": "Ogohlantirishni yangilab bo'lmadi",
   "savedSearchesLoadError": "Saqlangan qidiruvlarni yuklab bo'lmadi",
-  "searchAlertsLoadError": "Ogohlantirishlarni yuklab bo'lmadi"
+  "searchAlertsLoadError": "Ogohlantirishlarni yuklab bo'lmadi",
+  "reviewWriteTitle": "Sharh yozish",
+  "reviewWriteRatingLabel": "Tajribangiz qanday bo'ldi?",
+  "reviewWriteRatingRequiredHint": "Yuborish uchun kamida 1 ta yulduzcha tanlang",
+  "reviewWriteTagsLabel": "Nima yaxshi bo'ldi? (ixtiyoriy)",
+  "reviewWriteCommentLabel": "Qo'shimcha izoh (ixtiyoriy)",
+  "reviewWriteCommentHint": "Tajribangiz haqida ko'proq yozing…",
+  "reviewWriteSubmitButton": "Sharhni yuborish",
+  "reviewWriteSuccess": "Sharh muvaffaqiyatli yuborildi",
+  "reviewWriteError": "Sharhni yuborib bo'lmadi. Qaytadan urinib ko'ring.",
+  "reviewWriteLoadingTransaction": "Bitim ma'lumotlari yuklanmoqda…"
 }
