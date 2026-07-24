@@ -470,19 +470,23 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                       Material(
                         color: colorScheme.surfaceVariant.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: _openFilterSheet,
-                          child: Container(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Badge(
-                              isLabelVisible: _filter.isActive,
-                              label: Text('${_filter.activeCount}'),
-                              backgroundColor: colorScheme.primary,
-                              child: Icon(
-                                Icons.tune_rounded,
-                                size: 22,
-                                color: colorScheme.primary,
+                        child: Tooltip(
+                          message: AppLocalizations.of(context)?.productFiltersTooltip ?? 'Filters',
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: _openFilterSheet,
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Badge(
+                                isLabelVisible: _filter.isActive,
+                                label: Text('${_filter.activeCount}'),
+                                backgroundColor: colorScheme.primary,
+                                child: Icon(
+                                  Icons.tune_rounded,
+                                  size: 22,
+                                  semanticLabel: AppLocalizations.of(context)?.productFiltersTooltip ?? 'Filters',
+                                  color: colorScheme.primary,
+                                ),
                               ),
                             ),
                           ),
