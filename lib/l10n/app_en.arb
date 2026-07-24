@@ -3504,5 +3504,9 @@
   "reviewWriteError": "Failed to submit review. Please try again.",
   "@reviewWriteError": {"description": "Snackbar shown when submitting a review fails"},
   "reviewWriteLoadingTransaction": "Loading transaction details…",
-  "@reviewWriteLoadingTransaction": {"description": "Loading indicator label while the write-review screen resolves missing transaction details"}
+  "@reviewWriteLoadingTransaction": {"description": "Loading indicator label while the write-review screen resolves missing transaction details"},
+  "reviewWriteResolveError": "We couldn't load this transaction. Please try again.",
+  "@reviewWriteResolveError": {"description": "Inline error shown when the write-review screen cannot resolve the transaction (and thus the reviewer's role)"},
+  "reviewWriteRetry": "Retry",
+  "@reviewWriteRetry": {"description": "Button label to retry loading the transaction on the write-review screen"}
 }

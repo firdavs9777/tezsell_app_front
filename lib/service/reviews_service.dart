@@ -8,6 +8,11 @@ import 'package:app/service/token_store.dart';
 
 /// Reviews & Trust Score API Service
 class ReviewsService {
+  /// HTTP client seam so the service can be unit tested with a mocked client.
+  final http.Client _client;
+
+  ReviewsService({http.Client? client}) : _client = client ?? http.Client();
+
   Future<Map<String, String>> _getAuthHeaders() async {
     final token = await TokenStore.instance.getAccessToken();
     return {
@@ -21,7 +26,7 @@ class ReviewsService {
   /// Get user's trust score (manner temperature)
   Future<TrustScore> getTrustScore(int userId) async {
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse('$baseUrl/api/reviews/trust-score/$userId/'),
         headers: {'Content-Type': 'application/json'},
       );
@@ -44,7 +49,7 @@ class ReviewsService {
   /// Get available badges
   Future<List<UserBadge>> getAvailableBadges() async {
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse('$baseUrl/api/reviews/badges/'),
         headers: {'Content-Type': 'application/json'},
       );
@@ -75,7 +80,7 @@ class ReviewsService {
   }) async {
     try {
       final headers = await _getAuthHeaders();
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse('$baseUrl/api/reviews/transactions/'),
         headers: headers,
         body: jsonEncode({
@@ -116,7 +121,7 @@ class ReviewsService {
         url += '?${Uri(queryParameters: queryParams).query}';
       }
 
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse(url),
         headers: headers,
       );
@@ -144,7 +149,7 @@ class ReviewsService {
   }) async {
     try {
       final headers = await _getAuthHeaders();
-      final response = await http.patch(
+      final response = await _client.patch(
         Uri.parse('$baseUrl/api/reviews/transactions/$transactionId/'),
         headers: headers,
         body: jsonEncode({
@@ -168,24 +173,30 @@ class ReviewsService {
 
   // ==================== Reviews ====================
 
-  /// Submit a review for a transaction
+  /// Submit a review for a transaction.
+  ///
+  /// Matches the backend `CreateReviewView` (empty-path route under the
+  /// `/api/reviews/` prefix): the transaction id travels in the body and the
+  /// backend derives the reviewer's buyer/seller role from `request.user`.
+  /// `tags` are ReviewTag PK integers.
   Future<Review?> submitReview({
     required int transactionId,
     required int rating,
     String? reviewText,
-    List<String> tags = const [],
-    bool? isBuyerReview,
+    List<int> tags = const [],
   }) async {
     try {
       final headers = await _getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/reviews/transactions/$transactionId/review/'),
+      final trimmedText = reviewText?.trim();
+      final response = await _client.post(
+        Uri.parse('$baseUrl/api/reviews/'),
         headers: headers,
         body: jsonEncode({
+          'transaction_id': transactionId,
           'rating': rating,
-          if (reviewText != null) 'review_text': reviewText,
+          if (trimmedText != null && trimmedText.isNotEmpty)
+            'review_text': trimmedText,
           'tags': tags,
-          if (isBuyerReview != null) 'is_buyer_review': isBuyerReview,
         }),
       );
 
@@ -208,7 +219,7 @@ class ReviewsService {
     String type = 'received', // 'received' or 'given'
   }) async {
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse('$baseUrl/api/reviews/users/$userId/reviews/?type=$type'),
         headers: {'Content-Type': 'application/json'},
       );
@@ -250,7 +261,7 @@ class ReviewsService {
         url += '?${Uri(queryParameters: queryParams).query}';
       }
 
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
       );
@@ -278,7 +289,7 @@ class ReviewsService {
   Future<Map<String, dynamic>> getPendingReviews() async {
     try {
       final headers = await _getAuthHeaders();
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse('$baseUrl/api/reviews/pending/'),
         headers: headers,
       );

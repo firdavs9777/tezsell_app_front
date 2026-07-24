@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app/providers/provider_models/review_model.dart';
 
-/// Review Tag Selector Widget
+/// Review Tag Selector Widget.
+///
+/// Selection is tracked by ReviewTag **id** (int), matching the backend
+/// `CreateReviewSerializer.tags` contract which expects a list of tag PKs.
 class ReviewTagSelector extends StatelessWidget {
   final List<ReviewTag> tags;
-  final List<String> selectedTags;
-  final ValueChanged<List<String>> onChanged;
+  final List<int> selectedTagIds;
+  final ValueChanged<List<int>> onChanged;
   final int maxSelection;
   final String locale;
 
   const ReviewTagSelector({
     super.key,
     required this.tags,
-    required this.selectedTags,
+    required this.selectedTagIds,
     required this.onChanged,
     this.maxSelection = 5,
     this.locale = 'en',
@@ -74,10 +77,10 @@ class ReviewTagSelector extends StatelessWidget {
           ),
         ],
         // Selection count
-        if (selectedTags.isNotEmpty) ...[
+        if (selectedTagIds.isNotEmpty) ...[
           const SizedBox(height: 12),
           Text(
-            '${selectedTags.length}/$maxSelection selected',
+            '${selectedTagIds.length}/$maxSelection selected',
             style: TextStyle(
               fontSize: 12,
               color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -90,8 +93,8 @@ class ReviewTagSelector extends StatelessWidget {
 
   Widget _buildTagChip(BuildContext context, ReviewTag tag, bool isPositive) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isSelected = selectedTags.contains(tag.name);
-    final canSelect = selectedTags.length < maxSelection || isSelected;
+    final isSelected = selectedTagIds.contains(tag.id);
+    final canSelect = selectedTagIds.length < maxSelection || isSelected;
 
     final baseColor =
         isPositive ? const Color(0xFF4CAF50) : const Color(0xFFFF5722);
@@ -100,11 +103,11 @@ class ReviewTagSelector extends StatelessWidget {
       onTap: canSelect
           ? () {
               HapticFeedback.selectionClick();
-              final newSelection = List<String>.from(selectedTags);
+              final newSelection = List<int>.from(selectedTagIds);
               if (isSelected) {
-                newSelection.remove(tag.name);
+                newSelection.remove(tag.id);
               } else {
-                newSelection.add(tag.name);
+                newSelection.add(tag.id);
               }
               onChanged(newSelection);
             }

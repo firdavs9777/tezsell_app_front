@@ -276,13 +276,18 @@ class ReviewTags {
   static List<ReviewTag> get all => [...allPositive, ...allNegative];
 }
 
-/// Request model for submitting a review
+/// Request model for submitting a review.
+///
+/// Mirrors the backend `CreateReviewSerializer`: `transactionId` travels in
+/// the body and `tags` are ReviewTag PK integers.
 class SubmitReviewRequest {
+  final int transactionId;
   final int rating;
   final String? reviewText;
-  final List<String> tags;
+  final List<int> tags;
 
   SubmitReviewRequest({
+    required this.transactionId,
     required this.rating,
     this.reviewText,
     required this.tags,
@@ -290,8 +295,9 @@ class SubmitReviewRequest {
 
   Map<String, dynamic> toJson() {
     return {
+      'transaction_id': transactionId,
       'rating': rating,
-      'review_text': reviewText,
+      if (reviewText != null) 'review_text': reviewText,
       'tags': tags,
     };
   }

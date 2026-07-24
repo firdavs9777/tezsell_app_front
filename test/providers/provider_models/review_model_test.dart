@@ -1,7 +1,78 @@
 import 'package:app/providers/provider_models/review_model.dart';
+import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  group('Transaction.fromJson (backend TransactionSerializer shape)', () {
+    test('parses int seller/buyer PKs plus *_name and item_* fields', () {
+      final json = {
+        'id': 9,
+        'seller': 3,
+        'seller_name': 'Alice',
+        'buyer': 2,
+        'buyer_name': 'Bob',
+        'item_type': 'product',
+        'item_title': 'Vintage bike',
+        'item_image': 'https://example.com/bike.jpg',
+        'status': 'completed',
+        'agreed_price': '150000',
+        'created_at': '2026-07-01T00:00:00.000Z',
+        'completed_at': '2026-07-02T00:00:00.000Z',
+        'seller_reviewed': false,
+        'buyer_reviewed': true,
+        'can_review': true,
+      };
+
+      final tx = Transaction.fromJson(json);
+
+      expect(tx.id, 9);
+      expect(tx.seller, 3);
+      expect(tx.sellerName, 'Alice');
+      expect(tx.buyer, 2);
+      expect(tx.buyerName, 'Bob');
+      expect(tx.itemTitle, 'Vintage bike');
+      expect(tx.itemImage, 'https://example.com/bike.jpg');
+      expect(tx.status, 'completed');
+      expect(tx.agreedPrice, '150000');
+      expect(tx.canReview, isTrue);
+      expect(tx.buyerReviewed, isTrue);
+      expect(tx.sellerReviewed, isFalse);
+      expect(tx.isCompleted, isTrue);
+    });
+
+    test('isBuyerFor resolves role by comparing user id to buyer/seller PKs', () {
+      final tx = Transaction.fromJson({
+        'id': 1,
+        'seller': 3,
+        'buyer': 2,
+        'item_type': 'product',
+        'item_title': 'Chair',
+        'status': 'completed',
+        'can_review': true,
+      });
+
+      expect(tx.isBuyerFor(2), isTrue); // buyer
+      expect(tx.isBuyerFor(3), isFalse); // seller
+      expect(tx.isBuyerFor(99), isNull); // neither party -> no default
+      expect(tx.isBuyerFor(null), isNull);
+    });
+
+    test('tolerates a null item_image', () {
+      final tx = Transaction.fromJson({
+        'id': 1,
+        'seller': 3,
+        'buyer': 2,
+        'item_type': 'product',
+        'item_title': 'Chair',
+        'item_image': null,
+        'status': 'completed',
+        'can_review': true,
+      });
+
+      expect(tx.itemImage, isNull);
+    });
+  });
+
   group('ReviewTag.fromJson', () {
     test('parses a full backend response', () {
       final json = {
@@ -83,19 +154,32 @@ void main() {
     });
   });
 
-  group('SubmitReviewRequest.toJson', () {
-    test('serializes rating, review text and tags', () {
+  group('SubmitReviewRequest.toJson (backend CreateReviewSerializer shape)', () {
+    test('serializes transaction_id, rating, review text and int tags', () {
       final request = SubmitReviewRequest(
+        transactionId: 42,
         rating: 5,
         reviewText: 'Great deal!',
-        tags: const ['Fast Response', 'Fair Price'],
+        tags: const [1, 6],
       );
 
       final json = request.toJson();
 
+      expect(json['transaction_id'], 42);
       expect(json['rating'], 5);
       expect(json['review_text'], 'Great deal!');
-      expect(json['tags'], ['Fast Response', 'Fair Price']);
+      expect(json['tags'], [1, 6]);
+      expect(json['tags'], everyElement(isA<int>()));
+    });
+
+    test('omits review_text when null', () {
+      final request = SubmitReviewRequest(
+        transactionId: 7,
+        rating: 4,
+        tags: const [],
+      );
+
+      expect(request.toJson().containsKey('review_text'), isFalse);
     });
   });
 }

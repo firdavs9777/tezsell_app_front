@@ -4860,4 +4860,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+
+  @override
+  String get reviewWriteResolveError =>
+      'We couldn\'t load this transaction. Please try again.';
+
+  @override
+  String get reviewWriteRetry => 'Retry';
 }

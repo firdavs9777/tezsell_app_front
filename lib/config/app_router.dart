@@ -445,11 +445,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           String? itemTitle;
           String? itemImage;
           if (extra is Map) {
-            isBuyerReview = extra['isBuyerReview'] as bool?;
-            counterpartyName = extra['counterpartyName'] as String?;
-            counterpartyAvatar = extra['counterpartyAvatar'] as String?;
-            itemTitle = extra['itemTitle'] as String?;
-            itemImage = extra['itemImage'] as String?;
+            // Guard with `is` checks so a wrong-typed extra key can't throw
+            // inside the route builder.
+            final rawIsBuyer = extra['isBuyerReview'];
+            isBuyerReview = rawIsBuyer is bool ? rawIsBuyer : null;
+            final rawName = extra['counterpartyName'];
+            counterpartyName = rawName is String ? rawName : null;
+            final rawAvatar = extra['counterpartyAvatar'];
+            counterpartyAvatar = rawAvatar is String ? rawAvatar : null;
+            final rawTitle = extra['itemTitle'];
+            itemTitle = rawTitle is String ? rawTitle : null;
+            final rawImage = extra['itemImage'];
+            itemImage = rawImage is String ? rawImage : null;
           }
           return WriteReviewScreen(
             transactionId: transactionId,

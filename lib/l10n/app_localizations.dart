@@ -9261,6 +9261,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading transaction details…'**
   String get reviewWriteLoadingTransaction;
+
+  /// Inline error shown when the write-review screen cannot resolve the transaction (and thus the reviewer's role)
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t load this transaction. Please try again.'**
+  String get reviewWriteResolveError;
+
+  /// Button label to retry loading the transaction on the write-review screen
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get reviewWriteRetry;
 }
 
 class _AppLocalizationsDelegate

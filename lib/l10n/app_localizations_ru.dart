@@ -4878,4 +4878,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reviewWriteLoadingTransaction => 'Загрузка данных о сделке…';
+
+  @override
+  String get reviewWriteResolveError =>
+      'Не удалось загрузить эту сделку. Попробуйте ещё раз.';
+
+  @override
+  String get reviewWriteRetry => 'Повторить';
 }

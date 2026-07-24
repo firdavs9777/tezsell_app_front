@@ -90,16 +90,12 @@ class TransactionsState {
     );
   }
 
+  // Role filtering (buyer vs seller) is done server-side via the `role`
+  // query param on `getMyTransactions`, since the buyer/seller PKs alone
+  // can't be resolved to "me" without the current user id. Here we only
+  // apply the client-side status filter.
   List<Transaction> get filteredTransactions {
     var result = transactions;
-
-    if (roleFilter != null) {
-      result = result.where((t) {
-        if (roleFilter == 'buyer') return t.buyer != null;
-        if (roleFilter == 'seller') return t.seller != null;
-        return true;
-      }).toList();
-    }
 
     if (statusFilter != null) {
       result = result.where((t) => t.status == statusFilter).toList();
@@ -279,8 +275,7 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
     required int transactionId,
     required int rating,
     String? reviewText,
-    List<String> tags = const [],
-    bool? isBuyerReview,
+    List<int> tags = const [],
   }) async {
     state = state.copyWith(error: null);
     try {
@@ -289,18 +284,16 @@ class ReviewsNotifier extends StateNotifier<ReviewsState> {
         rating: rating,
         reviewText: reviewText,
         tags: tags,
-        isBuyerReview: isBuyerReview,
       );
 
       if (review != null) {
         state = state.copyWith(
           reviews: [review, ...state.reviews],
         );
-      } else {
-        // Service swallows non-2xx responses and returns null without
-        // throwing, so surface a generic error for the UI to display.
-        state = state.copyWith(error: 'Failed to submit review');
       }
+      // On a null result the service swallowed a non-2xx / network error;
+      // leave state.error null so the screen falls back to its localized
+      // reviewWriteError string rather than a raw English message.
 
       return review;
     } catch (e) {

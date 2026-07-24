@@ -2943,5 +2943,7 @@
   "reviewWriteSubmitButton": "Отправить отзыв",
   "reviewWriteSuccess": "Отзыв успешно отправлен",
   "reviewWriteError": "Не удалось отправить отзыв. Попробуйте ещё раз.",
-  "reviewWriteLoadingTransaction": "Загрузка данных о сделке…"
+  "reviewWriteLoadingTransaction": "Загрузка данных о сделке…",
+  "reviewWriteResolveError": "Не удалось загрузить эту сделку. Попробуйте ещё раз.",
+  "reviewWriteRetry": "Повторить"
 }

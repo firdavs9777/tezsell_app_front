@@ -4904,4 +4904,11 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get reviewWriteLoadingTransaction =>
       'Bitim ma\'lumotlari yuklanmoqda…';
+
+  @override
+  String get reviewWriteResolveError =>
+      'Bu bitimni yuklab bo\'lmadi. Qaytadan urinib ko\'ring.';
+
+  @override
+  String get reviewWriteRetry => 'Qayta urinish';
 }

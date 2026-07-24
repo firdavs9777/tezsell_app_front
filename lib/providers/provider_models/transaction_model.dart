@@ -1,63 +1,62 @@
-/// Transaction Model for tracking deals between buyers and sellers
-
+/// Transaction Model for tracking deals between buyers and sellers.
+///
+/// Mirrors the backend `TransactionSerializer` (reviews app): `seller`/`buyer`
+/// are plain user PK integers, with the display names carried separately in
+/// `seller_name`/`buyer_name`. Review state is exposed per-party via
+/// `seller_reviewed`/`buyer_reviewed` plus a derived `can_review` flag.
 class Transaction {
   final int id;
-  final TransactionUser seller;
-  final TransactionUser buyer;
+  final int seller; // seller user PK
+  final String sellerName;
+  final int buyer; // buyer user PK
+  final String buyerName;
   final String itemType; // product, service, property
-  final int itemId;
   final String itemTitle;
   final String? itemImage;
   final String status;
-  final String statusDisplay;
   final String? agreedPrice;
-  final int? chatRoomId;
   final bool canReview;
-  final bool myReviewSubmitted;
+  final bool sellerReviewed;
+  final bool buyerReviewed;
   final DateTime createdAt;
   final DateTime? completedAt;
-  final DateTime? cancelledAt;
 
   Transaction({
     required this.id,
     required this.seller,
+    this.sellerName = '',
     required this.buyer,
+    this.buyerName = '',
     required this.itemType,
-    required this.itemId,
     required this.itemTitle,
     this.itemImage,
     required this.status,
-    required this.statusDisplay,
     this.agreedPrice,
-    this.chatRoomId,
     required this.canReview,
-    required this.myReviewSubmitted,
+    this.sellerReviewed = false,
+    this.buyerReviewed = false,
     required this.createdAt,
     this.completedAt,
-    this.cancelledAt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
       id: json['id'] ?? 0,
-      seller: TransactionUser.fromJson(json['seller'] ?? {}),
-      buyer: TransactionUser.fromJson(json['buyer'] ?? {}),
+      seller: json['seller'] ?? 0,
+      sellerName: json['seller_name'] ?? '',
+      buyer: json['buyer'] ?? 0,
+      buyerName: json['buyer_name'] ?? '',
       itemType: json['item_type'] ?? 'product',
-      itemId: json['item_id'] ?? 0,
       itemTitle: json['item_title'] ?? '',
       itemImage: json['item_image'],
       status: json['status'] ?? 'interested',
-      statusDisplay: json['status_display'] ?? 'Interested',
-      agreedPrice: json['agreed_price'],
-      chatRoomId: json['chat_room_id'],
+      agreedPrice: json['agreed_price']?.toString(),
       canReview: json['can_review'] ?? false,
-      myReviewSubmitted: json['my_review_submitted'] ?? false,
+      sellerReviewed: json['seller_reviewed'] ?? false,
+      buyerReviewed: json['buyer_reviewed'] ?? false,
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
       completedAt: json['completed_at'] != null
           ? DateTime.tryParse(json['completed_at'])
-          : null,
-      cancelledAt: json['cancelled_at'] != null
-          ? DateTime.tryParse(json['cancelled_at'])
           : null,
     );
   }
@@ -65,58 +64,35 @@ class Transaction {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'seller': seller.toJson(),
-      'buyer': buyer.toJson(),
+      'seller': seller,
+      'seller_name': sellerName,
+      'buyer': buyer,
+      'buyer_name': buyerName,
       'item_type': itemType,
-      'item_id': itemId,
       'item_title': itemTitle,
       'item_image': itemImage,
       'status': status,
-      'status_display': statusDisplay,
       'agreed_price': agreedPrice,
-      'chat_room_id': chatRoomId,
       'can_review': canReview,
-      'my_review_submitted': myReviewSubmitted,
+      'seller_reviewed': sellerReviewed,
+      'buyer_reviewed': buyerReviewed,
       'created_at': createdAt.toIso8601String(),
       'completed_at': completedAt?.toIso8601String(),
-      'cancelled_at': cancelledAt?.toIso8601String(),
     };
   }
 
   bool get isCompleted => status == 'completed';
   bool get isCancelled => status == 'cancelled';
   bool get isActive => !isCompleted && !isCancelled;
-}
 
-class TransactionUser {
-  final int id;
-  final String username;
-  final String? avatar;
-  final double? temperature;
-
-  TransactionUser({
-    required this.id,
-    required this.username,
-    this.avatar,
-    this.temperature,
-  });
-
-  factory TransactionUser.fromJson(Map<String, dynamic> json) {
-    return TransactionUser(
-      id: json['id'] ?? 0,
-      username: json['username'] ?? '',
-      avatar: json['avatar'],
-      temperature: double.tryParse(json['temperature']?.toString() ?? ''),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'username': username,
-      'avatar': avatar,
-      'temperature': temperature,
-    };
+  /// Returns whether [userId] is the buyer party of this transaction.
+  /// Returns null when the user is neither buyer nor seller (or unknown),
+  /// so callers can avoid silently defaulting a role.
+  bool? isBuyerFor(int? userId) {
+    if (userId == null) return null;
+    if (userId == buyer) return true;
+    if (userId == seller) return false;
+    return null;
   }
 }
 
