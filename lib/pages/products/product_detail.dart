@@ -1,7 +1,9 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/products/main_products.dart';
+import 'package:app/providers/provider_models/offer_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/providers/provider_root/offers_provider.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/service/chat_api_service.dart';
@@ -9,6 +11,7 @@ import 'package:app/utils/image_utils.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/maps/map_view.dart';
+import 'package:app/widgets/offer_widgets.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:latlong2/latlong.dart';
@@ -275,6 +278,68 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _showMakeOfferDialog() async {
+    final localizations = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final product = _currentProduct ?? widget.product;
+
+    final chatState = ref.read(chatProvider);
+    if (chatState.currentUserId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations?.offerLoginRequired ?? 'Please log in to make an offer'),
+          backgroundColor: colorScheme.tertiary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+      return;
+    }
+
+    final priceValue = double.tryParse(product.price) ?? 0;
+    if (priceValue <= 0) return;
+
+    await showDialog<void>(
+      context: context,
+      builder: (_) => MakeOfferDialog(
+        itemTitle: product.title,
+        currentPrice: priceValue,
+        // Product model has no accepts_offers/minimum_offer_percent field yet
+        // (verified in provider_models/product_model.dart) — fall back to the
+        // widget's default minimum (70%) until the backend/model expose it.
+        onSubmit: _submitOffer,
+      ),
+    );
+  }
+
+  Future<void> _submitOffer(double amount, String? message) async {
+    final localizations = AppLocalizations.of(context);
+    try {
+      await ref.read(offersProvider.notifier).createOffer(
+            CreateOfferRequest(
+              itemType: 'product',
+              itemId: widget.product.id,
+              offerAmount: amount,
+              message: message,
+            ),
+          );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations?.offerSendSuccess ?? 'Offer sent!'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) AppErrorHandler.showError(context, e);
     }
   }
 
@@ -891,8 +956,10 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 color: colorScheme.outline.withOpacity(0.2),
               ),
               const SizedBox(width: 12),
-              // Price
-              Expanded(
+              // Price — Flexible (not Expanded) so it shrinks instead of
+              // overflowing now that up to two action buttons can share
+              // this row (Make Offer + Chat with seller).
+              Flexible(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -902,10 +969,20 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
+              // Make Offer button — hidden on your own listing and once sold
+              if (!isOwnListing && !product.isSold) ...[
+                const SizedBox(width: 12),
+                MakeOfferButton(
+                  currentPrice: (double.tryParse(product.price) ?? 0),
+                  onPressed: _showMakeOfferDialog,
+                ),
+              ],
               // Chat button (Carrot style - orange) — hidden on your own listing
               if (!isOwnListing) ...[
                 const SizedBox(width: 12),

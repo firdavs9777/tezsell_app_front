@@ -2884,5 +2884,10 @@
   "productFilterPriceMax": "Gacha",
   "productFilterCondition": "Holat",
   "productFilterApply": "Qo'llash",
-  "productFilterReset": "Tozalash"
+  "productFilterReset": "Tozalash",
+  "offersMenuTitle": "Takliflar",
+  "offersMenuSubtitle": "Narx savdolarini kuzating",
+  "offerContinueChat": "Chatga o'tish",
+  "offerSendSuccess": "Taklif yuborildi!",
+  "offerLoginRequired": "Taklif berish uchun tizimga kiring"
 }

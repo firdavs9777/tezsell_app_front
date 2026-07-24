@@ -5,6 +5,35 @@ import 'package:app/providers/provider_models/offer_model.dart';
 import 'package:app/providers/provider_root/offers_provider.dart';
 import 'package:app/widgets/offer_widgets.dart';
 import 'package:app/widgets/skeleton_loader.dart';
+import 'package:app/pages/chat/chat_room.dart';
+import 'package:app/service/chat_api_service.dart';
+
+/// Opens (or creates) the chat room tied to the offer's listing — the
+/// hand-off point once an offer has been accepted, so buyer/seller can
+/// arrange pickup/payment. Shared by both the Received and Sent tabs.
+Future<void> _continueOfferChat(BuildContext context, Offer offer) async {
+  try {
+    final chatRoom = await ChatApiService().startFromListing(
+      listingType: offer.itemType,
+      listingId: offer.itemId,
+    );
+    if (context.mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => ChatRoomScreen(chatRoom: chatRoom)),
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Unable to open chat: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+}
 
 class OffersScreen extends ConsumerStatefulWidget {
   const OffersScreen({super.key});
@@ -154,6 +183,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
                 offer: offer,
                 isOwner: true,
                 onTap: () => _navigateToListing(context, offer),
+                onContinueChat: () => _continueOfferChat(context, offer),
               ),
             )),
           ],
@@ -407,6 +437,7 @@ class _SentOffersTab extends ConsumerWidget {
                 offer: offer,
                 isOwner: false,
                 onTap: () => _navigateToListing(context, offer),
+                onContinueChat: () => _continueOfferChat(context, offer),
               ),
             )),
           ],

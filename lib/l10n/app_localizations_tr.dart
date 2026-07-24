@@ -4686,4 +4686,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get productFilterReset => 'Reset';
+
+  @override
+  String get offersMenuTitle => 'Offers';
+
+  @override
+  String get offersMenuSubtitle => 'Track price negotiations';
+
+  @override
+  String get offerContinueChat => 'Continue in chat';
+
+  @override
+  String get offerSendSuccess => 'Offer sent!';
+
+  @override
+  String get offerLoginRequired => 'Please log in to make an offer';
 }

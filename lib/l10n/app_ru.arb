@@ -2887,5 +2887,10 @@
   "productFilterPriceMax": "До",
   "productFilterCondition": "Состояние",
   "productFilterApply": "Применить",
-  "productFilterReset": "Сбросить"
+  "productFilterReset": "Сбросить",
+  "offersMenuTitle": "Предложения",
+  "offersMenuSubtitle": "Отслеживайте торги по цене",
+  "offerContinueChat": "Перейти в чат",
+  "offerSendSuccess": "Предложение отправлено!",
+  "offerLoginRequired": "Войдите, чтобы сделать предложение"
 }

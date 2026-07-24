@@ -3395,5 +3395,15 @@
   "productFilterApply": "Apply",
   "@productFilterApply": {"description": "Button that applies the selected filters and closes the sheet"},
   "productFilterReset": "Reset",
-  "@productFilterReset": {"description": "Button that clears all filters"}
+  "@productFilterReset": {"description": "Button that clears all filters"},
+  "offersMenuTitle": "Offers",
+  "@offersMenuTitle": {"description": "Profile menu entry linking to the offers/negotiation inbox"},
+  "offersMenuSubtitle": "Track price negotiations",
+  "@offersMenuSubtitle": {"description": "Subtitle under the Offers profile menu entry"},
+  "offerContinueChat": "Continue in chat",
+  "@offerContinueChat": {"description": "Button shown on an accepted offer that opens the chat room for the listing"},
+  "offerSendSuccess": "Offer sent!",
+  "@offerSendSuccess": {"description": "Snackbar confirming an offer was submitted to the seller"},
+  "offerLoginRequired": "Please log in to make an offer",
+  "@offerLoginRequired": {"description": "Message shown when a signed-out user taps Make Offer"}
 }

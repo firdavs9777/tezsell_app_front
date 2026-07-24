@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:app/providers/provider_models/offer_model.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 /// Button to make an offer on a listing
 class MakeOfferButton extends StatelessWidget {
@@ -23,11 +24,12 @@ class MakeOfferButton extends StatelessWidget {
     if (!acceptsOffers) return const SizedBox.shrink();
 
     final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
 
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: const Icon(Icons.local_offer_rounded, size: 18),
-      label: const Text('Make Offer'),
+      label: Text(localizations?.inquiry_make_offer ?? 'Make Offer'),
       style: OutlinedButton.styleFrom(
         foregroundColor: colorScheme.primary,
         side: BorderSide(color: colorScheme.primary),
@@ -206,6 +208,7 @@ class OfferCard extends StatelessWidget {
   final VoidCallback? onAcceptCounter;
   final VoidCallback? onCancel;
   final VoidCallback? onTap;
+  final VoidCallback? onContinueChat;
 
   const OfferCard({
     super.key,
@@ -217,6 +220,7 @@ class OfferCard extends StatelessWidget {
     this.onAcceptCounter,
     this.onCancel,
     this.onTap,
+    this.onContinueChat,
   });
 
   @override
@@ -420,6 +424,20 @@ class OfferCard extends StatelessWidget {
               if (offer.status.isActive) ...[
                 const SizedBox(height: 16),
                 _buildActionButtons(context),
+              ],
+              // Offer accepted — hand off to chat to arrange pickup/payment
+              if (offer.status == OfferStatus.accepted && onContinueChat != null) ...[
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: onContinueChat,
+                    icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),
+                    label: Text(
+                      AppLocalizations.of(context)?.offerContinueChat ?? 'Continue in chat',
+                    ),
+                  ),
+                ),
               ],
               // Expiration info
               if (offer.status == OfferStatus.pending || offer.status == OfferStatus.countered) ...[

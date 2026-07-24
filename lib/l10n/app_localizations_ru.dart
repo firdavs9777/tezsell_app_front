@@ -4715,4 +4715,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get productFilterReset => 'Сбросить';
+
+  @override
+  String get offersMenuTitle => 'Предложения';
+
+  @override
+  String get offersMenuSubtitle => 'Отслеживайте торги по цене';
+
+  @override
+  String get offerContinueChat => 'Перейти в чат';
+
+  @override
+  String get offerSendSuccess => 'Предложение отправлено!';
+
+  @override
+  String get offerLoginRequired => 'Войдите, чтобы сделать предложение';
 }

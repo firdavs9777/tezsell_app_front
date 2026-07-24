@@ -230,6 +230,14 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
                     onTap: () => context.push('/profile/my-services'),
                   ),
                   ProfileMenuCard(
+                    icon: Icons.local_offer_rounded,
+                    title: localizations?.offersMenuTitle ?? 'Offers',
+                    subtitle: localizations?.offersMenuSubtitle ??
+                        'Track price negotiations',
+                    iconColor: const Color(0xFFFF6F0F),
+                    onTap: () => context.push('/offers'),
+                  ),
+                  ProfileMenuCard(
                     icon: Icons.favorite_rounded,
                     title: localizations?.favoriteProductsTitle ??
                         'Favorite Products',

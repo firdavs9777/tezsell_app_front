@@ -4738,4 +4738,19 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get productFilterReset => 'Tozalash';
+
+  @override
+  String get offersMenuTitle => 'Takliflar';
+
+  @override
+  String get offersMenuSubtitle => 'Narx savdolarini kuzating';
+
+  @override
+  String get offerContinueChat => 'Chatga o\'tish';
+
+  @override
+  String get offerSendSuccess => 'Taklif yuborildi!';
+
+  @override
+  String get offerLoginRequired => 'Taklif berish uchun tizimga kiring';
 }

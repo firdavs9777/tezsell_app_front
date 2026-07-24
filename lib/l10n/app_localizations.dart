@@ -8961,6 +8961,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get productFilterReset;
+
+  /// Profile menu entry linking to the offers/negotiation inbox
+  ///
+  /// In en, this message translates to:
+  /// **'Offers'**
+  String get offersMenuTitle;
+
+  /// Subtitle under the Offers profile menu entry
+  ///
+  /// In en, this message translates to:
+  /// **'Track price negotiations'**
+  String get offersMenuSubtitle;
+
+  /// Button shown on an accepted offer that opens the chat room for the listing
+  ///
+  /// In en, this message translates to:
+  /// **'Continue in chat'**
+  String get offerContinueChat;
+
+  /// Snackbar confirming an offer was submitted to the seller
+  ///
+  /// In en, this message translates to:
+  /// **'Offer sent!'**
+  String get offerSendSuccess;
+
+  /// Message shown when a signed-out user taps Make Offer
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to make an offer'**
+  String get offerLoginRequired;
 }
 
 class _AppLocalizationsDelegate
