@@ -245,8 +245,14 @@ typedef CommunityFeedArgs = ({
   String sort,
 });
 
-final communityFeedProvider =
-    FutureProvider.family<List<CommunityPost>, CommunityFeedArgs>((ref, args) {
+// autoDispose: without it, every distinct (district, category, query, sort)
+// combination — including one per search keystroke — mints a
+// permanently-retained provider instance for the life of the app session,
+// growing memory unbounded. Usages are all ref.watch (rebuilds while the
+// screen is mounted) or ref.invalidate (recomputes on demand), neither of
+// which depends on the cache surviving after the last listener unsubscribes.
+final communityFeedProvider = FutureProvider.autoDispose
+    .family<List<CommunityPost>, CommunityFeedArgs>((ref, args) {
   return ref.read(communityProvider).getFeed(
         districtId: args.districtId,
         category: args.category,
@@ -256,8 +262,8 @@ final communityFeedProvider =
 });
 
 /// Category post counts for the chip badges, keyed by district.
-final communityCountsProvider =
-    FutureProvider.family<Map<String, int>, int?>((ref, districtId) {
+final communityCountsProvider = FutureProvider.autoDispose
+    .family<Map<String, int>, int?>((ref, districtId) {
   return ref.read(communityProvider).getCounts(districtId: districtId);
 });
 
