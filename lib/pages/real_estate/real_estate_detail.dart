@@ -10,7 +10,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/real_estate/property_inquiry_dialog.dart';
 import 'package:app/pages/chat/chat_room.dart' show ChatRoomScreen;
 import 'package:app/config/app_config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/pages/real_estate/detail/property_image.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/report_content_dialog.dart';
@@ -78,10 +78,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
   Future<void> _loadUserToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final token = await TokenStore.instance.getAccessToken();
       if (mounted) {
         setState(() {
-          userToken = prefs.getString('token');
+          userToken = token;
         });
       }
     } catch (e) {}

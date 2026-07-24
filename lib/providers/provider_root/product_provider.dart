@@ -9,6 +9,7 @@ import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 
 class ProductsService {
   // Singleton Dio instance for better performance
@@ -473,8 +474,7 @@ class ProductsService {
 
   Future<List<CategoryModel>> _fetchCategories() async {
     try {
-      final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       final response = await dio.get(
         '$CATEGORY_URL',
@@ -622,7 +622,7 @@ class ProductsService {
 
     try {
       final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
       final userLocation = prefs.getString('userLocation');
       final userId = prefs.getString('userId');
 
@@ -788,7 +788,7 @@ class ProductsService {
 
     try {
       final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
       final userLocation = prefs.getString('userLocation');
       final userId = prefs.getString('userId');
 
@@ -902,8 +902,7 @@ class ProductsService {
     final timer = Stopwatch()..start();
 
     try {
-      final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
         throw Exception('User not authenticated');

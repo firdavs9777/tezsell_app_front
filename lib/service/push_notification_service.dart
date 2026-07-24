@@ -7,6 +7,7 @@ import '../config/app_config.dart';
 import '../models/notification_model.dart';
 import 'notification_websocket_service.dart';
 import 'badge_service.dart';
+import 'token_store.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -639,9 +640,8 @@ class PushNotificationService {
 
   Future<void> _sendTokenToBackend(String token) async {
     try {
-      // Get auth token directly from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final authToken = prefs.getString('token');
+      // Get auth token from secure storage via TokenStore
+      final authToken = await TokenStore.instance.getAccessToken();
 
       if (authToken == null) {
         print('⚠️ No auth token, skipping FCM token registration');
@@ -699,8 +699,7 @@ class PushNotificationService {
   /// Unregister FCM token from backend
   Future<void> unregisterToken({String? fcmToken}) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final authToken = prefs.getString('token');
+      final authToken = await TokenStore.instance.getAccessToken();
 
       if (authToken == null) {
         print('⚠️ No auth token, skipping FCM token unregistration');

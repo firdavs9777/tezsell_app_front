@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/service/chat_api_service.dart';
 import 'package:app/service/websocket_service.dart';
 import 'package:app/service/connection_state_controller.dart';
@@ -283,7 +284,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
       final userIdString = prefs.getString('userId');
       final username = prefs.getString('username');
 

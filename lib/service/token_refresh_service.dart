@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:app/service/authentication_service.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
-import 'package:flutter/foundation.dart';
 
 /// Service for automatic token refresh
 /// 
@@ -89,15 +89,10 @@ class TokenRefreshService {
     }
   }
 
-  /// Get token expiry time from storage
+  /// Get token expiry time from secure storage (via TokenStore)
   Future<DateTime?> _getTokenExpiry() async {
     try {
-      final prefs = await _authService.getPrefsForTesting();
-      final expiresAtStr = prefs.getString('token_expires_at');
-      if (expiresAtStr != null) {
-        return DateTime.parse(expiresAtStr);
-      }
-      return null;
+      return await TokenStore.instance.getExpiresAt();
     } catch (e) {
       AppLogger.error('Error getting token expiry: $e');
       return null;

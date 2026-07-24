@@ -15,11 +15,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 
 class ProfileService {
   Future<UserInfo> getUserInfo() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.get(Uri.parse('$baseUrl$USER_INFO'), headers: {
       'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ class ProfileService {
   }) async {
     print('[ProfileService] updateUserInfo called with district_id: $locationId, country_code: $countryCode');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     print('[ProfileService] Token: ${token != null ? "present" : "missing"}');
 
     final Map<String, dynamic> formDataMap = {};
@@ -193,8 +193,7 @@ class ProfileService {
   }
 
   Future<List<Products>> getUserProducts() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final response =
         await http.get(Uri.parse('$baseUrl$USER_PRODUCT'), headers: {
       'Content-Type': 'application/json',
@@ -213,8 +212,7 @@ class ProfileService {
   }
 
   Future<List<Services>> getUserServices() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final response =
         await http.get(Uri.parse('$baseUrl$USER_SERVICE'), headers: {
       'Content-Type': 'application/json',
@@ -233,8 +231,7 @@ class ProfileService {
   }
 
   Future<FavoriteItems> getUserFavoriteItems() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final response =
         await http.get(Uri.parse('$baseUrl$FAVORITE_ITEMS'), headers: {
       'Content-Type': 'application/json',
@@ -274,8 +271,7 @@ class ProfileService {
 
   Future<Products> likeSingleProduct({required String productId}) async {
     final url = Uri.parse('$baseUrl$PRODUCT_LIKE$productId/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
       url,
@@ -307,8 +303,7 @@ class ProfileService {
 
   Future<Services> likeSingleService({required String serviceId}) async {
     final url = Uri.parse('$baseUrl$SERVICE_LIKE$serviceId/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
       url,
@@ -330,8 +325,7 @@ class ProfileService {
   Future<Products> dislikeProductItem({required String productId}) async {
     final url = Uri.parse('$baseUrl$PRODUCT_DISLIKE$productId/');
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
       url,
@@ -363,8 +357,7 @@ class ProfileService {
 
   Future<Services> dislikeSingleService({required String serviceId}) async {
     final url = Uri.parse('$baseUrl$SERVICE_DISLIKE$serviceId/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
       url,
@@ -387,8 +380,7 @@ class ProfileService {
 
   /// Get public profile of another user
   Future<UserProfile> getUserProfile({required int userId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final url = AppConfig.getUserProfileUrl(userId);
     print('🔍 Fetching profile from: $url');
@@ -437,8 +429,7 @@ class ProfileService {
 
   /// Follow a user
   Future<bool> followUser({required int userId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     if (token == null) {
       throw ApiException(statusCode: 401, message: 'Avtorizatsiya talab qilinadi');
@@ -476,8 +467,7 @@ class ProfileService {
 
   /// Unfollow a user (uses DELETE on the same follow endpoint)
   Future<bool> unfollowUser({required int userId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     if (token == null) {
       throw ApiException(statusCode: 401, message: 'Avtorizatsiya talab qilinadi');
@@ -518,8 +508,7 @@ class ProfileService {
     required int userId,
     int page = 1,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final response = await http.get(
@@ -552,8 +541,7 @@ class ProfileService {
     required int userId,
     int page = 1,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final response = await http.get(
@@ -584,7 +572,7 @@ class ProfileService {
   /// Get current user's own profile (fetches using current user's ID)
   Future<UserProfile> getMyProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final String? userIdStr = prefs.getString('userId');
 
     if (token == null) {
@@ -602,8 +590,7 @@ class ProfileService {
 
   /// Get my followers
   Future<FollowListResponse> getMyFollowers({int page = 1}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     if (token == null) {
       throw ApiException(statusCode: 401, message: 'Avtorizatsiya talab qilinadi');
@@ -635,8 +622,7 @@ class ProfileService {
 
   /// Get users I'm following
   Future<FollowListResponse> getMyFollowing({int page = 1}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     if (token == null) {
       throw ApiException(statusCode: 401, message: 'Avtorizatsiya talab qilinadi');
@@ -668,8 +654,7 @@ class ProfileService {
 
   /// Get products of a specific user
   Future<List<Products>> getUserProductsById({required int userId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final url = AppConfig.getUserProductsUrl(userId);
@@ -724,8 +709,7 @@ class ProfileService {
 
   /// Get services of a specific user
   Future<List<Services>> getUserServicesById({required int userId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final url = AppConfig.getUserServicesUrl(userId);

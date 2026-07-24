@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'package:app/config/app_config.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/service/token_store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Admin Service for managing admin-related API calls
 class AdminService {
   Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConfig.tokenKey);
+    return TokenStore.instance.getAccessToken();
   }
 
   Future<Map<String, String>> _getHeaders() async {

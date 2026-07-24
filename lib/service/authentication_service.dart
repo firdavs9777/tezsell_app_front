@@ -10,6 +10,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/service/token_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
@@ -82,8 +83,7 @@ class AuthenticationService {
 
   Future<Map<String, dynamic>> requestAccountDeletion(String password) async {
     try {
-      final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await getStoredToken();
 
       final response = await http.post(
         Uri.parse('$baseUrl/accounts/request-account-deletion/'),
@@ -103,8 +103,7 @@ class AuthenticationService {
 
   Future<Map<String, dynamic>> confirmAccountDeletion(String otp) async {
     try {
-      final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await getStoredToken();
 
       final response = await http.post(
         Uri.parse('$baseUrl/accounts/confirm-account-deletion/'),
@@ -124,8 +123,7 @@ class AuthenticationService {
 
   Future<Map<String, dynamic>> cancelAccountDeletion() async {
     try {
-      final prefs = await _getPrefs();
-      final token = prefs.getString('token');
+      final token = await getStoredToken();
 
       final response = await http.post(
         Uri.parse('$baseUrl/accounts/cancel-account-deletion/'),
@@ -224,9 +222,7 @@ class AuthenticationService {
     required String currentPassword,
   }) async {
     try {
-      final prefs = await _getPrefs();
-      final token =
-          prefs.getString('token') ?? prefs.getString(AppConfig.accessTokenKey);
+      final token = await getStoredToken();
 
       if (token == null || token.isEmpty) {
         return {'success': false, 'error': 'Authentication required'};
@@ -269,9 +265,7 @@ class AuthenticationService {
     required String confirmPassword,
   }) async {
     try {
-      final prefs = await _getPrefs();
-      final token =
-          prefs.getString('token') ?? prefs.getString(AppConfig.accessTokenKey);
+      final token = await getStoredToken();
 
       if (token == null || token.isEmpty) {
         return {'success': false, 'error': 'Authentication required'};
@@ -585,37 +579,33 @@ class AuthenticationService {
       final saveTimer = Stopwatch()..start();
       final prefs = await _getPrefs();
 
+      // Tokens (secret) go through TokenStore -> OS secure storage.
+      final expiryTime = expiresIn != null
+          ? DateTime.now().add(Duration(seconds: expiresIn))
+          : null;
+      final refreshExpiryTime = refreshExpiresIn != null
+          ? DateTime.now().add(Duration(seconds: refreshExpiresIn))
+          : null;
+
+      final tokenWrite = TokenStore.instance.setTokens(
+        access: accessToken,
+        refresh: refreshToken,
+        expiresAt: expiryTime,
+        refreshExpiresAt: refreshExpiryTime,
+      );
+
+      // userId/userLocation are not secret, keep in SharedPreferences.
       final futures = <Future>[
-        prefs.setString('token', accessToken), // Backward compatible
-        prefs.setString(AppConfig.accessTokenKey, accessToken),
+        tokenWrite,
         prefs.setString('userId', userId),
         prefs.setString('userLocation', userLocation),
       ];
 
-      if (refreshToken != null) {
-        futures.add(prefs.setString(AppConfig.refreshTokenKey, refreshToken));
-      }
-
       if (expiresIn != null) {
         futures.add(prefs.setInt('token_expires_in', expiresIn));
-        // Store expiry timestamp
-        final expiryTime = DateTime.now().add(Duration(seconds: expiresIn));
-        futures.add(
-          prefs.setString('token_expires_at', expiryTime.toIso8601String()),
-        );
       }
-
       if (refreshExpiresIn != null) {
         futures.add(prefs.setInt('refresh_token_expires_in', refreshExpiresIn));
-        final refreshExpiryTime = DateTime.now().add(
-          Duration(seconds: refreshExpiresIn),
-        );
-        futures.add(
-          prefs.setString(
-            'refresh_token_expires_at',
-            refreshExpiryTime.toIso8601String(),
-          ),
-        );
       }
 
       await Future.wait(futures);
@@ -827,24 +817,20 @@ class AuthenticationService {
     }
   }
 
-  // Get current stored access token
+  // Get current stored access token (from secure storage via TokenStore)
   Future<String?> getStoredToken() async {
     try {
-      final prefs = await _getPrefs();
-      // Try new key first, fallback to old key for backward compatibility
-      return prefs.getString(AppConfig.accessTokenKey) ??
-          prefs.getString('token');
+      return await TokenStore.instance.getAccessToken();
     } catch (e) {
       AppLogger.error('Error getting stored token: $e');
       return null;
     }
   }
 
-  // Get stored refresh token
+  // Get stored refresh token (from secure storage via TokenStore)
   Future<String?> getStoredRefreshToken() async {
     try {
-      final prefs = await _getPrefs();
-      return prefs.getString(AppConfig.refreshTokenKey);
+      return await TokenStore.instance.getRefreshToken();
     } catch (e) {
       AppLogger.error('Error getting refresh token: $e');
       return null;
@@ -900,31 +886,23 @@ class AuthenticationService {
           final expiresIn = data['expires_in'] as int?;
           final refreshExpiresIn = data['refresh_expires_in'] as int?;
 
-          // Save new tokens
+          // Save new tokens (secure storage via TokenStore) plus the
+          // non-secret duration metadata (SharedPreferences).
           final prefs = await _getPrefs();
           await Future.wait([
-            prefs.setString('token', accessToken), // Backward compatible
-            prefs.setString(AppConfig.accessTokenKey, accessToken),
-            if (newRefreshToken != refreshToken)
-              prefs.setString(AppConfig.refreshTokenKey, newRefreshToken),
-            if (expiresIn != null) ...[
-              prefs.setInt('token_expires_in', expiresIn),
-              prefs.setString(
-                'token_expires_at',
-                DateTime.now()
-                    .add(Duration(seconds: expiresIn))
-                    .toIso8601String(),
-              ),
-            ],
-            if (refreshExpiresIn != null) ...[
+            TokenStore.instance.setTokens(
+              access: accessToken,
+              refresh: newRefreshToken != refreshToken ? newRefreshToken : null,
+              expiresAt: expiresIn != null
+                  ? DateTime.now().add(Duration(seconds: expiresIn))
+                  : null,
+              refreshExpiresAt: refreshExpiresIn != null
+                  ? DateTime.now().add(Duration(seconds: refreshExpiresIn))
+                  : null,
+            ),
+            if (expiresIn != null) prefs.setInt('token_expires_in', expiresIn),
+            if (refreshExpiresIn != null)
               prefs.setInt('refresh_token_expires_in', refreshExpiresIn),
-              prefs.setString(
-                'refresh_token_expires_at',
-                DateTime.now()
-                    .add(Duration(seconds: refreshExpiresIn))
-                    .toIso8601String(),
-              ),
-            ],
           ]);
 
           AppLogger.info('Token refreshed successfully');
@@ -1010,7 +988,8 @@ class AuthenticationService {
 
       final prefs = await _getPrefs();
       await Future.wait([
-        prefs.remove('token'), // Backward compatible
+        TokenStore.instance.clear(),
+        prefs.remove('token'), // Legacy key cleanup, in case migration hasn't run
         prefs.remove(AppConfig.accessTokenKey),
         prefs.remove(AppConfig.refreshTokenKey),
         prefs.remove('userId'),

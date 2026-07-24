@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/config/app_config.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
 
 /// Result of a report submission
@@ -25,9 +25,8 @@ class ContentReportService {
 
   /// Get authentication headers
   Future<Map<String, String>> _getHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    
+    final token = await TokenStore.instance.getAccessToken();
+
     final headers = {
       'Content-Type': 'application/json',
     };

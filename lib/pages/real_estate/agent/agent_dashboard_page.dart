@@ -4,8 +4,7 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app/config/app_config.dart';
+import 'package:app/service/token_store.dart';
 
 class AgentDashboardPage extends ConsumerStatefulWidget {
   const AgentDashboardPage({super.key});
@@ -28,9 +27,8 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
 
   Future<void> _loadTokenAndDashboard() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString(AppConfig.tokenKey);
-      
+      final token = await TokenStore.instance.getAccessToken();
+
       if (token == null) {
         setState(() {
           _error = 'Authentication required';

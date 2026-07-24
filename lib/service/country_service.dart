@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/country_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
+import 'package:app/service/token_store.dart';
 
 /// Service for fetching country and region data
 class CountryService {
@@ -15,8 +16,7 @@ class CountryService {
   }
 
   Future<Map<String, String>> _getHeaders() async {
-    final prefs = await _getPrefs();
-    final token = prefs.getString('token');
+    final token = await TokenStore.instance.getAccessToken();
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Token $token',

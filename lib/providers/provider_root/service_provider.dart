@@ -8,6 +8,7 @@ import 'package:app/providers/provider_models/service_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 
 class ServiceProvider {
   // Initialize Dio instance with base URL
@@ -165,7 +166,7 @@ class ServiceProvider {
   }) async {
     const url = '$baseUrl$SERVICES_URL/';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    String? token = await TokenStore.instance.getAccessToken();
     String? userLocation = prefs.getString('userLocation');
     String? userId = prefs.getString('userId');
     Dio dio = Dio();
@@ -291,7 +292,7 @@ class ServiceProvider {
   }) async {
     final url = '$baseUrl$SERVICES_URL/$serviceId/';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    String? token = await TokenStore.instance.getAccessToken();
     String? userId = prefs.getString('userId');
     Dio dio = Dio();
 
@@ -342,8 +343,7 @@ class ServiceProvider {
 // Delete service method
   Future<bool> deleteService(int serviceId) async {
     final url = '$baseUrl$SERVICES_URL/$serviceId/';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final response = await http.delete(

@@ -6,8 +6,8 @@ import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/utils/app_logger.dart';
+import 'package:app/service/token_store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -853,9 +853,8 @@ class RealEstateService {
   Future<List<Map<String, dynamic>>> getUserLocations() async {
     try {
       // Get authentication token
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString(AppConfig.tokenKey);
-      
+      final token = await TokenStore.instance.getAccessToken();
+
       final headers = <String, String>{
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -1120,8 +1119,7 @@ final realEstateServiceProvider = Provider((ref) => RealEstateService());
 
 // Token provider
 final tokenProvider = FutureProvider<String?>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('token');
+  return TokenStore.instance.getAccessToken();
 });
 
 // Saved properties provider (simple)

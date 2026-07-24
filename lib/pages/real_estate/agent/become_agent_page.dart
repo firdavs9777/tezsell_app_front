@@ -5,7 +5,7 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 import 'package:dio/dio.dart';
 
 class BecomeAgentPage extends ConsumerStatefulWidget {
@@ -47,10 +47,10 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
 
   Future<void> _loadUserToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final token = await TokenStore.instance.getAccessToken();
       if (mounted) {
         setState(() {
-          _userToken = prefs.getString('token');
+          _userToken = token;
         });
       }
     } catch (e) {

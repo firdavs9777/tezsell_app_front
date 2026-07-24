@@ -6,11 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_models/community_comment_model.dart';
+import 'package:app/service/token_store.dart';
 
 class CommunityProvider {
   Future<Map<String, String>> _authHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    final token = await TokenStore.instance.getAccessToken();
     return {if (token != null) 'Authorization': 'Token $token'};
   }
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/social_auth_model.dart';
+import 'package:app/service/token_store.dart';
 
 /// Social Authentication Service for Google and Apple Sign-In
 class SocialAuthService {
@@ -16,8 +17,7 @@ class SocialAuthService {
   }
 
   Future<Map<String, String>> _getAuthHeaders() async {
-    final prefs = await _getPrefs();
-    final token = prefs.getString('token');
+    final token = await TokenStore.instance.getAccessToken();
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Token $token',
@@ -27,12 +27,10 @@ class SocialAuthService {
   /// Save tokens and user info to local storage
   Future<void> _saveAuthData(AuthTokens tokens, SocialUserInfo? userInfo, {String? photoUrl}) async {
     final prefs = await _getPrefs();
-    await prefs.setString('token', tokens.access);
-    // Also save to access_token key for compatibility
-    await prefs.setString('access_token', tokens.access);
-    if (tokens.refresh.isNotEmpty) {
-      await prefs.setString('refresh_token', tokens.refresh);
-    }
+    await TokenStore.instance.setTokens(
+      access: tokens.access,
+      refresh: tokens.refresh.isNotEmpty ? tokens.refresh : null,
+    );
     // Save user info for chat and other features
     if (userInfo != null) {
       await prefs.setString('userId', userInfo.id.toString());
@@ -383,8 +381,6 @@ class SocialAuthService {
 
   /// Clear stored tokens (for logout)
   Future<void> clearTokens() async {
-    final prefs = await _getPrefs();
-    await prefs.remove('token');
-    await prefs.remove('refresh_token');
+    await TokenStore.instance.clear();
   }
 }

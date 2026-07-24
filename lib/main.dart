@@ -1,5 +1,6 @@
 import 'package:app/firebase_options.dart';
 import 'package:app/pages/welcome.dart';
+import 'package:app/service/token_store.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   print('🚀 Starting app initialization...');
+
+  // Load/migrate auth tokens into secure storage before any auth check runs
+  // (splash screen, router redirect, etc. all read via TokenStore).
+  try {
+    await TokenStore.instance.init();
+    print('✅ Token store initialized');
+  } catch (e) {
+    print('❌ Token store init error: $e');
+  }
 
   try {
     // Initialize Firebase

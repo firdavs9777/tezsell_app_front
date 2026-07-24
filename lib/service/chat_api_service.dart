@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/message_model.dart';
+import 'package:app/service/token_store.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
@@ -48,8 +48,7 @@ class ChatApiService {
 
   // Get auth token
   Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
+    return TokenStore.instance.getAccessToken();
   }
 
   Future<ChatMessage> sendImageMessage(File imageFile, int roomId) async {

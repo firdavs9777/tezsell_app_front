@@ -24,6 +24,7 @@ import 'package:app/utils/thousand_separator.dart';
 import 'package:app/utils/currency_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/service/token_store.dart';
 
 class PropertyCreatePage extends ConsumerStatefulWidget {
   const PropertyCreatePage({super.key});
@@ -611,8 +612,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
 
     try {
       final realEstateService = ref.read(realEstateServiceProvider);
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
         AppErrorHandler.showError(

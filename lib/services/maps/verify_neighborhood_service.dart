@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/neighborhood.dart';
+import 'package:app/service/token_store.dart';
 import 'package:app/services/maps/maps_exceptions.dart';
 
 /// Calls the deployed Carrot-style verification endpoints.
@@ -16,8 +16,7 @@ class VerifyNeighborhoodService {
   static const _deletePath = '/api/locations/users/me/verified_neighborhoods/';
 
   Future<Map<String, String>> _authHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    final token = await TokenStore.instance.getAccessToken();
     return {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Token $token',

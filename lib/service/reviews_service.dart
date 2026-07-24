@@ -1,23 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/trust_score_model.dart';
 import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/review_model.dart';
+import 'package:app/service/token_store.dart';
 
 /// Reviews & Trust Score API Service
 class ReviewsService {
-  SharedPreferences? _prefs;
-
-  Future<SharedPreferences> _getPrefs() async {
-    _prefs ??= await SharedPreferences.getInstance();
-    return _prefs!;
-  }
-
   Future<Map<String, String>> _getAuthHeaders() async {
-    final prefs = await _getPrefs();
-    final token = prefs.getString('token');
+    final token = await TokenStore.instance.getAccessToken();
     return {
       'Content-Type': 'application/json',
       'Authorization': 'Token $token',

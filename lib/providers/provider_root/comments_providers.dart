@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
+import 'package:app/service/token_store.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CommentsService {
   Future<List<Comments>> getComments({required serviceId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.get(
       Uri.parse('$baseUrl$SERVICES_URL/$serviceId/$COMMENT_URL'),
@@ -32,8 +31,7 @@ class CommentsService {
 
   Future<Comments> createComment({required title, required id}) async {
     final url = Uri.parse('$baseUrl$SERVICES_URL/$id$COMMENT_URL/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final response = await http.post(
       url,
       body: jsonEncode({
@@ -58,8 +56,7 @@ class CommentsService {
       {required title, required serviceId, required commentId}) async {
     final url =
         Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/$commentId/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
     final response = await http.put(
       url,
       body: jsonEncode({
@@ -83,8 +80,7 @@ class CommentsService {
   Future<bool> deleteComment({required serviceId, required commentId}) async {
     final url =
         Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/$commentId/');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final response = await http.delete(
@@ -104,8 +100,7 @@ class CommentsService {
   }
 
   Future<List<Reply>> getReplies({required commmentId}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? token = prefs.getString('token');
+    final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.get(
       Uri.parse('$baseUrl/services/api$COMMENT_URL/$commmentId/replies/'),
@@ -135,8 +130,7 @@ class CommentsService {
     required String text,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
         throw Exception('No authentication token found');

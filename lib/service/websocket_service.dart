@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/connection_state_controller.dart';
+import 'package:app/service/token_store.dart';
 
 class ChatListWebSocketService {
   WebSocketChannel? _channel;
@@ -18,8 +18,7 @@ class ChatListWebSocketService {
 
   Future<void> connectToChatList() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
         throw Exception('No authentication token found');
@@ -135,8 +134,7 @@ class ChatRoomWebSocketService {
       // Close existing connection if any
       await disconnect();
 
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
         print('❌ No authentication token found');

@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/block_user_model.dart';
+import 'package:app/service/token_store.dart';
 
 /// Service for handling user blocking operations
 class BlockUsersService {
   final String baseUrl = AppConfig.baseUrl;
 
   Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
+    return TokenStore.instance.getAccessToken();
   }
 
   Map<String, String> _getHeaders(String? token) {
