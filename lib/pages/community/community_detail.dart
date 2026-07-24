@@ -345,6 +345,68 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
     }
   }
 
+  Future<void> _reportComment(CommunityComment comment) async {
+    final l = AppLocalizations.of(context);
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => ReportContentDialog(
+        contentType: 'community_comment',
+        contentId: comment.id,
+      ),
+    );
+    if (result == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l?.reportSubmitted ?? 'Report submitted successfully')),
+      );
+    }
+  }
+
+  Future<void> _showCommentActions(
+    CommunityComment comment, {
+    CommunityComment? parent,
+    required bool canDelete,
+    required bool canReport,
+  }) async {
+    if (canDelete && !canReport) {
+      _deleteComment(comment, parent: parent);
+      return;
+    }
+    if (canReport && !canDelete) {
+      _reportComment(comment);
+      return;
+    }
+
+    final l = AppLocalizations.of(context);
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (canDelete)
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: Text(l?.chatDelete ?? 'Delete'),
+                onTap: () => Navigator.of(sheetContext).pop('delete'),
+              ),
+            if (canReport)
+              ListTile(
+                leading: const Icon(Icons.flag_outlined),
+                title: Text(l?.profile_report ?? 'Report'),
+                onTap: () => Navigator.of(sheetContext).pop('report'),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted) return;
+    if (action == 'delete') {
+      _deleteComment(comment, parent: parent);
+    } else if (action == 'report') {
+      _reportComment(comment);
+    }
+  }
+
   void _sharePost(CommunityPost post) {
     final l = AppLocalizations.of(context);
     final snippet = post.body.length > 100 ? '${post.body.substring(0, 100)}…' : post.body;
@@ -606,11 +668,16 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
     CommunityComment? parent,
   }) {
     final isPostAuthorComment = post != null && comment.userId == post.authorId;
+    final isCommentAuthor = currentUserId != null && comment.userId == currentUserId;
     final canDelete = currentUserId != null &&
-        (comment.userId == currentUserId || (post != null && post.authorId == currentUserId));
+        (isCommentAuthor || (post != null && post.authorId == currentUserId));
+    final canReport = currentUserId != null && !isCommentAuthor;
     final liking = _likingComments.contains(comment.id);
     return GestureDetector(
-      onLongPress: canDelete ? () => _deleteComment(comment, parent: parent) : null,
+      onLongPress: (canDelete || canReport)
+          ? () => _showCommentActions(comment,
+              parent: parent, canDelete: canDelete, canReport: canReport)
+          : null,
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),

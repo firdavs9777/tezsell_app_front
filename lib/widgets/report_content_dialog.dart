@@ -6,10 +6,10 @@ import 'package:app/utils/error_handler.dart';
 
 /// Dialog for reporting objectionable content.
 /// 
-/// Supports reporting products, services, messages, users, properties, and
-/// community posts.
+/// Supports reporting products, services, messages, users, properties,
+/// community posts, and community comments.
 class ReportContentDialog extends StatefulWidget {
-  final String contentType; // 'product', 'service', 'message', 'user', 'property', 'community_post'
+  final String contentType; // 'product', 'service', 'message', 'user', 'property', 'community_post', 'community_comment'
   final dynamic contentId; // int for products/services/messages/users, String for properties
   final String? contentTitle; // Optional title for display
 
@@ -102,6 +102,13 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
         case 'community_post':
           result = await _reportService.reportCommunityPost(
             postId: widget.contentId as int,
+            reason: _selectedReason!,
+            description: _descriptionController.text.trim(),
+          );
+          break;
+        case 'community_comment':
+          result = await _reportService.reportCommunityComment(
+            commentId: widget.contentId as int,
             reason: _selectedReason!,
             description: _descriptionController.text.trim(),
           );
