@@ -4733,4 +4733,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get offerOpenChatError => 'Не удалось открыть чат';
+
+  @override
+  String get sellerNoReviews => 'Пока нет отзывов';
 }

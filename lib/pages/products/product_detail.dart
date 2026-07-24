@@ -13,6 +13,8 @@ import 'package:app/widgets/image_viewer.dart';
 import 'package:app/widgets/maps/map_view.dart';
 import 'package:app/widgets/offer_widgets.dart';
 import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/widgets/service_rating_badge.dart';
+import 'package:app/widgets/trust_score_widget.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
@@ -613,12 +615,19 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     final localizations = AppLocalizations.of(context);
     final seller = widget.product.userName;
     final sellerId = seller.id;
+    // Trust block (Plan D Task 2/6): only present on the product DETAIL
+    // payload. Falls back to sensible "new seller" defaults (36.5°,
+    // no reviews) when absent, e.g. against a backend that hasn't shipped
+    // the `seller` block yet.
+    final trust = widget.product.seller;
+    final avatarUrl = trust?.avatarUrl ?? seller.profileImage?.image;
 
     return InkWell(
       onTap: sellerId > 0 ? () => context.push('/user/$sellerId') : null,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Seller avatar
             Container(
@@ -632,9 +641,9 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 ),
               ),
               child: ClipOval(
-                child: seller.profileImage?.image != null
+                child: avatarUrl != null && avatarUrl.isNotEmpty
                     ? CachedNetworkImageWidget(
-                        imageUrl: ImageUtils.buildImageUrl(seller.profileImage!.image),
+                        imageUrl: ImageUtils.buildImageUrl(avatarUrl),
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
@@ -659,16 +668,57 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                     seller.username ?? (localizations?.username ?? 'Unknown'),
                     style: textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    seller.location != null
-                        ? '${seller.location!.region ?? ''}'
-                        : (localizations?.searchLocation ?? 'Location'),
-                    style: textTheme.bodySmall,
+                  const SizedBox(height: 6),
+                  // Manner-temperature dial (compact) + rating/no-reviews row
+                  Row(
+                    children: [
+                      TrustBadgeCompact(
+                        temperature: trust?.trustTemperature ?? 36.5,
+                      ),
+                      const SizedBox(width: 8),
+                      if (trust != null &&
+                          trust.reviewCount > 0 &&
+                          trust.ratingAvg != null)
+                        ServiceRatingBadge(
+                          ratingAvg: trust.ratingAvg,
+                          ratingCount: trust.reviewCount,
+                          compact: false,
+                        )
+                      else
+                        Flexible(
+                          child: Text(
+                            localizations?.sellerNoReviews ?? 'No reviews yet',
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
                   ),
+                  if (trust?.responseLabel != null) ...[
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        trust!.responseLabel!,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
+            const SizedBox(width: 8),
             // Chevron
             Icon(
               Icons.chevron_right_rounded,

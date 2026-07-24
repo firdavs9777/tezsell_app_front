@@ -3407,5 +3407,7 @@
   "offerLoginRequired": "Please log in to make an offer",
   "@offerLoginRequired": {"description": "Message shown when a signed-out user taps Make Offer"},
   "offerOpenChatError": "Unable to open chat",
-  "@offerOpenChatError": {"description": "Snackbar shown when opening the chat room tied to an offer fails"}
+  "@offerOpenChatError": {"description": "Snackbar shown when opening the chat room tied to an offer fails"},
+  "sellerNoReviews": "No reviews yet",
+  "@sellerNoReviews": {"description": "Shown next to a seller's trust dial on the product detail page when they have zero visible reviews"}
 }

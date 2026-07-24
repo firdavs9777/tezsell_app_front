@@ -8997,6 +8997,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to open chat'**
   String get offerOpenChatError;
+
+  /// Shown next to a seller's trust dial on the product detail page when they have zero visible reviews
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get sellerNoReviews;
 }
 
 class _AppLocalizationsDelegate

@@ -4756,4 +4756,7 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get offerOpenChatError => 'Chatni ochib bo\'lmadi';
+
+  @override
+  String get sellerNoReviews => 'Hozircha sharhlar yo\'q';
 }

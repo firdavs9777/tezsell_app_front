@@ -47,6 +47,80 @@ void main() {
     });
   });
 
+  group('Products.fromJson seller (Plan D Task 6)', () {
+    test('parses a full seller block', () {
+      final product = Products.fromJson({
+        'id': 1,
+        'title': 'Sofa',
+        'price': '100000',
+        'seller': {
+          'id': 7,
+          'username': 'alice',
+          'avatar': 'https://cdn.example.com/avatar.jpg',
+          'trust_temperature': 42.3,
+          'rating_avg': 4.6,
+          'review_count': 12,
+          'response_label': 'Responds quickly',
+        },
+      });
+      final seller = product.seller;
+      expect(seller, isNotNull);
+      expect(seller!.id, 7);
+      expect(seller.username, 'alice');
+      expect(seller.avatarUrl, 'https://cdn.example.com/avatar.jpg');
+      expect(seller.trustTemperature, 42.3);
+      expect(seller.ratingAvg, 4.6);
+      expect(seller.reviewCount, 12);
+      expect(seller.responseLabel, 'Responds quickly');
+    });
+
+    test('is null when the seller block is absent (list payload)', () {
+      final product = Products.fromJson({
+        'id': 1,
+        'title': 'Sofa',
+        'price': '100000',
+      });
+      expect(product.seller, isNull);
+    });
+
+    test(
+        'applies null-safe defaults (36.5 temp, null rating, 0 count, null label)',
+        () {
+      final product = Products.fromJson({
+        'id': 1,
+        'title': 'Sofa',
+        'price': '100000',
+        'seller': {
+          'id': 7,
+          'username': 'brandnew',
+        },
+      });
+      final seller = product.seller;
+      expect(seller, isNotNull);
+      expect(seller!.trustTemperature, 36.5);
+      expect(seller.ratingAvg, isNull);
+      expect(seller.reviewCount, 0);
+      expect(seller.responseLabel, isNull);
+    });
+
+    test('parses a string trust_temperature/review_count (defensive)', () {
+      final product = Products.fromJson({
+        'id': 1,
+        'title': 'Sofa',
+        'price': '100000',
+        'seller': {
+          'id': 7,
+          'username': 'brandnew',
+          'trust_temperature': '38.1',
+          'review_count': '5',
+        },
+      });
+      final seller = product.seller;
+      expect(seller!.trustTemperature, 38.1);
+      expect(seller.reviewCount, 5);
+    });
+  });
+
   group('Services.fromJson distanceKm', () {
     test('parses a numeric distance_km into a double', () {
       final service = Services.fromJson({

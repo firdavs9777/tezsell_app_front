@@ -4570,4 +4570,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get offerOpenChatError => 'Unable to open chat';
+
+  @override
+  String get sellerNoReviews => 'No reviews yet';
 }

@@ -2890,5 +2890,6 @@
   "offerContinueChat": "Chatga o'tish",
   "offerSendSuccess": "Taklif yuborildi!",
   "offerLoginRequired": "Taklif berish uchun tizimga kiring",
-  "offerOpenChatError": "Chatni ochib bo'lmadi"
+  "offerOpenChatError": "Chatni ochib bo'lmadi",
+  "sellerNoReviews": "Hozircha sharhlar yo'q"
 }

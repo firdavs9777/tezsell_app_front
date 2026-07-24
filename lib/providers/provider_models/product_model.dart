@@ -2,6 +2,55 @@ import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 
+/// Seller trust summary embedded in the product DETAIL payload (Plan D
+/// Task 2/6). Sourced from `UserTrustScore` on the backend; null-safe
+/// because the block is only present on the detail endpoint — list/browse
+/// payloads (and `recommended_products` inside a detail response) omit it
+/// to avoid N+1 queries, so [Products.seller] is null there.
+class ProductSeller {
+  const ProductSeller({
+    required this.id,
+    required this.username,
+    this.avatarUrl,
+    this.trustTemperature = 36.5,
+    this.ratingAvg,
+    this.reviewCount = 0,
+    this.responseLabel,
+  });
+
+  final int id;
+  final String username;
+  final String? avatarUrl;
+
+  /// Manner-temperature style trust score. Defaults to 36.5 (the backend's
+  /// "new user" baseline) when absent.
+  final double trustTemperature;
+
+  /// Aggregate rating (1dp). Null when the seller has zero visible reviews.
+  final double? ratingAvg;
+
+  /// Count of visible reviews backing [ratingAvg]. 0 when [ratingAvg] is null.
+  final int reviewCount;
+
+  /// Optional server-formatted label (e.g. "Responds quickly"). Null when
+  /// there isn't enough data to compute one.
+  final String? responseLabel;
+
+  factory ProductSeller.fromJson(Map<String, dynamic> json) {
+    return ProductSeller(
+      id: json['id'] ?? 0,
+      username: json['username'] ?? '',
+      avatarUrl: json['avatar'] as String?,
+      trustTemperature: _toDouble(json['trust_temperature']) ?? 36.5,
+      ratingAvg: _toDouble(json['rating_avg']),
+      reviewCount: json['review_count'] is int
+          ? json['review_count'] as int
+          : int.tryParse(json['review_count']?.toString() ?? '') ?? 0,
+      responseLabel: json['response_label'] as String?,
+    );
+  }
+}
+
 class Products {
   const Products({
     required this.id,
@@ -34,6 +83,7 @@ class Products {
     this.distanceKm,
     this.acceptsOffers = true,
     this.minimumOfferPercent = 70,
+    this.seller,
   });
 
   final int id;
@@ -80,6 +130,11 @@ class Products {
   /// offers below 70%). Defaults to 70 (matches the backend
   /// `Product.minimum_offer_percent` default).
   final int minimumOfferPercent;
+
+  /// Seller trust block (Plan D Task 2/6), present only on the product
+  /// DETAIL payload. Null on list/browse payloads and on
+  /// `recommended_products` entries.
+  final ProductSeller? seller;
 
   /// Returns localized condition label
   String get conditionLabel {
@@ -160,6 +215,9 @@ class Products {
       minimumOfferPercent: (json['minimum_offer_percent'] is num)
           ? (json['minimum_offer_percent'] as num).toInt()
           : 70,
+      seller: json['seller'] is Map<String, dynamic>
+          ? ProductSeller.fromJson(json['seller'] as Map<String, dynamic>)
+          : null,
     );
   }
 }

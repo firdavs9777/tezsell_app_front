@@ -2893,5 +2893,6 @@
   "offerContinueChat": "Перейти в чат",
   "offerSendSuccess": "Предложение отправлено!",
   "offerLoginRequired": "Войдите, чтобы сделать предложение",
-  "offerOpenChatError": "Не удалось открыть чат"
+  "offerOpenChatError": "Не удалось открыть чат",
+  "sellerNoReviews": "Пока нет отзывов"
 }
