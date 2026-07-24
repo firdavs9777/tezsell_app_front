@@ -46,7 +46,7 @@ class FavoritesState {
   }
 
   List<FavoriteItem> get priceDroppedItems =>
-      favorites.where((f) => f.hasPriceDropped).toList();
+      favorites.where((f) => f.priceDropped).toList();
 
   bool isFavorited(String itemType, int itemId) {
     return favorites.any((f) => f.itemType == itemType && f.itemId == itemId);

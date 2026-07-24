@@ -108,8 +108,13 @@ class TransactionsState {
     return result;
   }
 
-  List<Transaction> get pendingTransactions =>
-      transactions.where((t) => t.status == TransactionStatus.pending).toList();
+  // "Pending" = an in-progress deal that is neither completed nor cancelled
+  // (the TransactionStatus enum has no dedicated `pending` member).
+  List<Transaction> get pendingTransactions => transactions
+      .where((t) =>
+          t.status != TransactionStatus.completed &&
+          t.status != TransactionStatus.cancelled)
+      .toList();
 
   List<Transaction> get completedTransactions =>
       transactions.where((t) => t.status == TransactionStatus.completed).toList();
