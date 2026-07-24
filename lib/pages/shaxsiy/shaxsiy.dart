@@ -56,8 +56,10 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   Future<List<dynamic>> _fetchAllData() async {
     return Future.wait([
       ref.read(profileServiceProvider).getUserInfo(),
-      ref.read(profileServiceProvider).getUserProducts(),
-      ref.read(profileServiceProvider).getUserServices(),
+      // Own profile: include hidden/sold listings so the counts here match
+      // what "My Products"/"My Services" show (both now include inactive).
+      ref.read(profileServiceProvider).getUserProducts(includeInactive: true),
+      ref.read(profileServiceProvider).getUserServices(includeInactive: true),
       ref.read(profileServiceProvider).getUserFavoriteItems(),
     ]);
   }

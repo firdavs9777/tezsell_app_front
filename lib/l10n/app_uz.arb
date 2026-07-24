@@ -3023,6 +3023,7 @@
   "listing_hidden": "E'lon yashirildi",
   "listing_unhidden": "E'lon qayta ko'rinadi",
   "failed_to_update_listing": "E'lonni yangilab bo'lmadi",
+  "listing_updated_refresh_failed": "Yangilandi — o'zgarishlarni ko'rish uchun pastga torting",
   "active_tab": "Faol",
   "sold_tab": "Sotilgan",
   "no_active_listings": "Faol e'lonlar yo'q",

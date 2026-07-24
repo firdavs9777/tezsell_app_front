@@ -4977,6 +4977,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get failed_to_update_listing => 'Не удалось обновить объявление';
 
   @override
+  String get listing_updated_refresh_failed =>
+      'Обновлено — потяните вниз, чтобы увидеть изменения';
+
+  @override
   String get active_tab => 'Активные';
 
   @override

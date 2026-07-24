@@ -5040,6 +5040,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get failed_to_update_listing => 'Failed to update listing';
 
   @override
+  String get listing_updated_refresh_failed =>
+      'Updated — pull to refresh to see changes';
+
+  @override
   String get active_tab => 'Active';
 
   @override

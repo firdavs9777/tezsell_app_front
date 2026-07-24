@@ -3602,6 +3602,7 @@
   "listing_unhidden": "Listing is visible again",
   "@listing_unhidden": {"description": "Snackbar shown after unhiding an owned listing"},
   "failed_to_update_listing": "Failed to update listing",
+  "listing_updated_refresh_failed": "Updated — pull to refresh to see changes",
   "@failed_to_update_listing": {"description": "Error snackbar prefix when a listing status change (sold/hide/unhide) fails"},
   "active_tab": "Active",
   "@active_tab": {"description": "Tab label for the seller's active (not-yet-sold) listings on the my-listings screen"},

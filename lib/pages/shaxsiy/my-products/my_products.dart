@@ -41,7 +41,11 @@ class _MyProductsState extends ConsumerState<MyProducts>
     super.dispose();
   }
 
-  Future<void> _loadProducts() async {
+  /// Returns true if the reload succeeded. [showErrorSnackbar] is disabled for
+  /// post-mutation reloads so the caller controls messaging (otherwise a
+  /// refresh failure after a successful mutation would fire its own error
+  /// snackbar and then the caller's contradictory success snackbar).
+  Future<bool> _loadProducts({bool showErrorSnackbar = true}) async {
     try {
       setState(() {
         _isLoading = true;
@@ -61,11 +65,13 @@ class _MyProductsState extends ConsumerState<MyProducts>
           _isLoading = false;
         });
       }
+      return true;
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        _showError('Error loading products: $e');
+        if (showErrorSnackbar) _showError('Error loading products: $e');
       }
+      return false;
     }
   }
 
@@ -264,9 +270,18 @@ class _MyProductsState extends ConsumerState<MyProducts>
             isActive: isActive,
           );
       _hasChanges = true;
-      await _loadProducts();
+      final reloaded = await _loadProducts(showErrorSnackbar: false);
       if (!mounted) return;
-      _showSuccess(successMessage);
+      if (reloaded) {
+        _showSuccess(successMessage);
+      } else {
+        // The change was saved server-side; only the refresh failed.
+        final l = AppLocalizations.of(context);
+        _showError(
+          l?.listing_updated_refresh_failed ??
+              'Updated — pull to refresh to see changes',
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       final l = AppLocalizations.of(context);
@@ -354,9 +369,17 @@ class _MyProductsState extends ConsumerState<MyProducts>
       }
       if (mounted) Navigator.pop(context); // close loading
       _hasChanges = true;
-      await _loadProducts();
+      final reloaded = await _loadProducts(showErrorSnackbar: false);
       if (!mounted) return;
-      _showSuccess(l?.marked_as_sold ?? 'Marked as sold');
+      if (reloaded) {
+        _showSuccess(l?.marked_as_sold ?? 'Marked as sold');
+      } else {
+        // Sold server-side; only the refresh failed.
+        _showError(
+          l?.listing_updated_refresh_failed ??
+              'Updated — pull to refresh to see changes',
+        );
+      }
     } catch (e) {
       if (mounted) Navigator.pop(context);
       if (!mounted) return;

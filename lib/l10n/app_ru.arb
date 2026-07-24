@@ -3026,6 +3026,7 @@
   "listing_hidden": "Объявление скрыто",
   "listing_unhidden": "Объявление снова видно",
   "failed_to_update_listing": "Не удалось обновить объявление",
+  "listing_updated_refresh_failed": "Обновлено — потяните вниз, чтобы увидеть изменения",
   "active_tab": "Активные",
   "sold_tab": "Проданные",
   "no_active_listings": "Нет активных объявлений",

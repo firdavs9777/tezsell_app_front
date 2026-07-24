@@ -48,7 +48,9 @@ class _MyServicesState extends ConsumerState<MyServices> {
     }
   }
 
-  Future<void> _loadServices() async {
+  /// Returns true if the reload succeeded. [showErrorSnackbar] is disabled for
+  /// post-mutation reloads so the caller controls messaging.
+  Future<bool> _loadServices({bool showErrorSnackbar = true}) async {
     try {
       setState(() {
         _isLoading = true;
@@ -69,11 +71,13 @@ class _MyServicesState extends ConsumerState<MyServices> {
           _hasMore = services.length >= _pageSize;
         });
       }
+      return true;
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        _showError('Error loading services: $e');
+        if (showErrorSnackbar) _showError('Error loading services: $e');
       }
+      return false;
     }
   }
 
@@ -282,13 +286,20 @@ class _MyServicesState extends ConsumerState<MyServices> {
           .read(serviceMainProvider)
           .setServiceActive(serviceId: service.id, isActive: isActive);
       _hasChanges = true;
-      await _loadServices();
+      final reloaded = await _loadServices(showErrorSnackbar: false);
       if (!mounted) return;
-      _showSuccess(
-        isActive
-            ? (l?.listing_unhidden ?? 'Listing is visible again')
-            : (l?.listing_hidden ?? 'Listing hidden'),
-      );
+      if (reloaded) {
+        _showSuccess(
+          isActive
+              ? (l?.listing_unhidden ?? 'Listing is visible again')
+              : (l?.listing_hidden ?? 'Listing hidden'),
+        );
+      } else {
+        _showError(
+          l?.listing_updated_refresh_failed ??
+              'Updated — pull to refresh to see changes',
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       _showError(

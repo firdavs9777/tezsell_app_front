@@ -9442,6 +9442,12 @@ abstract class AppLocalizations {
   /// **'Failed to update listing'**
   String get failed_to_update_listing;
 
+  /// No description provided for @listing_updated_refresh_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated — pull to refresh to see changes'**
+  String get listing_updated_refresh_failed;
+
   /// Tab label for the seller's active (not-yet-sold) listings on the my-listings screen
   ///
   /// In en, this message translates to:

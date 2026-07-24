@@ -5004,6 +5004,10 @@ class AppLocalizationsUz extends AppLocalizations {
   String get failed_to_update_listing => 'E\'lonni yangilab bo\'lmadi';
 
   @override
+  String get listing_updated_refresh_failed =>
+      'Yangilandi — o\'zgarishlarni ko\'rish uchun pastga torting';
+
+  @override
   String get active_tab => 'Faol';
 
   @override
