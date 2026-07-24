@@ -1,5 +1,6 @@
 import 'package:app/pages/real_estate/real_estate_detail.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/distance_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -54,19 +55,17 @@ class RealEstatePropertyCard extends StatelessWidget {
                     height: 200,
                     width: double.infinity,
                     child: property.mainImage.isNotEmpty
-                        ? Image.network(
-                            property.mainImage,
+                        ? CachedNetworkImageWidget(
+                            imageUrl: property.mainImage,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: theme.colorScheme.surfaceContainerHighest,
-                                child: Icon(
-                                  Icons.apartment,
-                                  size: 48,
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              );
-                            },
+                            errorWidget: Container(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              child: Icon(
+                                Icons.apartment,
+                                size: 48,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
                           )
                         : Container(
                             color: theme.colorScheme.surfaceContainerHighest,

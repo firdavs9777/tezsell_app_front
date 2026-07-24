@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:app/providers/provider_models/offer_model.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 
 /// Button to make an offer on a listing
 class MakeOfferButton extends StatelessWidget {
@@ -265,19 +266,17 @@ class OfferCard extends StatelessWidget {
               Row(
                 children: [
                   if (offer.itemImage != null)
-                    ClipRRect(
+                    CachedNetworkImageWidget(
+                      imageUrl: offer.itemImage!,
+                      width: 56,
+                      height: 56,
+                      fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        offer.itemImage!,
+                      errorWidget: Container(
                         width: 56,
                         height: 56,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          width: 56,
-                          height: 56,
-                          color: colorScheme.surfaceContainerHighest,
-                          child: const Icon(Icons.image),
-                        ),
+                        color: colorScheme.surfaceContainerHighest,
+                        child: const Icon(Icons.image),
                       ),
                     ),
                   const SizedBox(width: 12),

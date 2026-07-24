@@ -2,6 +2,7 @@
 import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -677,10 +678,12 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                           ),
                         ),
                         child: ClipOval(
-                          child: Image.network(
-                            profileImage,
+                          child: CachedNetworkImageWidget(
+                            imageUrl: profileImage,
+                            width: 56,
+                            height: 56,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Center(
+                            errorWidget: Center(
                               child: Text(
                                 avatarLetter,
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(

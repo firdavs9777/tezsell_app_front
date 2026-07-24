@@ -9,6 +9,7 @@ import 'package:app/pages/community/community_labels.dart';
 import 'package:app/pages/community/widgets/poll_card.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 
 const communityCategories = <String>[
@@ -381,9 +382,12 @@ class _PostCardState extends State<_PostCard> {
               Text(post.body, maxLines: 3, overflow: TextOverflow.ellipsis),
               if (post.imageUrls.isNotEmpty) ...[
                 const SizedBox(height: 8),
-                ClipRRect(
+                CachedNetworkImageWidget(
+                  imageUrl: post.imageUrls.first,
+                  height: 140,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(post.imageUrls.first, height: 140, width: double.infinity, fit: BoxFit.cover),
                 ),
               ],
               if (post.poll != null)

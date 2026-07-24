@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:app/widgets/cached_network_image_widget.dart';
+
 /// 🔥 NEW: Task 18 — parsed `og:title`/`og:image` (+ a `<title>` fallback)
 /// for a single URL, or `null` cached to mark "fetched, nothing usable" so a
 /// failed/empty page isn't re-fetched every time the bubble rebuilds.
@@ -200,15 +202,13 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (hasImage) ...[
-            ClipRRect(
+            CachedNetworkImageWidget(
+              imageUrl: data.imageUrl!,
+              width: 44,
+              height: 44,
+              fit: BoxFit.cover,
               borderRadius: BorderRadius.circular(6),
-              child: Image.network(
-                data.imageUrl!,
-                width: 44,
-                height: 44,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-              ),
+              errorWidget: const SizedBox.shrink(),
             ),
             const SizedBox(width: 8),
           ],
