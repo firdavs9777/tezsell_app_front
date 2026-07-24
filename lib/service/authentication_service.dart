@@ -11,6 +11,7 @@ import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/service/session_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
@@ -593,6 +594,10 @@ class AuthenticationService {
         expiresAt: expiryTime,
         refreshExpiresAt: refreshExpiryTime,
       );
+
+      // A fresh login re-arms the session-expiry redirect so a future 24h
+      // expiry can route to /login again.
+      SessionManager.instance.onAuthenticated();
 
       // userId/userLocation are not secret, keep in SharedPreferences.
       final futures = <Future>[

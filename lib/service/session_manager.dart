@@ -39,6 +39,15 @@ class SessionManager {
 
   Future<bool>? _inFlightRefresh;
 
+  /// True while a session-expiry redirect is in progress, so a cold-start
+  /// wave of 401s redirects to /login exactly once. Cleared when the session
+  /// is re-established ([onAuthenticated] / a successful [tryRefresh]).
+  bool _expiring = false;
+
+  /// Call after a fresh login/register succeeds so a future expiry (e.g. the
+  /// next 24h boundary) can redirect again.
+  void onAuthenticated() => _expiring = false;
+
   /// Attempts a single silent token refresh. Safe to call concurrently:
   /// if a refresh is already in flight, callers piggyback on it instead of
   /// starting a new one — exactly one `refreshToken()` call happens per
@@ -56,7 +65,11 @@ class SessionManager {
   Future<bool> _doRefresh() async {
     try {
       final token = await _refresh();
-      return token != null;
+      if (token != null) {
+        _expiring = false; // session recovered
+        return true;
+      }
+      return false;
     } catch (e) {
       AppLogger.error('SessionManager.tryRefresh error: $e');
       return false;
@@ -70,6 +83,11 @@ class SessionManager {
   /// Fire-and-forget by design — callers (interceptors/http wrappers) are
   /// mid-request-teardown and shouldn't block on navigation.
   void onSessionExpired() {
+    // Cold-start after the 24h expiry produces a wave of simultaneous 401s;
+    // guard so we clear + redirect exactly once, not once per failed request
+    // (which would re-run Login.initState and re-fire the snackbar).
+    if (_expiring) return;
+    _expiring = true;
     unawaited(_expireSession());
   }
 
