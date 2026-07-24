@@ -7888,6 +7888,30 @@ abstract class AppLocalizations {
   /// **'Report'**
   String get profile_report;
 
+  /// Tappable reviews row label with the review count on a user profile
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews ({count})'**
+  String profile_reviews_count(int count);
+
+  /// Shown instead of a rating when a profile has zero reviews
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get profile_no_reviews_yet;
+
+  /// Empty state subtitle on the user reviews list screen
+  ///
+  /// In en, this message translates to:
+  /// **'This user hasn\'t received any reviews yet'**
+  String get profile_user_no_reviews;
+
+  /// Footer text shown at the end of a paginated reviews list
+  ///
+  /// In en, this message translates to:
+  /// **'No more reviews to load'**
+  String get no_more_reviews;
+
   /// Message shown when a link is copied
   ///
   /// In en, this message translates to:

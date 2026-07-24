@@ -38,6 +38,7 @@ import '../pages/shaxsiy/my-services/my_services.dart';
 import '../pages/shaxsiy/properties/saved_properties.dart';
 import '../pages/admin/admin_dashboard.dart';
 import '../pages/profile/user_profile_screen.dart';
+import '../pages/profile/user_reviews_screen.dart';
 import '../pages/offers/offers_screen.dart';
 import '../pages/analytics/seller_analytics_screen.dart';
 import '../pages/onboarding/location_setup.dart';
@@ -362,6 +363,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final userId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
           return UserProfileScreen(userId: userId);
+        },
+      ),
+      // Paginated "received reviews" list for a public profile
+      GoRoute(
+        path: '/user/:id/reviews',
+        name: 'user-reviews',
+        builder: (context, state) {
+          final userId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+          return UserReviewsScreen(userId: userId);
         },
       ),
       // Other routes

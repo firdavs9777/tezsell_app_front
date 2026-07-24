@@ -73,6 +73,123 @@ void main() {
     });
   });
 
+  group('Review.fromJson (backend ReviewSerializer shape)', () {
+    test(
+        'parses reviewer as a flat int PK with reviewer_name/reviewer_image, '
+        'and tags from tags_display (not a nested reviewer object)', () {
+      final json = {
+        'id': 5,
+        'transaction': 42,
+        'reviewer': 7,
+        'reviewer_name': 'Alice',
+        'reviewer_image': 'https://example.com/alice.jpg',
+        'reviewed_user': 9,
+        'rating': 4,
+        'review_text': 'Great seller!',
+        'tags': [1, 3],
+        'tags_display': [
+          {'id': 1, 'name': 'Fast Response', 'icon': '⚡'},
+          {'id': 3, 'name': 'Friendly', 'icon': '🤝'},
+        ],
+        'is_buyer_review': true,
+        'created_at': '2026-07-01T00:00:00.000Z',
+      };
+
+      final review = Review.fromJson(json);
+
+      expect(review.id, 5);
+      expect(review.transactionId, 42);
+      expect(review.reviewer.id, 7);
+      expect(review.reviewer.username, 'Alice');
+      expect(review.reviewer.avatar, 'https://example.com/alice.jpg');
+      expect(review.reviewedUser.id, 9);
+      expect(review.rating, 4);
+      expect(review.reviewText, 'Great seller!');
+      // Display names come from tags_display, not the raw tag-id list.
+      expect(review.tags, ['Fast Response', 'Friendly']);
+      expect(review.isBuyerReview, isTrue);
+    });
+
+    test('tolerates a nested reviewer map shape defensively', () {
+      final review = Review.fromJson({
+        'id': 1,
+        'reviewer': {'id': 2, 'username': 'buyer', 'avatar': null},
+        'reviewed_user': {'id': 3, 'username': 'seller'},
+        'rating': 5,
+        'tags': [],
+        'created_at': '2026-07-01T00:00:00.000Z',
+      });
+
+      expect(review.reviewer.id, 2);
+      expect(review.reviewer.username, 'buyer');
+      expect(review.reviewedUser.id, 3);
+    });
+
+    test('falls back to an empty tag list when neither tags_display nor '
+        'string tags are present', () {
+      final review = Review.fromJson({
+        'id': 1,
+        'reviewer': 2,
+        'reviewed_user': 3,
+        'rating': 5,
+        'tags': [1, 2],
+        'created_at': '2026-07-01T00:00:00.000Z',
+      });
+
+      expect(review.tags, isEmpty);
+    });
+  });
+
+  group('PaginatedReviews.fromJson (UserReviewsView pagination envelope)', () {
+    test('parses reviews + pagination fields', () {
+      final json = {
+        'reviews': [
+          {
+            'id': 1,
+            'reviewer': 2,
+            'reviewer_name': 'Bob',
+            'reviewed_user': 3,
+            'rating': 5,
+            'tags': [],
+            'created_at': '2026-07-01T00:00:00.000Z',
+          },
+        ],
+        'pagination': {
+          'page': 2,
+          'page_size': 10,
+          'total': 23,
+          'total_pages': 3,
+        },
+      };
+
+      final result = PaginatedReviews.fromJson(json);
+
+      expect(result.reviews, hasLength(1));
+      expect(result.reviews.first.reviewer.username, 'Bob');
+      expect(result.page, 2);
+      expect(result.pageSize, 10);
+      expect(result.total, 23);
+      expect(result.totalPages, 3);
+      expect(result.hasMore, isTrue);
+    });
+
+    test('hasMore is false on the last page', () {
+      final result = PaginatedReviews.fromJson({
+        'reviews': [],
+        'pagination': {'page': 3, 'page_size': 10, 'total': 23, 'total_pages': 3},
+      });
+
+      expect(result.hasMore, isFalse);
+    });
+
+    test('PaginatedReviews.empty has no reviews and no more pages', () {
+      final result = PaginatedReviews.empty();
+
+      expect(result.reviews, isEmpty);
+      expect(result.hasMore, isFalse);
+    });
+  });
+
   group('ReviewTag.fromJson', () {
     test('parses a full backend response', () {
       final json = {

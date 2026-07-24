@@ -4064,6 +4064,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_report => 'تقرير';
 
   @override
+  String profile_reviews_count(int count) {
+    return 'Reviews ($count)';
+  }
+
+  @override
+  String get profile_no_reviews_yet => 'No reviews yet';
+
+  @override
+  String get profile_user_no_reviews =>
+      'This user hasn\'t received any reviews yet';
+
+  @override
+  String get no_more_reviews => 'No more reviews to load';
+
+  @override
   String get linkCopied => 'تم نسخ الرابط إلى الحافظة';
 
   @override

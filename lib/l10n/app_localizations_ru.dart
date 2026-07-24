@@ -4123,6 +4123,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profile_report => 'Пожаловаться';
 
   @override
+  String profile_reviews_count(int count) {
+    return 'Отзывы ($count)';
+  }
+
+  @override
+  String get profile_no_reviews_yet => 'Пока нет отзывов';
+
+  @override
+  String get profile_user_no_reviews =>
+      'Этот пользователь ещё не получал отзывов';
+
+  @override
+  String get no_more_reviews => 'Больше отзывов нет';
+
+  @override
   String get linkCopied => 'Ссылка скопирована';
 
   @override

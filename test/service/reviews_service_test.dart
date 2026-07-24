@@ -94,6 +94,69 @@ void main() {
     });
   });
 
+  group('ReviewsService.getUserReviewsPage', () {
+    test('requests the given page/page_size and parses the pagination envelope',
+        () async {
+      late Uri requestedUri;
+      final client = MockClient((req) async {
+        requestedUri = req.url;
+        return http.Response(
+          jsonEncode({
+            'success': true,
+            'data': {
+              'trust_score': {'user_id': 5, 'temperature': '40.0'},
+              'reviews': [
+                {
+                  'id': 1,
+                  'reviewer': 8,
+                  'reviewer_name': 'Carol',
+                  'reviewed_user': 5,
+                  'rating': 5,
+                  'review_text': 'Awesome!',
+                  'tags': [],
+                  'created_at': '2026-07-01T00:00:00.000Z',
+                },
+              ],
+              'pagination': {
+                'page': 2,
+                'page_size': 10,
+                'total': 15,
+                'total_pages': 2,
+              },
+            },
+          }),
+          200,
+        );
+      });
+
+      final service = ReviewsService(client: client);
+      final result =
+          await service.getUserReviewsPage(5, page: 2, pageSize: 10);
+
+      expect(requestedUri.path, '/api/reviews/users/5/reviews/');
+      expect(requestedUri.queryParameters['page'], '2');
+      expect(requestedUri.queryParameters['page_size'], '10');
+
+      expect(result.reviews, hasLength(1));
+      expect(result.reviews.first.reviewer.username, 'Carol');
+      expect(result.page, 2);
+      expect(result.total, 15);
+      expect(result.totalPages, 2);
+      expect(result.hasMore, isFalse); // page == total_pages
+    });
+
+    test('returns an empty page on a non-2xx response instead of throwing',
+        () async {
+      final client = MockClient((req) async => http.Response('', 404));
+      final service = ReviewsService(client: client);
+
+      final result = await service.getUserReviewsPage(999);
+
+      expect(result.reviews, isEmpty);
+      expect(result.hasMore, isFalse);
+    });
+  });
+
   group('ReviewsService.getPendingReviews', () {
     test('parses the {success, data:{transactions, count}} envelope', () async {
       final client = MockClient((req) async {

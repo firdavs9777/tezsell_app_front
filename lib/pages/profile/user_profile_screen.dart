@@ -3,11 +3,15 @@ import 'package:app/pages/profile/widgets/sliver_tab_bar_delegate.dart';
 import 'package:app/pages/profile/widgets/user_profile_follow_list.dart';
 import 'package:app/pages/profile/widgets/user_profile_grids.dart';
 import 'package:app/pages/profile/widgets/user_profile_more_options.dart';
+import 'package:app/providers/provider_models/trust_score_model.dart';
 import 'package:app/providers/provider_models/user_profile_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
+import 'package:app/providers/provider_root/reviews_provider.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/image_viewer.dart';
+import 'package:app/widgets/service_rating_badge.dart';
+import 'package:app/widgets/trust_score_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -265,6 +269,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                   ),
                   const SizedBox(height: 16),
 
+                  // Trust surface (Karrot-style manner temperature, rating,
+                  // badges, reviews). Vacation status is intentionally NOT
+                  // shown here -- see _buildTrustSection for why.
+                  _buildTrustSection(context, theme, colorScheme),
+                  const SizedBox(height: 16),
+
                   // Action Buttons
                   // Chats start from listings (see 2026-07-19 chat spec); direct DM entry removed
                   if (!isOwnProfile)
@@ -325,6 +335,151 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
           UserProfileServicesGrid(profile: profile),
           const UserProfilePropertiesGrid(),
         ],
+      ),
+    );
+  }
+
+  /// Karrot-style trust surface: manner-temperature dial, rating + review
+  /// count, badges, and a tappable "Reviews (N)" row that opens the full
+  /// paginated reviews list.
+  ///
+  /// Keyed per `widget.userId` via the `userTrustScoreProvider` FutureProvider
+  /// family (NOT the shared non-family `trustScoreProvider`), so navigating
+  /// from user A's profile to user B's never leaks A's trust data.
+  ///
+  /// `ReviewsService.getTrustScore` already catches network/parse failures
+  /// and resolves to `TrustScore.defaultScore(...)` (36.5°, zero reviews)
+  /// rather than throwing, so in practice this Future never rejects -- the
+  /// `error` branch below is just a defensive fallback so a genuinely
+  /// unexpected error still renders something instead of leaving a
+  /// permanently-loading widget.
+  ///
+  /// TODO(plan-g): Vacation badge omitted here on purpose. `VacationBadge`
+  /// exists but `vacationModeProvider`/`isOnVacationProvider` only expose the
+  /// CURRENTLY-LOGGED-IN user's vacation status (no per-user family, no
+  /// userId param -- see vacation_mode_provider.dart), and neither
+  /// `UserProfile` nor the trust-score payload expose another user's
+  /// vacation status publicly. Wiring the current-user provider here would
+  /// wrongly show the viewer's own vacation state on someone else's profile.
+  /// Surfacing this correctly needs a public per-user vacation field added
+  /// to the profile/trust-score API first.
+  Widget _buildTrustSection(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    final trustAsync = ref.watch(userTrustScoreProvider(widget.userId));
+    final localizations = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
+
+    return trustAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: SizedBox(
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (trustScore) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TrustScoreWidget(
+            temperature: trustScore.temperature,
+            level: trustScore.temperatureLevel,
+            emoji: trustScore.temperatureEmoji,
+            showLabel: false,
+          ),
+          if (trustScore.badges.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            _buildBadgesRow(trustScore.badges, locale),
+          ],
+          const SizedBox(height: 8),
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => context.push('/user/${widget.userId}/reviews'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.star_rounded,
+                    size: 18,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    trustScore.reviewsReceived > 0
+                        ? (localizations
+                                ?.profile_reviews_count(trustScore.reviewsReceived) ??
+                            'Reviews (${trustScore.reviewsReceived})')
+                        : (localizations?.profile_no_reviews_yet ??
+                            'No reviews yet'),
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const Spacer(),
+                  if (trustScore.reviewsReceived > 0) ...[
+                    ServiceRatingBadge(
+                      ratingAvg: trustScore.averageRating,
+                      ratingCount: trustScore.reviewsReceived,
+                      compact: true,
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  Icon(
+                    Icons.chevron_right,
+                    size: 20,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgesRow(List<UserBadge> badges, String locale) {
+    return SizedBox(
+      height: 30,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: badges.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final badge = badges[index];
+          final color = Color(badge.colorValue);
+
+          return Tooltip(
+            message: badge.description ?? badge.getLocalizedName(locale),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(badge.icon, style: const TextStyle(fontSize: 13)),
+                  const SizedBox(width: 4),
+                  Text(
+                    badge.getLocalizedName(locale),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

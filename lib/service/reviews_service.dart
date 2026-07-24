@@ -246,6 +246,37 @@ class ReviewsService {
     }
   }
 
+  /// Get one page of a user's reviews from the public, paginated
+  /// `UserReviewsView` endpoint (`{success, data: {trust_score, reviews,
+  /// pagination}}}`). Unlike [getUserReviews], this does NOT expect a
+  /// `summary` key -- that key is never present in this endpoint's response.
+  Future<PaginatedReviews> getUserReviewsPage(
+    int userId, {
+    int page = 1,
+    int pageSize = 10,
+    String type = 'received',
+  }) async {
+    try {
+      final response = await _client.get(
+        Uri.parse(
+          '$baseUrl/api/reviews/users/$userId/reviews/'
+          '?type=$type&page=$page&page_size=$pageSize',
+        ),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true && data['data'] != null) {
+          return PaginatedReviews.fromJson(data['data']);
+        }
+      }
+      return PaginatedReviews.empty();
+    } catch (e) {
+      return PaginatedReviews.empty();
+    }
+  }
+
   /// Get review tags
   Future<List<ReviewTag>> getReviewTags({
     bool? forBuyer,

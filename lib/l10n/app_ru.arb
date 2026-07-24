@@ -2659,6 +2659,27 @@
   "@profile_report": {
     "description": "Report user option"
   },
+  "profile_reviews_count": "Отзывы ({count})",
+  "@profile_reviews_count": {
+    "description": "Tappable reviews row label with the review count on a user profile",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profile_no_reviews_yet": "Пока нет отзывов",
+  "@profile_no_reviews_yet": {
+    "description": "Shown instead of a rating when a profile has zero reviews"
+  },
+  "profile_user_no_reviews": "Этот пользователь ещё не получал отзывов",
+  "@profile_user_no_reviews": {
+    "description": "Empty state subtitle on the user reviews list screen"
+  },
+  "no_more_reviews": "Больше отзывов нет",
+  "@no_more_reviews": {
+    "description": "Footer text shown at the end of a paginated reviews list"
+  },
   "linkCopied": "Ссылка скопирована",
   "@linkCopied": {
     "description": "Message shown when a link is copied"

@@ -26,15 +26,67 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       id: json['id'] ?? 0,
-      reviewer: ReviewUser.fromJson(json['reviewer'] ?? {}),
-      reviewedUser: ReviewUser.fromJson(json['reviewed_user'] ?? {}),
-      transactionId: json['transaction_id'],
+      reviewer: _reviewUserFromJson(
+        idField: json['reviewer'],
+        nameField: json['reviewer_name'],
+        imageField: json['reviewer_image'],
+      ),
+      reviewedUser: _reviewUserFromJson(
+        idField: json['reviewed_user'],
+        nameField: json['reviewed_user_name'],
+        imageField: json['reviewed_user_image'],
+      ),
+      // Backend `ReviewSerializer` names this field `transaction` (an int
+      // PK); tolerate a `transaction_id` key too for forward-compat.
+      transactionId: json['transaction'] ?? json['transaction_id'],
       rating: json['rating'] ?? 5,
       reviewText: json['review_text'],
-      tags: List<String>.from(json['tags'] ?? []),
+      tags: _tagNamesFromJson(json),
       isBuyerReview: json['is_buyer_review'] ?? true,
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
     );
+  }
+
+  /// Backend `ReviewSerializer` sends `reviewer`/`reviewed_user` as a flat
+  /// int PK with sibling `*_name`/`*_image` fields (same convention as
+  /// `Transaction.fromJson`'s `seller`/`seller_name`), not a nested user
+  /// object. Also tolerate a nested map shape defensively, in case a caller
+  /// (or a future backend revision) sends one.
+  static ReviewUser _reviewUserFromJson({
+    dynamic idField,
+    dynamic nameField,
+    dynamic imageField,
+  }) {
+    if (idField is Map<String, dynamic>) {
+      return ReviewUser.fromJson(idField);
+    }
+    final id = idField is int
+        ? idField
+        : int.tryParse(idField?.toString() ?? '') ?? 0;
+    return ReviewUser(
+      id: id,
+      username: nameField?.toString() ?? '',
+      avatar: imageField?.toString(),
+    );
+  }
+
+  /// The backend's `UserReviewsView` returns per-review tags as
+  /// `tags_display` (a list of `{id, name, icon}` objects resolved from the
+  /// tag PKs in `tags`). Prefer that for display names; fall back to `tags`
+  /// only if it already contains strings (e.g. hand-built test fixtures).
+  static List<String> _tagNamesFromJson(Map<String, dynamic> json) {
+    final display = json['tags_display'] as List<dynamic>?;
+    if (display != null) {
+      return display
+          .map((t) => (t is Map ? t['name']?.toString() : t?.toString()) ?? '')
+          .where((name) => name.isNotEmpty)
+          .toList();
+    }
+    final rawTags = json['tags'] as List<dynamic>?;
+    if (rawTags != null && rawTags.isNotEmpty && rawTags.first is String) {
+      return List<String>.from(rawTags);
+    }
+    return [];
   }
 
   Map<String, dynamic> toJson() {
@@ -301,4 +353,55 @@ class SubmitReviewRequest {
       'tags': tags,
     };
   }
+}
+
+/// One page of a user's received (or given) reviews, matching the
+/// `UserReviewsView` envelope:
+/// `{success, data: {trust_score, reviews: [...], pagination: {page,
+/// page_size, total, total_pages}}}`.
+///
+/// Deliberately separate from the old `summary`-keyed shape returned by
+/// `ReviewsService.getUserReviews` -- this backend endpoint does not return
+/// a `summary` key, only `pagination` + `trust_score`.
+class PaginatedReviews {
+  final List<Review> reviews;
+  final int page;
+  final int pageSize;
+  final int total;
+  final int totalPages;
+
+  const PaginatedReviews({
+    required this.reviews,
+    required this.page,
+    required this.pageSize,
+    required this.total,
+    required this.totalPages,
+  });
+
+  bool get hasMore => page < totalPages;
+
+  factory PaginatedReviews.fromJson(Map<String, dynamic> json) {
+    final reviewsJson = json['reviews'] as List<dynamic>? ?? const [];
+    final pagination = json['pagination'] as Map<String, dynamic>? ?? const {};
+    final parsedReviews = reviewsJson
+        .whereType<Map<String, dynamic>>()
+        .map((r) => Review.fromJson(r))
+        .toList();
+
+    return PaginatedReviews(
+      reviews: parsedReviews,
+      page: pagination['page'] ?? 1,
+      pageSize: pagination['page_size'] ?? parsedReviews.length,
+      total: pagination['total'] ?? parsedReviews.length,
+      totalPages: pagination['total_pages'] ?? (parsedReviews.isEmpty ? 0 : 1),
+    );
+  }
+
+  factory PaginatedReviews.empty() => const PaginatedReviews(
+        reviews: [],
+        page: 1,
+        pageSize: 0,
+        total: 0,
+        totalPages: 0,
+      );
 }

@@ -168,10 +168,17 @@ class ReviewTagsDisplay extends StatelessWidget {
   final List<String> tags;
   final double size;
 
+  /// Locale used to localize each tag's label when it matches one of the
+  /// predefined [ReviewTags.all] (matched by English `name`, since the
+  /// backend only sends the plain display name per review, not a tag id).
+  /// Defaults to English.
+  final String locale;
+
   const ReviewTagsDisplay({
     super.key,
     required this.tags,
     this.size = 1.0,
+    this.locale = 'en',
   });
 
   @override
@@ -215,7 +222,7 @@ class ReviewTagsDisplay extends StatelessWidget {
               ),
               SizedBox(width: 4 * size),
               Text(
-                tagName,
+                tag.getLocalizedName(locale),
                 style: TextStyle(
                   fontSize: 11 * size,
                   fontWeight: FontWeight.w500,

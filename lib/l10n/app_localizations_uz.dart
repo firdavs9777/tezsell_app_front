@@ -4145,6 +4145,20 @@ class AppLocalizationsUz extends AppLocalizations {
   String get profile_report => 'Shikoyat qilish';
 
   @override
+  String profile_reviews_count(int count) {
+    return 'Sharhlar ($count)';
+  }
+
+  @override
+  String get profile_no_reviews_yet => 'Hozircha sharhlar yo\'q';
+
+  @override
+  String get profile_user_no_reviews => 'Bu foydalanuvchi hali sharh olmagan';
+
+  @override
+  String get no_more_reviews => 'Boshqa sharhlar yo\'q';
+
+  @override
   String get linkCopied => 'Havola nusxalandi';
 
   @override
