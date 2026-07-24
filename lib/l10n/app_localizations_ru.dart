@@ -4246,126 +4246,126 @@ class AppLocalizationsRu extends AppLocalizations {
       'Код подтверждения должен содержать 6 цифр';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Где вы живёте?';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'Выберите свой район на карте';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Это нужно, чтобы показывать вам покупателей и продавцов поблизости. Радиус можно изменить позже.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Выбрать на карте';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Выбрать снова';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Определение местоположения…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'Использовать выпадающий список';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Мы пока не поддерживаем $country.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Не удалось автоматически определить ваш регион — выберите его вручную.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Не удалось автоматически определить ваш район — выберите его вручную.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'В этом районе пока нет объявлений с указанием местоположения.';
 
   @override
   String get mapLoadError => 'Не удалось загрузить объекты на карте';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Указать местоположение';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Подтвердить местоположение';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Не удалось определить адрес — выберите снова или подтвердите только координаты';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Выбранное местоположение';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Доступ к геолокации запрещён';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Доступ к геолокации запрещён — включите его в настройках';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Доступ к геолокации запрещён навсегда — откройте настройки, чтобы включить';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'Ошибка GPS: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Подтвердите свой район';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Встаньте в своём районе. Мы проверим ваш GPS и попросим подтвердить.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Подтвердить район';
 
   @override
   String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+      'Продолжить с низкой точностью';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Повторить';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Вы находитесь в:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Подтверждено! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'Точность GPS составляет $meters м (нужно ≤100 м). Перейдите на открытое пространство и попробуйте снова.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Не удалось определить район для вашего местоположения.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Неизвестная ошибка';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'Поиск адреса или места';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'Поиск недоступен — установите метку вручную';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Город';
 
   @override
   String radius_slider_km(String value) {
-    return '$value km';
+    return '$value км';
   }
 
   @override

@@ -4269,122 +4269,122 @@ class AppLocalizationsUz extends AppLocalizations {
       'Tasdiqlash kodi 6 raqamdan iborat bo\'lishi kerak';
 
   @override
-  String get map_register_title => 'Where do you live?';
+  String get map_register_title => 'Siz qayerda yashaysiz?';
 
   @override
-  String get map_register_headline => 'Pick your neighborhood on the map';
+  String get map_register_headline => 'Xaritada mahallangizni tanlang';
 
   @override
   String get map_register_subtitle =>
-      'We use it to show you nearby buyers and sellers. You can adjust your radius later.';
+      'Bu sizga yaqin atrofdagi xaridor va sotuvchilarni ko\'rsatish uchun kerak. Radiusni keyinroq o\'zgartirishingiz mumkin.';
 
   @override
-  String get pick_on_map => 'Pick on map';
+  String get pick_on_map => 'Xaritada tanlash';
 
   @override
-  String get pick_again => 'Pick again';
+  String get pick_again => 'Qayta tanlash';
 
   @override
-  String get resolving_location => 'Resolving location…';
+  String get resolving_location => 'Joylashuv aniqlanmoqda…';
 
   @override
-  String get use_dropdown_instead => 'Use dropdown instead';
+  String get use_dropdown_instead => 'Buning o\'rniga ro\'yxatdan tanlang';
 
   @override
   String country_not_supported(String country) {
-    return 'We don\'t support $country yet.';
+    return 'Biz hali $country mamlakatini qo\'llab-quvvatlamaymiz.';
   }
 
   @override
   String get region_not_auto_detected =>
-      'Couldn\'t auto-detect your region — pick it manually.';
+      'Hududingizni avtomatik aniqlab bo\'lmadi — uni qo\'lda tanlang.';
 
   @override
   String get district_not_auto_detected =>
-      'Couldn\'t auto-detect your district — pick it manually.';
+      'Tumaningizni avtomatik aniqlab bo\'lmadi — uni qo\'lda tanlang.';
 
   @override
   String get browse_no_items_with_location =>
-      'No items with location data in this area yet.';
+      'Bu hududda hali joylashuvi ko\'rsatilgan e\'lonlar yo\'q.';
 
   @override
   String get mapLoadError => 'Xaritada e\'lonlarni yuklab bo\'lmadi';
 
   @override
-  String get location_picker_title => 'Set location';
+  String get location_picker_title => 'Joylashuvni belgilash';
 
   @override
-  String get location_picker_confirm => 'Confirm location';
+  String get location_picker_confirm => 'Joylashuvni tasdiqlash';
 
   @override
   String get location_picker_resolve_failed =>
-      'Couldn\'t resolve address — pick again or confirm with coordinates only';
+      'Manzilni aniqlab bo\'lmadi — qayta tanlang yoki faqat koordinatalar bilan tasdiqlang';
 
   @override
-  String get location_picker_selected_fallback => 'Selected location';
+  String get location_picker_selected_fallback => 'Tanlangan joylashuv';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'Joylashuvga ruxsat berilmadi';
 
   @override
   String get location_permission_denied_settings =>
-      'Location permission denied — please enable in Settings';
+      'Joylashuvga ruxsat berilmadi — Sozlamalarda yoqing';
 
   @override
   String get location_permission_permanent =>
-      'Location permanently denied — open Settings to enable';
+      'Joylashuvga ruxsat butunlay rad etildi — yoqish uchun Sozlamalarni oching';
 
   @override
   String gps_error(String error) {
-    return 'GPS error: $error';
+    return 'GPS xatosi: $error';
   }
 
   @override
-  String get verify_neighborhood_title => 'Verify your neighborhood';
+  String get verify_neighborhood_title => 'Mahallangizni tasdiqlang';
 
   @override
   String get verify_neighborhood_subtitle =>
-      'Stand in your neighborhood. We\'ll check your GPS and ask you to confirm.';
+      'Mahallangizda turing. Biz GPS\'ingizni tekshiramiz va tasdiqlashingizni so\'raymiz.';
 
   @override
-  String get verify_neighborhood_button => 'Verify Neighborhood';
+  String get verify_neighborhood_button => 'Mahallani tasdiqlash';
 
   @override
   String get verify_neighborhood_low_confidence =>
-      'Continue with low confidence';
+      'Past aniqlik bilan davom etish';
 
   @override
-  String get verify_neighborhood_retry => 'Retry';
+  String get verify_neighborhood_retry => 'Qayta urinish';
 
   @override
-  String get verify_neighborhood_youre_in => 'You\'re in:';
+  String get verify_neighborhood_youre_in => 'Siz shu yerdasiz:';
 
   @override
   String verify_neighborhood_done(String name) {
-    return 'Verified! $name';
+    return 'Tasdiqlandi! $name';
   }
 
   @override
   String gps_accuracy_too_low(String meters) {
-    return 'GPS accuracy is ${meters}m (need ≤100m). Move to an open area and try again.';
+    return 'GPS aniqligi $meters m (≤100 m kerak). Ochiq maydonga o\'ting va qayta urinib ko\'ring.';
   }
 
   @override
   String get neighborhood_not_identified =>
-      'Could not identify neighborhood for your location.';
+      'Joylashuvingiz uchun mahallani aniqlab bo\'lmadi.';
 
   @override
-  String get unknown_error => 'Unknown error';
+  String get unknown_error => 'Noma\'lum xatolik';
 
   @override
-  String get place_search_hint => 'Search for an address or place';
+  String get place_search_hint => 'Manzil yoki joyni qidirish';
 
   @override
   String get place_search_unavailable =>
-      'Search unavailable — drop a pin instead';
+      'Qidiruv mavjud emas — buning o\'rniga belgi qo\'ying';
 
   @override
-  String get radius_slider_city => 'City';
+  String get radius_slider_city => 'Shahar';
 
   @override
   String radius_slider_km(String value) {
