@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -296,7 +297,9 @@ class PushNotificationService {
 
         _initialized = true;
         print('✅ Firebase Push Notifications initialized');
-        print('📱 FCM Token: $_fcmToken...');
+        // 🔥 FIX: don't log the raw FCM token — it's device PII and must not
+        // survive in release logs.
+        if (kDebugMode) debugPrint('📱 FCM Token: $_fcmToken');
         print('💡 Make sure your backend is sending notifications to this FCM token');
         print('💡 Test by sending a notification from Firebase Console or your backend');
         
@@ -335,7 +338,10 @@ class PushNotificationService {
       while (apnsToken == null && attempts < maxAttempts) {
         apnsToken = await _messaging.getAPNSToken();
         if (apnsToken != null) {
-          print('✅ APNS Token received: ${apnsToken.substring(0, 20)}...');
+          // 🔥 FIX: APNS token is device PII — keep it out of release logs.
+          if (kDebugMode) {
+            debugPrint('✅ APNS Token received: ${apnsToken.substring(0, 20)}...');
+          }
           return apnsToken;
         }
         await Future.delayed(const Duration(milliseconds: 500));
@@ -363,7 +369,10 @@ class PushNotificationService {
     _fcmToken = await _getFCMTokenWithRetryHelper();
     
     if (_fcmToken != null) {
-      print('🔔 FCM Token: ${_fcmToken!.substring(0, 20)}...');
+      // 🔥 FIX: FCM token is device PII — keep it out of release logs.
+      if (kDebugMode) {
+        debugPrint('🔔 FCM Token: ${_fcmToken!.substring(0, 20)}...');
+      }
 
       // Save token locally
       final prefs = await SharedPreferences.getInstance();
@@ -382,7 +391,9 @@ class PushNotificationService {
     
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((newToken) async {
-      print('🔔 Token refreshed: $newToken');
+      // 🔥 FIX: don't log the raw FCM token — it's device PII and must not
+      // survive in release logs.
+      if (kDebugMode) debugPrint('🔔 Token refreshed: $newToken');
       _fcmToken = newToken;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('fcm_token', newToken);
