@@ -68,9 +68,24 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
   Future<void> _useCurrentLocation() async {
     try {
       final perm = await Geolocator.requestPermission();
-      if (perm == LocationPermission.denied ||
-          perm == LocationPermission.deniedForever) {
-        if (!mounted) return;
+      if (!mounted) return;
+      if (perm == LocationPermission.deniedForever) {
+        // Permanently denied: the OS won't show a dialog again, so point the
+        // user to Settings and give them a one-tap way there.
+        final l = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l?.location_permission_permanent ??
+                'Location permanently denied — open Settings to enable'),
+            action: SnackBarAction(
+              label: l?.settings ?? 'Settings',
+              onPressed: () => Geolocator.openAppSettings(),
+            ),
+          ),
+        );
+        return;
+      }
+      if (perm == LocationPermission.denied) {
         final l = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

@@ -1,6 +1,8 @@
+import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'cluster_badge.dart';
@@ -25,25 +27,23 @@ class MappedItem {
   final VoidCallback onTap;
 }
 
-class ItemsMapView extends StatefulWidget {
+class ItemsMapView extends ConsumerStatefulWidget {
   const ItemsMapView({
     super.key,
     required this.items,
     this.initialCenter,
     this.initialZoom = 12.0,
-    this.userAgent = 'SabziMarketApp/1.0',
   });
 
   final List<MappedItem> items;
   final LatLng? initialCenter;
   final double initialZoom;
-  final String userAgent;
 
   @override
-  State<ItemsMapView> createState() => _ItemsMapViewState();
+  ConsumerState<ItemsMapView> createState() => _ItemsMapViewState();
 }
 
-class _ItemsMapViewState extends State<ItemsMapView> {
+class _ItemsMapViewState extends ConsumerState<ItemsMapView> {
   final _controller = MapController();
   MappedItem? _selected;
 
@@ -59,6 +59,7 @@ class _ItemsMapViewState extends State<ItemsMapView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mapsProvider = ref.watch(mapsProviderProvider);
     return Stack(
       children: [
         FlutterMap(
@@ -70,8 +71,8 @@ class _ItemsMapViewState extends State<ItemsMapView> {
           ),
           children: [
             TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: widget.userAgent,
+              urlTemplate: mapsProvider.tileUrlTemplate,
+              userAgentPackageName: mapsProvider.userAgent,
             ),
             MarkerClusterLayerWidget(
               options: MarkerClusterLayerOptions(

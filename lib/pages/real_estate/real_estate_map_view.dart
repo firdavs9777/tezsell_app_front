@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -184,6 +185,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mapsProvider = ref.watch(mapsProviderProvider);
 
     return Stack(
       children: [
@@ -199,8 +201,8 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
           ),
           children: [
             TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'SabziMarketApp/1.0',
+              urlTemplate: mapsProvider.tileUrlTemplate,
+              userAgentPackageName: mapsProvider.userAgent,
             ),
             MarkerClusterLayerWidget(
               options: MarkerClusterLayerOptions(

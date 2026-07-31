@@ -47,6 +47,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
     final l = AppLocalizations.of(context);
     try {
       final perm = await Geolocator.requestPermission();
+      if (!mounted) return;
       if (perm == LocationPermission.denied) {
         setState(() {
           _stage = _Stage.error;
@@ -68,6 +69,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
           await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.best,
           );
+      if (!mounted) return;
 
       if (pos.accuracy > NeighborhoodVerifier.accuracyThresholdM &&
           !allowLowConfidence) {
@@ -84,6 +86,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
       final nbhd = await ref
           .read(mapsProviderProvider)
           .getNeighborhood(LatLng(pos.latitude, pos.longitude));
+      if (!mounted) return;
       if (nbhd == null) {
         setState(() {
           _stage = _Stage.error;
@@ -99,6 +102,7 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
         _position = pos;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _stage = _Stage.error;
         _error = e.toString();
@@ -130,17 +134,20 @@ class _NeighborhoodVerifierState extends ConsumerState<NeighborhoodVerifier> {
               lowConfidence: lowConfidence,
             ),
           );
+      if (!mounted) return;
       setState(() {
         _resolved = serverNeighborhood;
         _stage = _Stage.done;
       });
       widget.onDone?.call();
     } on MapsException catch (e) {
+      if (!mounted) return;
       setState(() {
         _stage = _Stage.error;
         _error = e.message;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _stage = _Stage.error;
         _error = e.toString();
