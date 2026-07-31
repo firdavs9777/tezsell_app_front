@@ -4992,4 +4992,30 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get no_sold_listings => 'No sold items yet';
+
+  @override
+  String get productNameTooShort =>
+      'Product name must be at least 3 characters';
+
+  @override
+  String get descriptionTooShort =>
+      'Description must be at least 10 characters';
+
+  @override
+  String get addMorePhotos => 'Add More';
+
+  @override
+  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+
+  @override
+  String get pickLocationOnMap => 'Pick location on map';
+
+  @override
+  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+
+  @override
+  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+
+  @override
+  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
 }

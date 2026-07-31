@@ -3062,5 +3062,13 @@
   "place_search_hint": "Поиск адреса или места",
   "place_search_unavailable": "Поиск недоступен — установите метку вручную",
   "radius_slider_city": "Город",
-  "radius_slider_km": "{value} км"
+  "radius_slider_km": "{value} км",
+  "productNameTooShort": "Название товара должно содержать не менее 3 символов",
+  "descriptionTooShort": "Описание должно содержать не менее 10 символов",
+  "addMorePhotos": "Добавить ещё",
+  "addPhotosEmptyStateHint": "Добавьте фото, чтобы покупатели видели товар",
+  "pickLocationOnMap": "Выбрать место на карте",
+  "dropPinBuyersHint": "Отметьте место, чтобы покупатели видели, где находится товар",
+  "imageTooLargeMessage": "Изображение слишком большое. Максимальный размер — 5МБ",
+  "imagesTooLargeSkipped": "Некоторые изображения превышают 5МБ и были пропущены"
 }

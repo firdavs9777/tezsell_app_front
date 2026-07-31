@@ -3059,5 +3059,13 @@
   "place_search_hint": "Manzil yoki joyni qidirish",
   "place_search_unavailable": "Qidiruv mavjud emas — buning o'rniga belgi qo'ying",
   "radius_slider_city": "Shahar",
-  "radius_slider_km": "{value} km"
+  "radius_slider_km": "{value} km",
+  "productNameTooShort": "Mahsulot nomi kamida 3 ta belgidan iborat bo'lishi kerak",
+  "descriptionTooShort": "Tavsif kamida 10 ta belgidan iborat bo'lishi kerak",
+  "addMorePhotos": "Yana qo'shish",
+  "addPhotosEmptyStateHint": "Xaridorlar mahsulotni ko'rishi uchun rasm qo'shing",
+  "pickLocationOnMap": "Xaritada joyni tanlang",
+  "dropPinBuyersHint": "Xaridorlar mahsulot qayerdaligini bilishi uchun belgi qo'ying",
+  "imageTooLargeMessage": "Rasm juda katta. Maksimal hajmi 5MB",
+  "imagesTooLargeSkipped": "Ba'zi rasmlar 5MB dan katta bo'lgani uchun o'tkazib yuborildi"
 }

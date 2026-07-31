@@ -3611,5 +3611,21 @@
   "no_active_listings": "No active listings",
   "@no_active_listings": {"description": "Empty state text for the Active tab on the my-listings screen"},
   "no_sold_listings": "No sold items yet",
-  "@no_sold_listings": {"description": "Empty state text for the Sold tab on the my-listings screen"}
+  "@no_sold_listings": {"description": "Empty state text for the Sold tab on the my-listings screen"},
+  "productNameTooShort": "Product name must be at least 3 characters",
+  "@productNameTooShort": {"description": "Validation error when the product title is shorter than the minimum length"},
+  "descriptionTooShort": "Description must be at least 10 characters",
+  "@descriptionTooShort": {"description": "Validation error when the product description is shorter than the minimum length"},
+  "addMorePhotos": "Add More",
+  "@addMorePhotos": {"description": "Label on the add-more tile in the product-create image picker"},
+  "addPhotosEmptyStateHint": "Add photos so buyers can see the item",
+  "@addPhotosEmptyStateHint": {"description": "Empty-state hint in the product-create image picker before any photo is added"},
+  "pickLocationOnMap": "Pick location on map",
+  "@pickLocationOnMap": {"description": "Title of the location card on the product-create form before a place is picked"},
+  "dropPinBuyersHint": "Drop a pin so buyers see where the item is",
+  "@dropPinBuyersHint": {"description": "Subtitle of the location card on the product-create form before a place is picked"},
+  "imageTooLargeMessage": "Image is too large. Maximum size is 5MB",
+  "@imageTooLargeMessage": {"description": "Warning shown when a single picked image exceeds the 5MB backend limit"},
+  "imagesTooLargeSkipped": "Some images exceed 5MB and were skipped",
+  "@imagesTooLargeSkipped": {"description": "Warning shown when one or more gallery-picked images exceed the 5MB backend limit and were dropped from the selection"}
 }

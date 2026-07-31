@@ -4991,4 +4991,34 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get no_sold_listings => 'Пока нет проданных товаров';
+
+  @override
+  String get productNameTooShort =>
+      'Название товара должно содержать не менее 3 символов';
+
+  @override
+  String get descriptionTooShort =>
+      'Описание должно содержать не менее 10 символов';
+
+  @override
+  String get addMorePhotos => 'Добавить ещё';
+
+  @override
+  String get addPhotosEmptyStateHint =>
+      'Добавьте фото, чтобы покупатели видели товар';
+
+  @override
+  String get pickLocationOnMap => 'Выбрать место на карте';
+
+  @override
+  String get dropPinBuyersHint =>
+      'Отметьте место, чтобы покупатели видели, где находится товар';
+
+  @override
+  String get imageTooLargeMessage =>
+      'Изображение слишком большое. Максимальный размер — 5МБ';
+
+  @override
+  String get imagesTooLargeSkipped =>
+      'Некоторые изображения превышают 5МБ и были пропущены';
 }

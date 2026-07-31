@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/products/widgets/product_new_basic_info_card.dart';
 import 'package:app/pages/products/widgets/product_new_category_card.dart';
+import 'package:app/pages/products/widgets/product_new_condition_card.dart';
 import 'package:app/pages/products/widgets/product_new_image_picker.dart';
 import 'package:app/pages/products/widgets/product_new_pricing_card.dart';
 import 'package:app/providers/provider_models/category_model.dart';
@@ -38,12 +39,21 @@ class _ProductNewState extends ConsumerState<ProductNew> {
 
   List<CategoryModel> _availableCategories = [];
   int? _selectedCategoryId;
+  bool _isLoadingCategories = true;
+  bool _categoriesLoadError = false;
   final List<File> _selectedImages = [];
   bool _isUploading = false;
+
+  // Second-hand marketplace: default to 'used' rather than the backend
+  // model's own 'new' default — most app-created listings are pre-owned.
+  String _selectedCondition = 'used';
 
   String _selectedCurrency = 'UZS';
   List<String> _availableCurrencies = ['UZS', 'USD', 'EUR'];
   Place? _pickedPlace;
+
+  static const int _maxImages = 10;
+  static const int _maxImageSizeBytes = 5 * 1024 * 1024; // 5MB (backend cap)
 
   @override
   void initState() {
@@ -107,16 +117,27 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   }
 
   Future<void> _fetchCategories() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoadingCategories = true;
+      _categoriesLoadError = false;
+    });
     try {
       final categories =
           await ref.read(productsServiceProvider).getCategories();
       if (!mounted) return;
       setState(() {
         _availableCategories = categories;
+        _isLoadingCategories = false;
+        _categoriesLoadError = false;
       });
     } catch (e) {
       AppErrorHandler.logError('ProductNew._fetchCategories', e);
       if (mounted) {
+        setState(() {
+          _isLoadingCategories = false;
+          _categoriesLoadError = true;
+        });
         AppErrorHandler.showError(context, e);
       }
     }
@@ -192,6 +213,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
   }
 
   Future<void> _pickImage({required ImageSource source}) async {
+    final localizations = AppLocalizations.of(context);
     try {
       if (source == ImageSource.gallery) {
         final pickedFiles = await _picker.pickMultiImage(
@@ -199,43 +221,92 @@ class _ProductNewState extends ConsumerState<ProductNew> {
           maxHeight: 2560,
           imageQuality: 95,
         );
-        if (pickedFiles.isNotEmpty && mounted) {
+        if (pickedFiles.isEmpty || !mounted) return;
+
+        final remainingSlots = _maxImages - _selectedImages.length;
+        if (remainingSlots <= 0) {
+          AppErrorHandler.showWarning(
+            context,
+            localizations?.maxImagesError ??
+                'You can upload a maximum of 10 images',
+          );
+          return;
+        }
+
+        final acceptedFiles = <File>[];
+        var oversizedCount = 0;
+        for (final pickedFile in pickedFiles) {
+          if (acceptedFiles.length >= remainingSlots) break;
+          final file = File(pickedFile.path);
+          final size = await file.length();
+          if (size > _maxImageSizeBytes) {
+            oversizedCount++;
+            continue;
+          }
+          acceptedFiles.add(file);
+        }
+
+        final droppedForLimit =
+            pickedFiles.length - acceptedFiles.length - oversizedCount;
+
+        if (!mounted) return;
+        if (acceptedFiles.isNotEmpty) {
           setState(() {
-            _selectedImages.addAll(
-              pickedFiles.map((pickedFile) => File(pickedFile.path)),
-            );
+            _selectedImages.addAll(acceptedFiles);
           });
           AppLogger.debug(
-              'Selected ${pickedFiles.length} images from gallery');
+              'Selected ${acceptedFiles.length} images from gallery');
+        }
+
+        if (oversizedCount > 0) {
+          AppErrorHandler.showWarning(
+            context,
+            localizations?.imagesTooLargeSkipped ??
+                'Some images exceed 5MB and were skipped',
+          );
+        } else if (droppedForLimit > 0) {
+          AppErrorHandler.showWarning(
+            context,
+            localizations?.maxImagesError ??
+                'You can upload a maximum of 10 images',
+          );
         }
       } else {
+        if (_selectedImages.length >= _maxImages) {
+          AppErrorHandler.showWarning(
+            context,
+            localizations?.maxImagesError ??
+                'You can upload a maximum of 10 images',
+          );
+          return;
+        }
+
         final pickedFile = await _picker.pickImage(
           source: source,
           maxWidth: 2560,
           maxHeight: 2560,
           imageQuality: 95,
         );
-        if (pickedFile != null && mounted) {
-          final imageFile = File(pickedFile.path);
+        if (pickedFile == null || !mounted) return;
 
-          final fileSize = await imageFile.length();
-          const maxSize = 10 * 1024 * 1024; // 10MB
+        final imageFile = File(pickedFile.path);
+        final fileSize = await imageFile.length();
 
-          if (fileSize > maxSize) {
-            if (mounted) {
-              AppErrorHandler.showWarning(
-                context,
-                'Image is too large. Maximum size is 10MB',
-              );
-            }
-            return;
+        if (fileSize > _maxImageSizeBytes) {
+          if (mounted) {
+            AppErrorHandler.showWarning(
+              context,
+              localizations?.imageTooLargeMessage ??
+                  'Image is too large. Maximum size is 5MB',
+            );
           }
-
-          setState(() {
-            _selectedImages.add(imageFile);
-          });
-          AppLogger.debug('Selected image from ${source.name}');
+          return;
         }
+
+        setState(() {
+          _selectedImages.add(imageFile);
+        });
+        AppLogger.debug('Selected image from ${source.name}');
       }
     } catch (e) {
       AppErrorHandler.logError('ProductNew._pickImage', e);
@@ -339,6 +410,7 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             price: price,
             categoryId: _selectedCategoryId!,
             imageFiles: _selectedImages,
+            condition: _selectedCondition,
             currency: _selectedCurrency,
             latitude: _pickedPlace?.lat,
             longitude: _pickedPlace?.lng,
@@ -386,6 +458,16 @@ class _ProductNewState extends ConsumerState<ProductNew> {
             'Error while creating product. Please try again.';
         if (e is DioException && e.message != null && e.message!.isNotEmpty) {
           errorMessage = e.message!;
+        } else if (e is Exception) {
+          // Plain Exceptions thrown by createProduct (e.g. "User not
+          // authenticated" / "User location not set...") would otherwise
+          // fall through to the generic message above, hiding the actual
+          // actionable reason (like "set your location in settings") from
+          // the user.
+          final message = e.toString().replaceFirst('Exception: ', '');
+          if (message.isNotEmpty) {
+            errorMessage = message;
+          }
         }
         AppErrorHandler.showError(context, errorMessage);
       }
@@ -428,8 +510,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   isUploading: _isUploading,
                   onAddTap: _showImageSourceDialog,
                   onRemove: _removeImage,
+                  maxImages: _maxImages,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 ProductNewBasicInfoCard(
                   titleController: _titleController,
                   descriptionController: _descriptionController,
@@ -450,6 +533,9 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   availableCategories: _availableCategories,
                   selectedCategoryId: _selectedCategoryId,
                   isUploading: _isUploading,
+                  isLoading: _isLoadingCategories,
+                  hasError: _categoriesLoadError,
+                  onRetry: _fetchCategories,
                   getCategoryName: _getCategoryName,
                   onCategoryChanged: (category) {
                     setState(() {
@@ -458,13 +544,29 @@ class _ProductNewState extends ConsumerState<ProductNew> {
                   },
                 ),
                 const SizedBox(height: 16),
+                ProductNewConditionCard(
+                  selectedCondition: _selectedCondition,
+                  isUploading: _isUploading,
+                  onConditionChanged: (value) {
+                    setState(() => _selectedCondition = value);
+                  },
+                ),
+                const SizedBox(height: 16),
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.map_outlined),
-                    title: Text(_pickedPlace?.formattedAddress ??
-                        'Pick location on map'),
+                    title: Text(
+                      _pickedPlace?.formattedAddress ??
+                          localizations?.pickLocationOnMap ??
+                          'Pick location on map',
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     subtitle: _pickedPlace == null
-                        ? const Text('Drop a pin so buyers see where the item is')
+                        ? Text(
+                            localizations?.dropPinBuyersHint ??
+                                'Drop a pin so buyers see where the item is',
+                            overflow: TextOverflow.ellipsis,
+                          )
                         : Text(
                             '${_pickedPlace!.lat.toStringAsFixed(5)}, ${_pickedPlace!.lng.toStringAsFixed(5)}',
                           ),

@@ -9471,6 +9471,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No sold items yet'**
   String get no_sold_listings;
+
+  /// Validation error when the product title is shorter than the minimum length
+  ///
+  /// In en, this message translates to:
+  /// **'Product name must be at least 3 characters'**
+  String get productNameTooShort;
+
+  /// Validation error when the product description is shorter than the minimum length
+  ///
+  /// In en, this message translates to:
+  /// **'Description must be at least 10 characters'**
+  String get descriptionTooShort;
+
+  /// Label on the add-more tile in the product-create image picker
+  ///
+  /// In en, this message translates to:
+  /// **'Add More'**
+  String get addMorePhotos;
+
+  /// Empty-state hint in the product-create image picker before any photo is added
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos so buyers can see the item'**
+  String get addPhotosEmptyStateHint;
+
+  /// Title of the location card on the product-create form before a place is picked
+  ///
+  /// In en, this message translates to:
+  /// **'Pick location on map'**
+  String get pickLocationOnMap;
+
+  /// Subtitle of the location card on the product-create form before a place is picked
+  ///
+  /// In en, this message translates to:
+  /// **'Drop a pin so buyers see where the item is'**
+  String get dropPinBuyersHint;
+
+  /// Warning shown when a single picked image exceeds the 5MB backend limit
+  ///
+  /// In en, this message translates to:
+  /// **'Image is too large. Maximum size is 5MB'**
+  String get imageTooLargeMessage;
+
+  /// Warning shown when one or more gallery-picked images exceed the 5MB backend limit and were dropped from the selection
+  ///
+  /// In en, this message translates to:
+  /// **'Some images exceed 5MB and were skipped'**
+  String get imagesTooLargeSkipped;
 }
 
 class _AppLocalizationsDelegate

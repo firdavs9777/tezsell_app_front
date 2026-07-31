@@ -5018,4 +5018,33 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get no_sold_listings => 'Hali sotilgan mahsulotlar yo\'q';
+
+  @override
+  String get productNameTooShort =>
+      'Mahsulot nomi kamida 3 ta belgidan iborat bo\'lishi kerak';
+
+  @override
+  String get descriptionTooShort =>
+      'Tavsif kamida 10 ta belgidan iborat bo\'lishi kerak';
+
+  @override
+  String get addMorePhotos => 'Yana qo\'shish';
+
+  @override
+  String get addPhotosEmptyStateHint =>
+      'Xaridorlar mahsulotni ko\'rishi uchun rasm qo\'shing';
+
+  @override
+  String get pickLocationOnMap => 'Xaritada joyni tanlang';
+
+  @override
+  String get dropPinBuyersHint =>
+      'Xaridorlar mahsulot qayerdaligini bilishi uchun belgi qo\'ying';
+
+  @override
+  String get imageTooLargeMessage => 'Rasm juda katta. Maksimal hajmi 5MB';
+
+  @override
+  String get imagesTooLargeSkipped =>
+      'Ba\'zi rasmlar 5MB dan katta bo\'lgani uchun o\'tkazib yuborildi';
 }

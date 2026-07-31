@@ -12,6 +12,33 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/service/auth_interceptor.dart';
 
+/// Extracts a user-facing message from a Django-style validation-error body.
+///
+/// The backend represents field errors two different ways depending on
+/// where they originate:
+///   - DRF serializer errors: `{"field": ["msg1", "msg2"]}` (a List per
+///     field).
+///   - Hand-rolled errors, e.g. image validation via
+///     `APIResponse.validation_error({'images': str(e)})`: `{"field": "msg"}`
+///     (a bare String per field).
+/// Only handling the List shape silently drops the String case (image
+/// count/size/type errors), leaving the user with a generic fallback
+/// message instead of the specific reason the backend rejected the upload.
+String extractValidationErrorMessage(
+  Map errors, {
+  String fallback = 'Failed to create product',
+}) {
+  final errorMessages = <String>[];
+  errors.forEach((field, messages) {
+    if (messages is List && messages.isNotEmpty) {
+      errorMessages.add(messages.first.toString());
+    } else if (messages is String && messages.isNotEmpty) {
+      errorMessages.add(messages);
+    }
+  });
+  return errorMessages.isNotEmpty ? errorMessages.join('. ') : fallback;
+}
+
 class ProductsService {
   // Singleton Dio instance for better performance
   static Dio? _dio;
@@ -630,6 +657,10 @@ class ProductsService {
     required int price,
     required int categoryId,
     required List<File> imageFiles,
+    // Second-hand marketplace: every listing needs a real condition, so this
+    // defaults to 'used' rather than the backend model default of 'new'.
+    // Must be one of Product.CONDITION_CHOICES (see kProductConditions).
+    String condition = 'used',
     String currency = 'UZS',
     // Phase-1 OSM/Carrot place fields (optional during transition).
     double? latitude,
@@ -711,7 +742,7 @@ class ProductsService {
 
       final formData = FormData.fromMap({
         'title': title,
-        'condition': 'new',
+        'condition': condition,
         'in_stock': true,
         'category_id': categoryId,
         'price': price,
@@ -757,23 +788,24 @@ class ProductsService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Clear products cache since we added a new product
         _productsCache.clear();
-        return Products.fromJson(response.data);
+        // The backend wraps the created object in an envelope:
+        // {success, data: {...}, message}. Unwrap it, but stay defensive in
+        // case the shape ever changes (fall back to the raw payload).
+        final rawData = response.data;
+        final productJson = (rawData is Map && rawData['data'] is Map)
+            ? rawData['data'] as Map<String, dynamic>
+            : rawData as Map<String, dynamic>;
+        return Products.fromJson(productJson);
       } else {
         String errorMessage = 'Failed to create product';
         if (response.data is Map) {
           final data = response.data as Map;
           // Extract validation errors if present
           if (data['errors'] is Map) {
-            final errors = data['errors'] as Map;
-            final errorMessages = <String>[];
-            errors.forEach((field, messages) {
-              if (messages is List && messages.isNotEmpty) {
-                errorMessages.add(messages.first.toString());
-              }
-            });
-            if (errorMessages.isNotEmpty) {
-              errorMessage = errorMessages.join('. ');
-            }
+            errorMessage = extractValidationErrorMessage(
+              data['errors'] as Map,
+              fallback: errorMessage,
+            );
           } else if (data['error'] != null) {
             errorMessage = data['error'].toString();
           } else if (data['message'] != null) {

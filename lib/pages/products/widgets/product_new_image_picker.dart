@@ -11,12 +11,16 @@ class ProductNewImagePicker extends StatelessWidget {
     required this.isUploading,
     required this.onAddTap,
     required this.onRemove,
+    this.maxImages = 10,
   });
 
   final List<File> images;
   final bool isUploading;
   final VoidCallback onAddTap;
   final ValueChanged<int> onRemove;
+
+  /// Total images allowed; shown alongside the current count (e.g. "3/10").
+  final int maxImages;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +32,22 @@ class ProductNewImagePicker extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProductNewSectionHeader(
-            title: localizations?.newProductImages ?? 'Product Images',
-            icon: Icons.photo_library,
+          Row(
+            children: [
+              Expanded(
+                child: ProductNewSectionHeader(
+                  title: localizations?.newProductImages ?? 'Product Images',
+                  icon: Icons.photo_library,
+                ),
+              ),
+              Text(
+                '${images.length}/$maxImages',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           if (images.isEmpty)
@@ -60,6 +77,7 @@ class ProductNewImagePicker extends StatelessWidget {
             width: 2,
           ),
         ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -70,7 +88,9 @@ class ProductNewImagePicker extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              localizations?.imageInstructions ?? 'Tap to add images',
+              localizations?.addPhotosEmptyStateHint ??
+                  'Add photos so buyers can see the item',
+              textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -79,6 +99,7 @@ class ProductNewImagePicker extends StatelessWidget {
             Text(
               localizations?.oneImageConfirmMessage ??
                   'At least 1 image required',
+              textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               ),
@@ -94,14 +115,16 @@ class ProductNewImagePicker extends StatelessWidget {
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final localizations = AppLocalizations.of(context);
+    final canAddMore = images.length < maxImages;
     return SizedBox(
       height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: images.length + 1,
+        itemCount: images.length + (canAddMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == images.length) {
-            return _buildAddMoreTile(theme, colorScheme);
+            return _buildAddMoreTile(theme, colorScheme, localizations);
           }
           return _buildImageTile(context, theme, colorScheme, index);
         },
@@ -109,7 +132,11 @@ class ProductNewImagePicker extends StatelessWidget {
     );
   }
 
-  Widget _buildAddMoreTile(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildAddMoreTile(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    AppLocalizations? localizations,
+  ) {
     return GestureDetector(
       onTap: isUploading ? null : onAddTap,
       child: Container(
@@ -129,7 +156,7 @@ class ProductNewImagePicker extends StatelessWidget {
             Icon(Icons.add, size: 36, color: colorScheme.primary),
             const SizedBox(height: 8),
             Text(
-              'Add More',
+              localizations?.addMorePhotos ?? 'Add More',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
