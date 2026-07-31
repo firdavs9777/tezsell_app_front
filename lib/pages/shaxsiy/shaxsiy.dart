@@ -9,9 +9,7 @@ import 'package:app/pages/shaxsiy/widgets/profile_menu_card.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_role_cards.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_state_widgets.dart';
 import 'package:app/pages/shaxsiy/widgets/profile_theme_dialog.dart';
-import 'package:app/providers/provider_models/favorite_items.dart';
-import 'package:app/providers/provider_models/product_model.dart';
-import 'package:app/providers/provider_models/service_model.dart';
+import 'package:app/pages/shaxsiy/profile_sections_data.dart';
 import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/profile_provider.dart';
@@ -20,13 +18,14 @@ import 'package:app/providers/provider_root/vacation_mode_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:app/widgets/follow_list_sheet.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
+import 'package:app/widgets/skeleton_loader.dart';
 import 'package:app/widgets/vacation_mode_widget.dart';
 import 'package:app/service/authentication_service.dart';
+import 'package:app/utils/current_user_prefs.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ShaxsiyPage extends ConsumerStatefulWidget {
   const ShaxsiyPage({super.key});
@@ -46,27 +45,25 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   }
 
   Future<void> _loadCurrentUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      final userIdStr = prefs.getString('userId');
-      _currentUserId = userIdStr != null ? int.tryParse(userIdStr) : null;
-    });
+    final userId = await loadCurrentUserIdFromPrefs();
+    if (!mounted) return;
+    setState(() => _currentUserId = userId);
   }
 
-  Future<List<dynamic>> _fetchAllData() async {
-    return Future.wait([
-      ref.read(profileServiceProvider).getUserInfo(),
-      // Own profile: include hidden/sold listings so the counts here match
-      // what "My Products"/"My Services" show (both now include inactive).
-      ref.read(profileServiceProvider).getUserProducts(includeInactive: true),
-      ref.read(profileServiceProvider).getUserServices(includeInactive: true),
-      ref.read(profileServiceProvider).getUserFavoriteItems(),
-    ]);
+  // The header, trust chip, and menu shell only truly depend on the user
+  // record -- fetched alone so a slow/failed products/services/favorites
+  // call can't blank the whole page (see fetchProfileSections below for
+  // that secondary, per-section-tolerant fetch).
+  Future<UserInfo> _fetchUser() {
+    return ref.read(profileServiceProvider).getUserInfo();
   }
 
   void _refreshProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.invalidate(profileServiceProvider);
+      // Note: no `ref.invalidate(profileServiceProvider)` here -- it's a
+      // plain stateless `Provider((ref) => ProfileService())` with no
+      // internal cache, so invalidating it is a no-op; the actual refetch
+      // is driven by `_refreshKey` below (new FutureBuilder futures).
       if (_currentUserId != null) {
         ref.invalidate(userProfileProvider(_currentUserId!));
       }
@@ -114,8 +111,10 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations?.logout ?? 'Logout'),
-        content: Text(localizations?.logout_all_devices_message ??
-            'Are you sure you want to logout?'),
+        content: Text(
+          localizations?.logout_all_devices_message ??
+              'Are you sure you want to logout?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -141,6 +140,44 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         }
       }
     }
+  }
+
+  /// A products/services/favorites menu row that degrades to a small
+  /// inline "couldn't load" affordance (subtitle + retry) instead of a
+  /// count when its data failed to fetch (fix #3's per-section
+  /// tolerance) -- rather than the whole page going to [ProfileErrorState].
+  Widget _sectionMenuCard({
+    required AppLocalizations? localizations,
+    required ColorScheme colorScheme,
+    required IconData icon,
+    required String title,
+    required String countSubtitle,
+    required bool hasError,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    if (!hasError) {
+      return ProfileMenuCard(
+        icon: icon,
+        title: title,
+        subtitle: countSubtitle,
+        iconColor: iconColor,
+        onTap: onTap,
+      );
+    }
+
+    return ProfileMenuCard(
+      icon: icon,
+      title: title,
+      subtitle: localizations?.profileSectionLoadError ?? "Couldn't load",
+      iconColor: iconColor,
+      onTap: onTap,
+      trailing: IconButton(
+        icon: Icon(Icons.refresh_rounded, color: colorScheme.error, size: 20),
+        tooltip: localizations?.retry ?? 'Retry',
+        onPressed: _refreshProfile,
+      ),
+    );
   }
 
   @override
@@ -173,12 +210,12 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
           _refreshProfile();
           await Future.delayed(const Duration(milliseconds: 500));
         },
-        child: FutureBuilder<List<dynamic>>(
+        child: FutureBuilder<UserInfo>(
           key: ValueKey(_refreshKey),
-          future: _fetchAllData(),
+          future: _fetchUser(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const _ProfileHeaderSkeleton();
             } else if (snapshot.hasError) {
               return ProfileErrorState(
                 error: snapshot.error,
@@ -193,172 +230,219 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               );
             }
 
-            final user = snapshot.data![0] as UserInfo;
-            final products = snapshot.data![1] as List<Products>;
-            final services = snapshot.data![2] as List<Services>;
-            final favoriteItems = snapshot.data![3] as FavoriteItems;
+            final user = snapshot.data!;
 
             return SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ProfileHeader(
-                    user: user,
-                    totalListings: products.length + services.length,
-                    currentUserId: _currentUserId,
-                    onShowListings: () => context.push('/profile/my-products'),
-                    onShowFollowers: _showFollowersSheet,
-                    onShowFollowing: _showFollowingSheet,
-                    onEditProfile: () async {
-                      final result = await context.push<bool>('/profile/edit');
-                      if (result == true) {
-                        _refreshProfile();
-                      }
-                    },
-                  ),
-                  Divider(color: colorScheme.outlineVariant, height: 1),
-                  const _MyNeighborhoodsSection(),
-                  Divider(color: colorScheme.outlineVariant, height: 1),
-                  ProfileSectionTitle(localizations?.myProfile ?? 'My Items'),
-                  ProfileMenuCard(
-                    icon: Icons.inventory_2_rounded,
-                    title: localizations?.myProductsTitle ?? 'My Products',
-                    subtitle: '${products.length} items',
-                    iconColor: const Color(0xFF4CAF50),
-                    onTap: () => context.push('/profile/my-products'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.room_service_rounded,
-                    title: localizations?.myServicesTitle ?? 'My Services',
-                    subtitle: '${services.length} services',
-                    iconColor: const Color(0xFF2196F3),
-                    onTap: () => context.push('/profile/my-services'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.local_offer_rounded,
-                    title: localizations?.offersMenuTitle ?? 'Offers',
-                    subtitle: localizations?.offersMenuSubtitle ??
-                        'Track price negotiations',
-                    iconColor: const Color(0xFFFF6F0F),
-                    onTap: () => context.push('/offers'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.favorite_rounded,
-                    title: localizations?.favoriteProductsTitle ??
-                        'Favorite Products',
-                    subtitle: '${favoriteItems.likedProducts.length} items',
-                    iconColor: const Color(0xFFE91E63),
-                    onTap: () => context.push('/profile/favorites/products'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.star_rounded,
-                    title: localizations?.favoriteServicesTitle ??
-                        'Favorite Services',
-                    subtitle:
-                        '${favoriteItems.likedServices.length} services',
-                    iconColor: const Color(0xFFFF9800),
-                    onTap: () => context.push('/profile/favorites/services'),
-                  ),
-                  _PendingReviewsNudge(currentUserId: _currentUserId),
-                  ProfileMenuCard(
-                    icon: Icons.reviews_rounded,
-                    title: localizations?.myReviewsTitle ?? 'My Reviews',
-                    subtitle: localizations?.myReviewsSubtitle ??
-                        "Reviews you've given and received",
-                    iconColor: const Color(0xFF00BCD4),
-                    onTap: () => context.push('/profile/my-reviews'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.insights_rounded,
-                    title:
-                        localizations?.sellerAnalyticsTitle ?? 'Seller Analytics',
-                    subtitle: localizations?.sellerAnalyticsSubtitle ??
-                        'Track views, offers, and sales performance',
-                    iconColor: const Color(0xFF3F51B5),
-                    onTap: () => context.push('/analytics'),
-                  ),
-                  ProfileSavedPropertiesCard(localizations: localizations),
-                  ProfileAgentCard(
-                    localizations: localizations,
-                    onAgentApplied: () => setState(() {}),
-                  ),
-                  ProfileAdminSection(
-                    user: user,
-                    localizations: localizations,
-                  ),
-                  ProfileSectionTitle(localizations?.settings ?? 'Settings'),
-                  ProfileMenuCard(
-                    icon: Icons.language_rounded,
-                    title: localizations?.language ?? 'Language',
-                    subtitle: getCurrentLanguageName(ref),
-                    iconColor: const Color(0xFF2196F3),
-                    onTap: () => showProfileLanguageDialog(context, ref),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.palette_rounded,
-                    title: localizations?.theme ?? 'Theme',
-                    subtitle: getCurrentThemeName(ref, localizations),
-                    iconColor: const Color(0xFF607D8B),
-                    onTap: () => showProfileThemeDialog(context, ref),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.my_location_rounded,
-                    title: localizations?.location_settings ?? 'Location',
-                    subtitle: 'Default area and location services',
-                    iconColor: const Color(0xFF4CAF50),
-                    onTap: () => context.push('/location/manage'),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.security_rounded,
-                    title: localizations?.security ?? 'Security',
-                    subtitle: 'Password, 2FA, and login history',
-                    iconColor: const Color(0xFFE91E63),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SecuritySettingsPage()),
-                    ),
-                  ),
-                  const _VacationModeSection(),
-                  ProfileSectionTitle(
-                      localizations?.customer_support ?? 'Support'),
-                  ProfileMenuCard(
-                    icon: Icons.headset_mic_rounded,
-                    title: localizations?.customer_center ?? 'Customer Center',
-                    subtitle: 'Get help and support',
-                    iconColor: const Color(0xFF9C27B0),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CustomerCenterPage()),
-                    ),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.help_outline_rounded,
-                    title: localizations?.customer_inquiries ?? 'Inquiries',
-                    subtitle: 'Ask questions or report issues',
-                    iconColor: const Color(0xFF607D8B),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const InquiriesPage()),
-                    ),
-                  ),
-                  ProfileMenuCard(
-                    icon: Icons.article_rounded,
-                    title: localizations?.customer_terms ??
-                        'Terms and Conditions',
-                    subtitle: 'Privacy policy and terms',
-                    iconColor: const Color(0xFF795548),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TermsAndConditionsPage()),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                ],
+              child: FutureBuilder<ProfileSectionsData>(
+                key: ValueKey(_refreshKey),
+                future: fetchProfileSections(ref.read(profileServiceProvider)),
+                builder: (context, sectionsSnapshot) {
+                  // Sub-data (products/services/favorites) is tolerant of
+                  // individual failure -- while it's still loading (or if
+                  // it errored entirely, which fetchProfileSections avoids
+                  // by design), fall back to the zero/empty default rather
+                  // than blocking the header/menu that only need `user`.
+                  final sections =
+                      sectionsSnapshot.data ?? const ProfileSectionsData();
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ProfileHeader(
+                        user: user,
+                        totalListings:
+                            sections.products.length + sections.services.length,
+                        currentUserId: _currentUserId,
+                        onShowListings: () =>
+                            context.push('/profile/my-products'),
+                        onShowFollowers: _showFollowersSheet,
+                        onShowFollowing: _showFollowingSheet,
+                        onEditProfile: () async {
+                          final result = await context.push<bool>(
+                            '/profile/edit',
+                          );
+                          if (result == true) {
+                            _refreshProfile();
+                          }
+                        },
+                      ),
+                      Divider(color: colorScheme.outlineVariant, height: 1),
+                      const _MyNeighborhoodsSection(),
+                      Divider(color: colorScheme.outlineVariant, height: 1),
+                      ProfileSectionTitle(
+                        localizations?.myProfile ?? 'My Items',
+                      ),
+                      _sectionMenuCard(
+                        localizations: localizations,
+                        colorScheme: colorScheme,
+                        icon: Icons.inventory_2_rounded,
+                        title: localizations?.myProductsTitle ?? 'My Products',
+                        countSubtitle: '${sections.products.length} items',
+                        hasError: sections.productsError,
+                        iconColor: const Color(0xFF4CAF50),
+                        onTap: () => context.push('/profile/my-products'),
+                      ),
+                      _sectionMenuCard(
+                        localizations: localizations,
+                        colorScheme: colorScheme,
+                        icon: Icons.room_service_rounded,
+                        title: localizations?.myServicesTitle ?? 'My Services',
+                        countSubtitle: '${sections.services.length} services',
+                        hasError: sections.servicesError,
+                        iconColor: const Color(0xFF2196F3),
+                        onTap: () => context.push('/profile/my-services'),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.local_offer_rounded,
+                        title: localizations?.offersMenuTitle ?? 'Offers',
+                        subtitle:
+                            localizations?.offersMenuSubtitle ??
+                            'Track price negotiations',
+                        iconColor: const Color(0xFFFF6F0F),
+                        onTap: () => context.push('/offers'),
+                      ),
+                      _sectionMenuCard(
+                        localizations: localizations,
+                        colorScheme: colorScheme,
+                        icon: Icons.favorite_rounded,
+                        title:
+                            localizations?.favoriteProductsTitle ??
+                            'Favorite Products',
+                        countSubtitle: '${sections.likedProductsCount} items',
+                        hasError: sections.favoritesError,
+                        iconColor: const Color(0xFFE91E63),
+                        onTap: () =>
+                            context.push('/profile/favorites/products'),
+                      ),
+                      _sectionMenuCard(
+                        localizations: localizations,
+                        colorScheme: colorScheme,
+                        icon: Icons.star_rounded,
+                        title:
+                            localizations?.favoriteServicesTitle ??
+                            'Favorite Services',
+                        countSubtitle:
+                            '${sections.likedServicesCount} services',
+                        hasError: sections.favoritesError,
+                        iconColor: const Color(0xFFFF9800),
+                        onTap: () =>
+                            context.push('/profile/favorites/services'),
+                      ),
+                      _PendingReviewsNudge(currentUserId: _currentUserId),
+                      ProfileMenuCard(
+                        icon: Icons.reviews_rounded,
+                        title: localizations?.myReviewsTitle ?? 'My Reviews',
+                        subtitle:
+                            localizations?.myReviewsSubtitle ??
+                            "Reviews you've given and received",
+                        iconColor: const Color(0xFF00BCD4),
+                        onTap: () => context.push('/profile/my-reviews'),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.insights_rounded,
+                        title:
+                            localizations?.sellerAnalyticsTitle ??
+                            'Seller Analytics',
+                        subtitle:
+                            localizations?.sellerAnalyticsSubtitle ??
+                            'Track views, offers, and sales performance',
+                        iconColor: const Color(0xFF3F51B5),
+                        onTap: () => context.push('/analytics'),
+                      ),
+                      ProfileSavedPropertiesCard(localizations: localizations),
+                      ProfileAgentCard(
+                        localizations: localizations,
+                        onAgentApplied: () => setState(() {}),
+                      ),
+                      ProfileAdminSection(
+                        user: user,
+                        localizations: localizations,
+                      ),
+                      ProfileSectionTitle(
+                        localizations?.settings ?? 'Settings',
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.language_rounded,
+                        title: localizations?.language ?? 'Language',
+                        subtitle: getCurrentLanguageName(ref),
+                        iconColor: const Color(0xFF2196F3),
+                        onTap: () => showProfileLanguageDialog(context, ref),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.palette_rounded,
+                        title: localizations?.theme ?? 'Theme',
+                        subtitle: getCurrentThemeName(ref, localizations),
+                        iconColor: const Color(0xFF607D8B),
+                        onTap: () => showProfileThemeDialog(context, ref),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.my_location_rounded,
+                        title: localizations?.location_settings ?? 'Location',
+                        subtitle: 'Default area and location services',
+                        iconColor: const Color(0xFF4CAF50),
+                        onTap: () => context.push('/location/manage'),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.security_rounded,
+                        title: localizations?.security ?? 'Security',
+                        subtitle: 'Password, 2FA, and login history',
+                        iconColor: const Color(0xFFE91E63),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SecuritySettingsPage(),
+                          ),
+                        ),
+                      ),
+                      const _VacationModeSection(),
+                      ProfileSectionTitle(
+                        localizations?.customer_support ?? 'Support',
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.headset_mic_rounded,
+                        title:
+                            localizations?.customer_center ?? 'Customer Center',
+                        subtitle: 'Get help and support',
+                        iconColor: const Color(0xFF9C27B0),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CustomerCenterPage(),
+                          ),
+                        ),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.help_outline_rounded,
+                        title: localizations?.customer_inquiries ?? 'Inquiries',
+                        subtitle: 'Ask questions or report issues',
+                        iconColor: const Color(0xFF607D8B),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InquiriesPage(),
+                          ),
+                        ),
+                      ),
+                      ProfileMenuCard(
+                        icon: Icons.article_rounded,
+                        title:
+                            localizations?.customer_terms ??
+                            'Terms and Conditions',
+                        subtitle: 'Privacy policy and terms',
+                        iconColor: const Color(0xFF795548),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const TermsAndConditionsPage(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  );
+                },
               ),
             );
           },
@@ -386,9 +470,11 @@ class _PendingReviewsNudge extends ConsumerWidget {
 
     return ProfileMenuCard(
       icon: Icons.rate_review_rounded,
-      title: localizations?.pendingReviewsNudgeTitle(pending.count) ??
+      title:
+          localizations?.pendingReviewsNudgeTitle(pending.count) ??
           'Pending reviews (${pending.count})',
-      subtitle: localizations?.pendingReviewsNudgeSubtitle ??
+      subtitle:
+          localizations?.pendingReviewsNudgeSubtitle ??
           'Tap to rate your recent trades',
       iconColor: const Color(0xFFFFC107),
       onTap: () => _handleTap(context, pending),
@@ -479,7 +565,10 @@ class _PendingReviewsSheet extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 localizations?.pendingReviewsSheetTitle ?? 'Pending Reviews',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Divider(height: 1, color: colorScheme.outlineVariant),
@@ -548,10 +637,27 @@ class _VacationModeSectionState extends ConsumerState<_VacationModeSection> {
     setState(() => _isToggling = true);
     try {
       final notifier = ref.read(vacationModeProvider.notifier);
-      if (value) {
-        await notifier.enableVacationMode(message: _draftMessage);
-      } else {
-        await notifier.disableVacationMode();
+      final ok = value
+          ? await notifier.enableVacationMode(message: _draftMessage)
+          : await notifier.disableVacationMode();
+
+      // The backend toggle is a blind flip, so our optimistic local state
+      // (and the cache this call started from) can diverge from the
+      // server -- reconcile unconditionally after every attempt, success
+      // or failure, so the switch always ends up reflecting server truth
+      // rather than a guess.
+      await notifier.fetchStatus();
+
+      if (!ok && mounted) {
+        final localizations = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              localizations?.vacationModeToggleError ??
+                  "Couldn't update vacation mode. Please try again.",
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isToggling = false);
@@ -589,42 +695,53 @@ class _MyNeighborhoodsSection extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(AppLocalizations.of(context)?.my_neighborhoods ?? 'My Neighborhoods', style: theme.textTheme.titleMedium),
+            Text(
+              AppLocalizations.of(context)?.my_neighborhoods ??
+                  'My Neighborhoods',
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             if (list.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(AppLocalizations.of(context)?.no_neighborhoods_yet ?? 'No verified neighborhoods yet.'),
+                child: Text(
+                  AppLocalizations.of(context)?.no_neighborhoods_yet ??
+                      'No verified neighborhoods yet.',
+                ),
               )
             else
-              ...list.map((v) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.place,
-                      color: v.isExpired
-                          ? theme.colorScheme.error
-                          : theme.colorScheme.primary,
-                    ),
-                    title: Text(v.neighborhood.displayName),
-                    subtitle: Text(
-                      v.isExpired
-                          ? 'Expired — re-verify'
-                          : 'Verified ${_formatRelative(v.verifiedAt)}',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => ref
-                          .read(verifiedNeighborhoodsProvider.notifier)
-                          .remove(v.neighborhood.id),
-                    ),
-                  )),
+              ...list.map(
+                (v) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.place,
+                    color: v.isExpired
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.primary,
+                  ),
+                  title: Text(v.neighborhood.displayName),
+                  subtitle: Text(
+                    v.isExpired
+                        ? 'Expired — re-verify'
+                        : 'Verified ${_formatRelative(v.verifiedAt)}',
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => ref
+                        .read(verifiedNeighborhoodsProvider.notifier)
+                        .remove(v.neighborhood.id),
+                  ),
+                ),
+              ),
             if (list.length < 2)
               TextButton.icon(
                 onPressed: () => _openVerifierSheet(context),
                 icon: const Icon(Icons.add_location_alt_outlined),
-                label: Text(list.isEmpty
-                    ? 'Verify a neighborhood'
-                    : 'Add a second neighborhood'),
+                label: Text(
+                  list.isEmpty
+                      ? 'Verify a neighborhood'
+                      : 'Add a second neighborhood',
+                ),
               ),
           ],
         ),
@@ -645,5 +762,59 @@ class _MyNeighborhoodsSection extends ConsumerWidget {
     if (diff.inDays >= 1) return '${diff.inDays}d ago';
     if (diff.inHours >= 1) return '${diff.inHours}h ago';
     return 'just now';
+  }
+}
+
+/// Placeholder shown in the header's spot while [ProfileService.getUserInfo]
+/// is in flight -- a rough silhouette of the real [ProfileHeader] (avatar,
+/// stat columns, name, contact lines, edit button), built from the same
+/// [ShimmerEffect]/[SkeletonBox]/[SkeletonCircle] pieces the product and
+/// service list skeletons use elsewhere in the app.
+class _ProfileHeaderSkeleton extends StatelessWidget {
+  const _ProfileHeaderSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerEffect(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const SkeletonCircle(size: 86),
+                const SizedBox(width: 24),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      3,
+                      (_) => const SkeletonBox(
+                        width: 36,
+                        height: 30,
+                        borderRadius: 8,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const SkeletonBox(width: 140, height: 18, borderRadius: 8),
+            const SizedBox(height: 10),
+            const SkeletonBox(width: 200, height: 14, borderRadius: 8),
+            const SizedBox(height: 8),
+            const SkeletonBox(width: 160, height: 14, borderRadius: 8),
+            const SizedBox(height: 20),
+            const SkeletonBox(
+              width: double.infinity,
+              height: 40,
+              borderRadius: 8,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,7 +1,8 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 /// Vacation Mode Toggle Widget
-class VacationModeToggle extends StatelessWidget {
+class VacationModeToggle extends StatefulWidget {
   final bool isActive;
   final String? message;
   final ValueChanged<bool> onToggle;
@@ -18,8 +19,41 @@ class VacationModeToggle extends StatelessWidget {
   });
 
   @override
+  State<VacationModeToggle> createState() => _VacationModeToggleState();
+}
+
+class _VacationModeToggleState extends State<VacationModeToggle> {
+  // Persistent controller (rather than rebuilding one from `widget.message`
+  // on every parent rebuild) so an in-progress edit doesn't have its
+  // cursor reset mid-string every time the parent's state changes.
+  late final TextEditingController _messageController = TextEditingController(
+    text: widget.message,
+  );
+
+  @override
+  void didUpdateWidget(covariant VacationModeToggle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Only push an external change (e.g. the saved message reloading after
+    // a server reconcile) into the controller -- never overwrite text the
+    // user is actively typing when it already matches what we last synced.
+    if (widget.message != oldWidget.message &&
+        widget.message != _messageController.text) {
+      _messageController.text = widget.message ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context);
+    final isActive = widget.isActive;
+    final message = widget.message;
 
     return Card(
       child: Padding(
@@ -48,42 +82,49 @@ class VacationModeToggle extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Vacation Mode',
+                        localizations?.vacationModeTitle ?? 'Vacation Mode',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
                         isActive
-                            ? 'Your listings are hidden'
-                            : 'Your listings are visible',
+                            ? (localizations?.vacationModeActiveSubtitle ??
+                                  'Your listings are hidden')
+                            : (localizations?.vacationModeInactiveSubtitle ??
+                                  'Your listings are visible'),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+                          color: colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Switch.adaptive(
                   value: isActive,
-                  onChanged: (value) => onToggle(value),
+                  onChanged: (value) => widget.onToggle(value),
                 ),
               ],
             ),
-            if (showMessage && isActive) ...[
+            if (widget.showMessage && isActive) ...[
               const SizedBox(height: 16),
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Add a message (optional)',
+                  hintText:
+                      localizations?.vacationModeMessageHint ??
+                      'Add a message (optional)',
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.message_outlined),
-                  suffixIcon: message != null && message!.isNotEmpty
+                  suffixIcon: message != null && message.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear),
-                          onPressed: () => onMessageChange?.call(null),
+                          onPressed: () {
+                            _messageController.clear();
+                            widget.onMessageChange?.call(null);
+                          },
                         )
                       : null,
                 ),
-                controller: TextEditingController(text: message),
-                onChanged: onMessageChange,
+                controller: _messageController,
+                onChanged: widget.onMessageChange,
                 maxLength: 255,
                 maxLines: 2,
               ),
@@ -100,11 +141,7 @@ class VacationBadge extends StatelessWidget {
   final String? message;
   final bool compact;
 
-  const VacationBadge({
-    super.key,
-    this.message,
-    this.compact = false,
-  });
+  const VacationBadge({super.key, this.message, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +163,9 @@ class VacationBadge extends StatelessWidget {
             Text(
               'On vacation',
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.amber.shade800,
-                    fontWeight: FontWeight.w600,
-                  ),
+                color: Colors.amber.shade800,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -154,23 +191,23 @@ class VacationBadge extends StatelessWidget {
                 Text(
                   'On Vacation',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Colors.amber.shade800,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: Colors.amber.shade800,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 if (message != null && message!.isNotEmpty)
                   Text(
                     message!,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   )
                 else
                   Text(
                     'Currently unavailable',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
               ],
             ),
@@ -207,10 +244,7 @@ class VacationIndicator extends StatelessWidget {
           border: Border.all(color: Colors.white, width: 1.5),
         ),
         child: Center(
-          child: Text(
-            '🏖️',
-            style: TextStyle(fontSize: size * 0.6),
-          ),
+          child: Text('🏖️', style: TextStyle(fontSize: size * 0.6)),
         ),
       ),
     );

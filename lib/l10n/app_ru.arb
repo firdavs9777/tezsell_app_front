@@ -2716,6 +2716,30 @@
   "@pendingReviewsSheetTitle": {
     "description": "Title of the bottom sheet listing multiple transactions awaiting a review"
   },
+  "profileSectionLoadError": "Не удалось загрузить",
+  "@profileSectionLoadError": {
+    "description": "Inline subtitle shown on an own-profile menu row (products/services/favorites) whose count failed to load, in place of the count"
+  },
+  "vacationModeTitle": "Режим отпуска",
+  "@vacationModeTitle": {
+    "description": "Title of the vacation mode card in the profile Settings section"
+  },
+  "vacationModeActiveSubtitle": "Ваши объявления скрыты",
+  "@vacationModeActiveSubtitle": {
+    "description": "Vacation mode card subtitle shown while vacation mode is on"
+  },
+  "vacationModeInactiveSubtitle": "Ваши объявления видны",
+  "@vacationModeInactiveSubtitle": {
+    "description": "Vacation mode card subtitle shown while vacation mode is off"
+  },
+  "vacationModeMessageHint": "Добавьте сообщение (необязательно)",
+  "@vacationModeMessageHint": {
+    "description": "Placeholder text in the optional away-message field shown while vacation mode is on"
+  },
+  "vacationModeToggleError": "Не удалось изменить режим отпуска. Попробуйте снова.",
+  "@vacationModeToggleError": {
+    "description": "Snackbar shown when toggling vacation mode on/off fails"
+  },
   "sellerAnalyticsTitle": "Аналитика продавца",
   "@sellerAnalyticsTitle": {
     "description": "Profile menu entry linking to the seller analytics screen"

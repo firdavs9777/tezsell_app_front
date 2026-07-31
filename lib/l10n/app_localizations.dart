@@ -7960,6 +7960,42 @@ abstract class AppLocalizations {
   /// **'Pending Reviews'**
   String get pendingReviewsSheetTitle;
 
+  /// Inline subtitle shown on an own-profile menu row (products/services/favorites) whose count failed to load, in place of the count
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load'**
+  String get profileSectionLoadError;
+
+  /// Title of the vacation mode card in the profile Settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Vacation Mode'**
+  String get vacationModeTitle;
+
+  /// Vacation mode card subtitle shown while vacation mode is on
+  ///
+  /// In en, this message translates to:
+  /// **'Your listings are hidden'**
+  String get vacationModeActiveSubtitle;
+
+  /// Vacation mode card subtitle shown while vacation mode is off
+  ///
+  /// In en, this message translates to:
+  /// **'Your listings are visible'**
+  String get vacationModeInactiveSubtitle;
+
+  /// Placeholder text in the optional away-message field shown while vacation mode is on
+  ///
+  /// In en, this message translates to:
+  /// **'Add a message (optional)'**
+  String get vacationModeMessageHint;
+
+  /// Snackbar shown when toggling vacation mode on/off fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update vacation mode. Please try again.'**
+  String get vacationModeToggleError;
+
   /// Profile menu entry linking to the seller analytics screen
   ///
   /// In en, this message translates to:

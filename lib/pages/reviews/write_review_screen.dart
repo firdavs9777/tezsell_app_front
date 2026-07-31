@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/review_model.dart';
 import 'package:app/providers/provider_models/transaction_model.dart';
-import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/reviews_provider.dart';
+import 'package:app/utils/current_user_prefs.dart';
 import 'package:app/widgets/review_tags.dart';
 import 'package:app/widgets/star_rating.dart';
 
@@ -73,7 +73,8 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
   bool get _roleResolutionFailed =>
       widget.isBuyerReview == null && _resolveAttempted && !_roleKnown;
 
-  String? get _counterpartyName => widget.counterpartyName ?? _resolvedCounterpartyName;
+  String? get _counterpartyName =>
+      widget.counterpartyName ?? _resolvedCounterpartyName;
   String? get _itemTitle => widget.itemTitle ?? _resolvedItemTitle;
   String? get _counterpartyAvatar => widget.counterpartyAvatar;
   String? get _itemImage => widget.itemImage ?? _resolvedItemImage;
@@ -106,8 +107,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
 
     if (!mounted) return;
 
+    // Resolved from prefs directly (not chat's `currentUserIdProvider`):
+    // this screen can be reached via a bare deep link / push notification
+    // before `ChatNotifier.initialize()` (fire-and-forget) has resolved,
+    // which would otherwise leave the id null and the role unresolvable.
+    final currentUserId = await loadCurrentUserIdFromPrefs();
+    if (!mounted) return;
+
     if (tx != null) {
-      final currentUserId = ref.read(currentUserIdProvider);
       // Role is derived by comparing the current user to the transaction's
       // integer buyer/seller PKs. Returns null when the user is neither
       // party (or unknown) — we do NOT default to buyer in that case.
@@ -119,8 +126,8 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
         _resolvedIsBuyerReview = isBuyer;
         _resolvedCounterpartyName =
             (counterpartyName != null && counterpartyName.isNotEmpty)
-                ? counterpartyName
-                : null;
+            ? counterpartyName
+            : null;
         _resolvedItemTitle = tx!.itemTitle.isNotEmpty ? tx.itemTitle : null;
         _resolvedItemImage = tx.itemImage;
         _isResolving = false;
@@ -147,7 +154,9 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
 
     setState(() => _isSubmitting = true);
 
-    final review = await ref.read(reviewsProvider.notifier).submitReview(
+    final review = await ref
+        .read(reviewsProvider.notifier)
+        .submitReview(
           transactionId: widget.transactionId,
           rating: _rating,
           reviewText: _textController.text,
@@ -169,7 +178,9 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l?.reviewWriteSuccess ?? 'Review submitted successfully'),
+          content: Text(
+            l?.reviewWriteSuccess ?? 'Review submitted successfully',
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -183,7 +194,9 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     // always show the localized error rather than a raw provider string.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(l?.reviewWriteError ?? 'Failed to submit review. Please try again.'),
+        content: Text(
+          l?.reviewWriteError ?? 'Failed to submit review. Please try again.',
+        ),
         behavior: SnackBarBehavior.floating,
         backgroundColor: Theme.of(context).colorScheme.error,
       ),
@@ -196,15 +209,13 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l?.reviewWriteTitle ?? 'Write a review'),
-      ),
+      appBar: AppBar(title: Text(l?.reviewWriteTitle ?? 'Write a review')),
       body: SafeArea(
         child: _isResolving
             ? _buildLoading(l, colorScheme)
             : _roleResolutionFailed
-                ? _buildResolutionError(l, colorScheme)
-                : _buildForm(l, colorScheme),
+            ? _buildResolutionError(l, colorScheme)
+            : _buildForm(l, colorScheme),
       ),
     );
   }
@@ -219,8 +230,11 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              l?.reviewWriteLoadingTransaction ?? 'Loading transaction details…',
-              style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+              l?.reviewWriteLoadingTransaction ??
+                  'Loading transaction details…',
+              style: TextStyle(
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
             ),
           ],
         ),
@@ -241,7 +255,9 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
               l?.reviewWriteResolveError ??
                   "We couldn't load this transaction. Please try again.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.7)),
+              style: TextStyle(
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
@@ -264,8 +280,8 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     ref.watch(reviewTagsProvider);
     final List<ReviewTag> roleTags = _roleKnown
         ? ref
-            .read(reviewTagsProvider.notifier)
-            .getTagsForRole(isBuyer: _isBuyerReview!)
+              .read(reviewTagsProvider.notifier)
+              .getTagsForRole(isBuyer: _isBuyerReview!)
         : const <ReviewTag>[];
 
     final canSubmit = _rating >= 1 && !_isSubmitting && _roleKnown;
@@ -281,10 +297,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                 CircleAvatar(
                   radius: 22,
                   backgroundColor: colorScheme.primaryContainer,
-                  backgroundImage:
-                      _counterpartyAvatar != null ? NetworkImage(_counterpartyAvatar!) : null,
+                  backgroundImage: _counterpartyAvatar != null
+                      ? NetworkImage(_counterpartyAvatar!)
+                      : null,
                   child: _counterpartyAvatar == null
-                      ? Icon(Icons.person, color: colorScheme.onPrimaryContainer)
+                      ? Icon(
+                          Icons.person,
+                          color: colorScheme.onPrimaryContainer,
+                        )
                       : null,
                 ),
                 const SizedBox(width: 12),
@@ -295,7 +315,10 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                       if (_counterpartyName != null)
                         Text(
                           _counterpartyName!,
-                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       if (_itemTitle != null)
                         Text(
@@ -319,7 +342,8 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                       width: 44,
                       height: 44,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox.shrink(),
                     ),
                   ),
                 ],
@@ -342,7 +366,8 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                l?.reviewWriteRatingRequiredHint ?? 'Select at least 1 star to submit',
+                l?.reviewWriteRatingRequiredHint ??
+                    'Select at least 1 star to submit',
                 style: TextStyle(
                   fontSize: 12,
                   color: colorScheme.onSurface.withValues(alpha: 0.5),
@@ -376,7 +401,9 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             maxLines: 6,
             maxLength: 500,
             decoration: InputDecoration(
-              hintText: l?.reviewWriteCommentHint ?? 'Share more about your experience…',
+              hintText:
+                  l?.reviewWriteCommentHint ??
+                  'Share more about your experience…',
               border: const OutlineInputBorder(),
             ),
           ),

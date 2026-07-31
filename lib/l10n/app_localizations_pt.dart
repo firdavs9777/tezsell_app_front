@@ -4172,6 +4172,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get pendingReviewsSheetTitle => 'Pending Reviews';
 
   @override
+  String get profileSectionLoadError => 'Couldn\'t load';
+
+  @override
+  String get vacationModeTitle => 'Vacation Mode';
+
+  @override
+  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+
+  @override
+  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+
+  @override
+  String get vacationModeMessageHint => 'Add a message (optional)';
+
+  @override
+  String get vacationModeToggleError =>
+      'Couldn\'t update vacation mode. Please try again.';
+
+  @override
   String get sellerAnalyticsTitle => 'Seller Analytics';
 
   @override

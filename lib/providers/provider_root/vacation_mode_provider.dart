@@ -46,15 +46,9 @@ class VacationModeNotifier extends StateNotifier<VacationModeState> {
 
     try {
       final status = await _service.getVacationStatus();
-      state = state.copyWith(
-        status: status,
-        isLoading: false,
-      );
+      state = state.copyWith(status: status, isLoading: false);
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -77,27 +71,29 @@ class VacationModeNotifier extends StateNotifier<VacationModeState> {
         return true;
       }
 
-      state = state.copyWith(
-        isLoading: false,
-        error: response.message,
-      );
+      state = state.copyWith(isLoading: false, error: response.message);
       return false;
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
       return false;
     }
   }
 
+  // No "already there, skip network" short-circuit here on purpose: the
+  // backend endpoint is a blind flip with no desired-state param, so it
+  // trusts nothing but the request itself. Our locally cached
+  // `state.isOnVacation` can be stale (toggled from another device, or
+  // this provider's `fetchStatus()` call in its constructor hasn't
+  // resolved yet when the user taps), and skipping the call based on that
+  // stale cache either no-ops when the user needed a real toggle or lets
+  // the UI drift from server truth. Always call through; callers should
+  // follow up with `fetchStatus()` to reconcile (see `_VacationModeSection`
+  // in shaxsiy.dart).
   Future<bool> enableVacationMode({String? message}) async {
-    if (state.isOnVacation) return true;
     return toggleVacationMode(message: message);
   }
 
   Future<bool> disableVacationMode() async {
-    if (!state.isOnVacation) return true;
     return toggleVacationMode();
   }
 
@@ -118,11 +114,11 @@ final vacationModeServiceProvider = Provider<VacationModeService>((ref) {
 
 final vacationModeProvider =
     StateNotifierProvider<VacationModeNotifier, VacationModeState>((ref) {
-  final service = ref.watch(vacationModeServiceProvider);
-  final notifier = VacationModeNotifier(service);
-  notifier.fetchStatus();
-  return notifier;
-});
+      final service = ref.watch(vacationModeServiceProvider);
+      final notifier = VacationModeNotifier(service);
+      notifier.fetchStatus();
+      return notifier;
+    });
 
 // Quick access providers
 final isOnVacationProvider = Provider<bool>((ref) {

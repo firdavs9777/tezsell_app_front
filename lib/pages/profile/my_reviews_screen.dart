@@ -1,9 +1,9 @@
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/pages/profile/reviews_list_view.dart';
+import 'package:app/utils/current_user_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// The CURRENT user's own reviews, split into a "Received" / "Given" tab
 /// pair (each tab backed by the shared [ReviewsListView] load-more widget,
@@ -37,11 +37,10 @@ class _MyReviewsScreenState extends ConsumerState<MyReviewsScreen>
   }
 
   Future<void> _loadCurrentUserId() async {
-    final prefs = await SharedPreferences.getInstance();
+    final userId = await loadCurrentUserIdFromPrefs();
     if (!mounted) return;
     setState(() {
-      final userIdStr = prefs.getString('userId');
-      _currentUserId = userIdStr != null ? int.tryParse(userIdStr) : null;
+      _currentUserId = userId;
       _isLoadingUserId = false;
     });
   }

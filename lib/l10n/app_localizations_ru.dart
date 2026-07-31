@@ -4165,6 +4165,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pendingReviewsSheetTitle => 'Ожидающие отзывы';
 
   @override
+  String get profileSectionLoadError => 'Не удалось загрузить';
+
+  @override
+  String get vacationModeTitle => 'Режим отпуска';
+
+  @override
+  String get vacationModeActiveSubtitle => 'Ваши объявления скрыты';
+
+  @override
+  String get vacationModeInactiveSubtitle => 'Ваши объявления видны';
+
+  @override
+  String get vacationModeMessageHint => 'Добавьте сообщение (необязательно)';
+
+  @override
+  String get vacationModeToggleError =>
+      'Не удалось изменить режим отпуска. Попробуйте снова.';
+
+  @override
   String get sellerAnalyticsTitle => 'Аналитика продавца';
 
   @override

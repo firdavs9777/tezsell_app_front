@@ -2713,6 +2713,30 @@
   "@pendingReviewsSheetTitle": {
     "description": "Title of the bottom sheet listing multiple transactions awaiting a review"
   },
+  "profileSectionLoadError": "Yuklab bo'lmadi",
+  "@profileSectionLoadError": {
+    "description": "Inline subtitle shown on an own-profile menu row (products/services/favorites) whose count failed to load, in place of the count"
+  },
+  "vacationModeTitle": "Ta'til rejimi",
+  "@vacationModeTitle": {
+    "description": "Title of the vacation mode card in the profile Settings section"
+  },
+  "vacationModeActiveSubtitle": "E'lonlaringiz yashirilgan",
+  "@vacationModeActiveSubtitle": {
+    "description": "Vacation mode card subtitle shown while vacation mode is on"
+  },
+  "vacationModeInactiveSubtitle": "E'lonlaringiz ko'rinadi",
+  "@vacationModeInactiveSubtitle": {
+    "description": "Vacation mode card subtitle shown while vacation mode is off"
+  },
+  "vacationModeMessageHint": "Xabar qo'shing (ixtiyoriy)",
+  "@vacationModeMessageHint": {
+    "description": "Placeholder text in the optional away-message field shown while vacation mode is on"
+  },
+  "vacationModeToggleError": "Ta'til rejimini yangilab bo'lmadi. Qayta urinib ko'ring.",
+  "@vacationModeToggleError": {
+    "description": "Snackbar shown when toggling vacation mode on/off fails"
+  },
   "sellerAnalyticsTitle": "Sotuvchi tahlili",
   "@sellerAnalyticsTitle": {
     "description": "Profile menu entry linking to the seller analytics screen"

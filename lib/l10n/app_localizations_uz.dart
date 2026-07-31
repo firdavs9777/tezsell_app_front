@@ -4187,6 +4187,25 @@ class AppLocalizationsUz extends AppLocalizations {
   String get pendingReviewsSheetTitle => 'Kutilayotgan sharhlar';
 
   @override
+  String get profileSectionLoadError => 'Yuklab bo\'lmadi';
+
+  @override
+  String get vacationModeTitle => 'Ta\'til rejimi';
+
+  @override
+  String get vacationModeActiveSubtitle => 'E\'lonlaringiz yashirilgan';
+
+  @override
+  String get vacationModeInactiveSubtitle => 'E\'lonlaringiz ko\'rinadi';
+
+  @override
+  String get vacationModeMessageHint => 'Xabar qo\'shing (ixtiyoriy)';
+
+  @override
+  String get vacationModeToggleError =>
+      'Ta\'til rejimini yangilab bo\'lmadi. Qayta urinib ko\'ring.';
+
+  @override
   String get sellerAnalyticsTitle => 'Sotuvchi tahlili';
 
   @override

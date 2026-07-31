@@ -51,13 +51,16 @@ class ProfileHeader extends ConsumerWidget {
     final String locationText;
     if (activeNbhd != null) {
       final nbhd = activeNbhd.neighborhood;
-      print('📍 [ProfileHeader] active nbhd: city="${nbhd.city}" region="${nbhd.region}" name="${nbhd.name}"');
-      final parts = [nbhd.city, nbhd.region].where((s) => s.isNotEmpty).toList();
+      final parts = [
+        nbhd.city,
+        nbhd.region,
+      ].where((s) => s.isNotEmpty).toList();
       locationText = parts.isNotEmpty ? parts.join(', ') : nbhd.name;
     } else {
-      final parts = [user.location.region, user.location.district]
-          .where((s) => s.isNotEmpty)
-          .toList();
+      final parts = [
+        user.location.region,
+        user.location.district,
+      ].where((s) => s.isNotEmpty).toList();
       locationText = parts.join(', ');
     }
 
@@ -165,8 +168,7 @@ class ProfileHeader extends ConsumerWidget {
                 ),
               ),
               child: Text(
-                localizations?.editProfileModalTitle ??
-                    'Profilni tahrirlash',
+                localizations?.editProfileModalTitle ?? 'Profilni tahrirlash',
                 style: theme.textTheme.labelLarge,
               ),
             ),
@@ -176,7 +178,6 @@ class ProfileHeader extends ConsumerWidget {
     );
   }
 }
-
 
 String _formatCount(int count) {
   if (count >= 1000000) {
@@ -205,8 +206,7 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = _resolveProfileImageUrl(user);
-    final imageProvider =
-        imageUrl != null ? NetworkImage(imageUrl) : null;
+    final imageProvider = imageUrl != null ? NetworkImage(imageUrl) : null;
 
     return GestureDetector(
       onTap: imageUrl == null
@@ -215,10 +215,8 @@ class _Avatar extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ImageViewer(
-                    imageUrl: imageUrl,
-                    title: user.username,
-                  ),
+                  builder: (_) =>
+                      ImageViewer(imageUrl: imageUrl, title: user.username),
                 ),
               );
             },
@@ -291,11 +289,7 @@ class _TrustChip extends ConsumerWidget {
 }
 
 class _StatColumn extends StatelessWidget {
-  const _StatColumn({
-    required this.count,
-    required this.label,
-    this.onTap,
-  });
+  const _StatColumn({required this.count, required this.label, this.onTap});
 
   final int count;
   final String label;
