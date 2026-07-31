@@ -8,6 +8,7 @@ import 'package:app/pages/community/widgets/poll_card.dart';
 import 'package:app/providers/provider_models/community_comment_model.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/report_content_dialog.dart';
 
 class CommunityDetail extends ConsumerStatefulWidget {
@@ -530,14 +531,12 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
         Text(post.body, style: theme.textTheme.bodyLarge),
         if (post.imageUrls.isNotEmpty) ...[
           const SizedBox(height: 12),
-          ClipRRect(
+          CachedNetworkImageWidget(
+            imageUrl: post.imageUrls.first,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              post.imageUrls.first,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
           ),
         ],
         if (post.poll != null)

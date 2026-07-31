@@ -4427,6 +4427,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get communitySearchHint => 'Search posts…';
 
   @override
+  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+
+  @override
+  String get communityImageRejected =>
+      'Some photos weren\'t added (over 5MB or an unsupported type)';
+
+  @override
+  String communityPhotoCount(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
   String get errorGeneric => 'Something went wrong';
 
   @override

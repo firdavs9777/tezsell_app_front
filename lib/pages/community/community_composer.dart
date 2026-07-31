@@ -12,6 +12,14 @@ const _kMaxImages = 5;
 const _kMinPollOptions = 2;
 const _kMaxPollOptions = 5;
 
+/// Mirrors the backend's `MAX_IMAGE_SIZE` (community/views.py via
+/// myproject/settings/base.py) so oversized photos are caught client-side
+/// instead of round-tripping to the server for a 400.
+const _kMaxImageBytes = 5 * 1024 * 1024;
+
+/// Mirrors the backend's `ALLOWED_IMAGE_EXTENSIONS` for the same reason.
+const _kAllowedImageExtensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'};
+
 class CommunityComposer extends ConsumerStatefulWidget {
   const CommunityComposer({super.key, this.districtId});
   final int? districtId;
@@ -54,16 +62,46 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
       imageQuality: 95,
     );
     if (picked.isEmpty || !mounted) return;
-    final combined = [..._images, ...picked.map((p) => File(p.path))];
+
+    // Client-side pre-check mirroring the backend's per-image validation
+    // (extension + 5MB size cap) so obviously-invalid photos are dropped
+    // before a round-trip, rather than surfacing as a post-submit 400.
+    final valid = <File>[];
+    var rejected = false;
+    for (final p in picked) {
+      final dot = p.path.lastIndexOf('.');
+      final ext = dot == -1 ? '' : p.path.substring(dot).toLowerCase();
+      if (!_kAllowedImageExtensions.contains(ext)) {
+        rejected = true;
+        continue;
+      }
+      final size = await p.length();
+      if (size > _kMaxImageBytes) {
+        rejected = true;
+        continue;
+      }
+      valid.add(File(p.path));
+    }
+    if (!mounted) return;
+
+    final combined = [..._images, ...valid];
     final trimmed = combined.length > _kMaxImages;
     setState(() {
       _images
         ..clear()
         ..addAll(combined.take(_kMaxImages));
     });
-    if (trimmed && mounted) {
+    if (!mounted) return;
+    if (trimmed) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l?.communityMaxImages ?? 'Up to 5 photos')),
+      );
+    } else if (rejected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l?.communityImageRejected ??
+              "Some photos weren't added (over 5MB or an unsupported type)"),
+        ),
       );
     }
   }
@@ -130,6 +168,16 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
       ref.invalidate(communityFeedProvider);
       ref.invalidate(communityCountsProvider);
       Navigator.of(context).pop(true);
+    } on CommunityApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.friendlyMessage(
+              fallback: AppLocalizations.of(context)?.communityPostFailed ?? 'Failed to post',
+            )),
+          ),
+        );
+      }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -154,7 +202,13 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
         actions: [
           TextButton(
             onPressed: _submitting ? null : _submit,
-            child: Text(l?.communityPublish ?? 'Post'),
+            child: _submitting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(l?.communityPublish ?? 'Post'),
           ),
         ],
       ),
@@ -199,52 +253,67 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
     ColorScheme colorScheme,
     AppLocalizations? l,
   ) {
-    return SizedBox(
-      height: 72,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _images.length + (_images.length < _kMaxImages ? 1 : 0),
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          if (index == _images.length) {
-            return GestureDetector(
-              onTap: _pickImages,
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: colorScheme.outline.withValues(alpha: 0.3)),
-                ),
-                child: Icon(Icons.add, color: colorScheme.primary),
-              ),
-            );
-          }
-          final file = _images[index];
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(file, width: 72, height: 72, fit: BoxFit.cover),
-              ),
-              Positioned(
-                top: -6,
-                right: -6,
-                child: GestureDetector(
-                  onTap: () => _removeImage(index),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_images.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(
+              l?.communityPhotoCount(_images.length, _kMaxImages) ??
+                  '${_images.length}/$_kMaxImages',
+              style: theme.textTheme.labelMedium
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+          ),
+        SizedBox(
+          height: 72,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _images.length + (_images.length < _kMaxImages ? 1 : 0),
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              if (index == _images.length) {
+                return GestureDetector(
+                  onTap: _submitting ? null : _pickImages,
                   child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(color: colorScheme.error, shape: BoxShape.circle),
-                    child: Icon(Icons.close, size: 14, color: colorScheme.onError),
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: colorScheme.outline.withValues(alpha: 0.3)),
+                    ),
+                    child: Icon(Icons.add, color: colorScheme.primary),
                   ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                );
+              }
+              final file = _images[index];
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(file, width: 72, height: 72, fit: BoxFit.cover),
+                  ),
+                  Positioned(
+                    top: -6,
+                    right: -6,
+                    child: GestureDetector(
+                      onTap: _submitting ? null : () => _removeImage(index),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(color: colorScheme.error, shape: BoxShape.circle),
+                        child: Icon(Icons.close, size: 14, color: colorScheme.onError),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

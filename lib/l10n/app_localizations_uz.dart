@@ -4512,6 +4512,19 @@ class AppLocalizationsUz extends AppLocalizations {
   String get communitySearchHint => 'Postlarni qidirish…';
 
   @override
+  String get communityLoadMoreFailed =>
+      'Ko\'proq yuklab bo\'lmadi. Qayta urinish uchun bosing.';
+
+  @override
+  String get communityImageRejected =>
+      'Ba\'zi rasmlar qo\'shilmadi (5MB dan katta yoki mos kelmaydigan format)';
+
+  @override
+  String communityPhotoCount(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
   String get errorGeneric => 'Nimadir xato ketdi';
 
   @override

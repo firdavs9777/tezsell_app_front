@@ -4489,6 +4489,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get communitySearchHint => 'Поиск постов…';
 
   @override
+  String get communityLoadMoreFailed =>
+      'Не удалось загрузить ещё. Нажмите, чтобы повторить.';
+
+  @override
+  String get communityImageRejected =>
+      'Некоторые фото не добавлены (больше 5МБ или неподдерживаемый формат)';
+
+  @override
+  String communityPhotoCount(int count, int max) {
+    return '$count/$max';
+  }
+
+  @override
   String get errorGeneric => 'Что-то пошло не так';
 
   @override

@@ -8518,6 +8518,24 @@ abstract class AppLocalizations {
   /// **'Search posts…'**
   String get communitySearchHint;
 
+  /// Footer shown in the community feed when fetching the next page of posts failed, with a tap-to-retry affordance
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more. Tap to retry.'**
+  String get communityLoadMoreFailed;
+
+  /// Snackbar shown in the post composer when one or more picked photos failed client-side validation and were skipped
+  ///
+  /// In en, this message translates to:
+  /// **'Some photos weren\'t added (over 5MB or an unsupported type)'**
+  String get communityImageRejected;
+
+  /// Photo count indicator above the image picker row in the post composer, e.g. "3/5"
+  ///
+  /// In en, this message translates to:
+  /// **'{count}/{max}'**
+  String communityPhotoCount(int count, int max);
+
   /// Generic fallback error message
   ///
   /// In en, this message translates to:

@@ -435,3 +435,74 @@ class ServiceListSkeleton extends StatelessWidget {
     );
   }
 }
+
+/// Skeleton loader for a community feed post card: avatar + name row,
+/// a couple of body lines, and an image-sized block (most posts carry a
+/// photo, so reserving the space avoids a layout jump once real data lands).
+class CommunityPostSkeletonItem extends StatelessWidget {
+  const CommunityPostSkeletonItem({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ShimmerEffect(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: theme.cardColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.08),
+              spreadRadius: 0,
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                SkeletonCircle(size: 24),
+                SizedBox(width: 8),
+                SkeletonBox(width: 100, height: 12, borderRadius: 4),
+                Spacer(),
+                SkeletonBox(width: 50, height: 20, borderRadius: 10),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const SkeletonBox(width: double.infinity, height: 14, borderRadius: 4),
+            const SizedBox(height: 6),
+            SkeletonBox(
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: 14,
+              borderRadius: 4,
+            ),
+            const SizedBox(height: 10),
+            const SkeletonBox(width: double.infinity, height: 140, borderRadius: 8),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Skeleton loader for the full community feed, shown on initial load.
+class CommunityFeedSkeleton extends StatelessWidget {
+  final int itemCount;
+
+  const CommunityFeedSkeleton({super.key, this.itemCount = 4});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(12),
+      itemCount: itemCount,
+      itemBuilder: (context, index) => const CommunityPostSkeletonItem(),
+    );
+  }
+}

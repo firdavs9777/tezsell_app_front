@@ -11,10 +11,34 @@ import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_root/community_provider.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/widgets/report_content_dialog.dart';
+import 'package:app/widgets/skeleton_loader.dart';
+
+/// Mirrors the backend's `CommunityFeedPagination.page_size` — used purely
+/// as a heuristic to detect the last page (a response shorter than this
+/// means there's nothing more to fetch), matching the pattern used for
+/// products/services pagination elsewhere in the app.
+const _kCommunityPageSize = 10;
 
 const communityCategories = <String>[
   'all', 'question', 'recommend', 'free', 'lostfound', 'alert', 'general',
 ];
+
+/// Merges the first feed page (from `communityFeedProvider`) with
+/// locally-accumulated later pages fetched via infinite scroll,
+/// de-duplicating by post id. Without this, a post created/edited between
+/// the first-page fetch and an already-accumulated later page could appear
+/// twice — which would also violate the `ValueKey`-per-card contract in the
+/// feed's `ListView.builder`.
+List<CommunityPost> mergeCommunityFeedPages(
+  List<CommunityPost> firstPage,
+  List<CommunityPost> laterPages,
+) {
+  final firstPageIds = firstPage.map((p) => p.id).toSet();
+  return [
+    ...firstPage,
+    ...laterPages.where((p) => !firstPageIds.contains(p.id)),
+  ];
+}
 
 class CommunityMain extends ConsumerStatefulWidget {
   const CommunityMain({super.key, required this.districtId});
@@ -34,11 +58,102 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
   int _searchGeneration = 0;
   String? _query;
 
+  // --- Infinite-scroll pagination (pages beyond the first) ---
+  //
+  // Page 1 always comes from `communityFeedProvider` (a FutureProvider so
+  // pull-to-refresh/invalidation keep working exactly as before); pages 2+
+  // are fetched directly through `communityProvider.getFeed` and accumulated
+  // here, since a plain FutureProvider has no notion of "append". Whenever
+  // the filter/sort/query args change — or the feed is invalidated by a
+  // create/edit/delete — this local state is reset alongside so stale pages
+  // from the old filter combination never leak into the new one.
+  final _scrollController = ScrollController();
+  List<CommunityPost> _extraPosts = [];
+  int _page = 1;
+  bool _hasMore = true;
+  bool _loadingMore = false;
+  bool _loadMoreFailed = false;
+  int _generation = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
   @override
   void dispose() {
     _searchDebounce?.cancel();
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _resetPaginationFields() {
+    _generation++;
+    _extraPosts = [];
+    _page = 1;
+    _hasMore = true;
+    _loadingMore = false;
+    _loadMoreFailed = false;
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.pixels <
+        _scrollController.position.maxScrollExtent - 300) {
+      return;
+    }
+    final args = (
+      districtId: widget.districtId,
+      category: _category,
+      query: _query,
+      sort: _sort,
+    );
+    final firstPage = ref.read(communityFeedProvider(args)).valueOrNull;
+    if (firstPage == null) return;
+    _loadMore(firstPageLength: firstPage.length);
+  }
+
+  Future<void> _loadMore({required int firstPageLength}) async {
+    if (_loadingMore) return;
+    // Page 1 alone was shorter than a full page — nothing more exists.
+    if (_page == 1 && firstPageLength < _kCommunityPageSize) return;
+    if (_page > 1 && !_hasMore) return;
+
+    final gen = _generation;
+    setState(() {
+      _loadingMore = true;
+      _loadMoreFailed = false;
+    });
+    try {
+      final nextPage = _page + 1;
+      final more = await ref.read(communityProvider).getFeed(
+            districtId: widget.districtId,
+            category: _category,
+            query: _query,
+            sort: _sort,
+            page: nextPage,
+          );
+      // Staleness guard: if the filters changed (and pagination was reset)
+      // while this request was in flight, its results belong to a feed that
+      // no longer applies — drop them rather than appending onto the wrong
+      // list.
+      if (!mounted || gen != _generation) return;
+      setState(() {
+        _extraPosts = [..._extraPosts, ...more];
+        _page = nextPage;
+        _hasMore = more.length >= _kCommunityPageSize;
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted || gen != _generation) return;
+      setState(() {
+        _loadingMore = false;
+        _loadMoreFailed = true;
+      });
+    }
   }
 
   void _onSearchChanged(String value) {
@@ -47,7 +162,10 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
     final gen = ++_searchGeneration;
     _searchDebounce = Timer(const Duration(milliseconds: 400), () {
       if (!mounted || gen != _searchGeneration) return;
-      setState(() => _query = trimmed.length >= 2 ? trimmed : null);
+      setState(() {
+        _query = trimmed.length >= 2 ? trimmed : null;
+        _resetPaginationFields();
+      });
     });
   }
 
@@ -58,12 +176,14 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
     setState(() {
       _searchActive = false;
       _query = null;
+      _resetPaginationFields();
     });
   }
 
   void _invalidateFeedAndCounts() {
     ref.invalidate(communityFeedProvider);
     ref.invalidate(communityCountsProvider);
+    if (mounted) setState(_resetPaginationFields);
   }
 
   Future<void> _confirmDelete(CommunityPost post) async {
@@ -144,7 +264,13 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/community/new?districtId=${widget.districtId ?? ''}'),
+        onPressed: () async {
+          final created = await context
+              .push<bool>('/community/new?districtId=${widget.districtId ?? ''}');
+          if (created == true && mounted) {
+            _invalidateFeedAndCounts();
+          }
+        },
         icon: const Icon(Icons.edit),
         label: Text(l?.communityWrite ?? 'Write'),
       ),
@@ -190,7 +316,10 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                       visualDensity: VisualDensity.compact,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onSelectionChanged: (selection) => setState(() => _sort = selection.first),
+                    onSelectionChanged: (selection) => setState(() {
+                      _sort = selection.first;
+                      _resetPaginationFields();
+                    }),
                   ),
                 ],
               ],
@@ -213,44 +342,89 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                 return ChoiceChip(
                   label: Text(label),
                   selected: selected,
-                  onSelected: (_) => setState(() => _category = key),
+                  onSelected: (_) => setState(() {
+                    _category = key;
+                    _resetPaginationFields();
+                  }),
                 );
               },
             ),
           ),
           Expanded(
             child: feed.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text(l?.errorGeneric ?? 'Something went wrong')),
+              loading: () => const CommunityFeedSkeleton(),
+              error: (e, _) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(l?.errorGeneric ?? 'Something went wrong'),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => ref.invalidate(communityFeedProvider(args)),
+                      child: Text(l?.retry ?? 'Retry'),
+                    ),
+                  ],
+                ),
+              ),
               data: (posts) => posts.isEmpty
                   ? Center(child: Text(l?.communityEmpty ?? 'No posts yet. Be the first!'))
                   : RefreshIndicator(
                       onRefresh: () async {
-                        ref.invalidate(communityFeedProvider(args));
-                        ref.invalidate(communityCountsProvider(widget.districtId));
+                        setState(_resetPaginationFields);
+                        await Future.wait([
+                          ref.refresh(communityFeedProvider(args).future),
+                          ref.refresh(communityCountsProvider(widget.districtId).future),
+                        ]);
                       },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(12),
-                        itemCount: posts.length,
-                        itemBuilder: (context, i) {
-                          final post = posts[i];
-                          final isOwn = currentUserId != null && post.authorId == currentUserId;
-                          return _PostCard(
-                            // Stateful card (holds in-flight poll vote state):
-                            // key by post id so list reorders can't attach
-                            // one post's vote UI to another slot.
-                            key: ValueKey(post.id),
-                            post: post,
-                            categoryLabel: communityCategoryLabel(l, post.category),
-                            isOwn: isOwn,
-                            onTap: () => context.push('/community/${post.id}'),
-                            onEdit: () => _editPost(post),
-                            onDelete: () => _confirmDelete(post),
-                            onReport: () => _reportPost(post),
-                            onShare: () => _sharePost(post),
-                          );
-                        },
-                      ),
+                      child: Builder(builder: (context) {
+                        final combined = mergeCommunityFeedPages(posts, _extraPosts);
+                        final showFooter = _loadingMore || _loadMoreFailed;
+                        return ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(12),
+                          itemCount: combined.length + (showFooter ? 1 : 0),
+                          itemBuilder: (context, i) {
+                            if (i >= combined.length) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                child: Center(
+                                  child: _loadMoreFailed
+                                      ? TextButton(
+                                          onPressed: () =>
+                                              _loadMore(firstPageLength: posts.length),
+                                          child: Text(
+                                            l?.communityLoadMoreFailed ??
+                                                "Couldn't load more. Tap to retry.",
+                                          ),
+                                        )
+                                      : const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        ),
+                                ),
+                              );
+                            }
+                            final post = combined[i];
+                            final isOwn =
+                                currentUserId != null && post.authorId == currentUserId;
+                            return _PostCard(
+                              // Stateful card (holds in-flight poll vote state):
+                              // key by post id so list reorders can't attach
+                              // one post's vote UI to another slot.
+                              key: ValueKey(post.id),
+                              post: post,
+                              categoryLabel: communityCategoryLabel(l, post.category),
+                              isOwn: isOwn,
+                              onTap: () => context.push('/community/${post.id}'),
+                              onEdit: () => _editPost(post),
+                              onDelete: () => _confirmDelete(post),
+                              onReport: () => _reportPost(post),
+                              onShare: () => _sharePost(post),
+                            );
+                          },
+                        );
+                      }),
                     ),
             ),
           ),

@@ -3289,6 +3289,18 @@
   "@communityMaxImages": {"description": "Snackbar/hint message about the maximum number of photos allowed"},
   "communitySearchHint": "Search posts…",
   "@communitySearchHint": {"description": "Placeholder text for the community feed search field"},
+  "communityLoadMoreFailed": "Couldn't load more. Tap to retry.",
+  "@communityLoadMoreFailed": {"description": "Footer shown in the community feed when fetching the next page of posts failed, with a tap-to-retry affordance"},
+  "communityImageRejected": "Some photos weren't added (over 5MB or an unsupported type)",
+  "@communityImageRejected": {"description": "Snackbar shown in the post composer when one or more picked photos failed client-side validation and were skipped"},
+  "communityPhotoCount": "{count}/{max}",
+  "@communityPhotoCount": {
+    "description": "Photo count indicator above the image picker row in the post composer, e.g. \"3/5\"",
+    "placeholders": {
+      "count": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
   "errorGeneric": "Something went wrong",
   "@errorGeneric": {"description": "Generic fallback error message"},
   "tabHome": "Home",

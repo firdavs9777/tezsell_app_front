@@ -44,6 +44,16 @@ class _CommunityEditPageState extends ConsumerState<CommunityEditPage> {
       ref.invalidate(communityFeedProvider);
       ref.invalidate(communityCountsProvider);
       Navigator.of(context).pop(true);
+    } on CommunityApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.friendlyMessage(
+              fallback: AppLocalizations.of(context)?.communityPostFailed ?? 'Failed to post',
+            )),
+          ),
+        );
+      }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +75,13 @@ class _CommunityEditPageState extends ConsumerState<CommunityEditPage> {
         actions: [
           TextButton(
             onPressed: _submitting ? null : _submit,
-            child: Text(l?.communityPublish ?? 'Post'),
+            child: _submitting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(l?.communityPublish ?? 'Post'),
           ),
         ],
       ),

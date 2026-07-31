@@ -15,6 +15,44 @@ class CommunityProvider {
     return {if (token != null) 'Authorization': 'Token $token'};
   }
 
+  /// Parses a non-2xx [resp] body as a DRF-style field-error map and throws a
+  /// [CommunityApiException] carrying it, so callers can surface the specific
+  /// reason (e.g. an image size/type/count validation message) instead of a
+  /// generic failure.
+  ///
+  /// The backend's custom exception handler nests raised `ValidationError`s
+  /// under a `details` key (e.g. `{"success": false, "error": "...",
+  /// "details": {"images": ["..."]}}`); a value there may be either a list
+  /// (Django `ValidationError.messages`) or a bare string (a manually raised
+  /// `ValidationError({'images': '...'})`) — both are normalized to
+  /// `List<String>`. Falls back to [genericMessage] alone when the body isn't
+  /// JSON, has no usable field map, or is a plain-text error page.
+  Never _throwFieldError(http.Response resp, String genericMessage) {
+    final fieldErrors = <String, List<String>>{};
+    try {
+      final decoded = json.decode(resp.body);
+      if (decoded is Map<String, dynamic>) {
+        final details = decoded['details'];
+        final fields = details is Map<String, dynamic>
+            ? details
+            : (decoded.containsKey('details') ? null : decoded);
+        if (fields != null) {
+          for (final entry in fields.entries) {
+            final value = entry.value;
+            if (value is List) {
+              fieldErrors[entry.key] = value.map((e) => e.toString()).toList();
+            } else if (value is String) {
+              fieldErrors[entry.key] = [value];
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // Non-JSON body — fieldErrors stays empty, generic message is used.
+    }
+    throw CommunityApiException(resp.statusCode, fieldErrors, genericMessage);
+  }
+
   Future<List<CommunityPost>> getFeed({
     int? districtId,
     String? category,
@@ -73,7 +111,7 @@ class CommunityProvider {
     if (resp.statusCode == 200) {
       return CommunityPost.fromJson(json.decode(resp.body) as Map<String, dynamic>);
     }
-    throw Exception('Failed to update post (${resp.statusCode})');
+    _throwFieldError(resp, 'Failed to update post (${resp.statusCode})');
   }
 
   /// Author-only delete of a post.
@@ -134,7 +172,7 @@ class CommunityProvider {
     if (resp.statusCode == 200 || resp.statusCode == 201) {
       return CommunityPost.fromJson(json.decode(resp.body) as Map<String, dynamic>);
     }
-    throw Exception('Failed to create post (${resp.statusCode})');
+    _throwFieldError(resp, 'Failed to create post (${resp.statusCode})');
   }
 
   Future<CommunityPost> getPost(int postId) async {
@@ -226,6 +264,38 @@ class CommunityProvider {
       throw Exception('Failed to delete comment (${resp.statusCode})');
     }
   }
+}
+
+/// Thrown by [CommunityProvider.createPost]/[updatePost] on a non-2xx
+/// response, carrying the backend's per-field validation messages (when the
+/// body could be parsed as one) alongside a generic fallback.
+class CommunityApiException implements Exception {
+  CommunityApiException(this.statusCode, this.fieldErrors, [this.message]);
+
+  final int statusCode;
+
+  /// Raw per-field messages, e.g. `{"images": ["Each photo must be under
+  /// 5MB."]}`. Empty when the body wasn't a parseable field-error map.
+  final Map<String, List<String>> fieldErrors;
+
+  /// Generic fallback text (e.g. "Failed to create post (400)") used when
+  /// [fieldErrors] is empty.
+  final String? message;
+
+  /// The single most relevant message to show the user: prefers `images`
+  /// (the most common actionable validation — size/type/count), then the
+  /// first message of any other field, then [message]/[fallback].
+  String friendlyMessage({String fallback = 'Something went wrong'}) {
+    final imageErrors = fieldErrors['images'];
+    if (imageErrors != null && imageErrors.isNotEmpty) return imageErrors.first;
+    for (final errors in fieldErrors.values) {
+      if (errors.isNotEmpty) return errors.first;
+    }
+    return message ?? fallback;
+  }
+
+  @override
+  String toString() => 'CommunityApiException($statusCode, $fieldErrors)';
 }
 
 /// One page of top-level comments plus enough envelope data to drive
