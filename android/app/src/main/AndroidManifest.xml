@@ -29,6 +29,13 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
+    <!-- Location (geolocator): required or every GPS call throws
+         PermissionUndefinedException on Android before any dialog appears.
+         Needed for neighborhood verification, "use current location", and
+         nearby/geo browse. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <!-- Add this queries section for url_launcher to work properly -->
     <queries>
         <!-- For opening web URLs -->
