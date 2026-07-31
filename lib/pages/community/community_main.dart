@@ -25,19 +25,23 @@ const communityCategories = <String>[
 
 /// Merges the first feed page (from `communityFeedProvider`) with
 /// locally-accumulated later pages fetched via infinite scroll,
-/// de-duplicating by post id. Without this, a post created/edited between
-/// the first-page fetch and an already-accumulated later page could appear
-/// twice — which would also violate the `ValueKey`-per-card contract in the
-/// feed's `ListView.builder`.
+/// de-duplicating by post id — both against the first page AND within
+/// `laterPages` itself (first occurrence wins). Without this, a post
+/// created/edited between fetches — of the first page, or of two different
+/// later pages — could appear twice, which would also violate the
+/// `ValueKey`-per-card contract in the feed's `ListView.builder`.
 List<CommunityPost> mergeCommunityFeedPages(
   List<CommunityPost> firstPage,
   List<CommunityPost> laterPages,
 ) {
-  final firstPageIds = firstPage.map((p) => p.id).toSet();
-  return [
-    ...firstPage,
-    ...laterPages.where((p) => !firstPageIds.contains(p.id)),
-  ];
+  final seen = firstPage.map((p) => p.id).toSet();
+  final result = <CommunityPost>[...firstPage];
+  for (final post in laterPages) {
+    if (seen.add(post.id)) {
+      result.add(post);
+    }
+  }
+  return result;
 }
 
 class CommunityMain extends ConsumerStatefulWidget {
@@ -113,13 +117,13 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
     );
     final firstPage = ref.read(communityFeedProvider(args)).valueOrNull;
     if (firstPage == null) return;
-    _loadMore(firstPageLength: firstPage.length);
+    _loadMore(firstPage: firstPage);
   }
 
-  Future<void> _loadMore({required int firstPageLength}) async {
+  Future<void> _loadMore({required List<CommunityPost> firstPage}) async {
     if (_loadingMore) return;
     // Page 1 alone was shorter than a full page — nothing more exists.
-    if (_page == 1 && firstPageLength < _kCommunityPageSize) return;
+    if (_page == 1 && firstPage.length < _kCommunityPageSize) return;
     if (_page > 1 && !_hasMore) return;
 
     final gen = _generation;
@@ -141,9 +145,25 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
       // no longer applies — drop them rather than appending onto the wrong
       // list.
       if (!mounted || gen != _generation) return;
+      // De-dupe against both the first page and everything already
+      // accumulated: if the live feed shifted mid-scroll (another user
+      // created/deleted a post), a later page can re-return an id already
+      // held — appending it unchanged would produce two cards with the same
+      // `ValueKey`, which crashes in debug and misattaches poll-vote state
+      // in release.
+      final seenIds = {
+        ...firstPage.map((p) => p.id),
+        ..._extraPosts.map((p) => p.id),
+      };
+      final fresh = more.where((p) => !seenIds.contains(p.id)).toList();
       setState(() {
-        _extraPosts = [..._extraPosts, ...more];
+        _extraPosts = [..._extraPosts, ...fresh];
         _page = nextPage;
+        // The "last page" heuristic is on the raw response length, not
+        // `fresh` — a short page still means nothing more exists server-side
+        // even if every post on it happened to already be accumulated. Using
+        // `fresh` here (which can be 0 while `more` is a full page) would
+        // also risk `_hasMore` flipping false while pages genuinely remain.
         _hasMore = more.length >= _kCommunityPageSize;
         _loadingMore = false;
       });
@@ -180,10 +200,16 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
     });
   }
 
+  // The ONE invalidation path: this (delete, below) and every other
+  // community-mutating screen (composer create, edit) all call
+  // `invalidateCommunityFeed`, which bumps `communityFeedGenerationProvider`.
+  // This widget's pagination reset lives solely in the `ref.listen` set up in
+  // `build` — never called directly here — so it fires uniformly regardless
+  // of which screen performed the mutation, including edits/deletes made
+  // from `CommunityDetail` while this widget sits mounted-but-occluded
+  // underneath that pushed route.
   void _invalidateFeedAndCounts() {
-    ref.invalidate(communityFeedProvider);
-    ref.invalidate(communityCountsProvider);
-    if (mounted) setState(_resetPaginationFields);
+    invalidateCommunityFeed(ref);
   }
 
   Future<void> _confirmDelete(CommunityPost post) async {
@@ -219,10 +245,10 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
   }
 
   Future<void> _editPost(CommunityPost post) async {
-    final updated = await context.push<bool>('/community/${post.id}/edit', extra: post);
-    if (updated == true && mounted) {
-      _invalidateFeedAndCounts();
-    }
+    // The edit screen itself calls `invalidateCommunityFeed` (and thus bumps
+    // `communityFeedGenerationProvider`) before popping on success — nothing
+    // further to do here; this widget's `ref.listen` reacts either way.
+    await context.push<bool>('/community/${post.id}/edit', extra: post);
   }
 
   Future<void> _reportPost(CommunityPost post) async {
@@ -262,15 +288,18 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
     final counts = ref.watch(communityCountsProvider(widget.districtId)).valueOrNull;
     final currentUserId = ref.watch(communityCurrentUserIdProvider).valueOrNull;
 
+    // Single cross-screen invalidation signal (see its doc): any successful
+    // create/edit/delete — from this screen, the detail screen, the
+    // composer, or the edit screen — bumps this, and resetting pagination
+    // here (rather than at each call site) is what keeps it to one path.
+    ref.listen<int>(communityFeedGenerationProvider, (previous, next) {
+      if (mounted) setState(_resetPaginationFields);
+    });
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final created = await context
-              .push<bool>('/community/new?districtId=${widget.districtId ?? ''}');
-          if (created == true && mounted) {
-            _invalidateFeedAndCounts();
-          }
-        },
+        onPressed: () =>
+            context.push<bool>('/community/new?districtId=${widget.districtId ?? ''}'),
         icon: const Icon(Icons.edit),
         label: Text(l?.communityWrite ?? 'Write'),
       ),
@@ -380,6 +409,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                         final combined = mergeCommunityFeedPages(posts, _extraPosts);
                         final showFooter = _loadingMore || _loadMoreFailed;
                         return ListView.builder(
+                          key: const ValueKey('communityFeedListView'),
                           controller: _scrollController,
                           padding: const EdgeInsets.all(12),
                           itemCount: combined.length + (showFooter ? 1 : 0),
@@ -390,8 +420,7 @@ class _CommunityMainState extends ConsumerState<CommunityMain> {
                                 child: Center(
                                   child: _loadMoreFailed
                                       ? TextButton(
-                                          onPressed: () =>
-                                              _loadMore(firstPageLength: posts.length),
+                                          onPressed: () => _loadMore(firstPage: posts),
                                           child: Text(
                                             l?.communityLoadMoreFailed ??
                                                 "Couldn't load more. Tap to retry.",

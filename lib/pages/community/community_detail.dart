@@ -283,15 +283,19 @@ class _CommunityDetailState extends ConsumerState<CommunityDetail> {
     }
   }
 
+  // The edit screen calls `invalidateCommunityFeed` itself (bumping
+  // `communityFeedGenerationProvider`) on success before popping — this
+  // wrapper is only needed here for the delete path below, which is the one
+  // place that mutates the post directly rather than via a pushed screen.
   void _invalidateFeedAndCounts() {
-    ref.invalidate(communityFeedProvider);
-    ref.invalidate(communityCountsProvider);
+    invalidateCommunityFeed(ref);
   }
 
   Future<void> _editPost(CommunityPost post) async {
     final updated = await context.push<bool>('/community/${post.id}/edit', extra: post);
     if (updated == true && mounted) {
-      _invalidateFeedAndCounts();
+      // Feed invalidation already happened inside the edit screen; just
+      // refresh this screen's own copy of the post.
       _loadPost();
     }
   }

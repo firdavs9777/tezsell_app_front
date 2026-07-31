@@ -41,8 +41,7 @@ class _CommunityEditPageState extends ConsumerState<CommunityEditPage> {
             category: _category,
           );
       if (!mounted) return;
-      ref.invalidate(communityFeedProvider);
-      ref.invalidate(communityCountsProvider);
+      invalidateCommunityFeed(ref);
       Navigator.of(context).pop(true);
     } on CommunityApiException catch (e) {
       if (mounted) {

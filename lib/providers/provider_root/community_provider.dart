@@ -342,3 +342,27 @@ final communityCountsProvider = FutureProvider.autoDispose
 final communityCurrentUserIdProvider = FutureProvider<int?>((ref) {
   return ref.read(communityProvider).getCurrentUserId();
 });
+
+/// Bumped by [invalidateCommunityFeed] on every successful post
+/// create/edit/delete, from ANY screen (feed, detail, composer, edit).
+///
+/// `communityFeedProvider` invalidation alone only refetches page 1 for
+/// whichever screen currently watches it — it carries no signal for
+/// CommunityMain's *locally-accumulated* infinite-scroll pages (`_page`,
+/// `_extraPosts`, `_hasMore`), which must be reset in lockstep or a stale
+/// `_page` will fetch an offset that silently skips/duplicates a post. This
+/// matters in particular when CommunityMain is still mounted underneath a
+/// pushed detail/edit route (so it doesn't rebuild directly) — CommunityMain
+/// `ref.listen`s this counter specifically so it resets regardless of which
+/// screen performed the mutation.
+final communityFeedGenerationProvider = StateProvider<int>((ref) => 0);
+
+/// The one path every community-mutating screen should use to invalidate the
+/// feed: invalidates the feed + counts, and bumps
+/// [communityFeedGenerationProvider] so any screen — including one mounted
+/// underneath the current route — can react (see its doc).
+void invalidateCommunityFeed(WidgetRef ref) {
+  ref.invalidate(communityFeedProvider);
+  ref.invalidate(communityCountsProvider);
+  ref.read(communityFeedGenerationProvider.notifier).state++;
+}

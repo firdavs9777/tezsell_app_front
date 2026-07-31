@@ -92,16 +92,18 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
         ..addAll(combined.take(_kMaxImages));
     });
     if (!mounted) return;
-    if (trimmed) {
+    // Both can happen from a single pick (e.g. one oversized photo plus more
+    // photos than the remaining slots) — show every applicable message
+    // rather than only the first one checked.
+    final messages = <String>[
+      if (rejected)
+        l?.communityImageRejected ??
+            "Some photos weren't added (over 5MB or an unsupported type)",
+      if (trimmed) l?.communityMaxImages ?? 'Up to 5 photos',
+    ];
+    if (messages.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l?.communityMaxImages ?? 'Up to 5 photos')),
-      );
-    } else if (rejected) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l?.communityImageRejected ??
-              "Some photos weren't added (over 5MB or an unsupported type)"),
-        ),
+        SnackBar(content: Text(messages.join(' '))),
       );
     }
   }
@@ -165,8 +167,7 @@ class _CommunityComposerState extends ConsumerState<CommunityComposer> {
             pollOptions: pollOptions,
           );
       if (!mounted) return;
-      ref.invalidate(communityFeedProvider);
-      ref.invalidate(communityCountsProvider);
+      invalidateCommunityFeed(ref);
       Navigator.of(context).pop(true);
     } on CommunityApiException catch (e) {
       if (mounted) {
