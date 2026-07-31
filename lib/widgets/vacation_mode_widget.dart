@@ -9,6 +9,10 @@ class VacationModeToggle extends StatefulWidget {
   final ValueChanged<String?>? onMessageChange;
   final bool showMessage;
 
+  /// When false, the switch renders in its disabled state (a request is in
+  /// flight) instead of silently swallowing taps.
+  final bool enabled;
+
   const VacationModeToggle({
     super.key,
     required this.isActive,
@@ -16,6 +20,7 @@ class VacationModeToggle extends StatefulWidget {
     required this.onToggle,
     this.onMessageChange,
     this.showMessage = true,
+    this.enabled = true,
   });
 
   @override
@@ -100,7 +105,8 @@ class _VacationModeToggleState extends State<VacationModeToggle> {
                 ),
                 Switch.adaptive(
                   value: isActive,
-                  onChanged: (value) => widget.onToggle(value),
+                  onChanged:
+                      widget.enabled ? (value) => widget.onToggle(value) : null,
                 ),
               ],
             ),

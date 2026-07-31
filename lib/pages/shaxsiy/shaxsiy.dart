@@ -38,10 +38,28 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
   int _refreshKey = 0;
   int? _currentUserId;
 
+  // The fetch futures are held in state and recreated ONLY on refresh --
+  // never inline in build(). Building them inline made every incidental
+  // rebuild (e.g. toggling the theme from the theme dialog on this page)
+  // hand FutureBuilder a new future identity, resetting it to `waiting`,
+  // blanking the whole page, refetching 4 endpoints, and tearing down the
+  // vacation-message draft. The header/trust/menu only depend on the user
+  // record; products/services/favorites come from a separate,
+  // per-section-tolerant fetch (see fetchProfileSections).
+  late Future<UserInfo> _userFuture;
+  late Future<ProfileSectionsData> _sectionsFuture;
+
   @override
   void initState() {
     super.initState();
+    _reload();
     _loadCurrentUserId();
+  }
+
+  void _reload() {
+    final service = ref.read(profileServiceProvider);
+    _userFuture = service.getUserInfo();
+    _sectionsFuture = fetchProfileSections(service);
   }
 
   Future<void> _loadCurrentUserId() async {
@@ -50,25 +68,15 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
     setState(() => _currentUserId = userId);
   }
 
-  // The header, trust chip, and menu shell only truly depend on the user
-  // record -- fetched alone so a slow/failed products/services/favorites
-  // call can't blank the whole page (see fetchProfileSections below for
-  // that secondary, per-section-tolerant fetch).
-  Future<UserInfo> _fetchUser() {
-    return ref.read(profileServiceProvider).getUserInfo();
-  }
-
   void _refreshProfile() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Note: no `ref.invalidate(profileServiceProvider)` here -- it's a
-      // plain stateless `Provider((ref) => ProfileService())` with no
-      // internal cache, so invalidating it is a no-op; the actual refetch
-      // is driven by `_refreshKey` below (new FutureBuilder futures).
-      if (_currentUserId != null) {
-        ref.invalidate(userProfileProvider(_currentUserId!));
-      }
-    });
+    // Note: no `ref.invalidate(profileServiceProvider)` -- it's a plain
+    // stateless `Provider((ref) => ProfileService())` with no internal
+    // cache. The refetch is driven by recreating the futures in _reload().
+    if (_currentUserId != null) {
+      ref.invalidate(userProfileProvider(_currentUserId!));
+    }
     setState(() {
+      _reload();
       _refreshKey++;
     });
   }
@@ -212,7 +220,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
         },
         child: FutureBuilder<UserInfo>(
           key: ValueKey(_refreshKey),
-          future: _fetchUser(),
+          future: _userFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const _ProfileHeaderSkeleton();
@@ -236,7 +244,7 @@ class _ShaxsiyPageState extends ConsumerState<ShaxsiyPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               child: FutureBuilder<ProfileSectionsData>(
                 key: ValueKey(_refreshKey),
-                future: fetchProfileSections(ref.read(profileServiceProvider)),
+                future: _sectionsFuture,
                 builder: (context, sectionsSnapshot) {
                   // Sub-data (products/services/favorites) is tolerant of
                   // individual failure -- while it's still loading (or if
@@ -674,7 +682,8 @@ class _VacationModeSectionState extends ConsumerState<_VacationModeSection> {
       child: VacationModeToggle(
         isActive: isActive,
         message: _draftMessage ?? savedMessage,
-        onToggle: _isToggling ? (_) {} : _onToggle,
+        enabled: !_isToggling,
+        onToggle: _onToggle,
         onMessageChange: (value) => setState(() => _draftMessage = value),
       ),
     );
