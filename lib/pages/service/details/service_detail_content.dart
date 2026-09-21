@@ -7,6 +7,8 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/utils/image_utils.dart';
 
 class ServiceDetailsSection extends StatefulWidget {
   const ServiceDetailsSection({
@@ -231,13 +233,12 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                       shape: BoxShape.circle,
                                     ),
                                     child: ClipOval(
-                                            child: Image.network(
-                                              widget.service.userName.profileImage.image.startsWith('http://') ||
-                                                      widget.service.userName.profileImage.image.startsWith('https://')
-                                                  ? widget.service.userName.profileImage.image
-                                                  : '$baseUrl${widget.service.userName.profileImage.image}',
+                                            child: CachedNetworkImageWidget(
+                                              imageUrl: ImageUtils.buildImageUrl(
+                                                widget.service.userName.profileImage.image,
+                                              ),
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => Icon(
+                                              errorWidget: Icon(
                                                 Icons.person_rounded,
                                                 color: colorScheme.primary,
                                                 size: 28,

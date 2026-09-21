@@ -116,7 +116,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
   }
 
-  String _getTimeAgo(DateTime? date) {
+  String _getTimeAgo(DateTime? date, String locale) {
     if (date == null) return '';
     try {
       final now = DateTime.now();
@@ -124,7 +124,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
       final localizations = AppLocalizations.of(context);
 
       if (difference.inDays > 30) {
-        return DateFormat('MMM d').format(date);
+        return DateFormat('MMM d', locale).format(date);
       } else if (difference.inDays > 0) {
         return localizations?.time_days_ago(difference.inDays) ?? '${difference.inDays}d ago';
       } else if (difference.inHours > 0) {
@@ -780,7 +780,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               const SizedBox(width: 8),
               // Time ago
               Text(
-                _getTimeAgo(product.createdAt),
+                _getTimeAgo(product.createdAt, Localizations.localeOf(context).languageCode),
                 style: textTheme.bodySmall,
               ),
             ],

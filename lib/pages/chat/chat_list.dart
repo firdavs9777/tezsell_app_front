@@ -721,7 +721,12 @@ class ChatListTile extends StatelessWidget {
     } else if (difference == 1) {
       return l.yesterday;
     } else if (difference < 7) {
-      return DateFormat('EEE').format(timestamp); // Mon, Tue...
+      // Weekday name is the only locale-sensitive branch here; the HH:mm and
+      // dd.MM.yy branches are pure numeric patterns.
+      return DateFormat(
+        'EEE',
+        Localizations.localeOf(context).languageCode,
+      ).format(timestamp); // Mon, Tue...
     } else {
       return DateFormat('dd.MM.yy').format(timestamp);
     }

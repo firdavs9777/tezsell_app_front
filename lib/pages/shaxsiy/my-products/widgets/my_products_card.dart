@@ -52,11 +52,11 @@ class MyProductsCard extends StatelessWidget {
     return '${config?.symbol ?? ''} $formatted ${product.currency}';
   }
 
-  String _timeAgo(DateTime date) {
+  String _timeAgo(DateTime date, String locale) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
-    if (difference.inDays > 30) return DateFormat('MMM d, y').format(date);
+    if (difference.inDays > 30) return DateFormat('MMM d, y', locale).format(date);
     if (difference.inDays > 0) return '${difference.inDays}d ago';
     if (difference.inHours > 0) return '${difference.inHours}h ago';
     if (difference.inMinutes > 0) return '${difference.inMinutes}m ago';
@@ -266,7 +266,7 @@ class MyProductsCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
-                        _timeAgo(product.updatedAt),
+                        _timeAgo(product.updatedAt, Localizations.localeOf(context).languageCode),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),

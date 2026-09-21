@@ -14,7 +14,7 @@ class NotificationItem extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
-  String _getTimeAgo(DateTime date) {
+  String _getTimeAgo(DateTime date, String locale) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
@@ -27,7 +27,7 @@ class NotificationItem extends StatelessWidget {
     } else if (difference.inDays < 7) {
       return '${difference.inDays}d ago';
     } else {
-      return DateFormat('MMM d').format(date);
+      return DateFormat('MMM d', locale).format(date);
     }
   }
 
@@ -150,7 +150,7 @@ class NotificationItem extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          _getTimeAgo(notification.createdAt),
+                          _getTimeAgo(notification.createdAt, Localizations.localeOf(context).languageCode),
                           style: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 11,

@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'service/push_notification_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 // import 'service/notification_service.dart'; // Remove if redundant
 
 // Global navigator key for handling notification navigation
@@ -26,6 +27,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   print('🚀 Starting app initialization...');
+
+  // Load locale-specific date symbols so DateFormat(pattern, locale) can
+  // render month/weekday names in ru/uz rather than throwing
+  // LocaleDataException or silently falling back to English.
+  await initializeDateFormatting();
 
   // Load/migrate auth tokens into secure storage before any auth check runs
   // (splash screen, router redirect, etc. all read via TokenStore).

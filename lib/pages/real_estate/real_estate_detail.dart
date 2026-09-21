@@ -483,7 +483,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     }
   }
 
-  String _getTimeAgo() {
+  String _getTimeAgo(String locale) {
     if (property == null) return '';
     try {
       final date = property!.createdAt;
@@ -491,7 +491,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       final difference = now.difference(date);
 
       if (difference.inDays > 30) {
-        return DateFormat('MMM d').format(date);
+        return DateFormat('MMM d', locale).format(date);
       } else if (difference.inDays > 0) {
         return '${difference.inDays}d ago';
       } else if (difference.inHours > 0) {
@@ -976,7 +976,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ),
               SizedBox(width: 8),
               Text(
-                _getTimeAgo(),
+                _getTimeAgo(Localizations.localeOf(context).languageCode),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),

@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'cluster_badge.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/utils/image_utils.dart';
 
 class MappedItem {
   MappedItem({
@@ -151,12 +153,12 @@ class _PreviewCard extends StatelessWidget {
               if (item.imageUrl != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    item.imageUrl!,
+                  child: CachedNetworkImageWidget(
+                    imageUrl: ImageUtils.buildImageUrl(item.imageUrl),
                     width: 64,
                     height: 64,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorWidget: Container(
                       width: 64,
                       height: 64,
                       color: theme.colorScheme.surfaceContainerHighest,

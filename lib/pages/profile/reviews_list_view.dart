@@ -349,7 +349,10 @@ class ReviewTile extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          DateFormat('MMM d, yyyy').format(review.createdAt),
+                          DateFormat(
+                            'MMM d, yyyy',
+                            Localizations.localeOf(context).languageCode,
+                          ).format(review.createdAt),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),

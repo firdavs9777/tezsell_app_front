@@ -109,14 +109,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     }
   }
 
-  String _getTimeAgo(DateTime? date) {
+  String _getTimeAgo(DateTime? date, String locale) {
     if (date == null) return '';
     try {
       final now = DateTime.now();
       final difference = now.difference(date);
 
       if (difference.inDays > 30) {
-        return DateFormat('MMM d').format(date);
+        return DateFormat('MMM d', locale).format(date);
       } else if (difference.inDays > 0) {
         return '${difference.inDays}d ago';
       } else if (difference.inHours > 0) {
@@ -624,7 +624,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               ),
               const SizedBox(width: 8),
               Text(
-                _getTimeAgo(service.createdAt),
+                _getTimeAgo(service.createdAt, Localizations.localeOf(context).languageCode),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
             ],

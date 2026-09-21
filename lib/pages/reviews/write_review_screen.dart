@@ -8,6 +8,8 @@ import 'package:app/providers/provider_root/reviews_provider.dart';
 import 'package:app/utils/current_user_prefs.dart';
 import 'package:app/widgets/review_tags.dart';
 import 'package:app/widgets/star_rating.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/utils/image_utils.dart';
 
 /// Screen for leaving a Karrot-style review (rating + quick tags + optional
 /// text) for a completed transaction.
@@ -341,13 +343,12 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                   const SizedBox(width: 12),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      _itemImage!,
+                    child: CachedNetworkImageWidget(
+                      imageUrl: ImageUtils.buildImageUrl(_itemImage),
                       width: 44,
                       height: 44,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const SizedBox.shrink(),
+                      errorWidget: const SizedBox.shrink(),
                     ),
                   ),
                 ],

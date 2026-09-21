@@ -13,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:app/widgets/cached_network_image_widget.dart';
+import 'package:app/utils/image_utils.dart';
 
 /// Karrot-style map browse for real estate (Plan B Task 4). Fetches
 /// lightweight pins for the current viewport via the backend's
@@ -410,12 +412,12 @@ class _PropertyPreviewCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: pin.mainImage != null && pin.mainImage!.isNotEmpty
-                    ? Image.network(
-                        pin.mainImage!,
+                    ? CachedNetworkImageWidget(
+                        imageUrl: ImageUtils.buildImageUrl(pin.mainImage),
                         width: 64,
                         height: 64,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholder(theme),
+                        errorWidget: _placeholder(theme),
                       )
                     : _placeholder(theme),
               ),

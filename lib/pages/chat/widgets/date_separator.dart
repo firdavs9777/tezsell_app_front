@@ -17,7 +17,10 @@ class DateSeparator extends StatelessWidget {
     } else if (difference.inDays == 1) {
       return l.yesterday;
     } else {
-      return DateFormat('MMMM d, y').format(date);
+      return DateFormat(
+        'MMMM d, y',
+        Localizations.localeOf(context).languageCode,
+      ).format(date);
     }
   }
 

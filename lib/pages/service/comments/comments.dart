@@ -47,7 +47,10 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
     try {
       DateTime utcTime = DateTime.parse(utcTimeString);
       DateTime localTime = utcTime.toLocal();
-      return DateFormat('M/d/yyyy, h:mm:ss a').format(localTime);
+      return DateFormat(
+        'M/d/yyyy, h:mm:ss a',
+        Localizations.localeOf(context).languageCode,
+      ).format(localTime);
     } catch (e) {
       return AppLocalizations.of(context)?.unknown_date ?? 'Unknown Date';
     }
