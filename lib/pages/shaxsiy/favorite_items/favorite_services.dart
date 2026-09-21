@@ -52,6 +52,7 @@ class _FavoriteServicesState extends ConsumerState<FavoriteServices> {
                   final Services singleService = await ref
                       .watch(serviceMainProvider)
                       .getSingleService(serviceId: service.id.toString());
+                  if (!context.mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -4,7 +4,6 @@ import 'package:app/widgets/maps/map_view.dart';
 import 'package:app/widgets/service_rating_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/constants/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
@@ -257,7 +256,10 @@ class _ServiceDetailsSectionState extends State<ServiceDetailsSection> {
                                   children: [
                                     // Username
                                     Text(
-                                      widget.service.userName.username ?? (localizations?.service_provider ?? 'Service Provider'),
+                                      widget.service.userName.username.isEmpty
+                                          ? (localizations?.service_provider ??
+                                              'Service Provider')
+                                          : widget.service.userName.username,
                                       style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w600,

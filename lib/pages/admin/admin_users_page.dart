@@ -136,6 +136,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
           _loadUsers();
         }
       } catch (e) {
+        if (!mounted) return;
         AppErrorHandler.showError(context, e);
       }
     }
@@ -186,6 +187,7 @@ class _AdminUsersPageState extends ConsumerState<AdminUsersPage> {
           _loadUsers();
         }
       } catch (e) {
+        if (!mounted) return;
         AppErrorHandler.showError(context, e);
       }
     }

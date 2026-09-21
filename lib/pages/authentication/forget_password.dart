@@ -253,7 +253,6 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   }
 
   Future<void> _sendOTP() async {
-    final localizations = AppLocalizations.of(context);
     final email = _emailController.text.trim();
     if (email.isEmpty) {
       _showError('Please enter your email address');

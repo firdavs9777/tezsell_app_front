@@ -183,6 +183,7 @@ class _PasswordResetState extends State<PasswordReset> {
         }
 
         // Success
+        if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => const TabsScreen()),
         );

@@ -55,7 +55,7 @@ class _CreateCommentState extends ConsumerState<CreateComment> {
             id: widget.id,
           );
 
-      ref.refresh(commentsServiceProvider);
+      ref.invalidate(commentsServiceProvider);
       ref.invalidate(commentsProvider(widget.id));
 
       await ref

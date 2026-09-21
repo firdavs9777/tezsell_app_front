@@ -387,7 +387,7 @@ class _ServiceEditState extends ConsumerState<ServiceEdit> {
                             return DropdownMenuItem<Location>(
                               value: location,
                               child: Text(
-                                  '${location.region ?? ''}, ${location.district ?? ''}'),
+                                  '${location.region}, ${location.district}'),
                             );
                           }).toList(),
                           onChanged: (Location? value) {

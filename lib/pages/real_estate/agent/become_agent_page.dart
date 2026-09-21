@@ -6,7 +6,6 @@ import 'package:app/utils/error_handler.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/service/token_store.dart';
-import 'package:dio/dio.dart';
 
 class BecomeAgentPage extends ConsumerStatefulWidget {
   const BecomeAgentPage({super.key});
@@ -88,7 +87,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
     });
 
     try {
-      final response = await ref.read(realEstateServiceProvider).becomeAgent(
+      await ref.read(realEstateServiceProvider).becomeAgent(
             agencyName: _agencyNameController.text.trim(),
             licenceNumber: _licenceNumberController.text.trim(),
             yearsExperience: int.tryParse(_yearsExperienceController.text) ?? 0,

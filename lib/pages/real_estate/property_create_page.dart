@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:geolocator/geolocator.dart';
 import 'dart:io';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:app/pages/real_estate/widgets/property_detail_grid.dart';
 import 'package:app/pages/real_estate/widgets/property_form_widgets.dart';
 import 'package:app/pages/real_estate/widgets/property_image_picker.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
 import 'package:app/providers/provider_root/real_estate_provider.dart';
-import 'package:app/providers/provider_root/profile_provider.dart';
 import 'package:app/providers/provider_root/country_provider.dart';
 import 'package:app/providers/provider_models/location_model.dart';
 import 'package:app/providers/provider_models/place.dart';
@@ -60,14 +55,10 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
   Place? _pickedPlace;
 
   // Location selection
-  List<Regions> _regionsList = [];
-  List<Districts> _districtsList = [];
   String? _selectedRegion;
   Districts? _selectedDistrict;
-  bool _isLoadingRegions = false;
-  bool _isLoadingDistricts = false;
   bool _isGeocoding = false;
-  List<Map<String, dynamic>> _userLocationsCache = []; // Cache for UserLocations with coordinates
+ // Cache for UserLocations with coordinates
 
   // Features
   bool _hasBalcony = false;
@@ -102,7 +93,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
   void initState() {
     super.initState();
     _loadUserLocation();
-    _fetchRegions();
     _loadUserLocationsCache();
     _loadCurrencies();
     // Pre-fill from the user's active map pick (Karrot pattern).
@@ -149,11 +139,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     try {
       final realEstateService = ref.read(realEstateServiceProvider);
       final userLocations = await realEstateService.getUserLocations();
-      if (mounted) {
-        setState(() {
-          _userLocationsCache = userLocations;
-        });
-      }
       AppLogger.info('Pre-loaded ${userLocations.length} user locations for coordinate lookup');
       if (userLocations.isNotEmpty) {
         AppLogger.info('Sample location keys: ${userLocations.first.keys.toList()}');
@@ -222,260 +207,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Location services are disabled. Please enable them.'),
-            ),
-          );
-        }
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Location permissions are denied.'),
-              ),
-            );
-          }
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  'Location permissions are permanently denied. Please enable in settings.'),
-            ),
-          );
-        }
-        return;
-      }
-
-      final Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      setState(() {
-        _latitude = position.latitude.toStringAsFixed(6);
-        _longitude = position.longitude.toStringAsFixed(6);
-      });
-    } catch (e) {
-      AppLogger.error('Error getting location: $e');
-    }
-  }
-
-  Future<void> _fetchRegions() async {
-    setState(() {
-      _isLoadingRegions = true;
-    });
-
-    try {
-      final profileService = ref.read(profileServiceProvider);
-      final regions = await profileService.getRegionsList();
-      
-      setState(() {
-        _regionsList = regions;
-        _isLoadingRegions = false;
-      });
-    } catch (e) {
-      AppLogger.error('Error fetching regions: $e');
-      setState(() {
-        _isLoadingRegions = false;
-      });
-    }
-  }
-
-  Future<void> _fetchDistricts(String regionName) async {
-    setState(() {
-      _isLoadingDistricts = true;
-      _districtsList = [];
-      _selectedDistrict = null;
-    });
-
-    try {
-      final profileService = ref.read(profileServiceProvider);
-      final districts = await profileService.getDistrictsList(regionName: regionName);
-      
-      // Now fetch UserLocations to get IDs and coordinates for the districts
-      final realEstateService = ref.read(realEstateServiceProvider);
-      List<Map<String, dynamic>> userLocations = [];
-      try {
-        userLocations = await realEstateService.getUserLocations();
-        // Cache user locations for coordinate lookup (update cache if we got data)
-        if (userLocations.isNotEmpty) {
-          setState(() {
-            _userLocationsCache = userLocations;
-          });
-          AppLogger.info('Fetched ${userLocations.length} user locations during district fetch');
-          AppLogger.info('Sample location data: ${userLocations.first}');
-        } else {
-          AppLogger.warning('UserLocations returned empty list - may require authentication');
-        }
-      } catch (e) {
-        AppLogger.error('Error fetching user locations: $e');
-        // Continue without IDs - we'll try to match by name
-        // Don't clear cache if it was already populated
-      }
-
-      // Match districts with UserLocations to get IDs
-      final districtsWithIds = districts.map((district) {
-        // Find matching UserLocation by district name and region
-        final matchingLocation = userLocations.firstWhere(
-          (location) {
-            final locDistrict = location['district'] ?? '';
-            final locRegion = location['region'] ?? '';
-            return locDistrict.toLowerCase() == district.district.toLowerCase() &&
-                   locRegion.toLowerCase() == regionName.toLowerCase();
-          },
-          orElse: () => <String, dynamic>{},
-        );
-        
-        // Create a Districts object with ID if found
-        return Districts(
-          id: matchingLocation['id'] ?? district.id,
-          district: district.district,
-        );
-      }).toList();
-
-      setState(() {
-        _districtsList = districtsWithIds;
-        _isLoadingDistricts = false;
-      });
-    } catch (e) {
-      AppLogger.error('Error fetching districts: $e');
-      setState(() {
-        _isLoadingDistricts = false;
-      });
-    }
-  }
-
-  void _onRegionChanged(String? newRegion) {
-    if (newRegion == null || newRegion == _selectedRegion) return;
-
-    setState(() {
-      _selectedRegion = newRegion;
-      _selectedDistrict = null;
-      _userLocationId = null;
-      // Clear coordinates when region changes
-      _latitude = null;
-      _longitude = null;
-    });
-
-    // Fetch districts for the selected region
-    _fetchDistricts(newRegion);
-  }
-
-  void _onDistrictChanged(Districts? newDistrict) {
-    setState(() {
-      _selectedDistrict = newDistrict;
-      _userLocationId = newDistrict?.id;
-    });
-
-    // Geocode coordinates from region and district
-    _geocodeLocation();
-  }
-
   /// Geocode coordinates from region/district only
-  Future<void> _geocodeLocation() async {
-    if (_isGeocoding) return;
-
-    // Build query string for geocoding - only use region and district
-    String query = '';
-    
-    // Use region and district (both required)
-    if (_selectedRegion != null && _selectedDistrict != null) {
-      query = '${_selectedDistrict!.district}, $_selectedRegion, Uzbekistan';
-    }
-    // Fallback: Use just region if district not selected yet
-    else if (_selectedRegion != null) {
-      query = '$_selectedRegion, Uzbekistan';
-    }
-    
-    if (query.isEmpty) {
-      setState(() {
-        _latitude = null;
-        _longitude = null;
-      });
-      return;
-    }
-
-    setState(() {
-      _isGeocoding = true;
-    });
-
-    try {
-      // Use OpenStreetMap Nominatim API (free, no API key needed)
-      final encodedQuery = Uri.encodeComponent(query);
-      final url = 'https://nominatim.openstreetmap.org/search?q=$encodedQuery&format=json&limit=1';
-      
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'User-Agent': 'SabziMarketApp/1.0', // Required by Nominatim
-        },
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> results = json.decode(response.body);
-        
-        if (results.isNotEmpty) {
-          final location = results[0];
-          final lat = location['lat']?.toString();
-          final lon = location['lon']?.toString();
-          
-          if (lat != null && lon != null) {
-            setState(() {
-              _latitude = double.parse(lat).toStringAsFixed(6);
-              _longitude = double.parse(lon).toStringAsFixed(6);
-            });
-            AppLogger.info('Geocoded coordinates: $_latitude, $_longitude for "$query"');
-          } else {
-            setState(() {
-              _latitude = null;
-              _longitude = null;
-            });
-          }
-        } else {
-          setState(() {
-            _latitude = null;
-            _longitude = null;
-          });
-          AppLogger.warning('No geocoding results for: $query');
-        }
-      } else {
-        setState(() {
-          _latitude = null;
-          _longitude = null;
-        });
-        AppLogger.error('Geocoding failed with status: ${response.statusCode}');
-      }
-    } catch (e) {
-      AppLogger.error('Error geocoding location: $e');
-      setState(() {
-        _latitude = null;
-        _longitude = null;
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isGeocoding = false;
-        });
-      }
-    }
-  }
-
   Future<void> _showImageSourceDialog() async {
     if (!mounted) return;
 
@@ -561,6 +293,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       }
     } catch (e) {
       AppErrorHandler.logError('PropertyCreatePage._pickImage', e);
+      if (!mounted) return;
       AppErrorHandler.showError(context, e);
     }
   }
@@ -606,7 +339,6 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
     });
 
     // Store router reference BEFORE async operation
-    final router = GoRouter.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final successMessage = localizations?.success_property_created_success ?? 'Property created successfully!';
 
@@ -615,6 +347,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
+        if (!mounted) return;
         AppErrorHandler.showError(
           context,
           Exception('Authentication required. Please login first.'),
@@ -622,7 +355,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
         return;
       }
 
-      final result = await realEstateService.createProperty(
+      await realEstateService.createProperty(
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         propertyType: _selectedPropertyType,
@@ -668,6 +401,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
       }
     } catch (error) {
       AppLogger.error('Error creating property: $error');
+      if (!mounted) return;
       AppErrorHandler.showError(context, error);
     } finally {
       if (mounted) {
@@ -1006,99 +740,9 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
                     const SizedBox(height: 16),
                     // Region Dropdown removed — map picker above is the
                     // sole location source for property creation.
-                    if (false) DropdownButtonFormField<String>(
-                      initialValue: _selectedRegion,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        labelText: '${localizations?.region ?? 'Region'} *',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: const Icon(Icons.location_city),
-                        filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                        suffixIcon: _isLoadingRegions
-                            ? const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : null,
-                      ),
-                      hint: Text(
-                        localizations?.selectRegion ?? 'Select Region',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      items: _regionsList.map((region) {
-                        return DropdownMenuItem<String>(
-                          value: region.region,
-                          child: Text(
-                            region.region,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: _isLoadingRegions ? null : _onRegionChanged,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizations?.property_create_required ?? 'Region is required';
-                        }
-                        return null;
-                      },
-                    ),
                     const SizedBox(height: 16),
                     // District Dropdown removed — map picker above is the
                     // sole location source for property creation.
-                    if (false) DropdownButtonFormField<Districts>(
-                      initialValue: _selectedDistrict,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        labelText: '${localizations?.districtSelectParagraph ?? 'District'} *',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: const Icon(Icons.location_city),
-                        filled: true,
-                        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                        suffixIcon: _isLoadingDistricts
-                            ? const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : null,
-                      ),
-                      hint: Text(
-                        _selectedRegion == null
-                            ? (localizations?.selectRegion ?? 'Select region first')
-                            : (localizations?.districtSelectParagraph ?? 'Select District'),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      items: _districtsList.map((district) {
-                        return DropdownMenuItem<Districts>(
-                          value: district,
-                          child: Text(
-                            district.district,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: _selectedRegion == null || _isLoadingDistricts
-                          ? null
-                          : _onDistrictChanged,
-                      validator: (value) {
-                        if (value == null) {
-                          return localizations?.property_create_required ?? 'District is required';
-                        }
-                        return null;
-                      },
-                    ),
                     const SizedBox(height: 12),
                     // Show location detected box only when coordinates are available
                     if (_latitude != null && _longitude != null && _latitude != '0.0' && _longitude != '0.0')

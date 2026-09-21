@@ -76,8 +76,6 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   // Typing indicator debounce timer
   Timer? _typingTimer;
   bool _hasSentTypingStatus = false;
-  DateTime? _recordingStartTime;
-
   // Scroll to bottom button state
   bool _showScrollToBottom = false;
 
@@ -973,6 +971,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           return;
         }
 
+        if (!mounted) return;
         final l = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

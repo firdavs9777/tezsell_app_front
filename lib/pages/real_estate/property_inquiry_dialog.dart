@@ -139,7 +139,6 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
     return Dialog(

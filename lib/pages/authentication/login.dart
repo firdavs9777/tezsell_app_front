@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:app/pages/authentication/forget_password.dart';
 import 'package:app/pages/authentication/map_register.dart';
-import 'package:app/pages/tab_bar/tab_bar.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/providers/provider_root/social_auth_provider.dart';
@@ -54,8 +53,6 @@ class _LoginState extends ConsumerState<Login> {
   // Performance tracking variables
   final Stopwatch _totalLoginTime = Stopwatch();
   final Map<String, int> _performanceMetrics = {};
-  DateTime? _loginStartTime;
-
   @override
   void initState() {
     super.initState();
@@ -91,56 +88,18 @@ class _LoginState extends ConsumerState<Login> {
     super.dispose();
   }
 
-  /// Log performance metrics with color-coded output
+  /// Record a timing sample. The emoji/rating formatting that used to
+  /// accompany this fed `print`s that were stripped earlier, leaving the
+  /// computation feeding an empty `if (kDebugMode) {}` block; the metrics map
+  /// itself is still read by _printPerformanceSummary's callers.
   void _logPerformance(String operation, int milliseconds) {
     _performanceMetrics[operation] = milliseconds;
-
-    // Color coding based on performance
-    String emoji;
-    if (milliseconds < 50)
-      emoji = '🟢'; // Fast
-    else if (milliseconds < 200)
-      emoji = '🟡'; // Medium
-    else if (milliseconds < 500)
-      emoji = '🟠'; // Slow
-    else
-      emoji = '🔴'; // Very slow
-
-    if (kDebugMode) {
-    }
   }
 
-  /// Print comprehensive performance summary
+  /// Retained as a no-op hook: the summary it printed was removed with the
+  /// debug prints, but callers still invoke it at the end of the login flow.
   void _printPerformanceSummary() {
     if (!kDebugMode) return;
-
-    int totalTime = 0;
-    _performanceMetrics.forEach((operation, time) {
-      totalTime += time;
-      final emoji = time < 50
-          ? '🟢'
-          : time < 200
-              ? '🟡'
-              : time < 500
-                  ? '🟠'
-                  : '🔴';
-    });
-
-    // Performance analysis
-    final networkTime = _performanceMetrics['Network Request'] ?? 0;
-    final uiTime = totalTime - networkTime;
-
-    // Performance rating
-    String rating;
-    if (totalTime < 1000)
-      rating = '🟢 Excellent';
-    else if (totalTime < 2000)
-      rating = '🟡 Good';
-    else if (totalTime < 3000)
-      rating = '🟠 Fair';
-    else
-      rating = '🔴 Needs Optimization';
-
   }
 
   Future<void> _handleLogin() async {
@@ -150,7 +109,6 @@ class _LoginState extends ConsumerState<Login> {
     // Start total timing
     _totalLoginTime.reset();
     _totalLoginTime.start();
-    _loginStartTime = DateTime.now();
 
     // Start Flutter DevTools timeline event
     developer.Timeline.startSync('Login Process');
@@ -346,14 +304,13 @@ class _LoginState extends ConsumerState<Login> {
       print('   navigating to: ${needsLocationSetup ? "/location-setup" : "/tabs"}');
     }
 
-    if (context.mounted) {
-      if (needsLocationSetup) {
-        // Navigate to location setup for new users or users without location
-        context.go('/location-setup');
-      } else {
-        // Navigate to home for existing users with location
-        context.go('/tabs');
-      }
+    if (!mounted) return;
+    if (needsLocationSetup) {
+      // Navigate to location setup for new users or users without location
+      context.go('/location-setup');
+    } else {
+      // Navigate to home for existing users with location
+      context.go('/tabs');
     }
   }
 

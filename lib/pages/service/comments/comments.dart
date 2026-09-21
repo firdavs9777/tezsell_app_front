@@ -2,12 +2,12 @@ import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/widgets/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/utils/image_utils.dart';
 
 class CommentsMain extends ConsumerStatefulWidget {
   const CommentsMain({
@@ -222,7 +222,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                   ],
                 ),
                 // Location
-                if (reply.user.location != null) ...[
+                if (reply.user.location.region.isNotEmpty ||
+                    reply.user.location.district.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
                     '${reply.user.location.region}, ${reply.user.location.district}',
@@ -385,14 +386,17 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                         // Comment avatar - tap to navigate to user profile
                         GestureDetector(
                           onTap: () => context.push('/user/${comment.user.id}'),
-                          child: comment.user.profileImage != null
+                          // profileImage is never null (fromJson always
+                          // builds one, defaulting image to ''), so the old
+                          // `!= null` test always passed and a user with no
+                          // avatar requested an empty URL instead of falling
+                          // through to the person-icon placeholder.
+                          child: comment.user.profileImage.image.isNotEmpty
                               ? CircleAvatar(
                                   radius: 22,
                                   backgroundImage: NetworkImage(
-                                      comment.user.profileImage!.image.startsWith('http://') ||
-                                              comment.user.profileImage!.image.startsWith('https://')
-                                          ? comment.user.profileImage!.image
-                                          : '${baseUrl}${comment.user.profileImage!.image}'),
+                                      ImageUtils.buildImageUrl(
+                                          comment.user.profileImage.image)),
                                   backgroundColor: colorScheme.surfaceContainerHighest,
                                 )
                               : CircleAvatar(
@@ -415,7 +419,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                     child: GestureDetector(
                                       onTap: () => context.push('/user/${comment.user.id}'),
                                       child: Text(
-                                        comment.user.username ?? l10n.anonymous,
+                                        comment.user.username.isEmpty
+                                            ? l10n.anonymous
+                                            : comment.user.username,
                                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: colorScheme.onSurface,
@@ -426,9 +432,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    comment.created_at != null
+                                    comment.created_at.isNotEmpty
                                         ? _formatLocalTime(
-                                            comment.created_at.toString(), context)
+                                            comment.created_at, context)
                                         : l10n.unknown_date,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: colorScheme.onSurfaceVariant,
@@ -480,10 +486,11 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                 ],
                               ),
                               // User location
-                              if (comment.user.location != null) ...[
+                              if (comment.user.location.region.isNotEmpty ||
+                                  comment.user.location.district.isNotEmpty) ...[
                                 const SizedBox(height: 2),
                                 Text(
-                                  '${comment.user.location!.region}, ${comment.user.location!.district}',
+                                  '${comment.user.location.region}, ${comment.user.location.district}',
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: colorScheme.onSurfaceVariant,
                                   ),

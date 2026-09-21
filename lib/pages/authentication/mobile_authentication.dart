@@ -32,7 +32,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   bool isSendingCode = false;
   bool isVerifyingCode = false;
   bool isResendingCode = false;
-  String? _verifiedEmail; // Store verified email
+ // Store verified email
   Timer? _timer;
   int _timeLeft = 300; // 5 minutes in seconds
 
@@ -76,7 +76,6 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
     if (result['success'] == true && result['verified'] == true) {
       _timer?.cancel();
       // Store verified email
-      _verifiedEmail = email;
       // Verification successful, proceed to password setup
       developer.log('[MobileAuth] Email verified successfully: $email', name: 'MobileAuth');
       developer.log('[MobileAuth] Proceeding to password setup with Country=${widget.countryCode}, Region=${widget.regionName}, District=${widget.districtName}', name: 'MobileAuth');

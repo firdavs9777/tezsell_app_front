@@ -9,7 +9,6 @@ class WebSocketService {
 
   WebSocketChannel? _channel;
   StreamController<Map<String, dynamic>>? _messageController;
-  String? _currentEndpoint;
   bool _isConnecting = false;
   bool _isConnected = false;
 
@@ -29,8 +28,7 @@ class WebSocketService {
 
     try {
       _isConnecting = true;
-      _currentEndpoint = endpoint;
-
+  
       await disconnect();
       _messageController = StreamController<Map<String, dynamic>>.broadcast();
 
@@ -78,7 +76,6 @@ class WebSocketService {
                   final lastMsg = firstRoom['last_message'];
 
                   if (lastMsg is Map && lastMsg.containsKey('content')) {
-                    final content = lastMsg['content'];
                   }
                 } else if (firstRoom.containsKey('last_message_preview')) {
                 }
@@ -125,7 +122,6 @@ class WebSocketService {
 
         // 🔥 Check if message contains Korean characters
         if (message.containsKey('message') || message.containsKey('content')) {
-          final content = message['message'] ?? message['content'];
         }
 
         _channel!.sink.add(jsonMessage);

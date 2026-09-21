@@ -93,8 +93,6 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
   final Set<String>? _notificationTypes;
   Timer? _refreshTimer;
   StreamSubscription<NotificationModel>? _webSocketSubscription;
-  final NotificationService _notificationService = NotificationService();
-
   /// A provider is "global" (owns the OS badge, all-notifications view) only
   /// when it has neither a single-type nor a multi-type filter.
   bool get _isGlobal => _notificationType == null && _notificationTypes == null;
@@ -102,7 +100,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
   /// Does [type] belong to this provider's scope?
   bool _matchesType(String? type) {
     if (_notificationTypes != null) {
-      return type != null && _notificationTypes!.contains(type);
+      return type != null && _notificationTypes.contains(type);
     }
     return _notificationType == null || type == _notificationType;
   }

@@ -238,35 +238,6 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)?.error ?? 'Error'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (selectedCountry != null) {
-                  fetchRegions(selectedCountry!.code);
-                }
-              },
-              child: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _filterCities(String searchText) {
     setState(() {
       filteredCities = cities

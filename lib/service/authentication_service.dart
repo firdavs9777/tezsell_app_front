@@ -461,43 +461,49 @@ class AuthenticationService {
         );
       } else {
         parseTimer.stop();
+        if (!context.mounted) return null;
         _handleHttpError(context, response.statusCode, response.body);
         return null;
       }
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       totalTimer.stop();
       _logTiming('FAILED - Timeout', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {}
+      if (!context.mounted) return null;
       _showError(
         context,
         'Request timed out. Please check your internet connection and try again.',
       );
       return null;
-    } on SocketException catch (e) {
+    } on SocketException {
       totalTimer.stop();
       _logTiming('FAILED - Network Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {}
+      if (!context.mounted) return null;
       _showError(
         context,
         'No internet connection. Please check your network and try again.',
       );
       return null;
-    } on FormatException catch (e) {
+    } on FormatException {
       totalTimer.stop();
       _logTiming('FAILED - Parse Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {}
+      if (!context.mounted) return null;
       _showError(context, 'Invalid response from server. Please try again.');
       return null;
-    } on HttpException catch (e) {
+    } on HttpException {
       totalTimer.stop();
       _logTiming('FAILED - HTTP Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {}
+      if (!context.mounted) return null;
       _showError(context, 'Server error. Please try again later.');
       return null;
     } catch (error) {
       totalTimer.stop();
       _logTiming('FAILED - Unknown Error', totalTimer.elapsed.inMilliseconds);
       if (kDebugMode) {}
+      if (!context.mounted) return null;
       _showError(context, 'An unexpected error occurred. Please try again.');
       return null;
     }
@@ -506,30 +512,11 @@ class AuthenticationService {
   void _printNetworkAnalysis(int networkTime, int totalTime) {
     if (!kDebugMode) return;
 
-    // Performance rating
-    String networkRating;
-    if (networkTime < 500)
-      networkRating = '🟢 Excellent';
-    else if (networkTime < 1000)
-      networkRating = '🟡 Good';
-    else if (networkTime < 2000)
-      networkRating = '🟠 Fair';
-    else
-      networkRating = '🔴 Slow';
   }
 
   void _logTiming(String operation, int milliseconds) {
     if (!kDebugMode) return;
 
-    String emoji;
-    if (milliseconds < 100)
-      emoji = '🟢';
-    else if (milliseconds < 500)
-      emoji = '🟡';
-    else if (milliseconds < 2000)
-      emoji = '🟠';
-    else
-      emoji = '🔴';
   }
 
   void _handleHttpError(

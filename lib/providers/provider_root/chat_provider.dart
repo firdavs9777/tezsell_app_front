@@ -470,7 +470,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // Fallback to old endpoint
       print('🔍 [ChatProvider] Trying fallback getOrCreateDirectChat API...');
       final chatRoom = await _apiService.getOrCreateDirectChat(targetUserId);
-      print('✅ [ChatProvider] Fallback returned: ${chatRoom?.id}');
+      print('✅ [ChatProvider] Fallback returned: ${chatRoom.id}');
 
       // Reload chat list
       await loadChatRooms();
@@ -907,7 +907,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   Future<void> connectToChatRoom(int roomId) async {
 
     // 🔥 IMPORTANT: Ensure chat list is still connected
-    if (_chatListWS == null || _chatListWS!.isConnected == null) {
+    if (_chatListWS == null || !_chatListWS!.isConnected) {
 
       await _connectToChatList();
     }
@@ -1081,7 +1081,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
 
       // Upload image via API
-      final message = await _apiService.sendImageMessage(imageFile, roomId);
+      await _apiService.sendImageMessage(imageFile, roomId);
 
       // 🔥 FIX: Don't add message here - it will come via WebSocket
       // This prevents double messages. Only add if WebSocket fails to deliver
@@ -1114,7 +1114,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
 
       // Upload voice via API
-      final message = await _apiService.sendVoiceMessage(
+      await _apiService.sendVoiceMessage(
         audioFile,
         roomId,
         duration,
@@ -1515,10 +1515,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
             }
           }
 
-          // 🔥 DEBUG: Log unread counts
-          for (var room in chatRooms) {
-          }
-
           // 🔥 NEW: Filter blocked users (backend already filters, but double-check)
           final blockedUserIds = state.blockedUserIds;
           final filteredRooms = chatRooms.where((room) {
@@ -1536,7 +1532,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
           if (filteredRooms.isNotEmpty) {
 
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
 
         }
         break;
@@ -1765,7 +1761,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
         try {
 
           final userId = data['user_id'] as int?;
-          final username = data['username'] as String?;
           final isTyping = data['is_typing'] as bool? ?? false;
 
           if (userId != null) {
@@ -1803,7 +1798,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
           } else {
 
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
 
         }
         break;
@@ -1916,8 +1911,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // 🔥 NEW: WebRTC signaling
       case 'webrtc_signal':
         try {
-          final signalType = data['signal_type'] as String?;
-          final signalData = data['data'] as Map<String, dynamic>?;
 
           // Handle WebRTC signaling (offer, answer, ice-candidate)
           // This would typically be handled by a WebRTC service
@@ -1947,7 +1940,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
         try {
           print('📬 [ChatProvider] Message status update: $data');
           final messageId = data['message_id'] as int? ?? data['id'] as int?;
-          final status = data['status'] as String? ?? data['delivery_status'] as String?;
           final isRead = data['is_read'] as bool?;
           final readBy = data['read_by'] as List?;
 
@@ -2154,13 +2146,18 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
 
     // Use API to send message with reply
-    _apiService.sendMessageWithReply(
+    _apiService
+        .sendMessageWithReply(
       state.currentChatRoomId!,
       trimmedContent,
       replyToMessageId,
-    ).catchError((e) {
-      _safeUpdateState((s) => s.copyWith(error: 'Failed to send message: $e'));
-    });
+    )
+        .then(
+      (_) {},
+      onError: (Object e) {
+        _safeUpdateState((s) => s.copyWith(error: 'Failed to send message: $e'));
+      },
+    );
   }
 
   // 🔥 NEW: Edit message
@@ -2429,7 +2426,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(blockedUserIds: updatedBlockedIds));
       
       // Remove blocked user's chat rooms immediately
-      final roomsBefore = state.chatRooms.length;
       final updatedRooms = state.chatRooms.where((room) {
         if (!room.isGroup) {
           // For direct chats, check if the other participant is the blocked user

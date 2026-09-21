@@ -132,6 +132,7 @@ class _AdminContentPageState extends ConsumerState<AdminContentPage> {
           _loadContent();
         }
       } catch (e) {
+        if (!mounted) return;
         AppErrorHandler.showError(context, e);
       }
     }

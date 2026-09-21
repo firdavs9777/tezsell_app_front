@@ -88,6 +88,7 @@ class _TownsListState extends State<TownsList> {
         setState(() {
           isLoading = false;
         });
+        if (!mounted) return;
         _showErrorDialog(
           AppLocalizations.of(
                 context,
@@ -100,6 +101,7 @@ class _TownsListState extends State<TownsList> {
       setState(() {
         isLoading = false;
       });
+      if (!mounted) return;
       _showErrorDialog(
         AppLocalizations.of(context)?.failedToLoadData(error.toString()) ??
             'Failed to load data. Error: $error',
@@ -314,6 +316,7 @@ class _TownsListState extends State<TownsList> {
 
     if (confirm ?? false) {
       developer.log('[TownsList] User confirmed: Country=${widget.countryCode}, Region=${widget.city_name}, District=${district.name}', name: 'TownsList');
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(

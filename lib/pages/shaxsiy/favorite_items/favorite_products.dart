@@ -1,4 +1,3 @@
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -23,17 +22,6 @@ class _FavoriteProductsState extends ConsumerState<FavoriteProducts> {
   void initState() {
     super.initState();
     _products = List.from(widget.products);
-  }
-
-  void _deleteProduct(int index) {
-    setState(() {
-      _products.removeAt(index);
-    });
-  }
-
-  void _editProduct(int index) {
-    // Navigate to the edit product screen (implement ProductEdit page)
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEdit(product: _products[index])));
   }
 
   @override

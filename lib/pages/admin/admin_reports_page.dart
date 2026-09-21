@@ -93,6 +93,7 @@ class _AdminReportsPageState extends ConsumerState<AdminReportsPage> {
         _loadReports();
       }
     } catch (e) {
+      if (!mounted) return;
       AppErrorHandler.showError(context, e);
     }
   }

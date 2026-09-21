@@ -49,8 +49,9 @@ class ServiceDetailProviderSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    provider.username ??
-                        (localizations?.service_provider ?? 'Provider'),
+                    provider.username.isEmpty
+                        ? (localizations?.service_provider ?? 'Provider')
+                        : provider.username,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: colorScheme.onSurface,
@@ -58,8 +59,9 @@ class ServiceDetailProviderSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    provider.location.region ??
-                        (localizations?.searchLocation ?? 'Location'),
+                    provider.location.region.isEmpty
+                        ? (localizations?.searchLocation ?? 'Location')
+                        : provider.location.region,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),

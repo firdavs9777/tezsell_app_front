@@ -1,4 +1,3 @@
-import 'package:app/constants/constants.dart';
 import 'package:app/pages/chat/chat_room.dart';
 import 'package:app/pages/products/main_products.dart';
 import 'package:app/providers/provider_models/offer_model.dart';
@@ -22,7 +21,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/product_model.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
@@ -107,12 +105,12 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
       case 'uz':
-        return widget.product.category?.nameUz ?? '';
+        return widget.product.category.nameUz;
       case 'ru':
-        return widget.product.category?.nameRu ?? '';
+        return widget.product.category.nameRu;
       case 'en':
       default:
-        return widget.product.category?.nameEn ?? '';
+        return widget.product.category.nameEn;
     }
   }
 
@@ -177,7 +175,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   Future<void> _startChat() async {
     final targetUserId = widget.product.userName.id;
-    final userName = widget.product.userName.username ?? 'Seller';
+    final rawUserName = widget.product.userName.username;
+    final userName = rawUserName.isEmpty ? 'Seller' : rawUserName;
     final localizations = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -215,6 +214,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     }
 
     // Show Carrot-style loading bottom sheet
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       isDismissible: false,
@@ -376,14 +376,14 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         final product = await ref
             .read(profileServiceProvider)
             .dislikeProductItem(productId: widget.product.id.toString());
-        if (product != null && mounted) {
+        if (mounted) {
           setState(() => _currentProduct = product);
         }
       } else {
         final product = await ref
             .read(profileServiceProvider)
             .likeSingleProduct(productId: widget.product.id.toString());
-        if (product != null && mounted) {
+        if (mounted) {
           setState(() => _currentProduct = product);
         }
       }
@@ -402,7 +402,6 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     // 🔥 NEW: Hide the "Chat with seller" button on the seller's own listing
@@ -637,7 +636,8 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     // no reviews) when absent, e.g. against a backend that hasn't shipped
     // the `seller` block yet.
     final trust = widget.product.seller;
-    final avatarUrl = trust?.avatarUrl ?? seller.profileImage?.image;
+    final avatarUrl = trust?.avatarUrl ??
+        (seller.profileImage.image.isEmpty ? null : seller.profileImage.image);
 
     return InkWell(
       onTap: sellerId > 0 ? () => context.push('/user/$sellerId') : null,
@@ -682,7 +682,9 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    seller.username ?? (localizations?.username ?? 'Unknown'),
+                    seller.username.isEmpty
+                        ? (localizations?.username ?? 'Unknown')
+                        : seller.username,
                     style: textTheme.titleSmall,
                   ),
                   const SizedBox(height: 6),
@@ -756,7 +758,9 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         children: [
           // Title
           Text(
-            product.title ?? (localizations?.newProductTitle ?? 'No Title'),
+            product.title.isEmpty
+                ? (localizations?.newProductTitle ?? 'No Title')
+                : product.title,
             style: textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
@@ -841,8 +845,9 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
           ),
           const SizedBox(height: 12),
           Text(
-            widget.product.description ??
-                (localizations?.newProductDescription ?? 'No description'),
+            widget.product.description.isEmpty
+                ? (localizations?.newProductDescription ?? 'No description')
+                : widget.product.description,
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withValues(alpha: 0.85),
             ),

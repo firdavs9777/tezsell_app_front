@@ -22,13 +22,13 @@ class Comments {
 
   factory Comments.fromJson(Map<String, dynamic> json) {
     return Comments(
-      id: json['id'],
-      text: json['text'],
-      user: UserInfo.fromJson(json['user']),
+      id: json['id'] ?? 0,
+      text: json['text'] ?? '',
+      user: UserInfo.fromJson(json['user'] ?? {}),
       service_id: json['service_id'] != null
           ? int.tryParse(json['service_id'].toString()) ?? 0
           : 0,
-      created_at: json['created_at'],
+      created_at: json['created_at'] ?? '',
       repliesCount: json['replies_count'] ?? 0, // Add this
       replies: json['replies'] != null
           ? (json['replies'] as List)

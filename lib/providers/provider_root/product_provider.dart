@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -92,23 +91,9 @@ class ProductsService {
           handler.next(options);
         },
         onResponse: (response, handler) {
-          final start = response.requestOptions.extra['request_start'] as int?;
-          if (start != null) {
-            final duration = DateTime.now().millisecondsSinceEpoch - start;
-            final emoji = duration < 1000
-                ? '🟢'
-                : duration < 3000
-                    ? '🟡'
-                    : '🔴';
-          }
           handler.next(response);
         },
         onError: (error, handler) {
-          final start = error.requestOptions.extra['request_start'] as int?;
-          if (start != null) {
-            final duration = DateTime.now().millisecondsSinceEpoch - start;
-          }
-
           // Auto-retry on timeout or connection errors
           final shouldRetry =
               error.type == DioExceptionType.connectionTimeout ||
@@ -281,7 +266,6 @@ class ProductsService {
           errorMessage = 'SSL certificate error';
           break;
         case DioExceptionType.unknown:
-        default:
           errorMessage = 'Network error: ${e.message ?? 'Unknown error'}';
       }
 
@@ -1101,16 +1085,6 @@ class ProductsService {
   // Performance logging helper
   void _logPerformance(String operation, int milliseconds) {
     if (!kDebugMode) return;
-
-    String emoji;
-    if (milliseconds < 200)
-      emoji = '🟢';
-    else if (milliseconds < 1000)
-      emoji = '🟡';
-    else if (milliseconds < 3000)
-      emoji = '🟠';
-    else
-      emoji = '🔴';
 
   }
 

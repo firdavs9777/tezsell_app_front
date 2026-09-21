@@ -57,30 +57,33 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
   final picker = ImagePicker();
 
   void _initializeFields() {
-    _titleController.text = widget.product.title ?? '';
-    _descriptionController.text = widget.product.description ?? '';
+    _titleController.text = widget.product.title;
+    _descriptionController.text = widget.product.description;
 
     // Handle price conversion safely - price is a String
-    final int price = int.tryParse(widget.product.price.toString() ?? '0') ?? 0;
+    final int price = int.tryParse(widget.product.price.toString()) ?? 0;
     _amountController.text = _formatter.format(price);
 
     selectedCategory = widget.product.category.id;
-    selectedCondition = widget.product.condition ?? 'new';
+    selectedCondition = widget.product.condition.isEmpty
+        ? 'new'
+        : widget.product.condition;
 
     // Handle currency mapping - convert "So'm" to "Sum" if needed
-    String productCurrency = widget.product.currency ?? 'Sum';
+    String productCurrency =
+        widget.product.currency.isEmpty ? 'Sum' : widget.product.currency;
     if (productCurrency == "So'm" || productCurrency == 'So`m') {
       productCurrency = 'Sum';
     }
     selectedCurrency = productCurrency;
 
-    inStock = widget.product.inStock ?? true;
+    inStock = widget.product.inStock;
 
     // Initialize existing images with better tracking
     _existingImages = widget.product.images
         .map((img) => ExistingImageData(
-              id: img.id ?? 0,
-              imageUrl: img.image ?? '',
+              id: img.id,
+              imageUrl: img.image,
               isDeleted: false,
             ))
         .toList();
@@ -108,6 +111,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
         availableCategories = categories;
       });
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error loading categories: $e'),
@@ -126,6 +130,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
         final maxNewImages = 10 - currentImageCount;
 
         if (pickedFiles.length > maxNewImages) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -147,6 +152,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
               _getActiveExistingImagesCount() + _newImages.length;
 
           if (currentImageCount >= 10) {
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Maximum 10 images allowed.'),
@@ -162,6 +168,7 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
         }
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error picking images: $e'),
@@ -249,6 +256,11 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
       return;
     }
 
+    // Captured before the await: the success path pops this route, and a
+    // messenger looked up afterwards would resolve against a defunct context
+    // (the snackbar simply never appeared).
+    final messenger = ScaffoldMessenger.of(context);
+
     try {
       final activeExistingImageIds = _getActiveExistingImageIds();
 
@@ -268,14 +280,16 @@ class _ProductEditState extends ConsumerState<ProductEdit> {
                     : null,
               );
 
-      // Pop back to parent screen with success result
-      Navigator.pop(context, updatedProduct);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      messenger.showSnackBar(const SnackBar(
         content: Text('Product successfully updated'),
         duration: Duration(seconds: 3),
       ));
-        } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+      // Pop back to parent screen with success result
+      if (!mounted) return;
+      Navigator.pop(context, updatedProduct);
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(
         content: Text('Error while updating product: $e'),
         duration: const Duration(seconds: 3),
       ));

@@ -242,7 +242,6 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

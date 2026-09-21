@@ -831,7 +831,7 @@ class ChatMessage {
           }
 
           replyToMessage = ChatMessage.fromJson(replyToData);
-        } catch (e, stackTrace) {
+        } catch (e) {
           // If parsing fails, replyToMessage will remain null
         }
       } else if (json['reply_to'] is int) {

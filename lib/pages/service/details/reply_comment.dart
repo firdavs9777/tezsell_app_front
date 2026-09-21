@@ -67,7 +67,10 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.replying_to(widget.parentComment.user.username ?? l10n.anonymous),
+                    l10n.replying_to(
+                        widget.parentComment.user.username.isEmpty
+                            ? l10n.anonymous
+                            : widget.parentComment.user.username),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
@@ -107,7 +110,9 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.parentComment.user.username ?? l10n.anonymous,
+                          widget.parentComment.user.username.isEmpty
+                              ? l10n.anonymous
+                              : widget.parentComment.user.username,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,

@@ -109,8 +109,9 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
       });
     } catch (e) {
       setState(() => _isLoading = false);
+      if (!mounted) return;
       final localizations = AppLocalizations.of(context);
-      if (mounted) {
+      {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

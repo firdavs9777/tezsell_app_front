@@ -7,7 +7,6 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/service/chat_api_service.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/pages/real_estate/property_inquiry_dialog.dart';
 import 'package:app/pages/chat/chat_room.dart' show ChatRoomScreen;
 import 'package:app/config/app_config.dart';
 import 'package:app/service/token_store.dart';
@@ -364,6 +363,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     }
 
     // Show loading bottom sheet
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       isDismissible: false,
@@ -447,20 +447,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     }
   }
 
-  void _showInquiryDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => PropertyInquiryDialog(
-        propertyId: property!.id,
-        propertyTitle: property!.title,
-      ),
-    ).then((success) {
-      if (success == true) {
-        HapticFeedback.mediumImpact();
-      }
-    });
-  }
-
   Future<void> _showReportDialog() async {
     if (property == null) return;
 
@@ -510,7 +496,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
     final imageUrls = images.map((img) => img.image).toList();
 
@@ -759,7 +744,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ),
             ListTile(
               leading: Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.error),
-              title: Text(l10n.reportProduct ?? 'Report Property'),
+              title: Text(l10n.reportProduct),
               onTap: () {
                 Navigator.pop(context);
                 _showReportDialog();
@@ -796,7 +781,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               Icon(Icons.error_outline, size: 64, color: colorScheme.onSurfaceVariant),
               SizedBox(height: 16),
               Text(
-                l10n.loading_property_not_found ?? 'Property not found',
+                l10n.loading_property_not_found,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
@@ -804,8 +789,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ),
               SizedBox(height: 8),
               Text(
-                l10n.loading_property_not_found_message ??
-                    'The property you are looking for does not exist or has been removed.',
+                l10n.loading_property_not_found_message,
                 style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
@@ -813,7 +797,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
-                  l10n.loading_back_to_properties ?? 'Back to Properties',
+                  l10n.loading_back_to_properties,
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: colorScheme.primary,
                   ),
@@ -924,8 +908,8 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                     SizedBox(height: 2),
                     Text(
                       isAgent
-                          ? (l10n.contact_modal_agent ?? 'Agent')
-                          : (l10n.contact_property_owner ?? 'Property Owner'),
+                          ? l10n.contact_modal_agent
+                          : l10n.contact_property_owner,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -949,7 +933,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       color: colorScheme.surface,
@@ -1006,11 +989,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           ),
 
           // Price per sqm
-          if (property!.pricePerSqm != null &&
-              property!.pricePerSqm.isNotEmpty) ...[
+          if (property!.pricePerSqm.isNotEmpty) ...[
             SizedBox(height: 4),
             Text(
-              '${property!.pricePerSqm} ${property!.currency}${l10n.property_info_price_per_sqm ?? "/m²"}',
+              '${property!.pricePerSqm} ${property!.currency}${l10n.property_info_price_per_sqm}',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -1430,7 +1412,6 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   Widget _buildCarrotBottomBar(BuildContext context, AppLocalizations l10n) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     // 🔥 NEW: Hide the "Contact" button on your own listing
     final currentUserId = ref.watch(chatProvider).currentUserId;
     // Use `owner.id` (the actual user account), not `agent.id` (the

@@ -450,7 +450,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
               await ref
                   .read(chatProvider.notifier)
                   .updateRoomState(chatRoom.id, isArchived: !isArchived);
-              if (mounted) {
+              if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(isArchived ? l.chatUnarchive : l.chatArchive),
@@ -515,7 +515,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
 
     final success =
         await ref.read(chatProvider.notifier).deleteChatRoom(chatRoom.id);
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(

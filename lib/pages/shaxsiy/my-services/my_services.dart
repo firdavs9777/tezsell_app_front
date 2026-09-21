@@ -22,7 +22,6 @@ class _MyServicesState extends ConsumerState<MyServices> {
   bool _isLoadingMore = false;
   bool _hasMore = true;
   bool _hasChanges = false;
-  int _currentPage = 1;
   static const int _pageSize = 20;
 
   @override
@@ -54,8 +53,7 @@ class _MyServicesState extends ConsumerState<MyServices> {
     try {
       setState(() {
         _isLoading = true;
-        _currentPage = 1;
-        _services.clear();
+            _services.clear();
       });
 
       // includeInactive: the owner needs to see their own hidden services

@@ -116,51 +116,6 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
   }
   
   // 🔥 NEW: Block/unblock user
-  Future<void> _toggleBlockUser(User user, bool isBlocked) async {
-    // Get localization before async operation
-    final l = AppLocalizations.of(context);
-
-    try {
-      if (isBlocked) {
-        await ref.read(chatProvider.notifier).unblockUser(user.id);
-        if (mounted) {
-          final message = l?.user_unblocked(user.username) ?? 'User ${user.username} unblocked';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? Theme.of(context).colorScheme.primary
-                  : const Color(0xFF43A047),
-            ),
-          );
-        }
-      } else {
-        await ref.read(chatProvider.notifier).blockUser(user.id);
-        if (mounted) {
-          final message = l?.user_blocked(user.username) ?? 'User ${user.username} blocked';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              backgroundColor: Theme.of(context).colorScheme.tertiary,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        final errorMessage = isBlocked
-            ? (l?.failed_to_unblock ?? 'Failed to unblock user')
-            : (l?.failed_to_block ?? 'Failed to block user');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-    }
-  }
-
   // 🔥 NEW: Start chat from search result
   Future<void> _startChatFromSearch(Map<String, dynamic> searchResult) async {
     if (_isCreatingChat) return;
@@ -943,50 +898,4 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
   }
 
   // 🔥 NEW: Show block confirmation dialog
-  void _showBlockDialog(User user) {
-    final isBlocked = ref.read(chatProvider).blockedUserIds.contains(user.id);
-
-    // Get localization before showing dialog (to avoid null context issues)
-    final l = AppLocalizations.of(context);
-    final titleText = isBlocked
-        ? (l?.unblock_user ?? 'Unblock User')
-        : (l?.block_user ?? 'Block User');
-    final contentText = isBlocked
-        ? (l?.unblock_user_confirm(user.username) ?? 'Unblock ${user.username}?')
-        : (l?.block_user_confirm(user.username) ?? 'Block ${user.username}?');
-    final cancelText = l?.cancel ?? 'Cancel';
-    final actionText = titleText;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(titleText),
-          content: Text(contentText),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(cancelText),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(dialogContext);
-                await _toggleBlockUser(user, isBlocked);
-              },
-              child: Text(
-                actionText,
-                style: TextStyle(
-                  color: isBlocked
-                      ? (Theme.of(dialogContext).brightness == Brightness.dark
-                          ? Theme.of(dialogContext).colorScheme.primary
-                          : const Color(0xFF43A047))
-                      : Theme.of(dialogContext).colorScheme.error,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

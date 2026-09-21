@@ -24,12 +24,12 @@ class PropertyMapWidget extends StatefulWidget {
 
 class _PropertyMapWidgetState extends State<PropertyMapWidget> {
   double? get _latitude {
-    final lat = double.tryParse(widget.property.latitude ?? '0');
+    final lat = double.tryParse(widget.property.latitude);
     return (lat != null && lat != 0.0) ? lat : null;
   }
 
   double? get _longitude {
-    final lng = double.tryParse(widget.property.longitude ?? '0');
+    final lng = double.tryParse(widget.property.longitude);
     return (lng != null && lng != 0.0) ? lng : null;
   }
 
@@ -162,53 +162,6 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
     );
   }
 
-  Widget _buildFallbackMap() {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.map, size: 64, color: colorScheme.onSurfaceVariant),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                widget.property.address,
-                style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${widget.property.district}, ${widget.property.city}',
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _openInMaps,
-              icon: const Icon(Icons.directions, size: 18),
-              label: const Text('Open in Maps'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildNoLocationView() {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
@@ -256,12 +209,12 @@ class FullscreenMapModal extends StatelessWidget {
   }) : super(key: key);
 
   double? get _latitude {
-    final lat = double.tryParse(property.latitude ?? '0');
+    final lat = double.tryParse(property.latitude);
     return (lat != null && lat != 0.0) ? lat : null;
   }
 
   double? get _longitude {
-    final lng = double.tryParse(property.longitude ?? '0');
+    final lng = double.tryParse(property.longitude);
     return (lng != null && lng != 0.0) ? lng : null;
   }
 

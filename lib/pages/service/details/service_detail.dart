@@ -100,12 +100,12 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     final locale = Localizations.localeOf(context).languageCode;
     switch (locale) {
       case 'uz':
-        return widget.service.category.nameUz ?? '';
+        return widget.service.category.nameUz;
       case 'ru':
-        return widget.service.category.nameRu ?? '';
+        return widget.service.category.nameRu;
       case 'en':
       default:
-        return widget.service.category.nameEn ?? '';
+        return widget.service.category.nameEn;
     }
   }
 
@@ -169,7 +169,8 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
 
   Future<void> _startChat() async {
     final targetUserId = widget.service.userName.id;
-    final userName = widget.service.userName.username ?? 'Service Provider';
+    final rawUserName = widget.service.userName.username;
+    final userName = rawUserName.isEmpty ? 'Service Provider' : rawUserName;
     final localizations = AppLocalizations.of(context);
 
     await ref.read(chatProvider.notifier).initialize();
@@ -206,6 +207,7 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
     }
 
     // Show Carrot-style loading bottom sheet
+    if (!mounted) return;
     showModalBottomSheet(
       context: context,
       isDismissible: false,
@@ -368,13 +370,15 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
               serviceId: widget.service.id.toString(),
               commentId: editingComment!.id.toString(),
             );
-        ref.refresh(commentsServiceProvider);
+        ref.invalidate(commentsServiceProvider);
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.commentUpdatedSuccess), backgroundColor: Colors.green),
         );
         _cancelEditingComment();
         _fetchSingleService();
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${l10n.errorUpdatingComment}: $e'), backgroundColor: Colors.red),
         );
@@ -427,12 +431,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
             serviceId: widget.service.id.toString(),
             commentId: comment.id.toString(),
           );
-      ref.refresh(commentsServiceProvider);
+      ref.invalidate(commentsServiceProvider);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.commentDeletedSuccess), backgroundColor: Colors.green),
       );
       _fetchSingleService();
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${l10n.errorDeletingComment}: $e'), backgroundColor: Colors.red),
       );
@@ -441,7 +447,6 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final service = _serviceData ?? widget.service;
@@ -499,9 +504,9 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
                 _buildDivider(),
                 // Comments section
                 CommentsMain(
-                  key: ValueKey(service.comments.length ?? 0),
+                  key: ValueKey(service.comments.length),
                   id: service.id.toString(),
-                  comments: service.comments ?? [],
+                  comments: service.comments,
                   onEditComment: _startEditingComment,
                   onDeleteComment: _deleteComment,
                   onReplyComment: _startReplyingToComment,
@@ -598,7 +603,9 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
         children: [
           // Title
           Text(
-            service.name ?? (localizations?.newProductTitle ?? 'No Title'),
+            service.name.isEmpty
+                ? (localizations?.newProductTitle ?? 'No Title')
+                : service.name,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: colorScheme.onSurface,
@@ -676,7 +683,9 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           ),
           const SizedBox(height: 12),
           Text(
-            service.description ?? (localizations?.newProductDescription ?? 'No description'),
+            service.description.isEmpty
+                ? (localizations?.newProductDescription ?? 'No description')
+                : service.description,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withValues(alpha: 0.85),
               height: 1.6,
@@ -697,14 +706,14 @@ class _ServiceDetailState extends ConsumerState<ServiceDetail> {
           Icon(Icons.favorite_border, size: 16, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 4),
           Text(
-            '${service.likeCount ?? 0}',
+            '${service.likeCount}',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 16),
           Icon(Icons.chat_bubble_outline, size: 16, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 4),
           Text(
-            '${service.comments.length ?? 0}',
+            '${service.comments.length}',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
         ],

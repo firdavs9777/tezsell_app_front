@@ -1,23 +1,17 @@
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/providers/provider_root/product_provider.dart';
 import 'package:app/config/app_router.dart';
 import 'package:app/widgets/cached_network_image_widget.dart';
-import 'package:app/utils/currency_utils.dart';
 import 'package:app/utils/image_utils.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/widgets/distance_chip.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class ProductMain extends ConsumerWidget {
   final Products product;
 
   const ProductMain({super.key, required this.product});
-
-  static final _priceFormatter = NumberFormat('#,##0', 'ko_KR');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -260,11 +254,6 @@ class ProductMain extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  String _getFormattedPrice() {
-    // Now using CurrencyUtils for proper formatting
-    return CurrencyUtils.formatPrice(product.price, currency: product.currency);
   }
 
   String _getLocationText() {

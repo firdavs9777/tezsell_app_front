@@ -69,9 +69,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     if (isLoggedIn) {
       AppLogger.info('User is logged in, navigating to main app');
-      if (context.mounted) {
-        context.go('/tabs');
-      }
+      if (!mounted) return;
+      context.go('/tabs');
     } else {
       // Skip the manual /language picker if the device locale is already one
       // of our 15 supported locales OR the user has previously made a manual
@@ -83,15 +82,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       final detectedSupported =
           detected != null && supportedLocaleCodes.contains(detected.languageCode);
 
-      if (context.mounted) {
-        if (hasManual || detectedSupported) {
-          AppLogger.info(
-              'Locale resolved (${detected?.languageCode}) — skipping language picker');
-          context.go('/welcome');
-        } else {
-          AppLogger.info('Locale not auto-resolvable — showing language picker');
-          context.go('/language');
-        }
+      if (!mounted) return;
+      if (hasManual || detectedSupported) {
+        AppLogger.info(
+            'Locale resolved (${detected?.languageCode}) — skipping language picker');
+        context.go('/welcome');
+      } else {
+        AppLogger.info('Locale not auto-resolvable — showing language picker');
+        context.go('/language');
       }
     }
   }

@@ -8,14 +8,12 @@ import 'package:app/utils/app_logger.dart';
 import 'package:app/utils/content_filter.dart';
 import 'package:app/widgets/maps/location_picker.dart';
 import 'package:dio/dio.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:io';
 
-import 'package:intl/intl.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 class ServiceNew extends ConsumerStatefulWidget {
@@ -27,8 +25,6 @@ class ServiceNew extends ConsumerStatefulWidget {
 
 class _ServiceNewState extends ConsumerState<ServiceNew> {
   final _formKey = GlobalKey<FormState>();
-  final _formatter = NumberFormat('#,##0', 'en_US');
-
   @override
   void initState() {
     super.initState();
@@ -106,6 +102,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       });
     } catch (e) {
       AppErrorHandler.logError('ServiceNew._fetchCategories', e);
+      if (!mounted) return;
       AppErrorHandler.showError(context, e);
     }
   }
@@ -214,6 +211,7 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
       }
     } catch (e) {
       AppErrorHandler.logError('ServiceNew._pickImage', e);
+      if (!mounted) return;
       AppErrorHandler.showError(context, e);
     }
   }
@@ -261,7 +259,6 @@ class _ServiceNewState extends ConsumerState<ServiceNew> {
     });
 
     // Store router reference BEFORE async operation
-    final router = GoRouter.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
