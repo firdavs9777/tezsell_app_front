@@ -9,6 +9,7 @@ import 'package:app/providers/provider_root/service_provider.dart';
 import 'package:app/providers/provider_root/verified_neighborhoods_provider.dart';
 import 'package:app/widgets/maps/neighborhood_verifier.dart';
 import 'package:flutter/material.dart';
+import 'package:app/providers/provider_root/map_tile_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -277,6 +278,7 @@ class _NeighborhoodManagementPageState
               TileLayer(
                 urlTemplate: mapsProvider.tileUrlTemplate,
                 userAgentPackageName: mapsProvider.userAgent,
+                tileProvider: ref.watch(mapTileProviderProvider),
               ),
               if (_currentPosition != null) ...[
                 CircleLayer(

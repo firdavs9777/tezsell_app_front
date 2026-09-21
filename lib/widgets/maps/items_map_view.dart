@@ -1,5 +1,6 @@
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:app/providers/provider_root/map_tile_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,6 +74,7 @@ class _ItemsMapViewState extends ConsumerState<ItemsMapView> {
             TileLayer(
               urlTemplate: mapsProvider.tileUrlTemplate,
               userAgentPackageName: mapsProvider.userAgent,
+              tileProvider: ref.watch(mapTileProviderProvider),
             ),
             MarkerClusterLayerWidget(
               options: MarkerClusterLayerOptions(

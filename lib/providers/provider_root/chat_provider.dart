@@ -45,6 +45,11 @@ class ChatState {
   final bool hasMoreMessages; // Whether there are more messages to load
   final bool isLoadingOlderMessages; // Loading older messages flag
 
+  // Chat-list pagination (separate from the message pagination above).
+  final int chatRoomsPage;
+  final bool hasMoreChatRooms;
+  final bool isLoadingMoreChatRooms;
+
   // 🔥 NEW: Task 19 — room management (mute/archive/pin) + quick replies
   final List<ChatRoom> archivedChatRooms;
   final bool isLoadingArchived;
@@ -71,6 +76,9 @@ class ChatState {
     this.hasMoreMessages = true,
     this.isLoadingOlderMessages = false,
     this.listingStatusOverrides = const {},
+    this.chatRoomsPage = 1,
+    this.hasMoreChatRooms = false,
+    this.isLoadingMoreChatRooms = false,
     this.archivedChatRooms = const [],
     this.isLoadingArchived = false,
     this.quickReplies = const [],
@@ -97,6 +105,9 @@ class ChatState {
     bool? hasMoreMessages,
     bool? isLoadingOlderMessages,
     Map<int, String>? listingStatusOverrides,
+    int? chatRoomsPage,
+    bool? hasMoreChatRooms,
+    bool? isLoadingMoreChatRooms,
     List<ChatRoom>? archivedChatRooms,
     bool? isLoadingArchived,
     List<QuickReply>? quickReplies,
@@ -123,6 +134,10 @@ class ChatState {
       hasMoreMessages: hasMoreMessages ?? this.hasMoreMessages,
       isLoadingOlderMessages: isLoadingOlderMessages ?? this.isLoadingOlderMessages,
       listingStatusOverrides: listingStatusOverrides ?? this.listingStatusOverrides,
+      chatRoomsPage: chatRoomsPage ?? this.chatRoomsPage,
+      hasMoreChatRooms: hasMoreChatRooms ?? this.hasMoreChatRooms,
+      isLoadingMoreChatRooms:
+          isLoadingMoreChatRooms ?? this.isLoadingMoreChatRooms,
       archivedChatRooms: archivedChatRooms ?? this.archivedChatRooms,
       isLoadingArchived: isLoadingArchived ?? this.isLoadingArchived,
       quickReplies: quickReplies ?? this.quickReplies,
@@ -499,7 +514,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
     try {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
 
-      final chatRooms = await _apiService.getChatRooms();
+      final page = await _apiService.getChatRoomsPage(page: 1);
+      final chatRooms = page.rooms;
 
       // 🔥 DEBUG: Log unread counts from API
       for (var room in chatRooms) {
@@ -512,6 +528,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
         // already orders pinned-first) supersedes the legacy client-local
         // `pinned_chats` SharedPreferences flag; no local pin overlay needed.
         chatRooms: chatRooms,
+        chatRoomsPage: page.page,
+        hasMoreChatRooms: page.hasMore,
+        isLoadingMoreChatRooms: false,
         // Fresh server data supersedes any local transaction-status
         // overrides — clear them so a stale override can't shadow the
         // listing status the backend just returned.
@@ -534,6 +553,45 @@ class ChatNotifier extends StateNotifier<ChatState> {
           error: e.toString(),
         ));
       }
+    }
+  }
+
+  /// Appends the next page of chat rooms. No-op while a page is already in
+  /// flight or when the server reported no `next`, so a scroll listener can
+  /// call it freely on every scroll event.
+  ///
+  /// Rooms already present are skipped by id: a room that gained a message
+  /// between two page fetches shifts position server-side (the list is
+  /// ordered by recent activity), which would otherwise re-deliver it on the
+  /// following page as a duplicate.
+  Future<void> loadMoreChatRooms() async {
+    if (!state.isAuthenticated) return;
+    if (state.isLoadingMoreChatRooms || !state.hasMoreChatRooms) return;
+
+    _safeUpdateState((s) => s.copyWith(isLoadingMoreChatRooms: true));
+
+    try {
+      final page = await _apiService.getChatRoomsPage(
+        page: state.chatRoomsPage + 1,
+      );
+
+      _safeUpdateState((s) {
+        final seen = s.chatRooms.map((r) => r.id).toSet();
+        final merged = [
+          ...s.chatRooms,
+          ...page.rooms.where((r) => seen.add(r.id)),
+        ];
+        return s.copyWith(
+          chatRooms: merged,
+          chatRoomsPage: page.page,
+          hasMoreChatRooms: page.hasMore,
+          isLoadingMoreChatRooms: false,
+        );
+      });
+    } catch (e) {
+      // Leave the already-loaded pages intact and stop auto-retrying; the
+      // next scroll (or a pull-to-refresh) can try again.
+      _safeUpdateState((s) => s.copyWith(isLoadingMoreChatRooms: false));
     }
   }
 

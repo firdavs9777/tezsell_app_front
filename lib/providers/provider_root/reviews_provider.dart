@@ -476,3 +476,16 @@ final userReviewsProvider =
   final service = ref.watch(reviewsServiceProvider);
   return service.getUserReviews(userId);
 });
+
+/// Bumped whenever a review is written ABOUT the keyed user, so any
+/// [ReviewsListView] currently showing that user's reviews reloads its first
+/// page instead of sitting on a list that no longer contains the newest
+/// entry.
+///
+/// A plain `ref.invalidate` can't do this job: `ReviewsListView` owns its
+/// pagination in local widget state and pulls pages straight off
+/// [reviewsServiceProvider], so there is no provider holding the list to
+/// invalidate. Keyed by the REVIEWED user's id (not the reviewer's) because
+/// that is whose public list changed.
+final reviewsRefreshTokenProvider =
+    StateProvider.family<int, int>((ref, userId) => 0);

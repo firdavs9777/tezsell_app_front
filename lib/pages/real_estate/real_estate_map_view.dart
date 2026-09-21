@@ -6,6 +6,7 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/widgets/maps/cluster_badge.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:app/providers/provider_root/map_tile_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -203,6 +204,7 @@ class _RealEstateMapViewState extends ConsumerState<RealEstateMapView> {
             TileLayer(
               urlTemplate: mapsProvider.tileUrlTemplate,
               userAgentPackageName: mapsProvider.userAgent,
+              tileProvider: ref.watch(mapTileProviderProvider),
             ),
             MarkerClusterLayerWidget(
               options: MarkerClusterLayerOptions(

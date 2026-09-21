@@ -1,5 +1,6 @@
 import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:app/providers/provider_root/map_tile_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -44,6 +45,7 @@ class MapView extends ConsumerWidget {
                 urlTemplate: provider.tileUrlTemplate,
                 subdomains: provider.tileSubdomains,
                 userAgentPackageName: provider.userAgent,
+                tileProvider: ref.watch(mapTileProviderProvider),
               ),
               if (mode == MapViewMode.approximate)
                 CircleLayer(

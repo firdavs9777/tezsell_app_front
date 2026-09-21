@@ -175,6 +175,10 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
       // already-reviewed transaction).
       ref.invalidate(pendingReviewsProvider);
       ref.invalidate(userTrustScoreProvider(review.reviewedUser.id));
+      // The public reviews list is paginated in local widget state rather
+      // than held by a provider, so it needs an explicit nudge to reload.
+      ref.read(reviewsRefreshTokenProvider(review.reviewedUser.id).notifier)
+          .state++;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

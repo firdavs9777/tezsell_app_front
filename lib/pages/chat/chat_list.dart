@@ -53,10 +53,15 @@ class _MessagesListState extends ConsumerState<MessagesList>
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
+  /// Drives chat-list load-more. The rooms list is server-paginated; this
+  /// fires when the user gets within a screenful of the bottom.
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _scrollController.addListener(_onScroll);
 
     Future.microtask(() {
       if (mounted) {
@@ -77,8 +82,20 @@ class _MessagesListState extends ConsumerState<MessagesList>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      // loadMoreChatRooms() self-guards on in-flight/exhausted, so calling it
+      // on every scroll tick near the bottom is safe.
+      ref.read(chatProvider.notifier).loadMoreChatRooms();
+    }
   }
 
   @override
@@ -265,17 +282,35 @@ class _MessagesListState extends ConsumerState<MessagesList>
                                 }
                               },
                               child: ListView.builder(
+                                controller: _scrollController,
                                 padding: const EdgeInsets.only(top: 4),
                                 // One extra trailing slot for the collapsed
                                 // "Archived" section, plus one leading slot
                                 // for the empty-state hero when there are no
-                                // active rooms at all.
+                                // active rooms at all, plus a load-more
+                                // spinner slot while the next page is in
+                                // flight.
                                 itemCount:
                                     (filteredRooms.isEmpty ? 1 : filteredRooms.length) +
-                                        1,
+                                        1 +
+                                        (chatState.isLoadingMoreChatRooms ? 1 : 0),
                                 itemBuilder: (context, index) {
                                   final archivedIndex =
                                       filteredRooms.isEmpty ? 1 : filteredRooms.length;
+                                  if (index > archivedIndex) {
+                                    return const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 16),
+                                      child: Center(
+                                        child: SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                   if (index == archivedIndex) {
                                     return _buildArchivedSection(
                                       context,

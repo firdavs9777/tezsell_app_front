@@ -20,6 +20,23 @@ class SelfChatException implements Exception {
   String toString() => message;
 }
 
+/// Default number of chat rooms fetched per page. Small enough that the
+/// first screenful arrives quickly; load-more covers the rest.
+const int defaultChatRoomsPageSize = 30;
+
+/// One page of chat rooms plus whether the server says more remain.
+class ChatRoomsPage {
+  const ChatRoomsPage({
+    required this.rooms,
+    required this.page,
+    required this.hasMore,
+  });
+
+  final List<ChatRoom> rooms;
+  final int page;
+  final bool hasMore;
+}
+
 /// 🔥 NEW: Result of `POST /chats/<id>/transaction/` (Task 13 — seller
 /// reserve/sold/available). `status` is the resulting listing status
 /// ('reserved'/'sold'/'available'), derived from the request `action` since
@@ -195,12 +212,18 @@ class ChatApiService {
     );
   }
 
-  // Get all chat rooms
-  Future<List<ChatRoom>> getChatRooms() async {
+  // Get one page of chat rooms. The backend paginates `/chats/` with the
+  // standard DRF `{count, next, previous, results}` envelope; `next` being
+  // non-null is what drives the client's load-more, so the page size no
+  // longer has to be inflated server-side to fit every room in one response.
+  Future<ChatRoomsPage> getChatRoomsPage({
+    int page = 1,
+    int pageSize = defaultChatRoomsPageSize,
+  }) async {
     try {
       final response = await _authedRequest(
         (headers) => http.get(
-          Uri.parse('$apiBaseUrl/chats/'),
+          Uri.parse('$apiBaseUrl/chats/?page=$page&page_size=$pageSize'),
           headers: headers,
         ),
       );
@@ -208,7 +231,11 @@ class ChatApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final results = data['results'] as List;
-        return results.map((json) => ChatRoom.fromJson(json)).toList();
+        return ChatRoomsPage(
+          rooms: results.map((json) => ChatRoom.fromJson(json)).toList(),
+          page: page,
+          hasMore: data['next'] != null,
+        );
       } else if (response.statusCode == 401) {
         throw Exception('Authentication failed');
       } else {
@@ -218,6 +245,13 @@ class ChatApiService {
 
       rethrow;
     }
+  }
+
+  // Get the first page of chat rooms. Kept as the simple entry point for
+  // callers that only ever want the top of the list.
+  Future<List<ChatRoom>> getChatRooms() async {
+    final page = await getChatRoomsPage();
+    return page.rooms;
   }
 
   // 🔥 NEW: Listing-anchored chat (Karrot-style "Chat with seller") — starts

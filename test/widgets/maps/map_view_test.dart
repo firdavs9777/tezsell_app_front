@@ -4,8 +4,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
+import '../../support/fake_tile_provider.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
+      // Serve tiles from memory — otherwise pumping a map fires real HTTP
+      // requests at tile.openstreetmap.org.
+      overrides: [fakeMapTilesOverride()],
       child: MaterialApp(home: Scaffold(body: child)),
     );
 

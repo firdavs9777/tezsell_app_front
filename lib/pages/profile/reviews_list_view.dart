@@ -155,6 +155,18 @@ class _ReviewsListViewState extends ConsumerState<ReviewsListView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    // Reload page 1 when a review is written about this user (see
+    // reviewsRefreshTokenProvider). _loadInitial() bumps _loadGeneration, so
+    // an in-flight load-more from the stale list is discarded rather than
+    // appended on top of the fresh page.
+    ref.listen<int>(
+      reviewsRefreshTokenProvider(widget.userId),
+      (previous, next) {
+        if (previous != next) _loadInitial();
+      },
+    );
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);

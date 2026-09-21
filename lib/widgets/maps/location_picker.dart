@@ -4,6 +4,7 @@ import 'package:app/providers/provider_root/maps_provider_provider.dart';
 import 'package:app/services/maps/maps_exceptions.dart';
 import 'package:app/widgets/maps/place_search_field.dart';
 import 'package:flutter/material.dart';
+import 'package:app/providers/provider_root/map_tile_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -134,6 +135,7 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
                 urlTemplate: provider.tileUrlTemplate,
                 subdomains: provider.tileSubdomains,
                 userAgentPackageName: provider.userAgent,
+                tileProvider: ref.watch(mapTileProviderProvider),
               ),
               MarkerLayer(markers: [
                 Marker(
