@@ -759,7 +759,10 @@ class _NeedsVerificationView extends StatelessWidget {
                       onDone: () => Navigator.of(ctx).pop(),
                     )),
               ),
-              child: const Text('Verify'),
+              child: Text(
+                AppLocalizations.of(context)?.verify_neighborhood_button ??
+                    'Verify',
+              ),
             ),
           ],
         ),

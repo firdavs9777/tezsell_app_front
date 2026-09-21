@@ -5053,4 +5053,137 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get imagesTooLargeSkipped =>
       'Некоторые изображения превышают 5МБ и были пропущены';
+
+  @override
+  String get reviewTagsPositiveHeading => 'Положительные';
+
+  @override
+  String get reviewTagsNegativeHeading => 'Нужно улучшить';
+
+  @override
+  String get reviewSentimentGood => 'Хорошо';
+
+  @override
+  String get reviewSentimentBad => 'Плохо';
+
+  @override
+  String get offerMakeTitle => 'Сделать предложение';
+
+  @override
+  String get offerSendButton => 'Отправить';
+
+  @override
+  String get offerDecline => 'Отклонить';
+
+  @override
+  String get offerCounter => 'Встречное';
+
+  @override
+  String get offerAccept => 'Принять';
+
+  @override
+  String get offerAcceptCounter => 'Принять встречное';
+
+  @override
+  String get offerCancelOffer => 'Отменить предложение';
+
+  @override
+  String get offerCounterTitle => 'Встречное предложение';
+
+  @override
+  String get offerSendCounter => 'Отправить встречное';
+
+  @override
+  String offerBuyerOffered(String price) {
+    return 'Покупатель предложил: $price сум';
+  }
+
+  @override
+  String offerAskingPrice(String price) {
+    return 'Запрашиваемая цена: $price сум';
+  }
+
+  @override
+  String get offerAcceptedMessage => 'Предложение принято!';
+
+  @override
+  String offerAcceptError(String error) {
+    return 'Не удалось принять предложение: $error';
+  }
+
+  @override
+  String get offerDeclinedMessage => 'Предложение отклонено';
+
+  @override
+  String offerDeclineError(String error) {
+    return 'Не удалось отклонить предложение: $error';
+  }
+
+  @override
+  String get offerCounterSentMessage => 'Встречное предложение отправлено!';
+
+  @override
+  String offerCounterSendError(String error) {
+    return 'Не удалось отправить встречное предложение: $error';
+  }
+
+  @override
+  String get offerCancelConfirmBody =>
+      'Вы уверены, что хотите отменить это предложение?';
+
+  @override
+  String get offerCancelConfirmYes => 'Да, отменить';
+
+  @override
+  String get offerCancelledMessage => 'Предложение отменено';
+
+  @override
+  String offerCancelError(String error) {
+    return 'Не удалось отменить предложение: $error';
+  }
+
+  @override
+  String get offerCounterAcceptedMessage => 'Встречное предложение принято!';
+
+  @override
+  String offerCounterAcceptError(String error) {
+    return 'Не удалось принять встречное предложение: $error';
+  }
+
+  @override
+  String get offersNoneReceivedTitle => 'Предложений нет';
+
+  @override
+  String get offersNoneReceivedSubtitle =>
+      'Когда покупатели предложат цену за ваши объявления, они появятся здесь';
+
+  @override
+  String get offersNoneSentTitle => 'Вы не отправляли предложений';
+
+  @override
+  String get offersNoneSentSubtitle =>
+      'Когда вы предложите цену за объявление, оно появится здесь';
+
+  @override
+  String offersSectionPending(int count) {
+    return 'Ожидают ($count)';
+  }
+
+  @override
+  String offersSectionHistory(int count) {
+    return 'История ($count)';
+  }
+
+  @override
+  String offersSectionActive(int count) {
+    return 'Активные ($count)';
+  }
+
+  @override
+  String get goBack => 'Назад';
+
+  @override
+  String routeLoadFailed(String error) {
+    return 'Не удалось загрузить: $error';
+  }
 }

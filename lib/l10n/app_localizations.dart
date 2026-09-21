@@ -9573,6 +9573,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some images exceed 5MB and were skipped'**
   String get imagesTooLargeSkipped;
+
+  /// Heading above the positive review-tag chips
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get reviewTagsPositiveHeading;
+
+  /// Heading above the negative review-tag chips
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Improvement'**
+  String get reviewTagsNegativeHeading;
+
+  /// Label on the positive sentiment button in the review form
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get reviewSentimentGood;
+
+  /// Label on the negative sentiment button in the review form
+  ///
+  /// In en, this message translates to:
+  /// **'Not Good'**
+  String get reviewSentimentBad;
+
+  /// Title of the make-an-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Make an Offer'**
+  String get offerMakeTitle;
+
+  /// Submit button in the make-an-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Send Offer'**
+  String get offerSendButton;
+
+  /// Decline an incoming offer
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get offerDecline;
+
+  /// Open the counter-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Counter'**
+  String get offerCounter;
+
+  /// Accept an incoming offer
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get offerAccept;
+
+  /// Accept the seller counter-offer
+  ///
+  /// In en, this message translates to:
+  /// **'Accept Counter'**
+  String get offerAcceptCounter;
+
+  /// Withdraw an offer you sent
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Offer'**
+  String get offerCancelOffer;
+
+  /// Title of the counter-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Counter Offer'**
+  String get offerCounterTitle;
+
+  /// Submit button in the counter-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Send Counter'**
+  String get offerSendCounter;
+
+  /// Shows the buyer original offer in the counter dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Buyer offered: {price} UZS'**
+  String offerBuyerOffered(String price);
+
+  /// Shows the listing asking price in the counter dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Asking price: {price} UZS'**
+  String offerAskingPrice(String price);
+
+  /// Snackbar after accepting an offer
+  ///
+  /// In en, this message translates to:
+  /// **'Offer accepted!'**
+  String get offerAcceptedMessage;
+
+  /// Snackbar when accepting an offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to accept offer: {error}'**
+  String offerAcceptError(String error);
+
+  /// Snackbar after declining an offer
+  ///
+  /// In en, this message translates to:
+  /// **'Offer declined'**
+  String get offerDeclinedMessage;
+
+  /// Snackbar when declining an offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to decline offer: {error}'**
+  String offerDeclineError(String error);
+
+  /// Snackbar after sending a counter-offer
+  ///
+  /// In en, this message translates to:
+  /// **'Counter offer sent!'**
+  String get offerCounterSentMessage;
+
+  /// Snackbar when sending a counter-offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send counter offer: {error}'**
+  String offerCounterSendError(String error);
+
+  /// Body of the cancel-offer confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this offer?'**
+  String get offerCancelConfirmBody;
+
+  /// Confirm button in the cancel-offer dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Cancel'**
+  String get offerCancelConfirmYes;
+
+  /// Snackbar after cancelling an offer
+  ///
+  /// In en, this message translates to:
+  /// **'Offer cancelled'**
+  String get offerCancelledMessage;
+
+  /// Snackbar when cancelling an offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to cancel offer: {error}'**
+  String offerCancelError(String error);
+
+  /// Snackbar after accepting a counter-offer
+  ///
+  /// In en, this message translates to:
+  /// **'Counter offer accepted!'**
+  String get offerCounterAcceptedMessage;
+
+  /// Snackbar when accepting a counter-offer fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to accept counter offer: {error}'**
+  String offerCounterAcceptError(String error);
+
+  /// Empty state title on the received-offers tab
+  ///
+  /// In en, this message translates to:
+  /// **'No offers received'**
+  String get offersNoneReceivedTitle;
+
+  /// Empty state subtitle on the received-offers tab
+  ///
+  /// In en, this message translates to:
+  /// **'When buyers make offers on your listings, they will appear here'**
+  String get offersNoneReceivedSubtitle;
+
+  /// Empty state title on the sent-offers tab
+  ///
+  /// In en, this message translates to:
+  /// **'No offers sent'**
+  String get offersNoneSentTitle;
+
+  /// Empty state subtitle on the sent-offers tab
+  ///
+  /// In en, this message translates to:
+  /// **'When you make offers on listings, they will appear here'**
+  String get offersNoneSentSubtitle;
+
+  /// Section header for pending offers with a count
+  ///
+  /// In en, this message translates to:
+  /// **'Pending ({count})'**
+  String offersSectionPending(int count);
+
+  /// Section header for past offers with a count
+  ///
+  /// In en, this message translates to:
+  /// **'History ({count})'**
+  String offersSectionHistory(int count);
+
+  /// Section header for active offers with a count
+  ///
+  /// In en, this message translates to:
+  /// **'Active ({count})'**
+  String offersSectionActive(int count);
+
+  /// Button on a full-screen error page that pops the route
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBack;
+
+  /// Message on a full-screen route error page
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load: {error}'**
+  String routeLoadFailed(String error);
 }
 
 class _AppLocalizationsDelegate

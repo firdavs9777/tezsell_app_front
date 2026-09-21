@@ -151,11 +151,11 @@
   },
   "retry": "Qayta urinish",
   "@retry": {
-    "description": "Retry button text"
+    "description": "Qayta urinish tugmasi matni"
   },
   "cancel": "Bekor qilish",
   "@cancel": {
-    "description": "Cancel button text"
+    "description": "Bekor qilish tugmasi matni"
   },
   "save": "Saqlash",
   "@save": {
@@ -1908,33 +1908,25 @@
   "email_invalid": "To'g'ri email kiriting",
   "subject": "Mavzu",
   "subject_required": "Iltimos, mavzuni kiriting",
-  "message": "Xabaringiz",
+  "message": "Xabar",
   "message_required": "Iltimos, xabar kiriting",
   "message_too_short": "Xabar kamida 10 belgidan iborat bo'lishi kerak",
   "faq": "Ko'p beriladigan savollar",
   "follow_us": "Bizni kuzatib boring",
-
   "faq_how_to_sell": "Tezsell'da mahsulot qanday sotiladi?",
   "faq_how_to_sell_answer": "Mahsulot sotish uchun: 1) Hisob yarating, 2) '+' tugmasini bosing, 3) Kategoriyani tanlang (Mahsulotlar/Xizmatlar/Ko'chmas mulk), 4) Rasm va tavsif qo'shing, 5) Narxni belgilang, 6) Nashr qiling! E'loningiz sizning hududingizdagi xaridorlarga ko'rinadi.",
-
   "faq_is_free": "Tezsell bepulmi?",
   "faq_is_free_answer": "Ha! Tezsell hozirda 100% bepul. E'lon joylashtirish uchun to'lov yo'q, sotishdan komissiya yo'q, obuna to'lovi yo'q. Kelajakda premium xususiyatlar kiritishimiz mumkin, ammo foydalanuvchilarni 30 kun oldin xabardor qilamiz.",
-
   "faq_safety": "Xarid/sotishda xavfsiz qanday bo'lish mumkin?",
   "faq_safety_answer": "Xavfsizlik maslahatlari: 1) Jamoat joylarida uchrashing, 2) To'lashdan oldin mahsulotni tekshiring, 3) Notanish odamlarga pul yubormang, 4) Sezgilaringizga ishoning, 5) Shubhali foydalanuvchilar haqida xabar bering, 6) Shaxsiy ma'lumotlarni erta bo'lishmang, 7) Qimmat bitimlar uchun do'st olib boring.",
-
   "faq_payment": "To'lovlar qanday ishlaydi?",
   "faq_payment_answer": "Tezsell to'lovlarni qayta ishlamaydi. Xaridorlar va sotuvchilar to'lovni to'g'ridan-to'g'ri kelishadilar (naqd, bank o'tkazmasi va h.k.). Biz faqat odamlarni bog'lovchi platformamiz - bitimni o'zingiz amalga oshirasiz.",
-
   "faq_prohibited": "Qanday mahsulotlar taqiqlangan?",
   "faq_prohibited_answer": "Taqiqlangan mahsulotlar: qurol, giyohvand moddalar, o'g'irlangan mol-mulk, qalbaki mahsulotlar, kattalar uchun kontent, tirik hayvonlar (ruxsatsiz), davlat guvohnomalari, xavfli materiallar. To'liq ro'yxat Foydalanish shartlarida.",
-
   "faq_account_delete": "Hisobni qanday o'chirish mumkin?",
   "faq_account_delete_answer": "Profil → Sozlamalar → Hisob sozlamalari → Hisobni o'chirish. Diqqat: bu qaytarilmas. Barcha e'lonlaringiz o'chiriladi.",
-
   "faq_report_user": "Foydalanuvchi yoki e'lon haqida qanday shikoyat qilish mumkin?",
   "faq_report_user_answer": "Har qanday e'lon yoki foydalanuvchi profilida uch nuqtani (•••) bosing, so'ng 'Shikoyat' tanlang. Sababni tanlang va yuboring. Biz barcha shikoyatlarni 24-48 soat ichida ko'rib chiqamiz.",
-
   "faq_change_location": "Joylashuvni qanday o'zgartirish mumkin?",
   "faq_change_location_answer": "Bosh ekranning yuqori chap burchagidagi joylashuv tugmasini bosing. Siz hududingizdagi e'lonlarni ko'rish uchun viloyat va tumanni tanlashingiz mumkin.",
   "welcome_customer_center": "Mijozlar markaziga xush kelibsiz",
@@ -2361,17 +2353,15 @@
   "edit": "Tahrirlash",
   "reply": "Javob berish",
   "editing_message": "Xabarni tahrirlash",
-  "replying_to": "{username} ga javob",
+  "replying_to": "{username} ga javob berish",
   "@replying_to": {
-    "description": "Javob oldindan ko'rish matni",
+    "description": "Javob sarlavhasi",
     "placeholders": {
       "username": {
         "type": "String"
       }
     }
   },
-  "gallery": "Galereya",
-  "camera": "Kamera",
   "voice": "Ovoz",
   "emoji": "Emoji",
   "photo": "📷 Rasm",
@@ -2425,7 +2415,6 @@
   "try_different_search_term": "Boshqa qidiruv so'zini sinab ko'ring",
   "no_users_available": "Mavjud foydalanuvchilar yo'q",
   "chat_exists": "Chat mavjud",
-  "online": "onlayn",
   "block_user_confirm": "{username} ni bloklamoqchimisiz? Siz ularning xabarlarini olmay qolasiz va ular chat ro'yxatingizdan olib tashlanadi.",
   "@block_user_confirm": {
     "description": "Foydalanuvchini bloklash tasdiqlash xabari",
@@ -2466,7 +2455,6 @@
     }
   },
   "copy": "Nusxa olish",
-  "message": "Xabar",
   "comments_title": "Izohlar ({count})",
   "@comments_title": {
     "description": "Izohlar bo'limi sarlavhasi son bilan",
@@ -2493,10 +2481,6 @@
   "@you_label": {
     "description": "Joriy foydalanuvchi uchun yorliq"
   },
-  "cancel": "Bekor qilish",
-  "@cancel": {
-    "description": "Bekor qilish tugmasi matni"
-  },
   "delete_reply_title": "Javobni o'chirish",
   "@delete_reply_title": {
     "description": "Javobni o'chirish dialog sarlavhasi"
@@ -2516,15 +2500,6 @@
   "comment_add_error": "Izoh qo'shishda xato",
   "@comment_add_error": {
     "description": "Izoh yaratishda xato xabari"
-  },
-  "replying_to": "{username} ga javob berish",
-  "@replying_to": {
-    "description": "Javob sarlavhasi",
-    "placeholders": {
-      "username": {
-        "type": "String"
-      }
-    }
   },
   "service_provider": "Xizmat ko'rsatuvchi",
   "@service_provider": {
@@ -2558,10 +2533,6 @@
   "unable_to_start_chat": "Chatni boshlab bo'lmadi. Iltimos, qayta urinib ko'ring.",
   "@unable_to_start_chat": {
     "description": "Chat boshlanmaganida xato xabari"
-  },
-  "retry": "Qayta urinish",
-  "@retry": {
-    "description": "Qayta urinish tugmasi matni"
   },
   "profile_listings": "E'lonlar",
   "@profile_listings": {
@@ -2903,7 +2874,6 @@
   "nearbyJobs": "Ish",
   "nearbyShops": "Do‘konlar",
   "nearbyComingSoon": "Tez orada",
-
   "chatWithSeller": "Sotuvchiga yozish",
   "chatQuickAvailable": "Bu mavjudmi?",
   "chatQuickPrice": "Narxni tushirasizmi?",
@@ -3094,5 +3064,41 @@
   "pickLocationOnMap": "Xaritada joyni tanlang",
   "dropPinBuyersHint": "Xaridorlar mahsulot qayerdaligini bilishi uchun belgi qo'ying",
   "imageTooLargeMessage": "Rasm juda katta. Maksimal hajmi 5MB",
-  "imagesTooLargeSkipped": "Ba'zi rasmlar 5MB dan katta bo'lgani uchun o'tkazib yuborildi"
+  "imagesTooLargeSkipped": "Ba'zi rasmlar 5MB dan katta bo'lgani uchun o'tkazib yuborildi",
+  "reviewTagsPositiveHeading": "Ijobiy",
+  "reviewTagsNegativeHeading": "Yaxshilash kerak",
+  "reviewSentimentGood": "Yaxshi",
+  "reviewSentimentBad": "Yomon",
+  "offerMakeTitle": "Taklif berish",
+  "offerSendButton": "Taklifni yuborish",
+  "offerDecline": "Rad etish",
+  "offerCounter": "Qarshi taklif",
+  "offerAccept": "Qabul qilish",
+  "offerAcceptCounter": "Qarshi taklifni qabul qilish",
+  "offerCancelOffer": "Taklifni bekor qilish",
+  "offerCounterTitle": "Qarshi taklif",
+  "offerSendCounter": "Qarshi taklifni yuborish",
+  "offerBuyerOffered": "Xaridor taklifi: {price} soʻm",
+  "offerAskingPrice": "Soʻralgan narx: {price} soʻm",
+  "offerAcceptedMessage": "Taklif qabul qilindi!",
+  "offerAcceptError": "Taklifni qabul qilib boʻlmadi: {error}",
+  "offerDeclinedMessage": "Taklif rad etildi",
+  "offerDeclineError": "Taklifni rad etib boʻlmadi: {error}",
+  "offerCounterSentMessage": "Qarshi taklif yuborildi!",
+  "offerCounterSendError": "Qarshi taklifni yuborib boʻlmadi: {error}",
+  "offerCancelConfirmBody": "Ushbu taklifni bekor qilmoqchimisiz?",
+  "offerCancelConfirmYes": "Ha, bekor qilish",
+  "offerCancelledMessage": "Taklif bekor qilindi",
+  "offerCancelError": "Taklifni bekor qilib boʻlmadi: {error}",
+  "offerCounterAcceptedMessage": "Qarshi taklif qabul qilindi!",
+  "offerCounterAcceptError": "Qarshi taklifni qabul qilib boʻlmadi: {error}",
+  "offersNoneReceivedTitle": "Takliflar yoʻq",
+  "offersNoneReceivedSubtitle": "Xaridorlar eʼlonlaringizga taklif berganda, ular shu yerda koʻrinadi",
+  "offersNoneSentTitle": "Yuborilgan takliflar yoʻq",
+  "offersNoneSentSubtitle": "Eʼlonlarga taklif berganingizda, ular shu yerda koʻrinadi",
+  "offersSectionPending": "Kutilmoqda ({count})",
+  "offersSectionHistory": "Tarix ({count})",
+  "offersSectionActive": "Faol ({count})",
+  "goBack": "Orqaga",
+  "routeLoadFailed": "Yuklab boʻlmadi: {error}"
 }

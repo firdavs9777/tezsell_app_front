@@ -71,7 +71,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Offers'),
+        title: Text(AppLocalizations.of(context)?.offersMenuTitle ?? 'Offers'),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -123,7 +123,7 @@ class _ReceivedOffersTab extends ConsumerWidget {
             FilledButton.icon(
               onPressed: () => ref.read(offersProvider.notifier).loadOffers(),
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
             ),
           ],
         ),
@@ -142,8 +142,9 @@ class _ReceivedOffersTab extends ConsumerWidget {
       return _buildEmptyState(
         context,
         icon: Icons.inbox_outlined,
-        title: 'No offers received',
-        subtitle: 'When buyers make offers on your listings, they will appear here',
+        title: AppLocalizations.of(context)?.offersNoneReceivedTitle ?? 'No offers received',
+        subtitle: AppLocalizations.of(context)?.offersNoneReceivedSubtitle ??
+            'When buyers make offers on your listings, they will appear here',
       );
     }
 
@@ -155,7 +156,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
           if (pendingOffers.isNotEmpty) ...[
             _buildSectionHeader(
               context,
-              title: 'Pending (${pendingOffers.length})',
+              title: AppLocalizations.of(context)?.offersSectionPending(pendingOffers.length) ??
+                  'Pending (${pendingOffers.length})',
               icon: Icons.pending_actions,
               color: Colors.orange,
             ),
@@ -176,7 +178,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
           if (otherOffers.isNotEmpty) ...[
             _buildSectionHeader(
               context,
-              title: 'History (${otherOffers.length})',
+              title: AppLocalizations.of(context)?.offersSectionHistory(otherOffers.length) ??
+                  'History (${otherOffers.length})',
               icon: Icons.history,
               color: Colors.grey,
             ),
@@ -221,8 +224,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       await ref.read(offersProvider.notifier).acceptOffer(offer.id);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Offer accepted!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.offerAcceptedMessage ?? 'Offer accepted!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -231,7 +234,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to accept offer: $e'),
+            content: Text(AppLocalizations.of(context)?.offerAcceptError('$e') ??
+                'Failed to accept offer: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -244,8 +248,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       await ref.read(offersProvider.notifier).declineOffer(offer.id);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Offer declined'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.offerDeclinedMessage ?? 'Offer declined'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -254,7 +258,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to decline offer: $e'),
+            content: Text(AppLocalizations.of(context)?.offerDeclineError('$e') ??
+                'Failed to decline offer: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -277,8 +282,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Counter offer sent!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.offerCounterSentMessage ?? 'Counter offer sent!'),
             backgroundColor: Colors.blue,
           ),
         );
@@ -287,7 +292,8 @@ class _ReceivedOffersTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send counter offer: $e'),
+            content: Text(AppLocalizations.of(context)?.offerCounterSendError('$e') ??
+                'Failed to send counter offer: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -373,7 +379,7 @@ class _SentOffersTab extends ConsumerWidget {
             FilledButton.icon(
               onPressed: () => ref.read(offersProvider.notifier).loadOffers(),
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context)?.retry ?? 'Retry'),
             ),
           ],
         ),
@@ -386,8 +392,9 @@ class _SentOffersTab extends ConsumerWidget {
       return _buildEmptyState(
         context,
         icon: Icons.send_outlined,
-        title: 'No offers sent',
-        subtitle: 'When you make offers on listings, they will appear here',
+        title: AppLocalizations.of(context)?.offersNoneSentTitle ?? 'No offers sent',
+        subtitle: AppLocalizations.of(context)?.offersNoneSentSubtitle ??
+            'When you make offers on listings, they will appear here',
       );
     }
 
@@ -406,7 +413,8 @@ class _SentOffersTab extends ConsumerWidget {
           if (activeOffers.isNotEmpty) ...[
             _buildSectionHeader(
               context,
-              title: 'Active (${activeOffers.length})',
+              title: AppLocalizations.of(context)?.offersSectionActive(activeOffers.length) ??
+                  'Active (${activeOffers.length})',
               icon: Icons.hourglass_top,
               color: Colors.blue,
             ),
@@ -430,7 +438,8 @@ class _SentOffersTab extends ConsumerWidget {
           if (completedOffers.isNotEmpty) ...[
             _buildSectionHeader(
               context,
-              title: 'History (${completedOffers.length})',
+              title: AppLocalizations.of(context)?.offersSectionHistory(completedOffers.length) ??
+                  'History (${completedOffers.length})',
               icon: Icons.history,
               color: Colors.grey,
             ),
@@ -474,16 +483,17 @@ class _SentOffersTab extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Offer'),
-        content: const Text('Are you sure you want to cancel this offer?'),
+        title: Text(AppLocalizations.of(context)?.offerCancelOffer ?? 'Cancel Offer'),
+        content: Text(AppLocalizations.of(context)?.offerCancelConfirmBody ??
+            'Are you sure you want to cancel this offer?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('No'),
+            child: Text(AppLocalizations.of(context)?.no ?? 'No'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Yes, Cancel'),
+            child: Text(AppLocalizations.of(context)?.offerCancelConfirmYes ?? 'Yes, Cancel'),
           ),
         ],
       ),
@@ -494,8 +504,9 @@ class _SentOffersTab extends ConsumerWidget {
         await ref.read(offersProvider.notifier).cancelOffer(offer.id);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Offer cancelled'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)?.offerCancelledMessage ??
+                  'Offer cancelled'),
               backgroundColor: Colors.orange,
             ),
           );
@@ -504,7 +515,8 @@ class _SentOffersTab extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to cancel offer: $e'),
+              content: Text(AppLocalizations.of(context)?.offerCancelError('$e') ??
+                  'Failed to cancel offer: $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -518,8 +530,9 @@ class _SentOffersTab extends ConsumerWidget {
       await ref.read(offersProvider.notifier).acceptCounterOffer(offer.id);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Counter offer accepted!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)?.offerCounterAcceptedMessage ??
+                'Counter offer accepted!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -528,7 +541,8 @@ class _SentOffersTab extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to accept counter offer: $e'),
+            content: Text(AppLocalizations.of(context)?.offerCounterAcceptError('$e') ??
+                'Failed to accept counter offer: $e'),
             backgroundColor: Colors.red,
           ),
         );

@@ -5079,4 +5079,136 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get imagesTooLargeSkipped =>
       'Ba\'zi rasmlar 5MB dan katta bo\'lgani uchun o\'tkazib yuborildi';
+
+  @override
+  String get reviewTagsPositiveHeading => 'Ijobiy';
+
+  @override
+  String get reviewTagsNegativeHeading => 'Yaxshilash kerak';
+
+  @override
+  String get reviewSentimentGood => 'Yaxshi';
+
+  @override
+  String get reviewSentimentBad => 'Yomon';
+
+  @override
+  String get offerMakeTitle => 'Taklif berish';
+
+  @override
+  String get offerSendButton => 'Taklifni yuborish';
+
+  @override
+  String get offerDecline => 'Rad etish';
+
+  @override
+  String get offerCounter => 'Qarshi taklif';
+
+  @override
+  String get offerAccept => 'Qabul qilish';
+
+  @override
+  String get offerAcceptCounter => 'Qarshi taklifni qabul qilish';
+
+  @override
+  String get offerCancelOffer => 'Taklifni bekor qilish';
+
+  @override
+  String get offerCounterTitle => 'Qarshi taklif';
+
+  @override
+  String get offerSendCounter => 'Qarshi taklifni yuborish';
+
+  @override
+  String offerBuyerOffered(String price) {
+    return 'Xaridor taklifi: $price soʻm';
+  }
+
+  @override
+  String offerAskingPrice(String price) {
+    return 'Soʻralgan narx: $price soʻm';
+  }
+
+  @override
+  String get offerAcceptedMessage => 'Taklif qabul qilindi!';
+
+  @override
+  String offerAcceptError(String error) {
+    return 'Taklifni qabul qilib boʻlmadi: $error';
+  }
+
+  @override
+  String get offerDeclinedMessage => 'Taklif rad etildi';
+
+  @override
+  String offerDeclineError(String error) {
+    return 'Taklifni rad etib boʻlmadi: $error';
+  }
+
+  @override
+  String get offerCounterSentMessage => 'Qarshi taklif yuborildi!';
+
+  @override
+  String offerCounterSendError(String error) {
+    return 'Qarshi taklifni yuborib boʻlmadi: $error';
+  }
+
+  @override
+  String get offerCancelConfirmBody => 'Ushbu taklifni bekor qilmoqchimisiz?';
+
+  @override
+  String get offerCancelConfirmYes => 'Ha, bekor qilish';
+
+  @override
+  String get offerCancelledMessage => 'Taklif bekor qilindi';
+
+  @override
+  String offerCancelError(String error) {
+    return 'Taklifni bekor qilib boʻlmadi: $error';
+  }
+
+  @override
+  String get offerCounterAcceptedMessage => 'Qarshi taklif qabul qilindi!';
+
+  @override
+  String offerCounterAcceptError(String error) {
+    return 'Qarshi taklifni qabul qilib boʻlmadi: $error';
+  }
+
+  @override
+  String get offersNoneReceivedTitle => 'Takliflar yoʻq';
+
+  @override
+  String get offersNoneReceivedSubtitle =>
+      'Xaridorlar eʼlonlaringizga taklif berganda, ular shu yerda koʻrinadi';
+
+  @override
+  String get offersNoneSentTitle => 'Yuborilgan takliflar yoʻq';
+
+  @override
+  String get offersNoneSentSubtitle =>
+      'Eʼlonlarga taklif berganingizda, ular shu yerda koʻrinadi';
+
+  @override
+  String offersSectionPending(int count) {
+    return 'Kutilmoqda ($count)';
+  }
+
+  @override
+  String offersSectionHistory(int count) {
+    return 'Tarix ($count)';
+  }
+
+  @override
+  String offersSectionActive(int count) {
+    return 'Faol ($count)';
+  }
+
+  @override
+  String get goBack => 'Orqaga';
+
+  @override
+  String routeLoadFailed(String error) {
+    return 'Yuklab boʻlmadi: $error';
+  }
 }

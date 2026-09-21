@@ -59,6 +59,7 @@ import '../providers/provider_root/profile_provider.dart';
 import '../providers/provider_models/product_model.dart';
 import '../providers/provider_models/service_model.dart';
 import '../constants/constants.dart';
+import 'package:app/l10n/app_localizations.dart';
 
 // Router provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -584,15 +585,16 @@ class _ProductDetailWrapperState extends ConsumerState<_ProductDetailWrapper> {
 
     if (_error != null || _product == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Error')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.error ?? 'Error')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to load product: $_error'),
+              Text(AppLocalizations.of(context)?.routeLoadFailed('$_error') ??
+                  'Failed to load product: $_error'),
               ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text('Go Back'),
+                child: Text(AppLocalizations.of(context)?.goBack ?? 'Go Back'),
               ),
             ],
           ),
@@ -655,15 +657,16 @@ class _ServiceDetailWrapperState extends ConsumerState<_ServiceDetailWrapper> {
 
     if (_error != null || _service == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Error')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.error ?? 'Error')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to load service: $_error'),
+              Text(AppLocalizations.of(context)?.routeLoadFailed('$_error') ??
+                  'Failed to load service: $_error'),
               ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text('Go Back'),
+                child: Text(AppLocalizations.of(context)?.goBack ?? 'Go Back'),
               ),
             ],
           ),
@@ -761,15 +764,16 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
 
     if (_error != null || _chatRoom == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Error')),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)?.error ?? 'Error')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to load chat: $_error'),
+              Text(AppLocalizations.of(context)?.routeLoadFailed('$_error') ??
+                  'Failed to load chat: $_error'),
               ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text('Go Back'),
+                child: Text(AppLocalizations.of(context)?.goBack ?? 'Go Back'),
               ),
             ],
           ),
@@ -801,15 +805,16 @@ class _FavoriteProductsWrapper extends ConsumerWidget {
 
         if (snapshot.hasError || !snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Error')),
+            appBar: AppBar(title: Text(AppLocalizations.of(context)?.error ?? 'Error')),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Failed to load favorite products: ${snapshot.error}'),
+                  Text(AppLocalizations.of(context)?.routeLoadFailed('${snapshot.error}') ??
+                      'Failed to load favorite products: ${snapshot.error}'),
                   ElevatedButton(
                     onPressed: () => context.pop(),
-                    child: const Text('Go Back'),
+                    child: Text(AppLocalizations.of(context)?.goBack ?? 'Go Back'),
                   ),
                 ],
               ),
@@ -843,15 +848,16 @@ class _FavoriteServicesWrapper extends ConsumerWidget {
 
         if (snapshot.hasError || !snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Error')),
+            appBar: AppBar(title: Text(AppLocalizations.of(context)?.error ?? 'Error')),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Failed to load favorite services: ${snapshot.error}'),
+                  Text(AppLocalizations.of(context)?.routeLoadFailed('${snapshot.error}') ??
+                      'Failed to load favorite services: ${snapshot.error}'),
                   ElevatedButton(
                     onPressed: () => context.pop(),
-                    child: const Text('Go Back'),
+                    child: Text(AppLocalizations.of(context)?.goBack ?? 'Go Back'),
                   ),
                 ],
               ),

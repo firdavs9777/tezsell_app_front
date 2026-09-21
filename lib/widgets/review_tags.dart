@@ -1,3 +1,4 @@
+import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:app/providers/provider_models/review_model.dart';
@@ -25,6 +26,7 @@ class ReviewTagSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l = AppLocalizations.of(context);
 
     // Separate positive and negative tags
     final positiveTags = tags.where((t) => t.isPositive).toList();
@@ -38,7 +40,7 @@ class ReviewTagSelector extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              'Positive',
+              l?.reviewTagsPositiveHeading ?? 'Positive',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
@@ -60,7 +62,7 @@ class ReviewTagSelector extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              'Needs Improvement',
+              l?.reviewTagsNegativeHeading ?? 'Needs Improvement',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
@@ -250,13 +252,14 @@ class QuickFeedbackButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: _buildButton(
             context,
             icon: '👍',
-            label: 'Good',
+            label: l?.reviewSentimentGood ?? 'Good',
             value: 'positive',
             color: const Color(0xFF4CAF50),
             isSelected: selected == 'positive',
@@ -267,7 +270,7 @@ class QuickFeedbackButtons extends StatelessWidget {
           child: _buildButton(
             context,
             icon: '👎',
-            label: 'Not Good',
+            label: l?.reviewSentimentBad ?? 'Not Good',
             value: 'negative',
             color: const Color(0xFFFF5722),
             isSelected: selected == 'negative',

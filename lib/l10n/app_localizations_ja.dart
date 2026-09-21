@@ -4902,4 +4902,137 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+
+  @override
+  String get reviewTagsPositiveHeading => 'Positive';
+
+  @override
+  String get reviewTagsNegativeHeading => 'Needs Improvement';
+
+  @override
+  String get reviewSentimentGood => 'Good';
+
+  @override
+  String get reviewSentimentBad => 'Not Good';
+
+  @override
+  String get offerMakeTitle => 'Make an Offer';
+
+  @override
+  String get offerSendButton => 'Send Offer';
+
+  @override
+  String get offerDecline => 'Decline';
+
+  @override
+  String get offerCounter => 'Counter';
+
+  @override
+  String get offerAccept => 'Accept';
+
+  @override
+  String get offerAcceptCounter => 'Accept Counter';
+
+  @override
+  String get offerCancelOffer => 'Cancel Offer';
+
+  @override
+  String get offerCounterTitle => 'Counter Offer';
+
+  @override
+  String get offerSendCounter => 'Send Counter';
+
+  @override
+  String offerBuyerOffered(String price) {
+    return 'Buyer offered: $price UZS';
+  }
+
+  @override
+  String offerAskingPrice(String price) {
+    return 'Asking price: $price UZS';
+  }
+
+  @override
+  String get offerAcceptedMessage => 'Offer accepted!';
+
+  @override
+  String offerAcceptError(String error) {
+    return 'Failed to accept offer: $error';
+  }
+
+  @override
+  String get offerDeclinedMessage => 'Offer declined';
+
+  @override
+  String offerDeclineError(String error) {
+    return 'Failed to decline offer: $error';
+  }
+
+  @override
+  String get offerCounterSentMessage => 'Counter offer sent!';
+
+  @override
+  String offerCounterSendError(String error) {
+    return 'Failed to send counter offer: $error';
+  }
+
+  @override
+  String get offerCancelConfirmBody =>
+      'Are you sure you want to cancel this offer?';
+
+  @override
+  String get offerCancelConfirmYes => 'Yes, Cancel';
+
+  @override
+  String get offerCancelledMessage => 'Offer cancelled';
+
+  @override
+  String offerCancelError(String error) {
+    return 'Failed to cancel offer: $error';
+  }
+
+  @override
+  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+
+  @override
+  String offerCounterAcceptError(String error) {
+    return 'Failed to accept counter offer: $error';
+  }
+
+  @override
+  String get offersNoneReceivedTitle => 'No offers received';
+
+  @override
+  String get offersNoneReceivedSubtitle =>
+      'When buyers make offers on your listings, they will appear here';
+
+  @override
+  String get offersNoneSentTitle => 'No offers sent';
+
+  @override
+  String get offersNoneSentSubtitle =>
+      'When you make offers on listings, they will appear here';
+
+  @override
+  String offersSectionPending(int count) {
+    return 'Pending ($count)';
+  }
+
+  @override
+  String offersSectionHistory(int count) {
+    return 'History ($count)';
+  }
+
+  @override
+  String offersSectionActive(int count) {
+    return 'Active ($count)';
+  }
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String routeLoadFailed(String error) {
+    return 'Failed to load: $error';
+  }
 }

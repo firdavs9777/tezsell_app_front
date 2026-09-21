@@ -113,11 +113,12 @@ class _MakeOfferDialogState extends State<MakeOfferDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final formatter = NumberFormat('#,###');
 
     return AlertDialog(
-      title: const Text('Make an Offer'),
+      title: Text(l?.offerMakeTitle ?? 'Make an Offer'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -203,7 +204,7 @@ class _MakeOfferDialogState extends State<MakeOfferDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l?.cancel ?? 'Cancel'),
         ),
         FilledButton(
           onPressed: () {
@@ -215,7 +216,7 @@ class _MakeOfferDialogState extends State<MakeOfferDialog> {
               Navigator.pop(context);
             }
           },
-          child: const Text('Send Offer'),
+          child: Text(l?.offerSendButton ?? 'Send Offer'),
         ),
       ],
     );
@@ -490,6 +491,7 @@ class OfferCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     if (isOwner && offer.status == OfferStatus.pending) {
@@ -503,7 +505,7 @@ class OfferCard extends StatelessWidget {
                 foregroundColor: colorScheme.error,
                 side: BorderSide(color: colorScheme.error),
               ),
-              child: const Text('Decline'),
+              child: Text(l?.offerDecline ?? 'Decline'),
             ),
           ),
           const SizedBox(width: 8),
@@ -514,14 +516,14 @@ class OfferCard extends StatelessWidget {
                 foregroundColor: colorScheme.tertiary,
                 side: BorderSide(color: colorScheme.tertiary),
               ),
-              child: const Text('Counter'),
+              child: Text(l?.offerCounter ?? 'Counter'),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: FilledButton(
               onPressed: onAccept,
-              child: const Text('Accept'),
+              child: Text(l?.offerAccept ?? 'Accept'),
             ),
           ),
         ],
@@ -536,14 +538,14 @@ class OfferCard extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: colorScheme.error,
               ),
-              child: const Text('Cancel'),
+              child: Text(l?.cancel ?? 'Cancel'),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: FilledButton(
               onPressed: onAcceptCounter,
-              child: const Text('Accept Counter'),
+              child: Text(l?.offerAcceptCounter ?? 'Accept Counter'),
             ),
           ),
         ],
@@ -555,7 +557,7 @@ class OfferCard extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.error,
         ),
-        child: const Text('Cancel Offer'),
+        child: Text(l?.offerCancelOffer ?? 'Cancel Offer'),
       );
     }
 
@@ -644,10 +646,11 @@ class _CounterOfferDialogState extends State<CounterOfferDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final formatter = NumberFormat('#,###');
 
     return AlertDialog(
-      title: const Text('Counter Offer'),
+      title: Text(l?.offerCounterTitle ?? 'Counter Offer'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -655,8 +658,10 @@ class _CounterOfferDialogState extends State<CounterOfferDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Buyer offered: ${formatter.format(widget.originalOffer)} UZS'),
-              Text('Asking price: ${formatter.format(widget.askingPrice)} UZS'),
+              Text(l?.offerBuyerOffered(formatter.format(widget.originalOffer)) ??
+                  'Buyer offered: ${formatter.format(widget.originalOffer)} UZS'),
+              Text(l?.offerAskingPrice(formatter.format(widget.askingPrice)) ??
+                  'Asking price: ${formatter.format(widget.askingPrice)} UZS'),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _amountController,
@@ -697,7 +702,7 @@ class _CounterOfferDialogState extends State<CounterOfferDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l?.cancel ?? 'Cancel'),
         ),
         FilledButton(
           onPressed: () {
@@ -710,7 +715,7 @@ class _CounterOfferDialogState extends State<CounterOfferDialog> {
               Navigator.pop(context);
             }
           },
-          child: const Text('Send Counter'),
+          child: Text(l?.offerSendCounter ?? 'Send Counter'),
         ),
       ],
     );

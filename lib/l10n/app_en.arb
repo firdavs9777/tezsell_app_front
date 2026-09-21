@@ -12,7 +12,6 @@
   "@welcome": {
     "description": "Welcome message"
   },
-
   "chooseLanguage": "Choose Your Language",
   "@chooseLanguage": {
     "description": "Title for language selection screen"
@@ -1526,15 +1525,25 @@
   },
   "in_area": "in area",
   "realEstateSearchHint": "Search properties by title, location...",
-  "@realEstateSearchHint": {"description": "Hint text in the real estate search field"},
+  "@realEstateSearchHint": {
+    "description": "Hint text in the real estate search field"
+  },
   "realEstateSearchPrompt": "Search for properties",
-  "@realEstateSearchPrompt": {"description": "Title shown on the real estate search screen before any query is entered"},
+  "@realEstateSearchPrompt": {
+    "description": "Title shown on the real estate search screen before any query is entered"
+  },
   "recentSearches": "Recent searches",
-  "@recentSearches": {"description": "Heading above the list of recent search queries"},
+  "@recentSearches": {
+    "description": "Heading above the list of recent search queries"
+  },
   "clearRecentSearches": "Clear all",
-  "@clearRecentSearches": {"description": "Button that clears the recent searches list"},
+  "@clearRecentSearches": {
+    "description": "Button that clears the recent searches list"
+  },
   "searchPropertiesError": "Failed to search properties. Please try again.",
-  "@searchPropertiesError": {"description": "Error snackbar shown when a property search request fails"},
+  "@searchPropertiesError": {
+    "description": "Error snackbar shown when a property search request fails"
+  },
   "pagination_previous": "Previous",
   "pagination_next": "Next",
   "pagination_page": "Page",
@@ -1917,33 +1926,25 @@
   "email_invalid": "Please enter a valid email",
   "subject": "Subject",
   "subject_required": "Please enter a subject",
-  "message": "Your Message",
+  "message": "Message",
   "message_required": "Please enter your message",
   "message_too_short": "Message must be at least 10 characters",
   "faq": "Frequently Asked Questions",
   "follow_us": "Follow Us",
-
   "faq_how_to_sell": "How do I sell items on Tezsell?",
   "faq_how_to_sell_answer": "To sell items: 1) Create an account, 2) Tap the '+' button, 3) Choose category (Products/Services/Real Estate), 4) Add photos and description, 5) Set your price, 6) Publish! Your listing will be visible to buyers in your area.",
-
   "faq_is_free": "Is Tezsell free to use?",
   "faq_is_free_answer": "Yes! Tezsell is currently 100% free. No listing fees, no commission on sales, no subscription charges. We may introduce premium features in the future, but will notify users 30 days in advance.",
-
   "faq_safety": "How can I stay safe when buying/selling?",
   "faq_safety_answer": "Safety tips: 1) Meet in public places, 2) Inspect items before paying, 3) Never send money to strangers, 4) Trust your instincts, 5) Report suspicious users, 6) Don't share personal information too early, 7) Bring a friend for high-value transactions.",
-
   "faq_payment": "How do payments work?",
   "faq_payment_answer": "Tezsell does not process payments. Buyers and sellers arrange payment directly (cash, bank transfer, etc.). We are just a platform to connect people - you handle the transaction yourselves.",
-
   "faq_prohibited": "What items are prohibited?",
   "faq_prohibited_answer": "Prohibited items include: weapons, drugs, stolen goods, counterfeit items, adult content, live animals (without permits), government IDs, and hazardous materials. See our Terms & Conditions for the complete list.",
-
   "faq_account_delete": "How do I delete my account?",
   "faq_account_delete_answer": "Go to Profile → Settings → Account Settings → Delete Account. Note: This is permanent and cannot be undone. All your listings will be removed.",
-
   "faq_report_user": "How do I report a user or listing?",
   "faq_report_user_answer": "Tap the three dots (•••) on any listing or user profile, then select 'Report'. Choose the reason and submit. We review all reports within 24-48 hours.",
-
   "faq_change_location": "How do I change my location?",
   "faq_change_location_answer": "Tap the location button in the top-left corner of the home screen. You can select your region and district to see listings in your area.",
   "welcome_customer_center": "Welcome to Customer Center",
@@ -2007,7 +2008,6 @@
   "improve_security": "Improve Security",
   "security_score": "Security Score",
   "last_changed_days": "Last changed 30 days ago",
-
   "logout_all_devices": "Logout All Devices",
   "end_all_sessions": "End all sessions",
   "permanently_delete": "Permanently delete",
@@ -2052,7 +2052,7 @@
   "what_will_be_deleted": "What will be deleted:",
   "profile_and_account_info": "• Your profile and account information",
   "all_listings_and_posts": "• All your listings and posts",
-  "messages_and_conversations": "• Your messages and conversations",
+  "messages_and_conversations": "Messages",
   "saved_items_and_preferences": "• Saved items and preferences",
   "enter_password_to_continue": "Enter your password to continue",
   "continue_val": "Continue",
@@ -2545,10 +2545,7 @@
   },
   "new_message": "New Message",
   "messages": "Messages",
-  "messages_and_conversations": "Messages",
   "please_log_in": "Please log in to view messages",
-  "blocked_users": "Blocked Users",
-  "delete": "Delete",
   "pin": "Pin",
   "unpin": "Unpin",
   "delete_chat": "Delete Chat",
@@ -2561,7 +2558,6 @@
       }
     }
   },
-  "cancel": "Cancel",
   "chat_deleted": "Chat with {name} deleted",
   "@chat_deleted": {
     "description": "Chat deleted success message",
@@ -2660,15 +2656,13 @@
   "editing_message": "Editing message",
   "replying_to": "Replying to {username}",
   "@replying_to": {
-    "description": "Reply preview text",
+    "description": "Reply header text",
     "placeholders": {
       "username": {
         "type": "String"
       }
     }
   },
-  "gallery": "Gallery",
-  "camera": "Camera",
   "voice": "Voice",
   "emoji": "Emoji",
   "photo": "📷 Photo",
@@ -2722,7 +2716,6 @@
   "try_different_search_term": "Try a different search term",
   "no_users_available": "No users available",
   "chat_exists": "Chat exists",
-  "online": "online",
   "block_user_confirm": "Are you sure you want to block {username}? You will not receive messages from them and they will be removed from your chat list.",
   "@block_user_confirm": {
     "description": "Block user confirmation message",
@@ -2763,7 +2756,6 @@
     }
   },
   "copy": "Copy",
-  "message": "Message",
   "comments_title": "Comments ({count})",
   "@comments_title": {
     "description": "Comments section title with count",
@@ -2790,10 +2782,6 @@
   "@you_label": {
     "description": "You label for current user"
   },
-  "cancel": "Cancel",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
   "delete_reply_title": "Delete Reply",
   "@delete_reply_title": {
     "description": "Delete reply dialog title"
@@ -2813,15 +2801,6 @@
   "comment_add_error": "Failed to add comment",
   "@comment_add_error": {
     "description": "Error message when comment creation fails"
-  },
-  "replying_to": "Replying to {username}",
-  "@replying_to": {
-    "description": "Reply header text",
-    "placeholders": {
-      "username": {
-        "type": "String"
-      }
-    }
   },
   "service_provider": "Service Provider",
   "@service_provider": {
@@ -2855,10 +2834,6 @@
   "unable_to_start_chat": "Unable to start chat. Please try again.",
   "@unable_to_start_chat": {
     "description": "Error message when chat fails to start"
-  },
-  "retry": "Retry",
-  "@retry": {
-    "description": "Retry button text"
   },
   "profile_listings": "Listings",
   "@profile_listings": {
@@ -3169,7 +3144,11 @@
   "@use_dropdown_instead": {},
   "country_not_supported": "We don't support {country} yet.",
   "@country_not_supported": {
-    "placeholders": {"country": {"type": "String"}}
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
   },
   "region_not_auto_detected": "Couldn't auto-detect your region — pick it manually.",
   "@region_not_auto_detected": {},
@@ -3199,7 +3178,11 @@
   "@location_permission_permanent": {},
   "gps_error": "GPS error: {error}",
   "@gps_error": {
-    "placeholders": {"error": {"type": "String"}}
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   },
   "verify_neighborhood_title": "Verify your neighborhood",
   "@verify_neighborhood_title": {},
@@ -3215,11 +3198,19 @@
   "@verify_neighborhood_youre_in": {},
   "verify_neighborhood_done": "Verified! {name}",
   "@verify_neighborhood_done": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "gps_accuracy_too_low": "GPS accuracy is {meters}m (need ≤100m). Move to an open area and try again.",
   "@gps_accuracy_too_low": {
-    "placeholders": {"meters": {"type": "String"}}
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
   },
   "neighborhood_not_identified": "Could not identify neighborhood for your location.",
   "@neighborhood_not_identified": {},
@@ -3233,7 +3224,11 @@
   "@radius_slider_city": {},
   "radius_slider_km": "{value} km",
   "@radius_slider_km": {
-    "placeholders": {"value": {"type": "String"}}
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "my_neighborhoods": "My Neighborhoods",
   "@my_neighborhoods": {},
@@ -3249,7 +3244,11 @@
   "@verify_new_location": {},
   "eviction_warning": "Adding this location will remove {name} (your oldest). This cannot be undone.",
   "@eviction_warning": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "verified_today": "Verified today",
   "@verified_today": {},
@@ -3257,411 +3256,1034 @@
   "@verified_yesterday": {},
   "verified_n_days_ago": "Verified {days} days ago",
   "@verified_n_days_ago": {
-    "placeholders": {"days": {"type": "int"}}
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "active_neighborhood": "Active",
   "@active_neighborhood": {},
   "switch_neighborhood_success": "Switched to {name}",
   "@switch_neighborhood_success": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "communityAll": "All",
-  "@communityAll": {"description": "Community filter chip: all posts"},
+  "@communityAll": {
+    "description": "Community filter chip: all posts"
+  },
   "communityQuestion": "Question",
-  "@communityQuestion": {"description": "Community filter chip / post category: question"},
+  "@communityQuestion": {
+    "description": "Community filter chip / post category: question"
+  },
   "communityRecommend": "Tips",
-  "@communityRecommend": {"description": "Community filter chip / post category: recommendations/tips"},
+  "@communityRecommend": {
+    "description": "Community filter chip / post category: recommendations/tips"
+  },
   "communityFree": "Free",
-  "@communityFree": {"description": "Community filter chip / post category: free items"},
+  "@communityFree": {
+    "description": "Community filter chip / post category: free items"
+  },
   "communityLostFound": "Lost & Found",
-  "@communityLostFound": {"description": "Community filter chip / post category: lost and found"},
+  "@communityLostFound": {
+    "description": "Community filter chip / post category: lost and found"
+  },
   "communityAlert": "Alert",
-  "@communityAlert": {"description": "Community filter chip / post category: alert"},
+  "@communityAlert": {
+    "description": "Community filter chip / post category: alert"
+  },
   "communityGeneral": "General",
-  "@communityGeneral": {"description": "Community filter chip / post category: general"},
+  "@communityGeneral": {
+    "description": "Community filter chip / post category: general"
+  },
   "communityWrite": "Write",
-  "@communityWrite": {"description": "Button label to write a new community post"},
+  "@communityWrite": {
+    "description": "Button label to write a new community post"
+  },
   "communityEmpty": "No posts yet. Be the first!",
-  "@communityEmpty": {"description": "Empty state message for community feed"},
+  "@communityEmpty": {
+    "description": "Empty state message for community feed"
+  },
   "communityPostTitle": "Post",
-  "@communityPostTitle": {"description": "Title for a community post detail screen"},
+  "@communityPostTitle": {
+    "description": "Title for a community post detail screen"
+  },
   "communityNoComments": "No comments yet",
-  "@communityNoComments": {"description": "Empty state message for community post comments"},
+  "@communityNoComments": {
+    "description": "Empty state message for community post comments"
+  },
   "communityAddComment": "Add a comment…",
-  "@communityAddComment": {"description": "Hint text for community comment input field"},
+  "@communityAddComment": {
+    "description": "Hint text for community comment input field"
+  },
   "communityNewPost": "New post",
-  "@communityNewPost": {"description": "Title for the new community post screen"},
+  "@communityNewPost": {
+    "description": "Title for the new community post screen"
+  },
   "communityPublish": "Post",
-  "@communityPublish": {"description": "Button label to publish a new community post"},
+  "@communityPublish": {
+    "description": "Button label to publish a new community post"
+  },
   "communityBodyHint": "Share something with your neighborhood…",
-  "@communityBodyHint": {"description": "Hint text for community post body input field"},
+  "@communityBodyHint": {
+    "description": "Hint text for community post body input field"
+  },
   "communityPostFailed": "Failed to post",
-  "@communityPostFailed": {"description": "Error message shown when publishing a community post fails"},
+  "@communityPostFailed": {
+    "description": "Error message shown when publishing a community post fails"
+  },
   "communityAddPoll": "Add poll",
-  "@communityAddPoll": {"description": "Toggle label to add a poll to a community post"},
+  "@communityAddPoll": {
+    "description": "Toggle label to add a poll to a community post"
+  },
   "communityPollQuestion": "Poll question",
-  "@communityPollQuestion": {"description": "Label/hint for the poll question input field"},
+  "@communityPollQuestion": {
+    "description": "Label/hint for the poll question input field"
+  },
   "communityPollOption": "Option {n}",
-  "@communityPollOption": {"description": "Label for a poll option input field, numbered", "placeholders": {"n": {"type": "int"}}},
+  "@communityPollOption": {
+    "description": "Label for a poll option input field, numbered",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "communityAddOption": "Add option",
-  "@communityAddOption": {"description": "Button label to add another poll option"},
+  "@communityAddOption": {
+    "description": "Button label to add another poll option"
+  },
   "communityPollValidation": "Add a question and 2-5 options",
-  "@communityPollValidation": {"description": "Inline validation error when the poll fields are incomplete"},
+  "@communityPollValidation": {
+    "description": "Inline validation error when the poll fields are incomplete"
+  },
   "communityPollVotes": "{n} votes",
-  "@communityPollVotes": {"description": "Total vote count footer on a poll card", "placeholders": {"n": {"type": "int"}}},
+  "@communityPollVotes": {
+    "description": "Total vote count footer on a poll card",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "communityMaxImages": "Up to 5 photos",
-  "@communityMaxImages": {"description": "Snackbar/hint message about the maximum number of photos allowed"},
+  "@communityMaxImages": {
+    "description": "Snackbar/hint message about the maximum number of photos allowed"
+  },
   "communitySearchHint": "Search posts…",
-  "@communitySearchHint": {"description": "Placeholder text for the community feed search field"},
+  "@communitySearchHint": {
+    "description": "Placeholder text for the community feed search field"
+  },
   "communityLoadMoreFailed": "Couldn't load more. Tap to retry.",
-  "@communityLoadMoreFailed": {"description": "Footer shown in the community feed when fetching the next page of posts failed, with a tap-to-retry affordance"},
+  "@communityLoadMoreFailed": {
+    "description": "Footer shown in the community feed when fetching the next page of posts failed, with a tap-to-retry affordance"
+  },
   "communityImageRejected": "Some photos weren't added (over 5MB or an unsupported type)",
-  "@communityImageRejected": {"description": "Snackbar shown in the post composer when one or more picked photos failed client-side validation and were skipped"},
+  "@communityImageRejected": {
+    "description": "Snackbar shown in the post composer when one or more picked photos failed client-side validation and were skipped"
+  },
   "communityPhotoCount": "{count}/{max}",
   "@communityPhotoCount": {
     "description": "Photo count indicator above the image picker row in the post composer, e.g. \"3/5\"",
     "placeholders": {
-      "count": {"type": "int"},
-      "max": {"type": "int"}
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
     }
   },
   "errorGeneric": "Something went wrong",
-  "@errorGeneric": {"description": "Generic fallback error message"},
+  "@errorGeneric": {
+    "description": "Generic fallback error message"
+  },
   "tabHome": "Home",
-  "@tabHome": {"description": "Bottom tab bar label: home"},
+  "@tabHome": {
+    "description": "Bottom tab bar label: home"
+  },
   "tabCommunity": "Community",
-  "@tabCommunity": {"description": "Bottom tab bar label: community"},
+  "@tabCommunity": {
+    "description": "Bottom tab bar label: community"
+  },
   "tabNearby": "Nearby",
-  "@tabNearby": {"description": "Bottom tab bar label: nearby"},
+  "@tabNearby": {
+    "description": "Bottom tab bar label: nearby"
+  },
   "tabMy": "My",
-  "@tabMy": {"description": "Bottom tab bar label: my/profile"},
+  "@tabMy": {
+    "description": "Bottom tab bar label: my/profile"
+  },
   "nearbyServices": "Services",
-  "@nearbyServices": {"description": "Nearby tab section: services"},
+  "@nearbyServices": {
+    "description": "Nearby tab section: services"
+  },
   "nearbyRealEstate": "Real Estate",
-  "@nearbyRealEstate": {"description": "Nearby tab section: real estate"},
+  "@nearbyRealEstate": {
+    "description": "Nearby tab section: real estate"
+  },
   "nearbyJobs": "Jobs",
-  "@nearbyJobs": {"description": "Nearby tab section: jobs"},
+  "@nearbyJobs": {
+    "description": "Nearby tab section: jobs"
+  },
   "nearbyShops": "Local shops",
-  "@nearbyShops": {"description": "Nearby tab section: local shops"},
+  "@nearbyShops": {
+    "description": "Nearby tab section: local shops"
+  },
   "nearbyComingSoon": "Coming soon",
-  "@nearbyComingSoon": {"description": "Placeholder label for a nearby section not yet implemented"},
-
+  "@nearbyComingSoon": {
+    "description": "Placeholder label for a nearby section not yet implemented"
+  },
   "chatWithSeller": "Chat with seller",
-  "@chatWithSeller": {"description": "Button label to open a chat with the item's seller"},
+  "@chatWithSeller": {
+    "description": "Button label to open a chat with the item's seller"
+  },
   "chatQuickAvailable": "Is this still available?",
-  "@chatQuickAvailable": {"description": "Quick reply asking if the listed item is still available"},
+  "@chatQuickAvailable": {
+    "description": "Quick reply asking if the listed item is still available"
+  },
   "chatQuickPrice": "Can you lower the price?",
-  "@chatQuickPrice": {"description": "Quick reply asking the seller to lower the price"},
+  "@chatQuickPrice": {
+    "description": "Quick reply asking the seller to lower the price"
+  },
   "chatQuickMeet": "Where can we meet?",
-  "@chatQuickMeet": {"description": "Quick reply asking about a meeting location"},
+  "@chatQuickMeet": {
+    "description": "Quick reply asking about a meeting location"
+  },
   "chatReserve": "Reserve",
-  "@chatReserve": {"description": "Button to mark a listing as reserved for a buyer"},
+  "@chatReserve": {
+    "description": "Button to mark a listing as reserved for a buyer"
+  },
   "chatMarkSold": "Mark as sold",
-  "@chatMarkSold": {"description": "Button to mark a listing as sold"},
+  "@chatMarkSold": {
+    "description": "Button to mark a listing as sold"
+  },
   "chatMarkAvailable": "Back to available",
-  "@chatMarkAvailable": {"description": "Button to return a listing to available status"},
+  "@chatMarkAvailable": {
+    "description": "Button to return a listing to available status"
+  },
   "chatStatusReserved": "Reserved",
-  "@chatStatusReserved": {"description": "Listing status badge: reserved"},
+  "@chatStatusReserved": {
+    "description": "Listing status badge: reserved"
+  },
   "chatStatusSold": "Sold",
-  "@chatStatusSold": {"description": "Listing status badge: sold"},
+  "@chatStatusSold": {
+    "description": "Listing status badge: sold"
+  },
   "chatStatusAvailable": "Available",
-  "@chatStatusAvailable": {"description": "Listing status badge: available"},
+  "@chatStatusAvailable": {
+    "description": "Listing status badge: available"
+  },
   "chatSysReserved": "Seller marked this item as reserved",
-  "@chatSysReserved": {"description": "System message shown in chat when the seller reserves the item"},
+  "@chatSysReserved": {
+    "description": "System message shown in chat when the seller reserves the item"
+  },
   "chatSysSold": "Seller marked this item as sold",
-  "@chatSysSold": {"description": "System message shown in chat when the seller marks the item sold"},
+  "@chatSysSold": {
+    "description": "System message shown in chat when the seller marks the item sold"
+  },
   "chatSysAvailable": "This item is available again",
-  "@chatSysAvailable": {"description": "System message shown in chat when the item becomes available again"},
+  "@chatSysAvailable": {
+    "description": "System message shown in chat when the item becomes available again"
+  },
   "chatLeaveReview": "Leave a review",
-  "@chatLeaveReview": {"description": "Button to leave a review for the other chat participant"},
+  "@chatLeaveReview": {
+    "description": "Button to leave a review for the other chat participant"
+  },
   "chatReply": "Reply",
-  "@chatReply": {"description": "Action to reply to a specific chat message"},
+  "@chatReply": {
+    "description": "Action to reply to a specific chat message"
+  },
   "chatEdit": "Edit",
-  "@chatEdit": {"description": "Action to edit a sent chat message"},
+  "@chatEdit": {
+    "description": "Action to edit a sent chat message"
+  },
   "chatEdited": "edited",
-  "@chatEdited": {"description": "Label appended to a message that has been edited"},
+  "@chatEdited": {
+    "description": "Label appended to a message that has been edited"
+  },
   "chatDelete": "Delete",
-  "@chatDelete": {"description": "Action to delete a chat message"},
+  "@chatDelete": {
+    "description": "Action to delete a chat message"
+  },
   "chatDeleteForMe": "Delete for me",
-  "@chatDeleteForMe": {"description": "Option to delete a message only for the current user"},
+  "@chatDeleteForMe": {
+    "description": "Option to delete a message only for the current user"
+  },
   "chatDeleteForEveryone": "Delete for everyone",
-  "@chatDeleteForEveryone": {"description": "Option to delete a message for all chat participants"},
+  "@chatDeleteForEveryone": {
+    "description": "Option to delete a message for all chat participants"
+  },
   "chatMessageDeleted": "Message deleted",
-  "@chatMessageDeleted": {"description": "Placeholder text shown in place of a deleted message"},
+  "@chatMessageDeleted": {
+    "description": "Placeholder text shown in place of a deleted message"
+  },
   "chatCopy": "Copy",
-  "@chatCopy": {"description": "Action to copy a chat message's text"},
+  "@chatCopy": {
+    "description": "Action to copy a chat message's text"
+  },
   "chatCopied": "Copied",
-  "@chatCopied": {"description": "Confirmation toast shown after copying text"},
+  "@chatCopied": {
+    "description": "Confirmation toast shown after copying text"
+  },
   "chatForward": "Forward",
-  "@chatForward": {"description": "Action to forward a chat message"},
+  "@chatForward": {
+    "description": "Action to forward a chat message"
+  },
   "chatForwarded": "Forwarded",
-  "@chatForwarded": {"description": "Label shown on a forwarded message"},
+  "@chatForwarded": {
+    "description": "Label shown on a forwarded message"
+  },
   "chatForwardTo": "Forward to…",
-  "@chatForwardTo": {"description": "Title of the screen/picker for choosing a forward destination"},
+  "@chatForwardTo": {
+    "description": "Title of the screen/picker for choosing a forward destination"
+  },
   "chatPin": "Pin",
-  "@chatPin": {"description": "Action to pin a chat message"},
+  "@chatPin": {
+    "description": "Action to pin a chat message"
+  },
   "chatUnpin": "Unpin",
-  "@chatUnpin": {"description": "Action to unpin a chat message"},
+  "@chatUnpin": {
+    "description": "Action to unpin a chat message"
+  },
   "chatPinnedMessages": "Pinned messages",
-  "@chatPinnedMessages": {"description": "Title for the list of pinned messages in a chat"},
+  "@chatPinnedMessages": {
+    "description": "Title for the list of pinned messages in a chat"
+  },
   "chatTranslate": "Translate",
-  "@chatTranslate": {"description": "Action to translate a chat message"},
+  "@chatTranslate": {
+    "description": "Action to translate a chat message"
+  },
   "chatTranslationFailed": "Translation unavailable",
-  "@chatTranslationFailed": {"description": "Error shown when a message could not be translated"},
+  "@chatTranslationFailed": {
+    "description": "Error shown when a message could not be translated"
+  },
   "chatShowOriginal": "Show original",
-  "@chatShowOriginal": {"description": "Action to revert a translated message back to its original text"},
+  "@chatShowOriginal": {
+    "description": "Action to revert a translated message back to its original text"
+  },
   "chatSearchInChat": "Search in chat",
-  "@chatSearchInChat": {"description": "Label/hint for searching messages within a chat"},
+  "@chatSearchInChat": {
+    "description": "Label/hint for searching messages within a chat"
+  },
   "chatNoResults": "No results",
-  "@chatNoResults": {"description": "Shown when a search yields no matching results"},
+  "@chatNoResults": {
+    "description": "Shown when a search yields no matching results"
+  },
   "chatMute": "Mute",
-  "@chatMute": {"description": "Action to mute notifications for a chat"},
+  "@chatMute": {
+    "description": "Action to mute notifications for a chat"
+  },
   "chatUnmute": "Unmute",
-  "@chatUnmute": {"description": "Action to unmute notifications for a chat"},
+  "@chatUnmute": {
+    "description": "Action to unmute notifications for a chat"
+  },
   "chatArchive": "Archive",
-  "@chatArchive": {"description": "Action to archive a chat"},
+  "@chatArchive": {
+    "description": "Action to archive a chat"
+  },
   "chatUnarchive": "Unarchive",
-  "@chatUnarchive": {"description": "Action to unarchive a chat"},
+  "@chatUnarchive": {
+    "description": "Action to unarchive a chat"
+  },
   "chatArchived": "Archived",
-  "@chatArchived": {"description": "Label for the archived chats section"},
+  "@chatArchived": {
+    "description": "Label for the archived chats section"
+  },
   "chatPinChat": "Pin chat",
-  "@chatPinChat": {"description": "Action to pin a chat to the top of the chat list"},
+  "@chatPinChat": {
+    "description": "Action to pin a chat to the top of the chat list"
+  },
   "chatUnpinChat": "Unpin chat",
-  "@chatUnpinChat": {"description": "Action to unpin a chat from the top of the chat list"},
+  "@chatUnpinChat": {
+    "description": "Action to unpin a chat from the top of the chat list"
+  },
   "chatTyping": "typing…",
-  "@chatTyping": {"description": "Indicator shown when the other participant is typing"},
+  "@chatTyping": {
+    "description": "Indicator shown when the other participant is typing"
+  },
   "chatOnline": "online",
-  "@chatOnline": {"description": "Presence indicator shown when the other participant is online"},
+  "@chatOnline": {
+    "description": "Presence indicator shown when the other participant is online"
+  },
   "chatLastSeen": "last seen {time}",
-  "@chatLastSeen": {"description": "Presence indicator showing when the other participant was last seen", "placeholders": {"time": {}}},
+  "@chatLastSeen": {
+    "description": "Presence indicator showing when the other participant was last seen",
+    "placeholders": {
+      "time": {}
+    }
+  },
   "timeJustNow": "just now",
-  "@timeJustNow": {"description": "Relative time label for an event that happened less than a minute ago"},
+  "@timeJustNow": {
+    "description": "Relative time label for an event that happened less than a minute ago"
+  },
   "timeMinutesShort": "{m}m ago",
-  "@timeMinutesShort": {"description": "Compact relative time label for minutes elapsed", "placeholders": {"m": {}}},
+  "@timeMinutesShort": {
+    "description": "Compact relative time label for minutes elapsed",
+    "placeholders": {
+      "m": {}
+    }
+  },
   "timeHoursShort": "{h}h ago",
-  "@timeHoursShort": {"description": "Compact relative time label for hours elapsed", "placeholders": {"h": {}}},
+  "@timeHoursShort": {
+    "description": "Compact relative time label for hours elapsed",
+    "placeholders": {
+      "h": {}
+    }
+  },
   "chatConnecting": "Reconnecting…",
-  "@chatConnecting": {"description": "Status shown while the chat connection is being re-established"},
+  "@chatConnecting": {
+    "description": "Status shown while the chat connection is being re-established"
+  },
   "chatSendFailed": "Not sent. Tap to retry",
-  "@chatSendFailed": {"description": "Shown on a message that failed to send"},
+  "@chatSendFailed": {
+    "description": "Shown on a message that failed to send"
+  },
   "chatVoiceMessage": "Voice message",
-  "@chatVoiceMessage": {"description": "Label for a voice message chat bubble"},
+  "@chatVoiceMessage": {
+    "description": "Label for a voice message chat bubble"
+  },
   "chatRecordingHint": "Release to send, slide to cancel",
-  "@chatRecordingHint": {"description": "Hint shown while recording a voice message"},
+  "@chatRecordingHint": {
+    "description": "Hint shown while recording a voice message"
+  },
   "chatQuickReplies": "Quick replies",
-  "@chatQuickReplies": {"description": "Title for the quick replies section/list"},
+  "@chatQuickReplies": {
+    "description": "Title for the quick replies section/list"
+  },
   "chatAddQuickReply": "Add quick reply",
-  "@chatAddQuickReply": {"description": "Action to add a new quick reply template"},
+  "@chatAddQuickReply": {
+    "description": "Action to add a new quick reply template"
+  },
   "chatMediaGallery": "Media",
-  "@chatMediaGallery": {"description": "Title for the shared media gallery in a chat"},
+  "@chatMediaGallery": {
+    "description": "Title for the shared media gallery in a chat"
+  },
   "chatUnreadDivider": "Unread messages",
-  "@chatUnreadDivider": {"description": "Divider label separating read and unread messages"},
+  "@chatUnreadDivider": {
+    "description": "Divider label separating read and unread messages"
+  },
   "chatDraft": "Draft",
-  "@chatDraft": {"description": "Label shown in the chat list preview when a draft message exists"},
+  "@chatDraft": {
+    "description": "Label shown in the chat list preview when a draft message exists"
+  },
   "chatSelfChatError": "You can't chat about your own listing",
-  "@chatSelfChatError": {"description": "Error shown when a user tries to open a chat about their own listing"},
+  "@chatSelfChatError": {
+    "description": "Error shown when a user tries to open a chat about their own listing"
+  },
   "sortFresh": "Newest",
-  "@sortFresh": {"description": "Sort toggle option: newest/freshest listings first"},
+  "@sortFresh": {
+    "description": "Sort toggle option: newest/freshest listings first"
+  },
   "sortNearest": "Nearest",
-  "@sortNearest": {"description": "Sort toggle option: nearest listings first (requires an active geo center)"},
+  "@sortNearest": {
+    "description": "Sort toggle option: nearest listings first (requires an active geo center)"
+  },
   "sortPopular": "Popular",
-  "@sortPopular": {"description": "Sort toggle option: most-liked/commented posts in the last 7 days first"},
+  "@sortPopular": {
+    "description": "Sort toggle option: most-liked/commented posts in the last 7 days first"
+  },
   "sortPriceAsc": "Price: low to high",
-  "@sortPriceAsc": {"description": "Sort option: listings ordered by ascending price"},
+  "@sortPriceAsc": {
+    "description": "Sort option: listings ordered by ascending price"
+  },
   "sortPriceDesc": "Price: high to low",
-  "@sortPriceDesc": {"description": "Sort option: listings ordered by descending price"},
+  "@sortPriceDesc": {
+    "description": "Sort option: listings ordered by descending price"
+  },
   "communityDeleteConfirm": "Delete this post?",
-  "@communityDeleteConfirm": {"description": "Confirmation prompt shown before deleting the current user's own community post"},
+  "@communityDeleteConfirm": {
+    "description": "Confirmation prompt shown before deleting the current user's own community post"
+  },
   "distanceKm": "{km} km",
-  "@distanceKm": {"description": "Distance label shown on a listing card", "placeholders": {"km": {"type": "String"}}},
+  "@distanceKm": {
+    "description": "Distance label shown on a listing card",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
   "nearYouNow": "Near you now",
-  "@nearYouNow": {"description": "Section header above the Nearby hub's horizontal strip of the latest nearby services/properties"},
+  "@nearYouNow": {
+    "description": "Section header above the Nearby hub's horizontal strip of the latest nearby services/properties"
+  },
   "radiusPickerTitle": "Search radius",
-  "@radiusPickerTitle": {"description": "Title of the advanced radius picker bottom sheet with a map preview"},
+  "@radiusPickerTitle": {
+    "description": "Title of the advanced radius picker bottom sheet with a map preview"
+  },
   "radiusCityWide": "City-wide",
-  "@radiusCityWide": {"description": "Toggle/chip label in the radius picker sheet that sets the radius to infinity (whole city)"},
+  "@radiusCityWide": {
+    "description": "Toggle/chip label in the radius picker sheet that sets the radius to infinity (whole city)"
+  },
   "radiusApply": "Apply",
-  "@radiusApply": {"description": "Apply button in the radius picker sheet that confirms the selected radius"},
+  "@radiusApply": {
+    "description": "Apply button in the radius picker sheet that confirms the selected radius"
+  },
   "communityViewReplies": "View {n} replies",
-  "@communityViewReplies": {"description": "Button label to expand and view all replies to a community comment", "placeholders": {"n": {"type": "int"}}},
+  "@communityViewReplies": {
+    "description": "Button label to expand and view all replies to a community comment",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "communityAuthorBadge": "Author",
-  "@communityAuthorBadge": {"description": "Badge shown next to a comment/reply written by the original post's author"},
+  "@communityAuthorBadge": {
+    "description": "Badge shown next to a comment/reply written by the original post's author"
+  },
   "communityDeleteCommentConfirm": "Delete this comment?",
-  "@communityDeleteCommentConfirm": {"description": "Confirmation prompt shown before deleting a community comment or reply"},
+  "@communityDeleteCommentConfirm": {
+    "description": "Confirmation prompt shown before deleting a community comment or reply"
+  },
   "communityLoadMoreComments": "Load more comments",
-  "@communityLoadMoreComments": {"description": "Button label to load the next page of top-level community comments"},
+  "@communityLoadMoreComments": {
+    "description": "Button label to load the next page of top-level community comments"
+  },
   "productFiltersTitle": "Filters",
-  "@productFiltersTitle": {"description": "Title of the product list filter bottom sheet"},
+  "@productFiltersTitle": {
+    "description": "Title of the product list filter bottom sheet"
+  },
   "productFiltersTooltip": "Filters",
-  "@productFiltersTooltip": {"description": "Tooltip/label for the icon button that opens the product filter sheet"},
+  "@productFiltersTooltip": {
+    "description": "Tooltip/label for the icon button that opens the product filter sheet"
+  },
   "productFilterPriceRange": "Price range",
-  "@productFilterPriceRange": {"description": "Section label for the min/max price inputs in the product filter sheet"},
+  "@productFilterPriceRange": {
+    "description": "Section label for the min/max price inputs in the product filter sheet"
+  },
   "productFilterPriceMin": "Min",
-  "@productFilterPriceMin": {"description": "Label for the minimum price input field"},
+  "@productFilterPriceMin": {
+    "description": "Label for the minimum price input field"
+  },
   "productFilterPriceMax": "Max",
-  "@productFilterPriceMax": {"description": "Label for the maximum price input field"},
+  "@productFilterPriceMax": {
+    "description": "Label for the maximum price input field"
+  },
   "productFilterCondition": "Condition",
-  "@productFilterCondition": {"description": "Section label for the condition chip selector in the product filter sheet"},
+  "@productFilterCondition": {
+    "description": "Section label for the condition chip selector in the product filter sheet"
+  },
   "productFilterApply": "Apply",
-  "@productFilterApply": {"description": "Button that applies the selected filters and closes the sheet"},
+  "@productFilterApply": {
+    "description": "Button that applies the selected filters and closes the sheet"
+  },
   "productFilterReset": "Reset",
-  "@productFilterReset": {"description": "Button that clears all filters"},
+  "@productFilterReset": {
+    "description": "Button that clears all filters"
+  },
   "offersMenuTitle": "Offers",
-  "@offersMenuTitle": {"description": "Profile menu entry linking to the offers/negotiation inbox"},
+  "@offersMenuTitle": {
+    "description": "Profile menu entry linking to the offers/negotiation inbox"
+  },
   "offersMenuSubtitle": "Track price negotiations",
-  "@offersMenuSubtitle": {"description": "Subtitle under the Offers profile menu entry"},
+  "@offersMenuSubtitle": {
+    "description": "Subtitle under the Offers profile menu entry"
+  },
   "offerContinueChat": "Continue in chat",
-  "@offerContinueChat": {"description": "Button shown on an accepted offer that opens the chat room for the listing"},
+  "@offerContinueChat": {
+    "description": "Button shown on an accepted offer that opens the chat room for the listing"
+  },
   "offerSendSuccess": "Offer sent!",
-  "@offerSendSuccess": {"description": "Snackbar confirming an offer was submitted to the seller"},
+  "@offerSendSuccess": {
+    "description": "Snackbar confirming an offer was submitted to the seller"
+  },
   "offerLoginRequired": "Please log in to make an offer",
-  "@offerLoginRequired": {"description": "Message shown when a signed-out user taps Make Offer"},
+  "@offerLoginRequired": {
+    "description": "Message shown when a signed-out user taps Make Offer"
+  },
   "offerOpenChatError": "Unable to open chat",
-  "@offerOpenChatError": {"description": "Snackbar shown when opening the chat room tied to an offer fails"},
+  "@offerOpenChatError": {
+    "description": "Snackbar shown when opening the chat room tied to an offer fails"
+  },
   "sellerNoReviews": "No reviews yet",
-  "@sellerNoReviews": {"description": "Shown next to a seller's trust dial on the product detail page when they have zero visible reviews"},
+  "@sellerNoReviews": {
+    "description": "Shown next to a seller's trust dial on the product detail page when they have zero visible reviews"
+  },
   "savedSearchSaveTooltip": "Save search",
-  "@savedSearchSaveTooltip": {"description": "Tooltip for the AppBar icon on the product search screen that saves the current search"},
+  "@savedSearchSaveTooltip": {
+    "description": "Tooltip for the AppBar icon on the product search screen that saves the current search"
+  },
   "savedSearchesManageTooltip": "Saved searches",
-  "@savedSearchesManageTooltip": {"description": "Tooltip for the AppBar icon on the product search screen that opens the saved searches / alerts manage screen"},
+  "@savedSearchesManageTooltip": {
+    "description": "Tooltip for the AppBar icon on the product search screen that opens the saved searches / alerts manage screen"
+  },
   "savedSearchSheetTitle": "Save this search",
-  "@savedSearchSheetTitle": {"description": "Title of the bottom sheet shown when saving a search"},
+  "@savedSearchSheetTitle": {
+    "description": "Title of the bottom sheet shown when saving a search"
+  },
   "savedSearchNotifyToggleTitle": "Notify me about new matches",
-  "@savedSearchNotifyToggleTitle": {"description": "Title of the switch in the save-search sheet that also creates a keyword alert"},
+  "@savedSearchNotifyToggleTitle": {
+    "description": "Title of the switch in the save-search sheet that also creates a keyword alert"
+  },
   "savedSearchNotifyToggleSubtitle": "We'll alert you when new listings match this search",
-  "@savedSearchNotifyToggleSubtitle": {"description": "Subtitle explaining the notify toggle in the save-search sheet"},
+  "@savedSearchNotifyToggleSubtitle": {
+    "description": "Subtitle explaining the notify toggle in the save-search sheet"
+  },
   "savedSearchSavedSuccess": "Search saved",
-  "@savedSearchSavedSuccess": {"description": "Snackbar shown after a search is saved without an alert"},
+  "@savedSearchSavedSuccess": {
+    "description": "Snackbar shown after a search is saved without an alert"
+  },
   "savedSearchSavedWithAlertSuccess": "Search saved. You'll be notified about new matches.",
-  "@savedSearchSavedWithAlertSuccess": {"description": "Snackbar shown after a search is saved and a keyword alert was also enabled"},
+  "@savedSearchSavedWithAlertSuccess": {
+    "description": "Snackbar shown after a search is saved and a keyword alert was also enabled"
+  },
   "savedSearchAlreadySaved": "You already saved this search",
-  "@savedSearchAlreadySaved": {"description": "Snackbar shown when the user tries to save a search identical to one already saved"},
+  "@savedSearchAlreadySaved": {
+    "description": "Snackbar shown when the user tries to save a search identical to one already saved"
+  },
   "savedSearchSaveGenericError": "Failed to save search",
-  "@savedSearchSaveGenericError": {"description": "Fallback error message when saving a search fails without a specific server message"},
+  "@savedSearchSaveGenericError": {
+    "description": "Fallback error message when saving a search fails without a specific server message"
+  },
   "searchAlertCreateGenericError": "Failed to enable alert",
-  "@searchAlertCreateGenericError": {"description": "Fallback error message when creating a keyword alert fails without a specific server message"},
+  "@searchAlertCreateGenericError": {
+    "description": "Fallback error message when creating a keyword alert fails without a specific server message"
+  },
   "savedSearchesScreenTitle": "Saved Searches",
-  "@savedSearchesScreenTitle": {"description": "Title of the saved searches & alerts management screen"},
+  "@savedSearchesScreenTitle": {
+    "description": "Title of the saved searches & alerts management screen"
+  },
   "savedSearchesTabLabel": "Searches",
-  "@savedSearchesTabLabel": {"description": "Tab label for the saved searches list on the manage screen"},
+  "@savedSearchesTabLabel": {
+    "description": "Tab label for the saved searches list on the manage screen"
+  },
   "searchAlertsTabLabel": "Alerts",
-  "@searchAlertsTabLabel": {"description": "Tab label for the keyword alerts list on the manage screen"},
+  "@searchAlertsTabLabel": {
+    "description": "Tab label for the keyword alerts list on the manage screen"
+  },
   "savedSearchesEmptyTitle": "No saved searches yet",
-  "@savedSearchesEmptyTitle": {"description": "Empty state title on the saved searches tab"},
+  "@savedSearchesEmptyTitle": {
+    "description": "Empty state title on the saved searches tab"
+  },
   "savedSearchesEmptySubtitle": "Save a search to quickly find it again later",
-  "@savedSearchesEmptySubtitle": {"description": "Empty state subtitle on the saved searches tab"},
+  "@savedSearchesEmptySubtitle": {
+    "description": "Empty state subtitle on the saved searches tab"
+  },
   "searchAlertsEmptyTitle": "No alerts yet",
-  "@searchAlertsEmptyTitle": {"description": "Empty state title on the keyword alerts tab"},
+  "@searchAlertsEmptyTitle": {
+    "description": "Empty state title on the keyword alerts tab"
+  },
   "searchAlertsEmptySubtitle": "Save a search and turn on notifications to get alerted about new matches",
-  "@searchAlertsEmptySubtitle": {"description": "Empty state subtitle on the keyword alerts tab"},
+  "@searchAlertsEmptySubtitle": {
+    "description": "Empty state subtitle on the keyword alerts tab"
+  },
   "savedSearchUseCount": "Used {count} times",
   "@savedSearchUseCount": {
     "description": "Shows how many times a saved search has been re-run",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "savedSearchDeleteTooltip": "Delete saved search",
-  "@savedSearchDeleteTooltip": {"description": "Icon button tooltip to delete a saved search row"},
+  "@savedSearchDeleteTooltip": {
+    "description": "Icon button tooltip to delete a saved search row"
+  },
   "searchAlertDeleteTooltip": "Delete alert",
-  "@searchAlertDeleteTooltip": {"description": "Icon button tooltip to delete a keyword alert row"},
+  "@searchAlertDeleteTooltip": {
+    "description": "Icon button tooltip to delete a keyword alert row"
+  },
   "savedSearchDeleteConfirmTitle": "Delete saved search?",
-  "@savedSearchDeleteConfirmTitle": {"description": "Confirmation dialog title before deleting a saved search"},
+  "@savedSearchDeleteConfirmTitle": {
+    "description": "Confirmation dialog title before deleting a saved search"
+  },
   "savedSearchDeleteConfirmMessage": "This will remove the saved search. This action cannot be undone.",
-  "@savedSearchDeleteConfirmMessage": {"description": "Confirmation dialog message before deleting a saved search"},
+  "@savedSearchDeleteConfirmMessage": {
+    "description": "Confirmation dialog message before deleting a saved search"
+  },
   "searchAlertDeleteConfirmTitle": "Delete alert?",
-  "@searchAlertDeleteConfirmTitle": {"description": "Confirmation dialog title before deleting a keyword alert"},
+  "@searchAlertDeleteConfirmTitle": {
+    "description": "Confirmation dialog title before deleting a keyword alert"
+  },
   "searchAlertDeleteConfirmMessage": "You will no longer be notified about new matches for this keyword.",
-  "@searchAlertDeleteConfirmMessage": {"description": "Confirmation dialog message before deleting a keyword alert"},
+  "@searchAlertDeleteConfirmMessage": {
+    "description": "Confirmation dialog message before deleting a keyword alert"
+  },
   "savedSearchDeletedSuccess": "Saved search deleted",
-  "@savedSearchDeletedSuccess": {"description": "Snackbar shown after a saved search is deleted"},
+  "@savedSearchDeletedSuccess": {
+    "description": "Snackbar shown after a saved search is deleted"
+  },
   "searchAlertDeletedSuccess": "Alert deleted",
-  "@searchAlertDeletedSuccess": {"description": "Snackbar shown after a keyword alert is deleted"},
+  "@searchAlertDeletedSuccess": {
+    "description": "Snackbar shown after a keyword alert is deleted"
+  },
   "savedSearchDeleteError": "Failed to delete saved search",
-  "@savedSearchDeleteError": {"description": "Snackbar shown when deleting a saved search fails"},
+  "@savedSearchDeleteError": {
+    "description": "Snackbar shown when deleting a saved search fails"
+  },
   "searchAlertDeleteError": "Failed to delete alert",
-  "@searchAlertDeleteError": {"description": "Snackbar shown when deleting a keyword alert fails"},
+  "@searchAlertDeleteError": {
+    "description": "Snackbar shown when deleting a keyword alert fails"
+  },
   "searchAlertToggleError": "Failed to update alert",
-  "@searchAlertToggleError": {"description": "Snackbar shown when toggling a keyword alert's active state fails"},
+  "@searchAlertToggleError": {
+    "description": "Snackbar shown when toggling a keyword alert's active state fails"
+  },
   "savedSearchesLoadError": "Failed to load saved searches",
-  "@savedSearchesLoadError": {"description": "Inline error shown when fetching saved searches fails"},
+  "@savedSearchesLoadError": {
+    "description": "Inline error shown when fetching saved searches fails"
+  },
   "searchAlertsLoadError": "Failed to load alerts",
-  "@searchAlertsLoadError": {"description": "Inline error shown when fetching keyword alerts fails"},
+  "@searchAlertsLoadError": {
+    "description": "Inline error shown when fetching keyword alerts fails"
+  },
   "reviewWriteTitle": "Write a review",
-  "@reviewWriteTitle": {"description": "AppBar title for the write-review screen"},
+  "@reviewWriteTitle": {
+    "description": "AppBar title for the write-review screen"
+  },
   "reviewWriteRatingLabel": "How was your experience?",
-  "@reviewWriteRatingLabel": {"description": "Label above the 1-5 star rating selector on the write-review screen"},
+  "@reviewWriteRatingLabel": {
+    "description": "Label above the 1-5 star rating selector on the write-review screen"
+  },
   "reviewWriteRatingRequiredHint": "Select at least 1 star to submit",
-  "@reviewWriteRatingRequiredHint": {"description": "Assistive text shown under the star selector when no rating has been chosen yet"},
+  "@reviewWriteRatingRequiredHint": {
+    "description": "Assistive text shown under the star selector when no rating has been chosen yet"
+  },
   "reviewWriteTagsLabel": "What went well? (optional)",
-  "@reviewWriteTagsLabel": {"description": "Label above the quick review tag chips on the write-review screen"},
+  "@reviewWriteTagsLabel": {
+    "description": "Label above the quick review tag chips on the write-review screen"
+  },
   "reviewWriteCommentLabel": "Additional comments (optional)",
-  "@reviewWriteCommentLabel": {"description": "Label above the free-text review field on the write-review screen"},
+  "@reviewWriteCommentLabel": {
+    "description": "Label above the free-text review field on the write-review screen"
+  },
   "reviewWriteCommentHint": "Share more about your experience…",
-  "@reviewWriteCommentHint": {"description": "Placeholder text inside the free-text review field"},
+  "@reviewWriteCommentHint": {
+    "description": "Placeholder text inside the free-text review field"
+  },
   "reviewWriteSubmitButton": "Submit review",
-  "@reviewWriteSubmitButton": {"description": "Button label to submit a review"},
+  "@reviewWriteSubmitButton": {
+    "description": "Button label to submit a review"
+  },
   "reviewWriteSuccess": "Review submitted successfully",
-  "@reviewWriteSuccess": {"description": "Snackbar shown after a review is submitted successfully"},
+  "@reviewWriteSuccess": {
+    "description": "Snackbar shown after a review is submitted successfully"
+  },
   "reviewWriteError": "Failed to submit review. Please try again.",
-  "@reviewWriteError": {"description": "Snackbar shown when submitting a review fails"},
+  "@reviewWriteError": {
+    "description": "Snackbar shown when submitting a review fails"
+  },
   "reviewWriteLoadingTransaction": "Loading transaction details…",
-  "@reviewWriteLoadingTransaction": {"description": "Loading indicator label while the write-review screen resolves missing transaction details"},
+  "@reviewWriteLoadingTransaction": {
+    "description": "Loading indicator label while the write-review screen resolves missing transaction details"
+  },
   "reviewWriteResolveError": "We couldn't load this transaction. Please try again.",
-  "@reviewWriteResolveError": {"description": "Inline error shown when the write-review screen cannot resolve the transaction (and thus the reviewer's role)"},
+  "@reviewWriteResolveError": {
+    "description": "Inline error shown when the write-review screen cannot resolve the transaction (and thus the reviewer's role)"
+  },
   "reviewWriteRetry": "Retry",
-  "@reviewWriteRetry": {"description": "Button label to retry loading the transaction on the write-review screen"},
+  "@reviewWriteRetry": {
+    "description": "Button label to retry loading the transaction on the write-review screen"
+  },
   "view": "View",
-  "@view": {"description": "Button label to view a listing's detail page"},
+  "@view": {
+    "description": "Button label to view a listing's detail page"
+  },
   "more_options": "More options",
-  "@more_options": {"description": "Tooltip for the per-listing overflow menu button on my-listings screens"},
+  "@more_options": {
+    "description": "Tooltip for the per-listing overflow menu button on my-listings screens"
+  },
   "mark_as_sold": "Mark as sold",
-  "@mark_as_sold": {"description": "Overflow menu action / bottom sheet title to mark an owned listing as sold"},
+  "@mark_as_sold": {
+    "description": "Overflow menu action / bottom sheet title to mark an owned listing as sold"
+  },
   "back_to_available": "Back to available",
-  "@back_to_available": {"description": "Overflow menu action to un-mark a sold/reserved listing, making it available again"},
+  "@back_to_available": {
+    "description": "Overflow menu action to un-mark a sold/reserved listing, making it available again"
+  },
   "hide_listing": "Hide",
-  "@hide_listing": {"description": "Overflow menu action to hide an owned listing from public view"},
+  "@hide_listing": {
+    "description": "Overflow menu action to hide an owned listing from public view"
+  },
   "unhide_listing": "Unhide",
-  "@unhide_listing": {"description": "Overflow menu action to make a hidden listing publicly visible again"},
+  "@unhide_listing": {
+    "description": "Overflow menu action to make a hidden listing publicly visible again"
+  },
   "hidden_badge": "HIDDEN",
-  "@hidden_badge": {"description": "Badge text shown on an owner's own hidden (inactive) listing card"},
+  "@hidden_badge": {
+    "description": "Badge text shown on an owner's own hidden (inactive) listing card"
+  },
   "who_did_you_sell_to": "Who did you sell to?",
-  "@who_did_you_sell_to": {"description": "Title of the mark-as-sold buyer picker bottom sheet when buyers with an existing chat exist"},
+  "@who_did_you_sell_to": {
+    "description": "Title of the mark-as-sold buyer picker bottom sheet when buyers with an existing chat exist"
+  },
   "sold_elsewhere": "Sold elsewhere",
-  "@sold_elsewhere": {"description": "Mark-as-sold option for a sale not attributed to any in-app chat buyer"},
+  "@sold_elsewhere": {
+    "description": "Mark-as-sold option for a sale not attributed to any in-app chat buyer"
+  },
   "marked_as_sold": "Marked as sold",
-  "@marked_as_sold": {"description": "Snackbar shown after successfully marking a listing as sold"},
+  "@marked_as_sold": {
+    "description": "Snackbar shown after successfully marking a listing as sold"
+  },
   "listing_available_again": "Listing is available again",
-  "@listing_available_again": {"description": "Snackbar shown after moving a sold/reserved listing back to available"},
+  "@listing_available_again": {
+    "description": "Snackbar shown after moving a sold/reserved listing back to available"
+  },
   "listing_hidden": "Listing hidden",
-  "@listing_hidden": {"description": "Snackbar shown after hiding an owned listing"},
+  "@listing_hidden": {
+    "description": "Snackbar shown after hiding an owned listing"
+  },
   "listing_unhidden": "Listing is visible again",
-  "@listing_unhidden": {"description": "Snackbar shown after unhiding an owned listing"},
+  "@listing_unhidden": {
+    "description": "Snackbar shown after unhiding an owned listing"
+  },
   "failed_to_update_listing": "Failed to update listing",
   "listing_updated_refresh_failed": "Updated — pull to refresh to see changes",
-  "@failed_to_update_listing": {"description": "Error snackbar prefix when a listing status change (sold/hide/unhide) fails"},
+  "@failed_to_update_listing": {
+    "description": "Error snackbar prefix when a listing status change (sold/hide/unhide) fails"
+  },
   "active_tab": "Active",
-  "@active_tab": {"description": "Tab label for the seller's active (not-yet-sold) listings on the my-listings screen"},
+  "@active_tab": {
+    "description": "Tab label for the seller's active (not-yet-sold) listings on the my-listings screen"
+  },
   "sold_tab": "Sold",
-  "@sold_tab": {"description": "Tab label for the seller's sold listings on the my-listings screen"},
+  "@sold_tab": {
+    "description": "Tab label for the seller's sold listings on the my-listings screen"
+  },
   "no_active_listings": "No active listings",
-  "@no_active_listings": {"description": "Empty state text for the Active tab on the my-listings screen"},
+  "@no_active_listings": {
+    "description": "Empty state text for the Active tab on the my-listings screen"
+  },
   "no_sold_listings": "No sold items yet",
-  "@no_sold_listings": {"description": "Empty state text for the Sold tab on the my-listings screen"},
+  "@no_sold_listings": {
+    "description": "Empty state text for the Sold tab on the my-listings screen"
+  },
   "productNameTooShort": "Product name must be at least 3 characters",
-  "@productNameTooShort": {"description": "Validation error when the product title is shorter than the minimum length"},
+  "@productNameTooShort": {
+    "description": "Validation error when the product title is shorter than the minimum length"
+  },
   "descriptionTooShort": "Description must be at least 10 characters",
-  "@descriptionTooShort": {"description": "Validation error when the product description is shorter than the minimum length"},
+  "@descriptionTooShort": {
+    "description": "Validation error when the product description is shorter than the minimum length"
+  },
   "addMorePhotos": "Add More",
-  "@addMorePhotos": {"description": "Label on the add-more tile in the product-create image picker"},
+  "@addMorePhotos": {
+    "description": "Label on the add-more tile in the product-create image picker"
+  },
   "addPhotosEmptyStateHint": "Add photos so buyers can see the item",
-  "@addPhotosEmptyStateHint": {"description": "Empty-state hint in the product-create image picker before any photo is added"},
+  "@addPhotosEmptyStateHint": {
+    "description": "Empty-state hint in the product-create image picker before any photo is added"
+  },
   "pickLocationOnMap": "Pick location on map",
-  "@pickLocationOnMap": {"description": "Title of the location card on the product-create form before a place is picked"},
+  "@pickLocationOnMap": {
+    "description": "Title of the location card on the product-create form before a place is picked"
+  },
   "dropPinBuyersHint": "Drop a pin so buyers see where the item is",
-  "@dropPinBuyersHint": {"description": "Subtitle of the location card on the product-create form before a place is picked"},
+  "@dropPinBuyersHint": {
+    "description": "Subtitle of the location card on the product-create form before a place is picked"
+  },
   "imageTooLargeMessage": "Image is too large. Maximum size is 5MB",
-  "@imageTooLargeMessage": {"description": "Warning shown when a single picked image exceeds the 5MB backend limit"},
+  "@imageTooLargeMessage": {
+    "description": "Warning shown when a single picked image exceeds the 5MB backend limit"
+  },
   "imagesTooLargeSkipped": "Some images exceed 5MB and were skipped",
-  "@imagesTooLargeSkipped": {"description": "Warning shown when one or more gallery-picked images exceed the 5MB backend limit and were dropped from the selection"}
+  "@imagesTooLargeSkipped": {
+    "description": "Warning shown when one or more gallery-picked images exceed the 5MB backend limit and were dropped from the selection"
+  },
+  "reviewTagsPositiveHeading": "Positive",
+  "@reviewTagsPositiveHeading": {
+    "description": "Heading above the positive review-tag chips"
+  },
+  "reviewTagsNegativeHeading": "Needs Improvement",
+  "@reviewTagsNegativeHeading": {
+    "description": "Heading above the negative review-tag chips"
+  },
+  "reviewSentimentGood": "Good",
+  "@reviewSentimentGood": {
+    "description": "Label on the positive sentiment button in the review form"
+  },
+  "reviewSentimentBad": "Not Good",
+  "@reviewSentimentBad": {
+    "description": "Label on the negative sentiment button in the review form"
+  },
+  "offerMakeTitle": "Make an Offer",
+  "@offerMakeTitle": {
+    "description": "Title of the make-an-offer dialog"
+  },
+  "offerSendButton": "Send Offer",
+  "@offerSendButton": {
+    "description": "Submit button in the make-an-offer dialog"
+  },
+  "offerDecline": "Decline",
+  "@offerDecline": {
+    "description": "Decline an incoming offer"
+  },
+  "offerCounter": "Counter",
+  "@offerCounter": {
+    "description": "Open the counter-offer dialog"
+  },
+  "offerAccept": "Accept",
+  "@offerAccept": {
+    "description": "Accept an incoming offer"
+  },
+  "offerAcceptCounter": "Accept Counter",
+  "@offerAcceptCounter": {
+    "description": "Accept the seller counter-offer"
+  },
+  "offerCancelOffer": "Cancel Offer",
+  "@offerCancelOffer": {
+    "description": "Withdraw an offer you sent"
+  },
+  "offerCounterTitle": "Counter Offer",
+  "@offerCounterTitle": {
+    "description": "Title of the counter-offer dialog"
+  },
+  "offerSendCounter": "Send Counter",
+  "@offerSendCounter": {
+    "description": "Submit button in the counter-offer dialog"
+  },
+  "offerBuyerOffered": "Buyer offered: {price} UZS",
+  "@offerBuyerOffered": {
+    "description": "Shows the buyer original offer in the counter dialog",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "offerAskingPrice": "Asking price: {price} UZS",
+  "@offerAskingPrice": {
+    "description": "Shows the listing asking price in the counter dialog",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "offerAcceptedMessage": "Offer accepted!",
+  "@offerAcceptedMessage": {
+    "description": "Snackbar after accepting an offer"
+  },
+  "offerAcceptError": "Failed to accept offer: {error}",
+  "@offerAcceptError": {
+    "description": "Snackbar when accepting an offer fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "offerDeclinedMessage": "Offer declined",
+  "@offerDeclinedMessage": {
+    "description": "Snackbar after declining an offer"
+  },
+  "offerDeclineError": "Failed to decline offer: {error}",
+  "@offerDeclineError": {
+    "description": "Snackbar when declining an offer fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "offerCounterSentMessage": "Counter offer sent!",
+  "@offerCounterSentMessage": {
+    "description": "Snackbar after sending a counter-offer"
+  },
+  "offerCounterSendError": "Failed to send counter offer: {error}",
+  "@offerCounterSendError": {
+    "description": "Snackbar when sending a counter-offer fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "offerCancelConfirmBody": "Are you sure you want to cancel this offer?",
+  "@offerCancelConfirmBody": {
+    "description": "Body of the cancel-offer confirmation dialog"
+  },
+  "offerCancelConfirmYes": "Yes, Cancel",
+  "@offerCancelConfirmYes": {
+    "description": "Confirm button in the cancel-offer dialog"
+  },
+  "offerCancelledMessage": "Offer cancelled",
+  "@offerCancelledMessage": {
+    "description": "Snackbar after cancelling an offer"
+  },
+  "offerCancelError": "Failed to cancel offer: {error}",
+  "@offerCancelError": {
+    "description": "Snackbar when cancelling an offer fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "offerCounterAcceptedMessage": "Counter offer accepted!",
+  "@offerCounterAcceptedMessage": {
+    "description": "Snackbar after accepting a counter-offer"
+  },
+  "offerCounterAcceptError": "Failed to accept counter offer: {error}",
+  "@offerCounterAcceptError": {
+    "description": "Snackbar when accepting a counter-offer fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "offersNoneReceivedTitle": "No offers received",
+  "@offersNoneReceivedTitle": {
+    "description": "Empty state title on the received-offers tab"
+  },
+  "offersNoneReceivedSubtitle": "When buyers make offers on your listings, they will appear here",
+  "@offersNoneReceivedSubtitle": {
+    "description": "Empty state subtitle on the received-offers tab"
+  },
+  "offersNoneSentTitle": "No offers sent",
+  "@offersNoneSentTitle": {
+    "description": "Empty state title on the sent-offers tab"
+  },
+  "offersNoneSentSubtitle": "When you make offers on listings, they will appear here",
+  "@offersNoneSentSubtitle": {
+    "description": "Empty state subtitle on the sent-offers tab"
+  },
+  "offersSectionPending": "Pending ({count})",
+  "@offersSectionPending": {
+    "description": "Section header for pending offers with a count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offersSectionHistory": "History ({count})",
+  "@offersSectionHistory": {
+    "description": "Section header for past offers with a count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offersSectionActive": "Active ({count})",
+  "@offersSectionActive": {
+    "description": "Section header for active offers with a count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Button on a full-screen error page that pops the route"
+  },
+  "routeLoadFailed": "Failed to load: {error}",
+  "@routeLoadFailed": {
+    "description": "Message on a full-screen route error page",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }
