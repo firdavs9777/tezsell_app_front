@@ -148,12 +148,18 @@ class FollowUser {
     required this.username,
     required this.profileImage,
     required this.isFollowing,
+    this.temperature,
   });
 
   final int id;
   final String username;
   final ProfileImage profileImage;
   final bool isFollowing;
+
+  /// Manner temperature served inline by the follow-list endpoint. Null when
+  /// the backend predates that field, in which case the row falls back to
+  /// fetching it per user.
+  final double? temperature;
 
   String get initials {
     if (username.isEmpty) return '?';
@@ -179,6 +185,9 @@ class FollowUser {
       username: json['username'] ?? '',
       profileImage: profileImage,
       isFollowing: json['is_following'] ?? false,
+      temperature: json['temperature'] == null
+          ? null
+          : double.tryParse(json['temperature'].toString()),
     );
   }
 
@@ -187,6 +196,7 @@ class FollowUser {
       id: id,
       username: username,
       profileImage: profileImage,
+      temperature: temperature,
       isFollowing: isFollowing,
     );
   }

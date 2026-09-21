@@ -223,7 +223,10 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
             ),
           ),
           const SizedBox(width: 6),
-          _TrustBadge(userId: widget.user.id),
+          _TrustBadge(
+            userId: widget.user.id,
+            inlineTemperature: widget.user.temperature,
+          ),
         ],
       ),
       trailing: _isLoading
@@ -274,24 +277,29 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
   }
 }
 
-/// Per-row manner-temperature badge, fed by [userTrustScoreProvider].
-/// Renders nothing while loading or on error so a slow/failed trust-score
-/// fetch never blocks or breaks the row (mirrors `_TrustChip` in
-/// `profile_header.dart`).
+/// Per-row manner-temperature badge.
 ///
-// NOTE(plan-g): this fires one trust-score request per visible row (the
-// `userTrustScoreProvider` family caches per userId, so re-scrolling the
-// same list is free, but the first render of an N-row list still makes N
-// requests). A batched `temperature` field on the backend follow-list
-// serializer would remove these per-row calls entirely; that optimization
-// is out of scope for E6 (Flutter-only).
+/// Prefers [inlineTemperature], which the follow-list endpoint now serves
+/// with each row — this used to fire one trust-score request per visible
+/// row, so opening a 50-follower list cost 50 extra round trips.
+///
+/// Falls back to [userTrustScoreProvider] only when the field is absent,
+/// i.e. against a backend that predates it. Renders nothing while loading or
+/// on error so a slow or failed fetch never blocks the row (mirrors
+/// `_TrustChip` in `profile_header.dart`).
 class _TrustBadge extends ConsumerWidget {
-  const _TrustBadge({required this.userId});
+  const _TrustBadge({required this.userId, this.inlineTemperature});
 
   final int userId;
+  final double? inlineTemperature;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final inline = inlineTemperature;
+    if (inline != null) {
+      return TrustBadgeCompact(temperature: inline, size: 0.85);
+    }
+
     final trustAsync = ref.watch(userTrustScoreProvider(userId));
     return trustAsync.when(
       data: (trustScore) => TrustBadgeCompact(temperature: trustScore.temperature, size: 0.85),
