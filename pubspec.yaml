@@ -53,6 +53,7 @@ dependencies:
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.4
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
@@ -63,6 +64,26 @@ flutter_launcher_icons:
     image_path: "assets/logo/logo.png"
     adaptive_icon_background: "#FFFFFF"
     adaptive_icon_foreground: "assets/logo/logo.png"
+
+# Native launch screen. Without this the app shows a blank white window
+# between process start and the first Flutter frame. Colors mirror
+# AppColors.lightBackground / darkBackground so the splash blends into
+# whichever theme the app wakes up in.
+# Regenerate after changing: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#FFFBF5"
+  color_dark: "#0F0F0F"
+  image: "assets/logo/logo_no_background.png"
+  image_dark: "assets/logo/logo_no_background.png"
+  android_12:
+    color: "#FFFBF5"
+    color_dark: "#0F0F0F"
+    image: "assets/logo/logo_no_background.png"
+    image_dark: "assets/logo/logo_no_background.png"
+  android: true
+  ios: true
+  web: false
+
 flutter:
   uses-material-design: true
   generate: true

@@ -1,116 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-   <key>NSMicrophoneUsageDescription</key>
-   <string>We need microphone access for voice messages</string>
-   <key>CADisableMinimumFrameDurationOnPhone</key>
-   <true/>
-   <key>CFBundleDevelopmentRegion</key>
-   <string>$(DEVELOPMENT_LANGUAGE)</string>
-   <key>CFBundleDisplayName</key>
-   <string>Tezsell</string>
-   <key>CFBundleExecutable</key>
-   <string>$(EXECUTABLE_NAME)</string>
-   <key>CFBundleIdentifier</key>
-   <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-   <key>CFBundleInfoDictionaryVersion</key>
-   <string>6.0</string>
-   <key>CFBundleName</key>
-   <string>tezsell</string>
-   <key>CFBundlePackageType</key>
-   <string>APPL</string>
-   <key>CFBundleShortVersionString</key>
-   <string>$(FLUTTER_BUILD_NAME)</string>
-   <key>CFBundleSignature</key>
-   <string>????</string>
-   <key>CFBundleVersion</key>
-   <string>$(FLUTTER_BUILD_NUMBER)</string>
-   <key>LSRequiresIPhoneOS</key>
-   <true/>
-   <key>UIApplicationSupportsIndirectInputEvents</key>
-   <true/>
-   <key>UILaunchStoryboardName</key>
-   <string>LaunchScreen</string>
-   <key>UIMainStoryboardFile</key>
-   <string>Main</string>
-   <key>UISupportedInterfaceOrientations</key>
-   <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-   </array>
-   <key>UISupportedInterfaceOrientations~ipad</key>
-   <array>
-      <string>UIInterfaceOrientationPortrait</string>
-      <string>UIInterfaceOrientationPortraitUpsideDown</string>
-      <string>UIInterfaceOrientationLandscapeLeft</string>
-      <string>UIInterfaceOrientationLandscapeRight</string>
-   </array>
-
-   <!-- Location Permissions - ALL THREE REQUIRED -->
-   <key>NSLocationWhenInUseUsageDescription</key>
-   <string>This app needs access to your location to show you relevant listings in your area.</string>
-   <key>NSLocationAlwaysUsageDescription</key>
-   <string>This app needs access to your location to show you relevant listings.</string>
-   <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-   <string>This app needs access to your location to show you relevant listings in your area.</string>
-
-   <!-- Camera and Photos -->
-   <key>NSPhotoLibraryUsageDescription</key>
-   <string>This app requires access to your photo library for uploading product images.</string>
-   <key>NSCameraUsageDescription</key>
-   <string>This app requires access to your camera to take photos of products.</string>
-
-   <!-- URL Schemes for url_launcher - MERGED into one -->
-   <key>LSApplicationQueriesSchemes</key>
-   <array>
-      <string>mailto</string>
-      <string>tel</string>
-      <string>telprompt</string>
-      <string>https</string>
-      <string>http</string>
-   </array>
-
-   <key>NSAppTransportSecurity</key>
-   <dict>
-      <key>NSAllowsArbitraryLoads</key>
-      <true/>
-      <!-- Optional: If you want to be more specific -->
-      <key>NSExceptionDomains</key>
-      <dict>
-         <key>api.webtezsell.com</key>
-         <dict>
-            <key>NSIncludesSubdomains</key>
-            <true/>
-            <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-            <key>NSTemporaryExceptionMinimumTLSVersion</key>
-            <string>TLSv1.2</string>
-         </dict>
-      </dict>
-   </dict>
-
-   <key>UIBackgroundModes</key>
-   <array>
-      <string>fetch</string>
-      <string>remote-notification</string>
-   </array>
-
-   <key>FirebaseAppDelegateProxyEnabled</key>
-   <false/>
-
-   <!-- Google Sign-In URL Scheme -->
-   <key>CFBundleURLTypes</key>
-   <array>
-      <dict>
-         <key>CFBundleTypeRole</key>
-         <string>Editor</string>
-         <key>CFBundleURLSchemes</key>
-         <array>
-            <string>com.googleusercontent.apps.523279655368-m9gpttmq3546q7fn6v1dj14ko31ue4pu</string>
-         </array>
-      </dict>
-   </array>
-</dict>
+	<dict>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>We need microphone access for voice messages</string>
+		<key>CADisableMinimumFrameDurationOnPhone</key>
+		<true/>
+		<key>CFBundleDevelopmentRegion</key>
+		<string>$(DEVELOPMENT_LANGUAGE)</string>
+		<key>CFBundleDisplayName</key>
+		<string>Tezsell</string>
+		<key>CFBundleExecutable</key>
+		<string>$(EXECUTABLE_NAME)</string>
+		<key>CFBundleIdentifier</key>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+		<key>CFBundleName</key>
+		<string>tezsell</string>
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+		<key>CFBundleShortVersionString</key>
+		<string>$(FLUTTER_BUILD_NAME)</string>
+		<key>CFBundleSignature</key>
+		<string>????</string>
+		<key>CFBundleVersion</key>
+		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<key>LSRequiresIPhoneOS</key>
+		<true/>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+		<true/>
+		<key>UILaunchStoryboardName</key>
+		<string>LaunchScreen</string>
+		<key>UIMainStoryboardFile</key>
+		<string>Main</string>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationLandscapeLeft</string>
+			<string>UIInterfaceOrientationLandscapeRight</string>
+		</array>
+		<key>UISupportedInterfaceOrientations~ipad</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+			<string>UIInterfaceOrientationPortraitUpsideDown</string>
+			<string>UIInterfaceOrientationLandscapeLeft</string>
+			<string>UIInterfaceOrientationLandscapeRight</string>
+		</array>
+		<!-- Location Permissions - ALL THREE REQUIRED -->
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app needs access to your location to show you relevant listings in your area.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>This app needs access to your location to show you relevant listings.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>This app needs access to your location to show you relevant listings in your area.</string>
+		<!-- Camera and Photos -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app requires access to your photo library for uploading product images.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>This app requires access to your camera to take photos of products.</string>
+		<!-- URL Schemes for url_launcher - MERGED into one -->
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>mailto</string>
+			<string>tel</string>
+			<string>telprompt</string>
+			<string>https</string>
+			<string>http</string>
+		</array>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<!-- NSAllowsArbitraryLoads intentionally omitted: the app talks to
+			     api.webtezsell.com over HTTPS only, and a blanket cleartext opt-in
+			     is an App Store review risk. Scoped exception below only. -->
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>api.webtezsell.com</key>
+				<dict>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+					<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+					<key>NSTemporaryExceptionMinimumTLSVersion</key>
+					<string>TLSv1.2</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
+		<key>FirebaseAppDelegateProxyEnabled</key>
+		<false/>
+		<!-- Google Sign-In URL Scheme -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.523279655368-m9gpttmq3546q7fn6v1dj14ko31ue4pu</string>
+				</array>
+			</dict>
+		</array>
+		<key>UIStatusBarHidden</key>
+		<false/>
+	</dict>
 </plist>
