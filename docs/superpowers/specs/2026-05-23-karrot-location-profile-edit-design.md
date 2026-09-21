@@ -1,4 +1,11 @@
 # Karrot-Style Location in Profile Edit — Design Spec
+
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
 Date: 2026-05-23
 
 ## Problem

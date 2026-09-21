@@ -1,5 +1,12 @@
 # Internationalization & Maps — Phase 1 Implementation Plan
 
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Spec:** `docs/superpowers/specs/2026-05-10-internationalization-and-maps-design.md`

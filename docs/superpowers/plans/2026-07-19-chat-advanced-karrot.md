@@ -1,5 +1,12 @@
 # Plan A — Karrot-Style Advanced Chat Implementation Plan
 
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Listing-anchored (Karrot-style) chat with seller transaction actions, a reliability core (optimistic send/offline outbox/ticks), and a rich messenger layer (reply, edit, delete, reactions, forward, pin, voice, translation, search, mute/archive, typing/presence) at BananaTalk polish level.

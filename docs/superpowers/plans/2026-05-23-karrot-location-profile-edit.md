@@ -1,5 +1,12 @@
 # Karrot-Style Location in Profile Edit — Implementation Plan
 
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the 3-level country→region→district dropdown cascade in `profile_edit.dart` with a Karrot-style map location card, fix category filtered pages to respect the active neighborhood, and unify all location-menu navigation through GoRouter.

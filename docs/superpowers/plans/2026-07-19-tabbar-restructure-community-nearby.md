@@ -1,5 +1,12 @@
 # Tab-bar Restructure — Community + Nearby Implementation Plan
 
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Restructure the main tab bar to `Home · Community · Nearby · Chat · My`, adding a lightweight neighborhood Community feed (new Django app + Flutter screens) and merging Services + Real Estate into a Nearby category hub.

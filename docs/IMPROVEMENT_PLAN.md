@@ -1,4 +1,12 @@
 # TezSell App Improvement Plan
+
+> **STALE — last accurate January 2026.** Several items in the checklists
+> below have since shipped (voice messages and read receipts landed with the
+> Plan A chat work, for example). Nothing here is tracked any more; the
+> status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md` and its
+> 2026-09-21 addendum.
+
 ## Category Search + Carrot Korea-Inspired UX Enhancements
 
 ---

@@ -1,5 +1,17 @@
 # Chat International Upgrade — Implementation Plan
 
+> **STATUS: delivered.** The unticked `- [ ]` boxes below are bookkeeping
+> debt, not outstanding work — boxes were never ticked as tasks landed. Each
+> task in this plan was verified against the shipped code on 2026-09-21.
+>
+> **One exception:** Task 17 ("auto-translate to my language"
+> preference, `chat_settings_sheet.dart`) was never built, and Plan A's
+> Task 18 respecified translation as manual per-message only. It needs a
+> decision: build it, or strike it from this plan.
+> The status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md`.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Upgrade Tezsell chat to international-market polish (Korea/Japan/US) without rewriting the architecture. Layer reliability, offline-queue, in-thread listing card, inbound translation, search, and mute/archive on top of the existing Riverpod `ChatNotifier`.

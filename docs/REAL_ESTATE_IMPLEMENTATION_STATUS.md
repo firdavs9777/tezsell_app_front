@@ -1,5 +1,18 @@
 # Real Estate Implementation Status
 
+> **STALE — last accurate January 2026.** The "Pending Features" below were
+> delivered by Plan B (nearby/map, 2026-07) and are shipping:
+>
+> | Listed as pending | Actually shipped |
+> |---|---|
+> | Map-Based Search | `lib/pages/real_estate/real_estate_map_view.dart` (495 lines) — bounds fetch on camera idle, price-labelled pins, marker clustering |
+> | Advanced Filtering UI | `real_estate_search.dart` (564 lines) — debounced query, filters, SharedPreferences recent searches, infinite scroll |
+> | Saved Properties List | `lib/pages/shaxsiy/properties/saved_properties.dart` (439 lines) |
+>
+> Treat the sections below as historical. The current status of record is
+> `docs/superpowers/specs/2026-07-25-deploy-readiness-report.md` and its
+> 2026-09-21 addendum.
+
 ## ✅ Completed Features
 
 ### 1. Property Inquiries System ✅
