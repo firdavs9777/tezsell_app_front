@@ -211,7 +211,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
 
     return Container(
       padding: const EdgeInsets.all(8.0),
-      color: colorScheme.primaryContainer.withOpacity(0.3),
+      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
       child: Row(
         children: [
           Icon(Icons.filter_alt, size: 16, color: colorScheme.primary),
@@ -306,7 +306,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

@@ -13,9 +13,9 @@ class AppLogger {
       lineLength: 80,
       colors: true,
       printEmojis: true,
-      printTime: true,
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
-    level: kDebugMode ? Level.debug : Level.nothing,
+    level: kDebugMode ? Level.debug : Level.off,
   );
 
   /// Log debug messages (only in debug mode)

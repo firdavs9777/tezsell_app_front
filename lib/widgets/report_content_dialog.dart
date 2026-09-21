@@ -218,21 +218,29 @@ class _ReportContentDialogState extends State<ReportContentDialog> {
               ),
             ),
             const SizedBox(height: 12),
-            ..._reportReasons.map((reason) {
-              return RadioListTile<String>(
-                title: Text(reason['label']!),
-                value: reason['value']!,
-                groupValue: _selectedReason,
-                onChanged: _isSubmitting
-                    ? null
-                    : (value) {
-                        setState(() {
-                          _selectedReason = value;
-                        });
-                      },
-                dense: true,
-              );
-            }),
+            RadioGroup<String>(
+              groupValue: _selectedReason,
+              // RadioGroup.onChanged is non-nullable, so the in-flight guard
+              // moves inside; the tiles are also disabled below so the
+              // selection can't visually change mid-submit either.
+              onChanged: (value) {
+                if (_isSubmitting) return;
+                setState(() {
+                  _selectedReason = value;
+                });
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _reportReasons.map((reason) {
+                  return RadioListTile<String>(
+                    title: Text(reason['label']!),
+                    value: reason['value']!,
+                    enabled: !_isSubmitting,
+                    dense: true,
+                  );
+                }).toList(),
+              ),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _descriptionController,

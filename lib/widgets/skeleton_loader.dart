@@ -46,9 +46,9 @@ class _ShimmerEffectState extends State<ShimmerEffect>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final baseColor = widget.baseColor ??
-        colorScheme.onSurface.withOpacity(0.08);
+        colorScheme.onSurface.withValues(alpha: 0.08);
     final highlightColor = widget.highlightColor ??
-        colorScheme.onSurface.withOpacity(0.15);
+        colorScheme.onSurface.withValues(alpha: 0.15);
 
     return AnimatedBuilder(
       animation: _animation,
@@ -110,7 +110,7 @@ class SkeletonBox extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        color: colorScheme.onSurface.withOpacity(0.1),
+        color: colorScheme.onSurface.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
@@ -137,7 +137,7 @@ class SkeletonCircle extends StatelessWidget {
       height: size,
       margin: margin,
       decoration: BoxDecoration(
-        color: colorScheme.onSurface.withOpacity(0.1),
+        color: colorScheme.onSurface.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
     );
@@ -160,7 +160,7 @@ class ProductSkeletonItem extends StatelessWidget {
           color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.08),
+              color: theme.shadowColor.withValues(alpha: 0.08),
               spreadRadius: 0,
               blurRadius: 12,
               offset: const Offset(0, 4),
@@ -324,7 +324,7 @@ class ServiceSkeletonItem extends StatelessWidget {
           color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.08),
+              color: theme.shadowColor.withValues(alpha: 0.08),
               spreadRadius: 0,
               blurRadius: 12,
               offset: const Offset(0, 4),
@@ -455,7 +455,7 @@ class CommunityPostSkeletonItem extends StatelessWidget {
           color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.08),
+              color: theme.shadowColor.withValues(alpha: 0.08),
               spreadRadius: 0,
               blurRadius: 12,
               offset: const Offset(0, 4),

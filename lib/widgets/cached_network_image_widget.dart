@@ -170,7 +170,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: placeholderColor ?? Theme.of(context).colorScheme.surfaceVariant,
+      color: placeholderColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       child: showProgressIndicator
           ? Center(
               child: CircularProgressIndicator(
@@ -210,7 +210,7 @@ class CachedNetworkImageWidget extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: placeholderColor ?? Theme.of(context).colorScheme.surfaceVariant,
+      color: placeholderColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: Icon(
           Icons.image_not_supported,
@@ -280,7 +280,7 @@ class CachedImageSlider extends StatelessWidget {
   Widget _buildEmptyState(BuildContext context) {
     return Container(
       height: height,
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: Icon(
           Icons.image_not_supported,

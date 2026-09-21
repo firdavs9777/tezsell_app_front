@@ -170,7 +170,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             end: Alignment.bottomCenter,
             colors: isDark
                 ? [colorScheme.surface, colorScheme.surface]
-                : [colorScheme.surface, colorScheme.surfaceVariant.withOpacity(0.3)],
+                : [colorScheme.surface, colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)],
           ),
         ),
         child: SafeArea(
@@ -236,7 +236,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                           ),
                         ),
                       ],

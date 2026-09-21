@@ -826,7 +826,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             children: [
               Material(
                 elevation: 4,
-                shadowColor: Theme.of(context).shadowColor.withOpacity(0.3),
+                shadowColor: Theme.of(context).shadowColor.withValues(alpha: 0.3),
                 shape: const CircleBorder(),
                 child: InkWell(
                   onTap: _scrollToBottom,
@@ -839,7 +839,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       color: Theme.of(context).colorScheme.primary,
                       boxShadow: [
                         BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -1613,7 +1613,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.2),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.2),
             spreadRadius: 1,
             blurRadius: 3,
           ),
@@ -1732,7 +1732,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
-                              fillColor: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                              fillColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             ),
                             maxLines: 6,
@@ -1869,11 +1869,11 @@ class _AnimatedSendButton extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isEnabled ? color : color.withOpacity(0.4),
+          color: isEnabled ? color : color.withValues(alpha: 0.4),
           boxShadow: isEnabled
               ? [
                   BoxShadow(
-                    color: color.withOpacity(0.3),
+                    color: color.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),

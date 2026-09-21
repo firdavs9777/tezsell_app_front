@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'service/push_notification_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:app/config/app_config.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 // import 'service/notification_service.dart'; // Remove if redundant
 
 // Global navigator key for handling notification navigation
@@ -26,6 +28,27 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Crash reporting is opt-in at build time (see AppConfig.sentryDsn). With
+  // no DSN the SDK is never initialised at all, so debug and CI runs stay
+  // completely offline rather than shipping errors somewhere by accident.
+  if (!AppConfig.isSentryEnabled) {
+    await _bootstrap();
+    return;
+  }
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = AppConfig.sentryDsn;
+      // Sampled rather than 1.0: this is a consumer marketplace app and
+      // full-rate tracing on every session is needless quota burn.
+      options.tracesSampleRate = 0.2;
+      options.enableAutoSessionTracking = true;
+    },
+    appRunner: _bootstrap,
+  );
+}
+
+Future<void> _bootstrap() async {
   print('🚀 Starting app initialization...');
 
   // Load locale-specific date symbols so DateFormat(pattern, locale) can

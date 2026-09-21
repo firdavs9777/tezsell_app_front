@@ -275,8 +275,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                   boxShadow: [
                     BoxShadow(
                       color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white.withOpacity(0.1)
-                          : Colors.black.withOpacity(0.08),
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.08),
                       blurRadius: 20,
                       offset: const Offset(0, 4),
                     ),
@@ -336,7 +336,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                   prefixIcon: Icon(
                     Icons.email_outlined,
                       color: (isSendingCode || isVerifyingCode)
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                           : Theme.of(context).textTheme.bodySmall?.color,
                   ),
                   hintText: localizations?.enterEmailAddress ?? 'Enter email address',
@@ -362,7 +362,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                                 ? []
                                 : [
                                     BoxShadow(
-                                      color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                      color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -372,10 +372,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                         onPressed: isSendingCode ? null : _sendCode,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: (isSendingCode || isVerifyingCode)
-                              ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                              ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2)
                               : Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                    disabledBackgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -455,7 +455,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                         prefixIcon: Icon(
                           Icons.pin_outlined,
                           color: isVerifyingCode
-                              ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                              ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                               : Theme.of(context).textTheme.bodySmall?.color,
                         ),
                         contentPadding: const EdgeInsets.symmetric(
@@ -475,7 +475,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                             Icons.refresh,
                             size: 18,
                             color: isResendingCode
-                                ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                                ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                                 : Theme.of(context).primaryColor,
                           ),
                           label: Text(
@@ -484,7 +484,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                                 : (localizations?.resendCode ?? 'Resend Code'),
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: isResendingCode
-                                  ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                                  ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                                   : Theme.of(context).primaryColor,
                               fontWeight: FontWeight.w600,
                             ),
@@ -496,10 +496,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                             vertical: 8,
                           ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error.withOpacity(0.1),
+                          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Theme.of(context).colorScheme.error.withOpacity(0.3),
+                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Text(
@@ -523,7 +523,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                             ? []
                             : [
                                 BoxShadow(
-                                  color: const Color(0xFFFF6F0F).withOpacity(0.3),
+                                  color: const Color(0xFFFF6F0F).withValues(alpha: 0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -533,10 +533,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                         onPressed: isVerifyingCode ? null : _verifyCode,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: isVerifyingCode
-                              ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                              ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2)
                               : Theme.of(context).primaryColor,
                           foregroundColor: Colors.white,
-                          disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                          disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

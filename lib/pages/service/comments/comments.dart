@@ -144,10 +144,10 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.1),
+                                color: Colors.blue.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                                 border: Border.all(
-                                    color: Colors.blue.withOpacity(0.3)),
+                                    color: Colors.blue.withValues(alpha: 0.3)),
                               ),
                               child: Text(
                                 AppLocalizations.of(context)?.you_label ?? 'You',

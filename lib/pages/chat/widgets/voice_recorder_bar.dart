@@ -358,7 +358,7 @@ class VoiceMicButtonState extends State<VoiceMicButton>
             count: 14,
             barWidth: 2.5,
             maxHeight: 22,
-            color: Theme.of(context).colorScheme.error.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
           ),
           const Spacer(),
           // Slide to cancel — moves left with drag
@@ -418,7 +418,7 @@ class VoiceMicButtonState extends State<VoiceMicButton>
                         BoxShadow(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.4),
+                          ).colorScheme.primary.withValues(alpha: 0.4),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
@@ -473,7 +473,7 @@ class VoiceMicButtonState extends State<VoiceMicButton>
             count: 12,
             barWidth: 2.5,
             maxHeight: 26,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
           ),
           const SizedBox(width: 12),
           // Send button

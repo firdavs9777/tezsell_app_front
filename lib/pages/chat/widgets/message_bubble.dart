@@ -233,7 +233,7 @@ class MessageBubble extends StatelessWidget {
                       width: double.infinity, // Ensure full width
                       decoration: BoxDecoration(
                         color: isOwnMessage
-                            ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)
                             : Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
@@ -304,7 +304,7 @@ class MessageBubble extends StatelessWidget {
                             end: Alignment.bottomRight,
                             colors: [
                               Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.primary.withOpacity(0.85),
+                              Theme.of(context).colorScheme.primary.withValues(alpha: 0.85),
                             ],
                           )
                         : null,
@@ -314,7 +314,7 @@ class MessageBubble extends StatelessWidget {
                     borderRadius: _bubbleRadius(),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -413,7 +413,7 @@ class MessageBubble extends StatelessWidget {
                             DateFormat('HH:mm').format(message.timestamp),
                             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: isOwnMessage
-                                  ? Colors.white.withOpacity(0.7)
+                                  ? Colors.white.withValues(alpha: 0.7)
                                   : Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
@@ -428,7 +428,7 @@ class MessageBubble extends StatelessWidget {
                                     fontStyle: FontStyle.italic,
                                     fontSize: 11,
                                     color: isOwnMessage
-                                        ? Colors.white.withOpacity(0.6)
+                                        ? Colors.white.withValues(alpha: 0.6)
                                         : Theme.of(context).colorScheme.onSurfaceVariant,
                                   ),
                                 );
@@ -474,7 +474,7 @@ class MessageBubble extends StatelessWidget {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOut,
       color: isHighlighted
-          ? Theme.of(context).colorScheme.primary.withOpacity(0.16)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.16)
           : Colors.transparent,
       child: child,
     );
@@ -595,7 +595,7 @@ class MessageBubble extends StatelessWidget {
                   : null,
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).shadowColor.withOpacity(0.1),
+                  color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                   blurRadius: 3,
                   offset: const Offset(0, 1),
                 ),
@@ -679,14 +679,14 @@ class MessageBubble extends StatelessWidget {
       return Icon(
         Icons.done_all,
         size: 16,
-        color: Colors.white.withOpacity(0.55),
+        color: Colors.white.withValues(alpha: 0.55),
       );
     } else {
       // Sent but not delivered - single tick (dimmed)
       return Icon(
         Icons.done,
         size: 16,
-        color: Colors.white.withOpacity(0.55),
+        color: Colors.white.withValues(alpha: 0.55),
       );
     }
   }
@@ -797,7 +797,7 @@ class MessageBubble extends StatelessWidget {
                           fontStyle: FontStyle.italic,
                           decoration: TextDecoration.underline,
                           color: isOwnMessage
-                              ? Colors.white.withOpacity(0.75)
+                              ? Colors.white.withValues(alpha: 0.75)
                               : Theme.of(context).colorScheme.primary,
                         ),
                       );

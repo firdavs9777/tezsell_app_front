@@ -95,8 +95,8 @@ class VoiceBubble extends StatelessWidget {
         ? Colors.white
         : Theme.of(context).colorScheme.primary;
     final inactiveColor = isOwnMessage
-        ? Colors.white.withOpacity(0.35)
-        : Theme.of(context).colorScheme.primary.withOpacity(0.3);
+        ? Colors.white.withValues(alpha: 0.35)
+        : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3);
 
     return GestureDetector(
       onTap: onTap,
@@ -110,8 +110,8 @@ class VoiceBubble extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: isOwnMessage
-                    ? Colors.white.withOpacity(0.25)
-                    : Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                    ? Colors.white.withValues(alpha: 0.25)
+                    : Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -149,7 +149,7 @@ class VoiceBubble extends StatelessWidget {
                     label,
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: isOwnMessage
-                          ? Colors.white.withOpacity(0.8)
+                          ? Colors.white.withValues(alpha: 0.8)
                           : Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
@@ -161,7 +161,7 @@ class VoiceBubble extends StatelessWidget {
             Icon(
               Icons.mic,
               color: isOwnMessage
-                  ? Colors.white.withOpacity(0.7)
+                  ? Colors.white.withValues(alpha: 0.7)
                   : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 20,
             ),

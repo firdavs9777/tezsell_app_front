@@ -129,12 +129,12 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           decoration: BoxDecoration(
                             color: isOnline
                                 ? onlineColor
-                                : Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                                : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                             shape: BoxShape.circle,
                             boxShadow: isOnline
                                 ? [
                                     BoxShadow(
-                                      color: onlineColor.withOpacity(0.6),
+                                      color: onlineColor.withValues(alpha: 0.6),
                                       blurRadius: 6,
                                       spreadRadius: 1,
                                     ),

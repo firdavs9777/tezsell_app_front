@@ -216,21 +216,27 @@ class _PropertyInquiryDialogState extends ConsumerState<PropertyInquiryDialog> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      ...InquiryType.values.map((type) {
-                        return RadioListTile<InquiryType>(
-                          title: Text(_getInquiryTypeLabel(type, l10n)),
-                          subtitle: Text(_getInquiryTypeDescription(type, l10n)),
-                          value: type,
-                          groupValue: _selectedInquiryType,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedInquiryType = value!;
-                            });
-                            HapticFeedback.selectionClick();
-                          },
-                          contentPadding: EdgeInsets.zero,
-                        );
-                      }),
+                      RadioGroup<InquiryType>(
+                        groupValue: _selectedInquiryType,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedInquiryType = value!;
+                          });
+                          HapticFeedback.selectionClick();
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: InquiryType.values.map((type) {
+                            return RadioListTile<InquiryType>(
+                              title: Text(_getInquiryTypeLabel(type, l10n)),
+                              subtitle:
+                                  Text(_getInquiryTypeDescription(type, l10n)),
+                              value: type,
+                              contentPadding: EdgeInsets.zero,
+                            );
+                          }).toList(),
+                        ),
+                      ),
 
                       const SizedBox(height: 24),
 

@@ -69,8 +69,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     boxShadow: [
                       BoxShadow(
                         color: theme.brightness == Brightness.dark
-                            ? Colors.white.withOpacity(0.1)
-                            : Colors.black.withOpacity(0.08),
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.black.withValues(alpha: 0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -143,7 +143,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     prefixIcon: Icon(
                       Icons.email_outlined,
                       color: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                           : Theme.of(context).textTheme.bodySmall?.color,
                     ),
                     hintText: localizations?.enterEmailAddress ?? 'Enter email address',
@@ -169,7 +169,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                             ? []
                             : [
                                 BoxShadow(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -179,10 +179,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     onPressed: _isLoading ? null : _sendOTP,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2)
                           : Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
-                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -238,7 +238,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                     localizations?.backToLogin ?? 'Back to Login',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                           : Theme.of(context).textTheme.bodySmall?.color,
                       fontWeight: FontWeight.w600,
                     ),

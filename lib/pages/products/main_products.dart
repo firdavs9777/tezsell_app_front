@@ -36,7 +36,7 @@ class ProductMain extends ConsumerWidget {
           color: theme.cardColor,
           boxShadow: [
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.08),
+              color: theme.shadowColor.withValues(alpha: 0.08),
               spreadRadius: 0,
               blurRadius: 12,
               offset: const Offset(0, 4),
@@ -85,7 +85,7 @@ class ProductMain extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.0),
-                              color: colorScheme.scrim.withOpacity(0.5),
+                              color: colorScheme.scrim.withValues(alpha: 0.5),
                             ),
                             child: Center(
                               child: Container(
@@ -177,7 +177,7 @@ class ProductMain extends ConsumerWidget {
                                     child: Text(
                                       _getLocationText(),
                                       style: TextStyle(
-                                        color: colorScheme.onSurface.withOpacity(0.6),
+                                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -222,7 +222,7 @@ class ProductMain extends ConsumerWidget {
                                     vertical: 3.0,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: colorScheme.surfaceVariant.withOpacity(0.5),
+                                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Row(
@@ -239,7 +239,7 @@ class ProductMain extends ConsumerWidget {
                                         style: TextStyle(
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.w500,
-                                          color: colorScheme.onSurface.withOpacity(0.7),
+                                          color: colorScheme.onSurface.withValues(alpha: 0.7),
                                         ),
                                       ),
                                     ],

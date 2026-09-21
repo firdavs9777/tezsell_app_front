@@ -330,7 +330,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
               color: theme.colorScheme.surface,
               boxShadow: [
                 BoxShadow(
-                  color: theme.colorScheme.shadow.withOpacity(0.05),
+                  color: theme.colorScheme.shadow.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: Offset(0, 2),
                 ),
@@ -344,7 +344,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     child: Row(
                       children: [
                         Icon(
@@ -543,9 +543,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
+                      border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       '${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName} ${localizations?.in_area ?? 'in area'}',
@@ -680,7 +680,7 @@ class _RealEstateBrowseModeToggle extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

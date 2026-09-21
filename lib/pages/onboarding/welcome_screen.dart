@@ -277,7 +277,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
-                    disabledBackgroundColor: colorScheme.surfaceVariant,
+                    disabledBackgroundColor: colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -353,7 +353,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               ? (isDark ? Colors.black : Colors.white)
               : colorScheme.onSurface,
           side: BorderSide(
-            color: colorScheme.outline.withOpacity(0.3),
+            color: colorScheme.outline.withValues(alpha: 0.3),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

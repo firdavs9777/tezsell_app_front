@@ -17,7 +17,7 @@ class UnreadDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          Expanded(child: Divider(color: color.withOpacity(0.4), thickness: 1)),
+          Expanded(child: Divider(color: color.withValues(alpha: 0.4), thickness: 1)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
@@ -28,7 +28,7 @@ class UnreadDivider extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: Divider(color: color.withOpacity(0.4), thickness: 1)),
+          Expanded(child: Divider(color: color.withValues(alpha: 0.4), thickness: 1)),
         ],
       ),
     );

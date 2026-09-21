@@ -619,8 +619,8 @@ class _LoginState extends ConsumerState<Login> {
                     boxShadow: [
                       BoxShadow(
                         color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white.withOpacity(0.1)
-                            : Colors.black.withOpacity(0.08),
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.black.withValues(alpha: 0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -680,7 +680,7 @@ class _LoginState extends ConsumerState<Login> {
                     prefixIcon: Icon(
                       Icons.email_outlined,
                       color: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                           : Theme.of(context).textTheme.bodySmall?.color,
                     ),
                     hintText: 'Email address',
@@ -716,7 +716,7 @@ class _LoginState extends ConsumerState<Login> {
                     prefixIcon: Icon(
                       Icons.lock_outline,
                       color: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                           : Theme.of(context).textTheme.bodySmall?.color,
                     ),
                     hintText:
@@ -732,7 +732,7 @@ class _LoginState extends ConsumerState<Login> {
                             ? Icons.visibility_rounded
                             : Icons.visibility_off_rounded,
                         color: _isLoading
-                            ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4)
+                            ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.4)
                             : Theme.of(context).textTheme.bodySmall?.color,
                         size: 22,
                       ),
@@ -774,7 +774,7 @@ class _LoginState extends ConsumerState<Login> {
                           'Forgot password?',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: _isLoading
-                            ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                            ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                             : Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
                       ),
@@ -796,7 +796,7 @@ class _LoginState extends ConsumerState<Login> {
                             ? []
                             : [
                                 BoxShadow(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -806,10 +806,10 @@ class _LoginState extends ConsumerState<Login> {
                     onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _isLoading
-                          ? Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2)
+                          ? Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2)
                           : Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
-                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.2),
+                      disabledBackgroundColor: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.2),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -947,7 +947,7 @@ class _LoginState extends ConsumerState<Login> {
                         AppLocalizations.of(context)?.registerNow ?? 'Sign up',
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: _isLoading || _isGoogleLoading || _isAppleLoading
-                              ? Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4)
+                              ? Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                               : Theme.of(context).primaryColor,
                         ),
                       ),
@@ -989,7 +989,7 @@ class _LoginState extends ConsumerState<Login> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
           width: 1,
         ),
       ),

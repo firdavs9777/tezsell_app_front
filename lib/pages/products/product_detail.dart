@@ -474,7 +474,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
-        color: colorScheme.scrim.withOpacity(0.3),
+        color: colorScheme.scrim.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -594,7 +594,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   decoration: BoxDecoration(
                     color: _currentImageIndex == index
                         ? colorScheme.surface
-                        : colorScheme.surface.withOpacity(0.5),
+                        : colorScheme.surface.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -609,7 +609,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: colorScheme.scrim.withOpacity(0.6),
+                color: colorScheme.scrim.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -653,7 +653,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.2),
+                  color: colorScheme.outline.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -844,7 +844,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
             widget.product.description ??
                 (localizations?.newProductDescription ?? 'No description'),
             style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withOpacity(0.85),
+              color: colorScheme.onSurface.withValues(alpha: 0.85),
             ),
           ),
         ],
@@ -957,7 +957,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
         color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outlineVariant.withOpacity(0.3),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -976,7 +976,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
                   height: 48,
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: colorScheme.outline.withOpacity(0.3),
+                      color: colorScheme.outline.withValues(alpha: 0.3),
                       width: 1,
                     ),
                     borderRadius: BorderRadius.circular(8),
@@ -1001,7 +1001,7 @@ class _ProductDetailState extends ConsumerState<ProductDetail> {
               Container(
                 width: 1,
                 height: 36,
-                color: colorScheme.outline.withOpacity(0.2),
+                color: colorScheme.outline.withValues(alpha: 0.2),
               ),
               const SizedBox(width: 12),
               // Price — Flexible (not Expanded) so it shrinks instead of

@@ -35,7 +35,7 @@ class QuickChips extends StatelessWidget {
           return ActionChip(
             label: Text(text),
             backgroundColor: colorScheme.surfaceContainerHighest,
-            side: BorderSide(color: colorScheme.outlineVariant.withOpacity(0.5)),
+            side: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
             labelStyle: TextStyle(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.w500,

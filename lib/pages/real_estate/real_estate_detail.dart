@@ -603,7 +603,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                                   borderRadius: BorderRadius.circular(3),
                                   color: isActive
                                       ? Colors.white
-                                      : Colors.white.withOpacity(0.5),
+                                      : Colors.white.withValues(alpha: 0.5),
                                 ),
                               );
                             }),
@@ -619,7 +619,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
+                              color: Colors.black.withValues(alpha: 0.6),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -722,11 +722,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: colorScheme.surface.withOpacity(0.9),
+            color: colorScheme.surface.withValues(alpha: 0.9),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: colorScheme.shadow.withOpacity(0.1),
+                color: colorScheme.shadow.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: Offset(0, 2),
               ),
@@ -1447,7 +1447,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: Offset(0, -2),
           ),

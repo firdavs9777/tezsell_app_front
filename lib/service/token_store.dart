@@ -15,10 +15,10 @@ abstract class SecureTokenStorage {
 }
 
 class _FlutterSecureTokenStorage implements SecureTokenStorage {
-  // Android: EncryptedSharedPreferences. iOS: Keychain (default).
-  final FlutterSecureStorage _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  // Android: the plugin's default keystore-backed storage (the old
+  // encryptedSharedPreferences flag is deprecated and goes away in v11,
+  // since Jetpack Security is no longer maintained). iOS: Keychain.
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   Future<String?> read(String key) => _storage.read(key: key);

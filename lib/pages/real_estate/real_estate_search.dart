@@ -326,7 +326,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
       height: 40,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
@@ -423,7 +423,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
         color: selected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
         fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
       ),
-      backgroundColor: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+      backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       side: BorderSide.none,
       visualDensity: VisualDensity.compact,
     );
@@ -539,7 +539,7 @@ class _RealEstateSearchState extends ConsumerState<RealEstateSearch> {
                       avatar: const Icon(Icons.history, size: 16),
                       onPressed: () => _onRecentSearchTap(query),
                       backgroundColor:
-                          colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                          colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                       side: BorderSide.none,
                     ),
                 ],

@@ -20,9 +20,6 @@ class NotificationBell extends ConsumerWidget {
     // Use unread count from the provider's state
     final unreadCount = notificationState.unreadCount;
     
-    // Debug logging - always log to see if rebuilds are happening
-    print('🔔 NotificationBell build: unreadCount=$unreadCount, total=${notificationState.notifications.length}');
-
     final effectiveIconColor = iconColor ?? Colors.white;
 
     return GestureDetector(

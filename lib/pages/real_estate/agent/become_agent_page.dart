@@ -145,7 +145,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
+                  color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -299,7 +299,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField<String>(
-                value: _selectedSpecialization,
+                initialValue: _selectedSpecialization,
                 decoration: InputDecoration(
                   labelText: l10n?.agentSpecialization ?? 'Specialization *',
                   border: OutlineInputBorder(
@@ -395,7 +395,7 @@ class _BecomeAgentPageState extends ConsumerState<BecomeAgentPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),

@@ -181,7 +181,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
           if (widget.regionName.isNotEmpty || widget.districtName.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              color: colorScheme.surfaceVariant.withOpacity(0.3),
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
               child: Row(
                 children: [
                   Icon(Icons.location_on,
@@ -212,7 +212,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
       height: 40,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
@@ -295,7 +295,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
                 AppLocalizations.of(context)?.search_services_subtitle ?? "Find professionals in your neighborhood",
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -336,7 +336,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
                 AppLocalizations.of(context)?.try_different_keywords ?? 'Try different keywords',
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
                 textAlign: TextAlign.center,
               ),

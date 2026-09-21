@@ -15,6 +15,14 @@ class AppConfig {
     defaultValue: 'wss://api.webtezsell.com',
   );
 
+  /// Sentry DSN, supplied at build time with
+  /// `--dart-define=SENTRY_DSN=https://...`. Empty by default, which leaves
+  /// crash reporting switched off entirely — no SDK init, no network calls —
+  /// so local and CI builds stay silent until a DSN is deliberately passed.
+  static const String sentryDsn = String.fromEnvironment('SENTRY_DSN');
+
+  static bool get isSentryEnabled => sentryDsn.isNotEmpty;
+
   // API Version
   static const String apiVersion = '/api/v1';
 

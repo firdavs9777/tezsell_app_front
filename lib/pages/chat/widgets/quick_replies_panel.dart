@@ -142,7 +142,7 @@ class _QuickRepliesPanelState extends ConsumerState<QuickRepliesPanel> {
                             itemCount: quickReplies.length,
                             separatorBuilder: (_, __) => Divider(
                               height: 1,
-                              color: colorScheme.outlineVariant.withOpacity(0.4),
+                              color: colorScheme.outlineVariant.withValues(alpha: 0.4),
                             ),
                             itemBuilder: (context, index) {
                               final reply = quickReplies[index];

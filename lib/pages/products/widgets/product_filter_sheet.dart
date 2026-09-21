@@ -265,7 +265,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                         _condition == c ? FontWeight.w600 : FontWeight.w400,
                   ),
                   backgroundColor:
-                      colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                      colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   side: BorderSide.none,
                 ),
             ],

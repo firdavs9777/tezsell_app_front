@@ -427,7 +427,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               color: theme.cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: theme.shadowColor.withOpacity(0.05),
+                  color: theme.shadowColor.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -441,7 +441,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     children: [
                       // Category Filter Button
                       Material(
-                        color: colorScheme.surfaceVariant.withOpacity(0.5),
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
@@ -472,7 +472,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                       ),
                       const SizedBox(width: 8),
                       Material(
-                        color: colorScheme.surfaceVariant.withOpacity(0.5),
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         child: Tooltip(
                           message: AppLocalizations.of(context)?.productFiltersTooltip ?? 'Filters',
@@ -502,7 +502,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                           widget.districtName.isNotEmpty)
                         Expanded(
                           child: Material(
-                            color: colorScheme.primaryContainer.withOpacity(0.3),
+                            color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(12),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12),
@@ -680,7 +680,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                     ),
                   ],
                 ),
-                backgroundColor: colorScheme.surfaceVariant.withOpacity(0.5),
+                backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 side: BorderSide.none,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -715,7 +715,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
               ),
               backgroundColor: isSelected
                   ? colorScheme.primary
-                  : colorScheme.surfaceVariant.withOpacity(0.5),
+                  : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               side: BorderSide.none,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
@@ -776,7 +776,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
             ActionChip(
               label: Text(localizations?.productFilterReset ?? 'Reset'),
               onPressed: () => _updateFilter(ProductFilter.empty),
-              backgroundColor: colorScheme.errorContainer.withOpacity(0.3),
+              backgroundColor: colorScheme.errorContainer.withValues(alpha: 0.3),
               side: BorderSide.none,
               visualDensity: VisualDensity.compact,
             ),
@@ -794,7 +794,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     return InputChip(
       label: Text(label, style: const TextStyle(fontSize: 12)),
       onDeleted: onDeleted,
-      backgroundColor: colorScheme.primaryContainer.withOpacity(0.3),
+      backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
       side: BorderSide.none,
       visualDensity: VisualDensity.compact,
     );
@@ -823,13 +823,13 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceVariant.withOpacity(0.3),
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.inventory_2_outlined,
                       size: 64,
-                      color: colorScheme.onSurface.withOpacity(0.4),
+                      color: colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -851,7 +851,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                       ) ?? 'No products found in ${widget.districtName.isNotEmpty ? widget.districtName : widget.regionName}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -895,7 +895,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
             child: Text(
               localizations?.no_more_products ?? 'No more products to load',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -933,7 +933,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
                 'No items with location data in this area yet.',
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
           ),
         ),
       );
@@ -980,7 +980,7 @@ class _ProductBrowseModeToggle extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceVariant.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -1059,7 +1059,7 @@ class _ProductSortButton extends StatelessWidget {
                 _icon(s),
                 size: 18,
                 color: !enabled
-                    ? colorScheme.onSurfaceVariant.withOpacity(0.4)
+                    ? colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                     : selected
                         ? colorScheme.primary
                         : colorScheme.onSurfaceVariant,
@@ -1069,7 +1069,7 @@ class _ProductSortButton extends StatelessWidget {
                 _label(l, s),
                 style: TextStyle(
                   color: !enabled
-                      ? colorScheme.onSurfaceVariant.withOpacity(0.4)
+                      ? colorScheme.onSurfaceVariant.withValues(alpha: 0.4)
                       : null,
                 ),
               ),
@@ -1082,7 +1082,7 @@ class _ProductSortButton extends StatelessWidget {
         );
       }).toList(),
       child: Material(
-        color: colorScheme.surfaceVariant.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
