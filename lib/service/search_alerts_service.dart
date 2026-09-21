@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/search_alert_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Search Alerts API Service
 class SearchAlertsService {
@@ -59,7 +60,7 @@ class SearchAlertsService {
 
       return null;
     } catch (e) {
-      print('Error creating search alert: $e');
+      AppLogger.warning('Error creating search alert: $e');
       rethrow;
     }
   }
@@ -83,7 +84,7 @@ class SearchAlertsService {
       }
       return [];
     } catch (e) {
-      print('Error getting search alerts: $e');
+      AppLogger.warning('Error getting search alerts: $e');
       return [];
     }
   }
@@ -105,7 +106,7 @@ class SearchAlertsService {
       }
       return null;
     } catch (e) {
-      print('Error getting search alert: $e');
+      AppLogger.warning('Error getting search alert: $e');
       return null;
     }
   }
@@ -151,7 +152,7 @@ class SearchAlertsService {
       }
       return null;
     } catch (e) {
-      print('Error updating search alert: $e');
+      AppLogger.warning('Error updating search alert: $e');
       return null;
     }
   }
@@ -179,7 +180,7 @@ class SearchAlertsService {
         'message': 'Failed to toggle alert',
       };
     } catch (e) {
-      print('Error toggling search alert: $e');
+      AppLogger.warning('Error toggling search alert: $e');
       return {
         'success': false,
         'message': 'Network error: $e',
@@ -198,7 +199,7 @@ class SearchAlertsService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error deleting search alert: $e');
+      AppLogger.warning('Error deleting search alert: $e');
       return false;
     }
   }

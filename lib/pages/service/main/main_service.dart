@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 class ServiceMain extends ConsumerStatefulWidget {
   final String regionName;
@@ -32,7 +33,7 @@ class ServiceMain extends ConsumerStatefulWidget {
   });
 
   @override
-  _ServiceMainState createState() => _ServiceMainState();
+  ConsumerState<ServiceMain> createState() => _ServiceMainState();
 }
 
 enum _BrowseMode { list, map }
@@ -156,11 +157,11 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
       if (useNeighborhood) {
-        print('🔧 [ServiceMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+        AppLogger.debug('🔧 [ServiceMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
       } else if (widget.districtId != null && widget.districtId! > 0) {
-        print('🔧 [ServiceMain] DISTRICT filter: ${widget.districtId}');
+        AppLogger.debug('🔧 [ServiceMain] DISTRICT filter: ${widget.districtId}');
       } else {
-        print('🔧 [ServiceMain] NO filter — loading all services');
+        AppLogger.debug('🔧 [ServiceMain] NO filter — loading all services');
       }
       final rawServices = await ref.read(serviceMainProvider).getFilteredServices(
             currentPage: 1,
@@ -507,7 +508,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
 
   Widget _buildCategoryChips(ColorScheme colorScheme) {
     // Map category keys/icons to IconData - matching API values
-    IconData _getCategoryIcon(CategoryModel category) {
+    IconData getCategoryIcon(CategoryModel category) {
       // First try to match by icon field
       final iconValue = category.icon.toLowerCase();
       // Then try to match by key field
@@ -604,7 +605,7 @@ class _ServiceMainState extends ConsumerState<ServiceMain> {
 
           final category = displayCategories[index];
           final isSelected = _selectedCategory == category.nameUz;
-          final iconData = _getCategoryIcon(category);
+          final iconData = getCategoryIcon(category);
 
           return Padding(
             padding: const EdgeInsets.only(right: 8),

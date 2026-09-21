@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/widgets/maps/map_view.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:app/utils/app_logger.dart';
 
 class PropertyMapWidget extends StatefulWidget {
   final RealEstate property;
@@ -54,7 +55,7 @@ class _PropertyMapWidgetState extends State<PropertyMapWidget> {
         await launchUrl(geoUrl, mode: LaunchMode.externalApplication);
       }
     } catch (e) {
-      print('Error opening maps: $e');
+      AppLogger.warning('Error opening maps: $e');
     }
   }
 
@@ -234,7 +235,7 @@ class FullscreenMapModal extends StatelessWidget {
         await launchUrl(mapsUrl, mode: LaunchMode.externalApplication);
       }
     } catch (e) {
-      print('Error opening maps: $e');
+      AppLogger.warning('Error opening maps: $e');
     }
   }
 

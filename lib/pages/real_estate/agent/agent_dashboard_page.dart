@@ -242,7 +242,7 @@ class _AgentDashboardPageState extends ConsumerState<AgentDashboardPage> {
                         ),
                         if (isVerified) ...[
                           const SizedBox(width: 8),
-                          Icon(
+                          const Icon(
                             Icons.verified,
                             color: Colors.blue,
                             size: 20,

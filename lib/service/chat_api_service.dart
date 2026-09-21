@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// 🔥 NEW: Thrown by [ChatApiService.startFromListing] when the backend
 /// returns 400 — in practice this is the requester trying to chat about
@@ -137,7 +138,7 @@ class ChatApiService {
     try {
       final fileSize = await audioFile.length();
       final mimeType = lookupMimeType(audioFile.path) ?? 'audio/m4a';
-      print('🎙️ [VoiceAPI] uploading — room:$roomId duration:${duration}s size:${fileSize}B mime:$mimeType path:${audioFile.path}');
+      AppLogger.debug('🎙️ [VoiceAPI] uploading — room:$roomId duration:${duration}s size:${fileSize}B mime:$mimeType path:${audioFile.path}');
 
       // Rebuilt fresh on every call so a post-refresh retry doesn't replay
       // an already-consumed MultipartRequest (they're single-use).
@@ -168,7 +169,7 @@ class ChatApiService {
         return http.Response.fromStream(streamedResponse);
       });
 
-      print('🎙️ [VoiceAPI] response ${response.statusCode}: ${response.body}');
+      AppLogger.debug('🎙️ [VoiceAPI] response ${response.statusCode}: ${response.body}');
 
       if (response.statusCode == 201) {
         final decoded = json.decode(utf8.decode(response.bodyBytes));
@@ -177,7 +178,7 @@ class ChatApiService {
         throw Exception('Failed to upload voice: ${response.statusCode} — ${response.body}');
       }
     } catch (e) {
-      print('🔴 [VoiceAPI] error: $e');
+      AppLogger.warning('🔴 [VoiceAPI] error: $e');
       rethrow;
     }
   }
@@ -355,8 +356,8 @@ class ChatApiService {
   // KARROT STYLE: Get or create direct chat
   Future<ChatRoom> getOrCreateDirectChat(int targetUserId) async {
     try {
-      print('🔍 [ChatAPI] getOrCreateDirectChat called for userId: $targetUserId');
-      print('🔍 [ChatAPI] Making POST to: $apiBaseUrl/chats/direct/');
+      AppLogger.debug('🔍 [ChatAPI] getOrCreateDirectChat called for userId: $targetUserId');
+      AppLogger.debug('🔍 [ChatAPI] Making POST to: $apiBaseUrl/chats/direct/');
 
       final response = await _authedRequest(
         (headers) => http.post(
@@ -364,27 +365,27 @@ class ChatApiService {
           headers: headers,
           body: json.encode({'target_user_id': targetUserId}),
         ).timeout(const Duration(seconds: 30), onTimeout: () {
-          print('❌ [ChatAPI] getOrCreateDirectChat timed out');
+          AppLogger.warning('❌ [ChatAPI] getOrCreateDirectChat timed out');
           throw Exception('Request timed out');
         }),
       );
 
-      print('🔍 [ChatAPI] getOrCreateDirectChat response: ${response.statusCode}');
+      AppLogger.debug('🔍 [ChatAPI] getOrCreateDirectChat response: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
-        print('✅ [ChatAPI] getOrCreateDirectChat success');
+        AppLogger.debug('✅ [ChatAPI] getOrCreateDirectChat success');
         return ChatRoom.fromJson(data['chat']);
       } else if (response.statusCode == 401) {
-        print('❌ [ChatAPI] Authentication failed');
+        AppLogger.warning('❌ [ChatAPI] Authentication failed');
         throw Exception('Authentication failed');
       } else {
         final error = json.decode(response.body);
-        print('❌ [ChatAPI] getOrCreateDirectChat failed: ${error['error']}');
+        AppLogger.warning('❌ [ChatAPI] getOrCreateDirectChat failed: ${error['error']}');
         throw Exception(error['error'] ?? 'Failed to create chat');
       }
     } catch (e) {
-      print('❌ [ChatAPI] getOrCreateDirectChat error: $e');
+      AppLogger.warning('❌ [ChatAPI] getOrCreateDirectChat error: $e');
       rethrow;
     }
   }
@@ -557,7 +558,7 @@ class ChatApiService {
 
         // 🔍 Debug: Log online status for each user
         for (var u in usersList) {
-          print('👤 [Users] ${u['username']}: is_online=${u['is_online']}, last_seen=${u['last_seen']}');
+          AppLogger.debug('👤 [Users] ${u['username']}: is_online=${u['is_online']}, last_seen=${u['last_seen']}');
         }
 
         return (usersList as List).map((json) => User.fromJson(json)).toList();
@@ -565,7 +566,7 @@ class ChatApiService {
         throw Exception('Failed to load users');
       }
     } catch (e) {
-      print('❌ [Users] Error loading users: $e');
+      AppLogger.warning('❌ [Users] Error loading users: $e');
       return [];
     }
   }
@@ -615,32 +616,32 @@ class ChatApiService {
   // 🔥 NEW: Start chat with user by ID (KakaoTalk-style)
   Future<Map<String, dynamic>> startChatWithUser(int userId) async {
     try {
-      print('🔍 [ChatAPI] startChatWithUser called for userId: $userId');
-      print('🔍 [ChatAPI] making request to: $apiBaseUrl/chats/start/$userId/');
+      AppLogger.debug('🔍 [ChatAPI] startChatWithUser called for userId: $userId');
+      AppLogger.debug('🔍 [ChatAPI] making request to: $apiBaseUrl/chats/start/$userId/');
 
       final response = await _authedRequest(
         (headers) => http.get(
           Uri.parse('$apiBaseUrl/chats/start/$userId/'),
           headers: headers,
         ).timeout(const Duration(seconds: 30), onTimeout: () {
-          print('❌ [ChatAPI] Request timed out after 30 seconds');
+          AppLogger.warning('❌ [ChatAPI] Request timed out after 30 seconds');
           throw Exception('Request timed out');
         }),
       );
 
-      print('🔍 [ChatAPI] Response status: ${response.statusCode}');
+      AppLogger.debug('🔍 [ChatAPI] Response status: ${response.statusCode}');
 
       // 🔥 Accept both 200 (OK) and 201 (Created) as success
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(utf8.decode(response.bodyBytes));
-        print('✅ [ChatAPI] startChatWithUser success');
+        AppLogger.debug('✅ [ChatAPI] startChatWithUser success');
         return data as Map<String, dynamic>;
       } else {
-        print('❌ [ChatAPI] startChatWithUser failed: ${response.statusCode} - ${response.body}');
+        AppLogger.warning('❌ [ChatAPI] startChatWithUser failed: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to start chat: ${response.statusCode}');
       }
     } catch (e) {
-      print('❌ [ChatAPI] startChatWithUser error: $e');
+      AppLogger.warning('❌ [ChatAPI] startChatWithUser error: $e');
       rethrow;
     }
   }

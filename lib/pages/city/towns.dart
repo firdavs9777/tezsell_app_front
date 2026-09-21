@@ -6,6 +6,7 @@ import 'package:app/pages/authentication/mobile_authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 // Create a model class for district data
 class District {
@@ -22,12 +23,12 @@ class District {
 class TownsList extends StatefulWidget {
   const TownsList({
     super.key,
-    required this.city_id,
-    required this.city_name,
+    required this.cityId,
+    required this.cityName,
     this.countryCode = '',
   });
-  final String city_id;
-  final String city_name;
+  final String cityId;
+  final String cityName;
   final String countryCode;
 
   @override
@@ -35,7 +36,7 @@ class TownsList extends StatefulWidget {
 }
 
 class _TownsListState extends State<TownsList> {
-  final String URL = '$baseUrl/accounts/districts';
+  final String districtsUrl = '$baseUrl/accounts/districts';
   List<District> districts = [];
   List<District> filteredDistricts = [];
   final TextEditingController searchController = TextEditingController();
@@ -58,22 +59,22 @@ class _TownsListState extends State<TownsList> {
       isLoading = true;
     });
 
-    final url = '$URL/${widget.city_id}/';
-    print('[TownsList] Fetching districts from: $url');
-    print('[TownsList] Country: ${widget.countryCode}, Region: ${widget.city_name}, ID: ${widget.city_id}');
+    final url = '$districtsUrl/${widget.cityId}/';
+    AppLogger.debug('[TownsList] Fetching districts from: $url');
+    AppLogger.debug('[TownsList] Country: ${widget.countryCode}, Region: ${widget.cityName}, ID: ${widget.cityId}');
     developer.log('[TownsList] Fetching districts from: $url', name: 'TownsList');
-    developer.log('[TownsList] Country: ${widget.countryCode}, Region: ${widget.city_name}', name: 'TownsList');
+    developer.log('[TownsList] Country: ${widget.countryCode}, Region: ${widget.cityName}', name: 'TownsList');
 
     try {
       final response = await http.get(Uri.parse(url));
-      print('[TownsList] Response status: ${response.statusCode}');
-      print('[TownsList] Response body: ${response.body}');
+      AppLogger.debug('[TownsList] Response status: ${response.statusCode}');
+      AppLogger.debug('[TownsList] Response body: ${response.body}');
       developer.log('[TownsList] Response status: ${response.statusCode}', name: 'TownsList');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         final List<dynamic> districtData = responseData['districts'] ?? [];
-        print('[TownsList] Loaded ${districtData.length} districts');
+        AppLogger.debug('[TownsList] Loaded ${districtData.length} districts');
         developer.log('[TownsList] Loaded ${districtData.length} districts', name: 'TownsList');
 
         setState(() {
@@ -201,10 +202,10 @@ class _TownsListState extends State<TownsList> {
     final yesText = localizations?.yes ?? 'Confirm';
     final noText = localizations?.no ?? 'Cancel';
     final confirmMessage = localizations?.confirmDistrictSelection(
-          widget.city_name,
+          widget.cityName,
           district.name,
         ) ??
-        '${widget.city_name} - ${district.name}';
+        '${widget.cityName} - ${district.name}';
 
     final bool? confirm = await showDialog(
       context: context,
@@ -315,14 +316,14 @@ class _TownsListState extends State<TownsList> {
     );
 
     if (confirm ?? false) {
-      developer.log('[TownsList] User confirmed: Country=${widget.countryCode}, Region=${widget.city_name}, District=${district.name}', name: 'TownsList');
+      developer.log('[TownsList] User confirmed: Country=${widget.countryCode}, Region=${widget.cityName}, District=${district.name}', name: 'TownsList');
       if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MobileAuthentication(
             countryCode: widget.countryCode,
-            regionName: widget.city_name,
+            regionName: widget.cityName,
             districtName: district.name,
             districtId: district.id.toString(),
           ),
@@ -344,7 +345,7 @@ class _TownsListState extends State<TownsList> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          widget.city_name,
+          widget.cityName,
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontSize: 18, letterSpacing: -0.3),

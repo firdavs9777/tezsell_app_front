@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class authStateProvider extends StateNotifier<List> {
-  authStateProvider() : super([]);
+class AuthStateProvider extends StateNotifier<List> {
+  AuthStateProvider() : super([]);
 }
 
 final authStatesProvider =
-    StateNotifierProvider<authStateProvider, List>((ref) {
-  return authStateProvider();
+    StateNotifierProvider<AuthStateProvider, List>((ref) {
+  return AuthStateProvider();
 });

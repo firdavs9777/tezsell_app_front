@@ -5,6 +5,7 @@ import 'package:web_socket_channel/status.dart' as status;
 import '../models/notification_model.dart';
 import '../config/app_config.dart';
 import 'authentication_service.dart';
+import 'package:app/utils/app_logger.dart';
 
 class NotificationWebSocketService {
   final AuthenticationService _authService;
@@ -28,9 +29,9 @@ class NotificationWebSocketService {
   void addNotification(NotificationModel notification) {
     if (_notificationController != null && !_notificationController!.isClosed) {
       _notificationController!.add(notification);
-      print('✅ Manually injected notification into stream: type=${notification.type}, id=${notification.id}');
+      AppLogger.debug('✅ Manually injected notification into stream: type=${notification.type}, id=${notification.id}');
     } else {
-      print('⚠️ Cannot inject notification - stream controller is closed or null');
+      AppLogger.warning('⚠️ Cannot inject notification - stream controller is closed or null');
     }
   }
 
@@ -50,7 +51,7 @@ Uri _buildWebSocketUri(String token) {
     final wsUri = baseUri.replace(
       queryParameters: {'token': cleanToken},
     );
-    print('🔌 Connecting to: $wsUri');
+    AppLogger.debug('🔌 Connecting to: $wsUri');
     return wsUri;
   }
   
@@ -65,19 +66,19 @@ Uri _buildWebSocketUri(String token) {
     queryParameters: {'token': cleanToken},
   );
   
-  print('🔌 Connecting to: $wsUri');
+  AppLogger.debug('🔌 Connecting to: $wsUri');
   return wsUri;
 }
 
   /// Connect to WebSocket
   Future<void> connect() async {
     if (_isConnecting || (_channel != null && _channel!.closeCode == null)) {
-      print('⚠️ Already connected or connecting, skipping...');
+      AppLogger.warning('⚠️ Already connected or connecting, skipping...');
       return; // Already connected or connecting
     }
 
     if (_reconnectAttempts >= _maxReconnectAttempts) {
-      print('❌ Max reconnect attempts reached. Stopping reconnection.');
+      AppLogger.warning('❌ Max reconnect attempts reached. Stopping reconnection.');
       return;
     }
 
@@ -96,40 +97,40 @@ Uri _buildWebSocketUri(String token) {
 
       _channelSubscription = _channel!.stream.listen(
         (message) {
-          print('📨 WebSocket message received:');
-          print('📦 Raw message type: ${message.runtimeType}');
-          print('📦 Raw message: $message');
+          AppLogger.debug('📨 WebSocket message received:');
+          AppLogger.debug('📦 Raw message type: ${message.runtimeType}');
+          AppLogger.debug('📦 Raw message: $message');
           
           try {
             final jsonData = json.decode(message);
-            print('✅ JSON decoded successfully');
-            print('📋 Parsed JSON data: $jsonData');
-            print('📋 JSON keys: ${jsonData is Map ? (jsonData).keys.toList() : 'Not a Map'}');
+            AppLogger.debug('✅ JSON decoded successfully');
+            AppLogger.debug('📋 Parsed JSON data: $jsonData');
+            AppLogger.debug('📋 JSON keys: ${jsonData is Map ? (jsonData).keys.toList() : 'Not a Map'}');
             
             final notification = NotificationModel.fromJson(jsonData);
-            print('✅ Notification model created:');
-            print('   - ID: ${notification.id}');
-            print('   - Type: ${notification.type}');
-            print('   - Title: ${notification.title}');
-            print('   - Body: ${notification.body}');
-            print('   - Is Read: ${notification.isRead}');
-            print('   - Created At: ${notification.createdAt}');
-            print('   - Sender: ${notification.sender}');
-            print('   - Sender Username: ${notification.senderUsername}');
-            print('   - Object ID: ${notification.objectId}');
+            AppLogger.debug('✅ Notification model created:');
+            AppLogger.debug('   - ID: ${notification.id}');
+            AppLogger.debug('   - Type: ${notification.type}');
+            AppLogger.debug('   - Title: ${notification.title}');
+            AppLogger.debug('   - Body: ${notification.body}');
+            AppLogger.debug('   - Is Read: ${notification.isRead}');
+            AppLogger.debug('   - Created At: ${notification.createdAt}');
+            AppLogger.debug('   - Sender: ${notification.sender}');
+            AppLogger.debug('   - Sender Username: ${notification.senderUsername}');
+            AppLogger.debug('   - Object ID: ${notification.objectId}');
             
             // Broadcast to all stream listeners
             _notificationController!.add(notification);
-            print('✅ Notification broadcasted to all listeners');
+            AppLogger.debug('✅ Notification broadcasted to all listeners');
             _reconnectAttempts = 0; // Reset on successful message
           } catch (e, stackTrace) {
-            print('❌ Error parsing WebSocket message: $e');
-            print('📦 Raw message: $message');
-            print('📦 Stack trace: $stackTrace');
+            AppLogger.warning('❌ Error parsing WebSocket message: $e');
+            AppLogger.debug('📦 Raw message: $message');
+            AppLogger.debug('📦 Stack trace: $stackTrace');
           }
         },
         onError: (error) {
-          print('❌ WebSocket error: $error');
+          AppLogger.warning('❌ WebSocket error: $error');
           _isConnecting = false;
           _channel = null;
           _channelSubscription?.cancel();
@@ -138,10 +139,10 @@ Uri _buildWebSocketUri(String token) {
         },
         onDone: () {
           if (_channel?.closeCode != status.normalClosure) {
-            print('🔌 WebSocket connection closed (code: ${_channel?.closeCode})');
+            AppLogger.debug('🔌 WebSocket connection closed (code: ${_channel?.closeCode})');
             _scheduleReconnect();
           } else {
-            print('✅ WebSocket closed normally');
+            AppLogger.debug('✅ WebSocket closed normally');
           }
           _channel = null;
           _channelSubscription?.cancel();
@@ -151,11 +152,11 @@ Uri _buildWebSocketUri(String token) {
         cancelOnError: false,
       );
 
-      print('✅ Connected to notifications WebSocket');
+      AppLogger.debug('✅ Connected to notifications WebSocket');
       _isConnecting = false;
       _reconnectAttempts = 0; // Reset on successful connection
     } catch (e) {
-      print('❌ Error connecting to WebSocket: $e');
+      AppLogger.warning('❌ Error connecting to WebSocket: $e');
       _isConnecting = false;
       _channel = null;
       _channelSubscription?.cancel();
@@ -170,13 +171,13 @@ Uri _buildWebSocketUri(String token) {
     _reconnectAttempts++;
     
     if (_reconnectAttempts >= _maxReconnectAttempts) {
-      print('❌ Max reconnect attempts ($_maxReconnectAttempts) reached. Please check your connection.');
+      AppLogger.warning('❌ Max reconnect attempts ($_maxReconnectAttempts) reached. Please check your connection.');
       return;
     }
     
     // Exponential backoff: 1s, 2s, 4s, 8s, 16s
     final delaySeconds = 1 << (_reconnectAttempts - 1);
-    print('🔄 Scheduling reconnect in ${delaySeconds}s (attempt $_reconnectAttempts/$_maxReconnectAttempts)');
+    AppLogger.debug('🔄 Scheduling reconnect in ${delaySeconds}s (attempt $_reconnectAttempts/$_maxReconnectAttempts)');
     
     _reconnectTimer = Timer(Duration(seconds: delaySeconds), () {
       connect();
@@ -201,13 +202,13 @@ Uri _buildWebSocketUri(String token) {
       try {
         _channel!.sink.close(status.normalClosure);
       } catch (e) {
-        print('Error closing WebSocket: $e');
+        AppLogger.warning('Error closing WebSocket: $e');
       }
       _channel = null;
     }
     
     _reconnectAttempts = 0;
-    print('🔌 WebSocket disconnected');
+    AppLogger.debug('🔌 WebSocket disconnected');
   }
   
   /// Check if WebSocket is connected

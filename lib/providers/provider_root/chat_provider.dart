@@ -13,6 +13,7 @@ import 'package:app/service/websocket_service.dart';
 import 'package:app/service/connection_state_controller.dart';
 import 'package:app/service/message_outbox_service.dart';
 import 'dart:io';
+import 'package:app/utils/app_logger.dart';
 
 // Chat State
 class ChatState {
@@ -126,9 +127,9 @@ class ChatState {
       currentChatRoomId: currentChatRoomId ?? this.currentChatRoomId,
       error: error,
       // 🔥 FIX: Use existing values if not provided, but ensure non-null defaults
-      typingUsers: typingUsers != null ? typingUsers : this.typingUsers,
-      onlineUsers: onlineUsers != null ? onlineUsers : this.onlineUsers,
-      blockedUserIds: blockedUserIds != null ? blockedUserIds : this.blockedUserIds,
+      typingUsers: typingUsers ?? this.typingUsers,
+      onlineUsers: onlineUsers ?? this.onlineUsers,
+      blockedUserIds: blockedUserIds ?? this.blockedUserIds,
       activeCall: activeCall,
       currentPage: currentPage ?? this.currentPage,
       hasMoreMessages: hasMoreMessages ?? this.hasMoreMessages,
@@ -179,7 +180,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
           service.notificationStream.listen(_onIncomingChatNotification);
     } catch (e) {
       if (kDebugMode) {
-        print('[ChatProvider] Could not subscribe to notifications: $e');
+        AppLogger.debug('[ChatProvider] Could not subscribe to notifications: $e');
       }
     }
   }
@@ -346,7 +347,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     // Clear any lingering room-level error when returning to the list.
     if (state.error != null && state.currentChatRoomId == null) {
-      print('🔵 [ChatProvider] ensureChatListConnected — clearing stale error: ${state.error}');
+      AppLogger.debug('🔵 [ChatProvider] ensureChatListConnected — clearing stale error: ${state.error}');
       _safeUpdateState((s) => s.copyWith(error: null));
     }
 
@@ -380,7 +381,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
         }
       }
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[chat_provider] ignored: $e');
     }
   }
 
@@ -404,18 +406,18 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   // KARROT-STYLE: Get or create direct chat
   Future<ChatRoom?> getOrCreateDirectChat(int targetUserId) async {
-    print('🔍 [ChatProvider] getOrCreateDirectChat called for userId: $targetUserId');
-    print('🔍 [ChatProvider] isAuthenticated: ${state.isAuthenticated}');
+    AppLogger.debug('🔍 [ChatProvider] getOrCreateDirectChat called for userId: $targetUserId');
+    AppLogger.debug('🔍 [ChatProvider] isAuthenticated: ${state.isAuthenticated}');
 
     if (!state.isAuthenticated) {
-      print('❌ [ChatProvider] Not authenticated, returning null');
+      AppLogger.warning('❌ [ChatProvider] Not authenticated, returning null');
       return null;
     }
 
     try {
       _safeUpdateState((s) => s.copyWith(isLoading: true, error: null));
 
-      print('🔍 [ChatProvider] Checking existing chat rooms...');
+      AppLogger.debug('🔍 [ChatProvider] Checking existing chat rooms...');
 
       // 🔥 NEW: Check if chat already exists in current chat rooms
       final existingChat = state.chatRooms.firstWhere(
@@ -436,25 +438,25 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       // If chat already exists, return it without calling backend
       if (existingChat.id != -1) {
-        print('✅ [ChatProvider] Found existing chat: ${existingChat.id}');
+        AppLogger.debug('✅ [ChatProvider] Found existing chat: ${existingChat.id}');
         _safeUpdateState((s) => s.copyWith(isLoading: false));
         return existingChat;
       }
 
-      print('🔍 [ChatProvider] No existing chat found, calling API...');
+      AppLogger.debug('🔍 [ChatProvider] No existing chat found, calling API...');
 
       // 🔥 NEW: Try new start chat endpoint first (KakaoTalk-style)
       try {
-        print('🔍 [ChatProvider] Trying startChatWithUser API...');
+        AppLogger.debug('🔍 [ChatProvider] Trying startChatWithUser API...');
         final result = await _apiService.startChatWithUser(targetUserId);
-        print('✅ [ChatProvider] startChatWithUser returned: $result');
+        AppLogger.debug('✅ [ChatProvider] startChatWithUser returned: $result');
         final chatData = result['chat'] as Map<String, dynamic>?;
         if (chatData != null) {
           final chatRoom = ChatRoom.fromJson(chatData);
 
           // Check if this is an existing chat (not newly created)
           final wasCreated = result['created'] as bool? ?? false;
-          print('✅ [ChatProvider] Chat ${wasCreated ? "created" : "found"}: ${chatRoom.id}');
+          AppLogger.debug('✅ [ChatProvider] Chat ${wasCreated ? "created" : "found"}: ${chatRoom.id}');
 
           // Reload chat list to sync with backend
           await loadChatRooms();
@@ -464,13 +466,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
           return chatRoom;
         }
       } catch (e) {
-        print('⚠️ [ChatProvider] startChatWithUser failed: $e');
+        AppLogger.warning('⚠️ [ChatProvider] startChatWithUser failed: $e');
       }
 
       // Fallback to old endpoint
-      print('🔍 [ChatProvider] Trying fallback getOrCreateDirectChat API...');
+      AppLogger.debug('🔍 [ChatProvider] Trying fallback getOrCreateDirectChat API...');
       final chatRoom = await _apiService.getOrCreateDirectChat(targetUserId);
-      print('✅ [ChatProvider] Fallback returned: ${chatRoom.id}');
+      AppLogger.debug('✅ [ChatProvider] Fallback returned: ${chatRoom.id}');
 
       // Reload chat list
       await loadChatRooms();
@@ -479,7 +481,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       return chatRoom;
     } catch (e) {
-      print('❌ [ChatProvider] getOrCreateDirectChat error: $e');
+      AppLogger.warning('❌ [ChatProvider] getOrCreateDirectChat error: $e');
       _safeUpdateState((s) => s.copyWith(
         isLoading: false,
         error: e.toString(),
@@ -519,7 +521,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
       // 🔥 DEBUG: Log unread counts from API
       for (var room in chatRooms) {
-        print('📬 [ChatProvider] Room ${room.id} (${room.name}): unread_count=${room.unreadCount}');
+        AppLogger.debug('📬 [ChatProvider] Room ${room.id} (${room.name}): unread_count=${room.unreadCount}');
       }
 
       _safeUpdateState((s) => s.copyWith(
@@ -540,7 +542,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // 🔥 NEW: Also request list refresh via WebSocket to ensure sync
       if (_chatListWS != null && _chatListWS!.isConnected) {
         _chatListWS!.requestListRefresh();
-        print('✅ [ChatProvider] Requested chat list refresh via WebSocket');
+        AppLogger.debug('✅ [ChatProvider] Requested chat list refresh via WebSocket');
       }
 
     } catch (e) {
@@ -967,30 +969,30 @@ class ChatNotifier extends StateNotifier<ChatState> {
       // to null. Bail out silently — no error to show.
       final ws = _chatRoomWS;
       if (ws == null) {
-        print('🔵 [ChatProvider] connectToChatRoom: ws nulled during connect, aborting');
+        AppLogger.debug('🔵 [ChatProvider] connectToChatRoom: ws nulled during connect, aborting');
         return;
       }
 
       if (ws.isConnected) {
-        print('✅ [ChatProvider] WebSocket connected to room $roomId');
+        AppLogger.debug('✅ [ChatProvider] WebSocket connected to room $roomId');
 
         _chatRoomSubscription = ws.messages.listen(
           (data) { _handleChatRoomMessage(data); },
           onError: (error) {
-            print('❌ [ChatProvider] WebSocket error: $error');
+            AppLogger.warning('❌ [ChatProvider] WebSocket error: $error');
           },
           onDone: () {
-            print('🔌 [ChatProvider] WebSocket stream done');
+            AppLogger.debug('🔌 [ChatProvider] WebSocket stream done');
           },
         );
 
         ws.sendReadReceipt();
       } else {
-        print('❌ [ChatProvider] WebSocket connected but stream already closed for room $roomId');
+        AppLogger.warning('❌ [ChatProvider] WebSocket connected but stream already closed for room $roomId');
         // Stream closed before first use — not a user-visible error, just reconnect
       }
     } catch (e) {
-      print('🔴 [ChatProvider] connectToChatRoom error: $e');
+      AppLogger.warning('🔴 [ChatProvider] connectToChatRoom error: $e');
       _safeUpdateState((s) => s.copyWith(error: e.toString()));
     }
   }
@@ -1284,16 +1286,16 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   void sendMessage(String content) {
-    print('📤 ChatProvider.sendMessage called with: "$content"');
+    AppLogger.debug('📤 ChatProvider.sendMessage called with: "$content"');
     final trimmedContent = content.trim();
 
     if (trimmedContent.isEmpty) {
-      print('❌ Message is empty, returning');
+      AppLogger.warning('❌ Message is empty, returning');
       return;
     }
 
     if (!state.isAuthenticated) {
-      print('❌ Not authenticated');
+      AppLogger.warning('❌ Not authenticated');
       _safeUpdateState((s) => s.copyWith(error: 'Not authenticated'));
       return;
     }
@@ -1304,8 +1306,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       return;
     }
 
-    print('📤 _chatRoomWS: ${_chatRoomWS != null ? "exists" : "null"}');
-    print('📤 _chatRoomWS.isConnected: ${_chatRoomWS?.isConnected}');
+    AppLogger.debug('📤 _chatRoomWS: ${_chatRoomWS != null ? "exists" : "null"}');
+    AppLogger.debug('📤 _chatRoomWS.isConnected: ${_chatRoomWS?.isConnected}');
 
     // 🔥 NEW: Optimistic send — append a `sending` bubble immediately with a
     // client-generated local_id, so the UI never blocks on the network.
@@ -1335,7 +1337,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       return;
     }
 
-    print('📤 Calling _chatRoomWS.sendChatMessage');
+    AppLogger.debug('📤 Calling _chatRoomWS.sendChatMessage');
     _chatRoomWS!.sendChatMessage(trimmedContent, localId: localId);
     _startAckTimeout(localId, roomId, trimmedContent);
   }
@@ -1396,7 +1398,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   void disconnectFromChatRoom() {
-    print('🔵 [ChatProvider] disconnectFromChatRoom — error before clear: ${state.error}');
+    AppLogger.warning('🔵 [ChatProvider] disconnectFromChatRoom — error before clear: ${state.error}');
     // Only disconnect chat room WebSocket
     _chatRoomSubscription?.cancel();
     _chatRoomWS?.disconnect();
@@ -1408,7 +1410,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       messages: [],
       error: null,
     ));
-    print('🟢 [ChatProvider] disconnectFromChatRoom done — error cleared');
+    AppLogger.warning('🟢 [ChatProvider] disconnectFromChatRoom done — error cleared');
   }
 
   // Users
@@ -1424,7 +1426,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       _safeUpdateState((s) => s.copyWith(users: users));
 
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[chat_provider] ignored: $e');
     }
   }
 
@@ -1468,7 +1471,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       );
 
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[chat_provider] ignored: $e');
     }
   }
 
@@ -1511,7 +1515,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 chatRooms.add(room);
               }
             } catch (e) {
-
+              // Non-fatal: the caller continues without this value.
+              AppLogger.debug('[chat_provider] ignored: $e');
             }
           }
 
@@ -1533,7 +1538,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
 
@@ -1648,7 +1654,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
                 readBy: [...existingMsg.readBy, ...newReaders],
               );
               _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-              print('✅ [ChatProvider] Updated message ${message.id} read status');
+              AppLogger.debug('✅ [ChatProvider] Updated message ${message.id} read status');
             }
             return;
           }
@@ -1657,7 +1663,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
           // automatically send a read receipt so the sender knows we read it
           final isFromOtherUser = message.sender.id != state.currentUserId;
           if (isFromOtherUser && message.id != null && _chatRoomWS != null && _chatRoomWS!.isConnected) {
-            print('📬 [ChatProvider] Auto-sending read receipt for message ${message.id} from ${message.sender.username}');
+            AppLogger.debug('📬 [ChatProvider] Auto-sending read receipt for message ${message.id} from ${message.sender.username}');
             _chatRoomWS!.markMessageAsRead(message.id!);
           }
 
@@ -1673,7 +1679,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
           ));
 
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1698,7 +1705,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1715,7 +1723,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
             _applyMessageDeleted(messageId);
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
 
@@ -1737,7 +1746,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
             _updateMessageReactions(messageId, reactions);
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
 
@@ -1799,7 +1809,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1878,7 +1889,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1891,7 +1903,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1904,7 +1917,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
           }
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
@@ -1915,12 +1929,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
           // Handle WebRTC signaling (offer, answer, ice-candidate)
           // This would typically be handled by a WebRTC service
         } catch (e) {
-
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[chat_provider] ignored: $e');
         }
         break;
         
       case 'connection_established':
-        print('✅ [ChatProvider] Connection established');
+        AppLogger.debug('✅ [ChatProvider] Connection established');
         break;
 
       // 🔥 NEW: Task 13 — seller reserve/sold/available broadcast. The
@@ -1938,7 +1953,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       case 'message_status':
       case 'delivery_status':
         try {
-          print('📬 [ChatProvider] Message status update: $data');
+          AppLogger.debug('📬 [ChatProvider] Message status update: $data');
           final messageId = data['message_id'] as int? ?? data['id'] as int?;
           final isRead = data['is_read'] as bool?;
           final readBy = data['read_by'] as List?;
@@ -1965,10 +1980,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
               return msg;
             }).toList();
             _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-            print('✅ [ChatProvider] Updated message $messageId status');
+            AppLogger.debug('✅ [ChatProvider] Updated message $messageId status');
           }
         } catch (e) {
-          print('❌ [ChatProvider] Error handling message status: $e');
+          AppLogger.warning('❌ [ChatProvider] Error handling message status: $e');
         }
         break;
 
@@ -1977,7 +1992,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       case 'message_notification':
       case 'chat_update':
         try {
-          print('📬 [ChatProvider] New message notification received: $data');
+          AppLogger.debug('📬 [ChatProvider] New message notification received: $data');
           final roomId = data['room_id'] as int? ?? data['chat_id'] as int?;
           final senderId = data['sender_id'] as int?;
           final messagePreview = data['message'] as String? ?? data['content'] as String? ?? data['preview'] as String?;
@@ -2011,16 +2026,16 @@ class ChatNotifier extends StateNotifier<ChatState> {
             }).toList();
 
             _safeUpdateState((s) => s.copyWith(chatRooms: updatedRooms));
-            print('✅ [ChatProvider] Updated room $roomId with new message notification');
+            AppLogger.debug('✅ [ChatProvider] Updated room $roomId with new message notification');
           }
         } catch (e) {
-          print('❌ [ChatProvider] Error handling new message notification: $e');
+          AppLogger.warning('❌ [ChatProvider] Error handling new message notification: $e');
         }
         break;
 
       case 'error':
         final errorMsg = data['error'] as String? ?? data['message'] as String? ?? '';
-        print('❌ [ChatProvider] WebSocket error: $errorMsg');
+        AppLogger.warning('❌ [ChatProvider] WebSocket error: $errorMsg');
         break;
 
       // 🔥 Handle read receipts (KakaoTalk-style)
@@ -2029,7 +2044,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       case 'mark_read':
       case 'messages_marked_read':
         try {
-          print('📬 [ChatProvider] Read receipt received: $data');
+          AppLogger.debug('📬 [ChatProvider] Read receipt received: $data');
           final readerId = data['reader_id'] as int? ?? data['user_id'] as int?;
           final messageIds = data['message_ids'] as List?;
           final lastReadMessageId = data['last_read_message_id'] as int?;
@@ -2078,7 +2093,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
             if (updatedCount > 0) {
               _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-              print('✅ [ChatProvider] Marked $updatedCount messages as read by user $readerId');
+              AppLogger.debug('✅ [ChatProvider] Marked $updatedCount messages as read by user $readerId');
             }
           } else if (readByFromServer != null) {
             // 🔥 NEW: Handle bulk read_by update from server
@@ -2107,16 +2122,16 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
             if (updatedCount > 0) {
               _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-              print('✅ [ChatProvider] Bulk updated $updatedCount messages with read_by');
+              AppLogger.debug('✅ [ChatProvider] Bulk updated $updatedCount messages with read_by');
             }
           }
         } catch (e) {
-          print('❌ [ChatProvider] Error handling read receipt: $e');
+          AppLogger.warning('❌ [ChatProvider] Error handling read receipt: $e');
         }
         break;
 
       default:
-        print('⚠️ [ChatProvider] Unknown message type: ${data['type']}');
+        AppLogger.warning('⚠️ [ChatProvider] Unknown message type: ${data['type']}');
     }
   }
 
@@ -2502,7 +2517,8 @@ class ChatNotifier extends StateNotifier<ChatState> {
       ));
 
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[chat_provider] ignored: $e');
     }
   }
   
@@ -2575,7 +2591,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
     }
 
     try {
-      print('🔄 [ChatProvider] Refreshing message read status...');
+      AppLogger.debug('🔄 [ChatProvider] Refreshing message read status...');
       final result = await _apiService.getChatMessagesPaginated(
         state.currentChatRoomId!,
         page: 1,
@@ -2604,9 +2620,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
       }).toList();
 
       _safeUpdateState((s) => s.copyWith(messages: updatedMessages));
-      print('✅ [ChatProvider] Message read status refreshed');
+      AppLogger.debug('✅ [ChatProvider] Message read status refreshed');
     } catch (e) {
-      print('❌ [ChatProvider] Error refreshing read status: $e');
+      AppLogger.warning('❌ [ChatProvider] Error refreshing read status: $e');
     }
   }
 

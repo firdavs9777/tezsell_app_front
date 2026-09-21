@@ -1,3 +1,10 @@
+// ignore_for_file: constant_identifier_names
+//
+// These SCREAMING_CASE names are deliberately left alone: this whole file is
+// deprecated in favour of AppConfig and is meant to be deleted, so renaming
+// its 22 constants across ~80 call sites would be churn on code that should
+// go away. The real fix is migrating those call sites to AppConfig.
+
 /// @deprecated Use [AppConfig] from `lib/config/app_config.dart` instead.
 /// This file is kept for backward compatibility but will be removed in a future version.
 /// 

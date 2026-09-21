@@ -11,12 +11,13 @@ import 'badge_service.dart';
 import 'token_store.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:app/utils/app_logger.dart';
 
 // 🔥 Background message handler (must be top-level function)
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('🔔 Background message received: ${message.notification?.title}');
-  print('🔔 Data: ${message.data}');
+  AppLogger.debug('🔔 Background message received: ${message.notification?.title}');
+  AppLogger.debug('🔔 Data: ${message.data}');
 }
 
 class PushNotificationService {
@@ -49,11 +50,11 @@ class PushNotificationService {
   /// Also handles any pending notification that arrived before router was set
   void setRouter(GoRouter router) {
     _router = router;
-    print('🔔 Router set in PushNotificationService');
+    AppLogger.debug('🔔 Router set in PushNotificationService');
 
     // Handle pending notification if exists
     if (_pendingNotification != null) {
-      print('🔔 Processing pending notification...');
+      AppLogger.debug('🔔 Processing pending notification...');
       // Use Future.delayed to ensure the app is fully ready
       Future.delayed(const Duration(milliseconds: 500), () {
         if (_pendingNotification != null) {
@@ -80,8 +81,8 @@ class PushNotificationService {
       // Backend may send 'id' (WebSocket format) or 'notification_id' (FCM format)
       final hasId = data.containsKey('id') || data.containsKey('notification_id');
       if (!hasId || !data.containsKey('type')) {
-        print('⚠️ Push notification missing required fields (id/notification_id, type)');
-        print('   Available keys: ${data.keys.toList()}');
+        AppLogger.warning('⚠️ Push notification missing required fields (id/notification_id, type)');
+        AppLogger.debug('   Available keys: ${data.keys.toList()}');
         return null;
       }
 
@@ -96,7 +97,7 @@ class PushNotificationService {
             ? data['notification_id'] 
             : int.tryParse(data['notification_id'].toString()) ?? 0;
       } else {
-        print('⚠️ Push notification missing both id and notification_id');
+        AppLogger.warning('⚠️ Push notification missing both id and notification_id');
         return null;
       }
 
@@ -125,7 +126,7 @@ class PushNotificationService {
         }
       }
 
-      // Parse created_at (use current time if not provided)
+      // Parse createdAt (use current time if not provided)
       DateTime createdAt;
       if (data.containsKey('created_at') && data['created_at'] != null) {
         try {
@@ -156,8 +157,8 @@ class PushNotificationService {
         createdAt: createdAt,
       );
     } catch (e) {
-      print('❌ Error converting push notification to NotificationModel: $e');
-      print('   Message data: ${message.data}');
+      AppLogger.warning('❌ Error converting push notification to NotificationModel: $e');
+      AppLogger.debug('   Message data: ${message.data}');
       return null;
     }
   }
@@ -166,7 +167,7 @@ class PushNotificationService {
   /// Stores notification for later if router is not yet available
   void _navigateFromNotification(RemoteMessage message) {
     final data = message.data;
-    print('🔔 [Navigation] Full notification data: $data');
+    AppLogger.debug('🔔 [Navigation] Full notification data: $data');
 
     final type = data['type'] as String?;
     // Try multiple possible keys for object ID
@@ -175,21 +176,21 @@ class PushNotificationService {
         data['chat_id'] as String? ??
         data['room_id'] as String?;
 
-    print('🔔 [Navigation] Extracted: type=$type, objectId=$objectId');
+    AppLogger.debug('🔔 [Navigation] Extracted: type=$type, objectId=$objectId');
 
     // If router is not yet set, store the notification for later
     if (_router == null) {
-      print('🔔 [Navigation] Router not set yet, storing notification for later');
+      AppLogger.debug('🔔 [Navigation] Router not set yet, storing notification for later');
       _pendingNotification = message;
       return;
     }
 
     if (objectId == null && type == null) {
-      print('🔔 [Navigation] No navigation data in notification');
+      AppLogger.debug('🔔 [Navigation] No navigation data in notification');
       return;
     }
 
-    print('🔔 [Navigation] Navigating: type=$type, objectId=$objectId');
+    AppLogger.debug('🔔 [Navigation] Navigating: type=$type, objectId=$objectId');
 
     // Give the app a moment to settle before navigating
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -237,14 +238,14 @@ class PushNotificationService {
         }
 
         if (targetRoute != null) {
-          print('✅ [Navigation] Navigating to: $targetRoute');
+          AppLogger.debug('✅ [Navigation] Navigating to: $targetRoute');
           _router!.go(targetRoute);
         } else {
-          print('⚠️ [Navigation] No valid route determined, going to /tabs');
+          AppLogger.warning('⚠️ [Navigation] No valid route determined, going to /tabs');
           _router!.go('/tabs');
         }
       } catch (e) {
-        print('❌ [Navigation] Error: $e');
+        AppLogger.warning('❌ [Navigation] Error: $e');
       }
     });
   }
@@ -254,7 +255,7 @@ class PushNotificationService {
       return;
     }
 
-    print('🔔 Initializing Firebase Push Notifications...');
+    AppLogger.debug('🔔 Initializing Firebase Push Notifications...');
 
     try {
       // Request permission
@@ -265,7 +266,7 @@ class PushNotificationService {
         provisional: false,
       );
 
-      print('🔔 Permission status: ${settings.authorizationStatus}');
+      AppLogger.debug('🔔 Permission status: ${settings.authorizationStatus}');
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional) {
@@ -279,8 +280,8 @@ class PushNotificationService {
           
           // On simulator, APNS token will be null - skip FCM token
           if (apnsToken == null) {
-            print('⚠️ Skipping FCM token retrieval - APNS token not available (iOS simulator)');
-            print('✅ Firebase Push Notifications initialized (will work on real device)');
+            AppLogger.warning('⚠️ Skipping FCM token retrieval - APNS token not available (iOS simulator)');
+            AppLogger.debug('✅ Firebase Push Notifications initialized (will work on real device)');
             _initialized = true;
             return;
           }
@@ -296,30 +297,30 @@ class PushNotificationService {
         await _initializeBadge();
 
         _initialized = true;
-        print('✅ Firebase Push Notifications initialized');
+        AppLogger.debug('✅ Firebase Push Notifications initialized');
         // 🔥 FIX: don't log the raw FCM token — it's device PII and must not
         // survive in release logs.
         if (kDebugMode) debugPrint('📱 FCM Token: $_fcmToken');
-        print('💡 Make sure your backend is sending notifications to this FCM token');
-        print('💡 Test by sending a notification from Firebase Console or your backend');
+        AppLogger.debug('💡 Make sure your backend is sending notifications to this FCM token');
+        AppLogger.debug('💡 Test by sending a notification from Firebase Console or your backend');
         
         // Check if running in debug mode
         bool isDebugMode = false;
         assert(isDebugMode = true); // This only runs in debug mode
         
         if (Platform.isIOS && isDebugMode) {
-          print('⚠️ NOTE: You are running in DEBUG mode');
-          print('⚠️ For iOS push notifications to work in development, you need:');
-          print('   1. A Development APNs Auth Key uploaded to Firebase Console');
-          print('   2. Or test with a Release/Production build');
-          print('   3. Or test on a real device (simulator does not support push notifications)');
-          print('   📱 Current setup: Production APNs key is configured, but Development key is missing');
+          AppLogger.warning('⚠️ NOTE: You are running in DEBUG mode');
+          AppLogger.warning('⚠️ For iOS push notifications to work in development, you need:');
+          AppLogger.debug('   1. A Development APNs Auth Key uploaded to Firebase Console');
+          AppLogger.debug('   2. Or test with a Release/Production build');
+          AppLogger.debug('   3. Or test on a real device (simulator does not support push notifications)');
+          AppLogger.debug('   📱 Current setup: Production APNs key is configured, but Development key is missing');
         }
       } else {
-        print('⚠️ Notification permission denied');
+        AppLogger.warning('⚠️ Notification permission denied');
       }
     } catch (e) {
-      print('❌ Error initializing push notifications: $e');
+      AppLogger.warning('❌ Error initializing push notifications: $e');
     }
   }
 
@@ -328,7 +329,7 @@ class PushNotificationService {
     if (!Platform.isIOS) return null;
 
     try {
-      print('📱 Waiting for APNS token...');
+      AppLogger.debug('📱 Waiting for APNS token...');
 
       // Try to get existing APNS token with polling
       String? apnsToken;
@@ -347,19 +348,19 @@ class PushNotificationService {
         await Future.delayed(const Duration(milliseconds: 500));
         attempts++;
         if (attempts % 4 == 0) {
-          print('⏳ APNS token not available, waiting... (${attempts * 500}ms)');
+          AppLogger.debug('⏳ APNS token not available, waiting... (${attempts * 500}ms)');
         }
       }
 
       if (apnsToken == null) {
-        print('⚠️ APNS token timeout after ${maxAttempts * 500}ms');
-        print('⚠️ Note: Push notifications DO NOT work on iOS simulator');
-        print('⚠️ This is expected - test on a real iOS device for push notifications');
+        AppLogger.warning('⚠️ APNS token timeout after ${maxAttempts * 500}ms');
+        AppLogger.warning('⚠️ Note: Push notifications DO NOT work on iOS simulator');
+        AppLogger.warning('⚠️ This is expected - test on a real iOS device for push notifications');
       }
       return apnsToken;
     } catch (e) {
-      print('⚠️ Error getting APNS token: $e');
-      print('⚠️ Note: Push notifications DO NOT work on iOS simulator');
+      AppLogger.warning('⚠️ Error getting APNS token: $e');
+      AppLogger.warning('⚠️ Note: Push notifications DO NOT work on iOS simulator');
       return null;
     }
   }
@@ -381,13 +382,13 @@ class PushNotificationService {
       // Send token to backend
       await _sendTokenToBackend(_fcmToken!);
     } else {
-      print('⚠️ FCM token not available - notifications may not work');
+      AppLogger.warning('⚠️ FCM token not available - notifications may not work');
     }
   }
 
   /// Setup message handlers
   void _setupMessageHandlers() {
-    print('🔔 Setting up Firebase message handlers...');
+    AppLogger.debug('🔔 Setting up Firebase message handlers...');
     
     // Listen for token refresh
     _messaging.onTokenRefresh.listen((newToken) async {
@@ -402,10 +403,10 @@ class PushNotificationService {
 
     // Handle foreground messages (app is open)
     FirebaseMessaging.onMessage.listen((message) {
-      print('🔔 📱 FOREGROUND message received!');
-      print('   Title: ${message.notification?.title}');
-      print('   Body: ${message.notification?.body}');
-      print('   Data: ${message.data}');
+      AppLogger.debug('🔔 📱 FOREGROUND message received!');
+      AppLogger.debug('   Title: ${message.notification?.title}');
+      AppLogger.debug('   Body: ${message.notification?.body}');
+      AppLogger.debug('   Data: ${message.data}');
       _handleForegroundMessage(message);
       // Update badge count when new notification arrives
       _incrementBadgeCount();
@@ -413,10 +414,10 @@ class PushNotificationService {
 
     // Handle background tap (app is in background)
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('🔔 📱 BACKGROUND notification tapped!');
-      print('   Title: ${message.notification?.title}');
-      print('   Body: ${message.notification?.body}');
-      print('   Data: ${message.data}');
+      AppLogger.debug('🔔 📱 BACKGROUND notification tapped!');
+      AppLogger.debug('   Title: ${message.notification?.title}');
+      AppLogger.debug('   Body: ${message.notification?.body}');
+      AppLogger.debug('   Data: ${message.data}');
       
       // Convert push notification to in-app notification
       _convertAndInjectNotification(message);
@@ -430,10 +431,10 @@ class PushNotificationService {
     // Handle terminated state tap (app was closed)
     _messaging.getInitialMessage().then((message) {
       if (message != null) {
-        print('🔔 📱 TERMINATED notification tapped!');
-        print('   Title: ${message.notification?.title}');
-        print('   Body: ${message.notification?.body}');
-        print('   Data: ${message.data}');
+        AppLogger.debug('🔔 📱 TERMINATED notification tapped!');
+        AppLogger.debug('   Title: ${message.notification?.title}');
+        AppLogger.debug('   Body: ${message.notification?.body}');
+        AppLogger.debug('   Data: ${message.data}');
         
         // Convert push notification to in-app notification
         _convertAndInjectNotification(message);
@@ -445,7 +446,7 @@ class PushNotificationService {
       }
     });
     
-    print('✅ Firebase message handlers set up successfully');
+    AppLogger.debug('✅ Firebase message handlers set up successfully');
   }
 
   Future<void> _initializeLocalNotifications() async {
@@ -470,7 +471,7 @@ class PushNotificationService {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print('🔔 Local notification tapped: ${response.payload}');
+        AppLogger.debug('🔔 Local notification tapped: ${response.payload}');
         // Handle local notification tap with router navigation
         if (response.payload != null) {
           try {
@@ -481,7 +482,7 @@ class PushNotificationService {
             );
             _navigateFromNotification(message);
           } catch (e) {
-            print('❌ Error parsing notification payload: $e');
+            AppLogger.warning('❌ Error parsing notification payload: $e');
           }
         }
       },
@@ -529,15 +530,15 @@ class PushNotificationService {
   }
 
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    print('🔔 Handling foreground message...');
-    print('   Notification: ${message.notification != null ? "YES" : "NO"}');
-    print('   Title: ${message.notification?.title ?? "N/A"}');
-    print('   Body: ${message.notification?.body ?? "N/A"}');
-    print('   Data keys: ${message.data.keys.toList()}');
-    print('   Full data: ${message.data}');
-    print('   Message ID: ${message.messageId}');
-    print('   Sent time: ${message.sentTime}');
-    print('   From: ${message.from}');
+    AppLogger.debug('🔔 Handling foreground message...');
+    AppLogger.debug('   Notification: ${message.notification != null ? "YES" : "NO"}');
+    AppLogger.debug('   Title: ${message.notification?.title ?? "N/A"}');
+    AppLogger.debug('   Body: ${message.notification?.body ?? "N/A"}');
+    AppLogger.debug('   Data keys: ${message.data.keys.toList()}');
+    AppLogger.debug('   Full data: ${message.data}');
+    AppLogger.debug('   Message ID: ${message.messageId}');
+    AppLogger.debug('   Sent time: ${message.sentTime}');
+    AppLogger.debug('   From: ${message.from}');
 
     // 🔥 Filter out notifications for own messages
     final prefs = await SharedPreferences.getInstance();
@@ -559,7 +560,7 @@ class PushNotificationService {
 
     // Skip notification if it's from the current user (own message)
     if (currentUserId != null && senderId != null && currentUserId == senderId) {
-      print('🔔 Skipping notification for own message (sender=$senderId, currentUser=$currentUserId)');
+      AppLogger.debug('🔔 Skipping notification for own message (sender=$senderId, currentUser=$currentUserId)');
       return;
     }
 
@@ -608,9 +609,9 @@ class PushNotificationService {
         details,
         payload: json.encode(message.data),
       );
-      print('✅ Local notification shown: $title');
+      AppLogger.debug('✅ Local notification shown: $title');
     } catch (e) {
-      print('❌ Error showing local notification: $e');
+      AppLogger.warning('❌ Error showing local notification: $e');
     }
 
     // Convert push notification to in-app notification and add to notification system
@@ -622,14 +623,14 @@ class PushNotificationService {
   void _convertAndInjectNotification(RemoteMessage message) {
     final notificationModel = _convertPushNotificationToModel(message);
     if (notificationModel != null && _notificationWebSocketService != null) {
-      print('✅ Converting push notification to in-app notification: type=${notificationModel.type}, id=${notificationModel.id}');
+      AppLogger.debug('✅ Converting push notification to in-app notification: type=${notificationModel.type}, id=${notificationModel.id}');
       _notificationWebSocketService!.addNotification(notificationModel);
     } else if (notificationModel == null) {
-      print('⚠️ Could not convert push notification to NotificationModel - missing required fields');
-      print('   Data keys: ${message.data.keys.toList()}');
-      print('   Full data: ${message.data}');
+      AppLogger.warning('⚠️ Could not convert push notification to NotificationModel - missing required fields');
+      AppLogger.debug('   Data keys: ${message.data.keys.toList()}');
+      AppLogger.debug('   Full data: ${message.data}');
     } else if (_notificationWebSocketService == null) {
-      print('⚠️ NotificationWebSocketService not set - push notification will not appear in-app');
+      AppLogger.warning('⚠️ NotificationWebSocketService not set - push notification will not appear in-app');
     }
   }
 
@@ -642,15 +643,15 @@ class PushNotificationService {
           return token;
         }
       } catch (e) {
-        print('❌ Error getting FCM token (attempt $attempt/$maxAttempts): $e');
+        AppLogger.warning('❌ Error getting FCM token (attempt $attempt/$maxAttempts): $e');
         if (attempt < maxAttempts) {
           final waitTime = Duration(seconds: attempt * 2);
-          print('⏳ Waiting ${waitTime.inSeconds}s before retry $attempt...');
+          AppLogger.debug('⏳ Waiting ${waitTime.inSeconds}s before retry $attempt...');
           await Future.delayed(waitTime);
         }
       }
     }
-    print('❌ Failed to get FCM token after $maxAttempts attempts');
+    AppLogger.warning('❌ Failed to get FCM token after $maxAttempts attempts');
     return null;
   }
 
@@ -660,13 +661,13 @@ class PushNotificationService {
       final authToken = await TokenStore.instance.getAccessToken();
 
       if (authToken == null) {
-        print('⚠️ No auth token, skipping FCM token registration');
+        AppLogger.warning('⚠️ No auth token, skipping FCM token registration');
         return;
       }
 
       // Use the correct endpoint: /accounts/fcm-token/
       final url = Uri.parse(AppConfig.getFcmTokenUrl());
-      print('🔔 Sending FCM token to: ${url.toString()}');
+      AppLogger.debug('🔔 Sending FCM token to: ${url.toString()}');
       
       // Prepare request body
       final requestBody = {
@@ -687,28 +688,28 @@ class PushNotificationService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = json.decode(response.body);
-        print('✅ FCM token sent to backend successfully');
+        AppLogger.debug('✅ FCM token sent to backend successfully');
         if (responseData['created'] == true) {
-          print('   📝 New token registered (ID: ${responseData['device_token_id']})');
+          AppLogger.debug('   📝 New token registered (ID: ${responseData['device_token_id']})');
         } else {
-          print('   🔄 Token updated');
+          AppLogger.debug('   🔄 Token updated');
         }
       } else {
-        print('⚠️ Failed to send FCM token to backend: ${response.statusCode}');
-        print('Response: ${response.body}');
+        AppLogger.warning('⚠️ Failed to send FCM token to backend: ${response.statusCode}');
+        AppLogger.debug('Response: ${response.body}');
         
         // Try to parse error message
         try {
           final errorData = json.decode(response.body);
           if (errorData['error'] != null) {
-            print('   Error: ${errorData['error']}');
+            AppLogger.warning('   Error: ${errorData['error']}');
           }
         } catch (_) {
           // Ignore JSON parse errors
         }
       }
     } catch (e) {
-      print('❌ Error sending FCM token to backend: $e');
+      AppLogger.warning('❌ Error sending FCM token to backend: $e');
     }
   }
 
@@ -718,12 +719,12 @@ class PushNotificationService {
       final authToken = await TokenStore.instance.getAccessToken();
 
       if (authToken == null) {
-        print('⚠️ No auth token, skipping FCM token unregistration');
+        AppLogger.warning('⚠️ No auth token, skipping FCM token unregistration');
         return;
       }
 
       final url = Uri.parse(AppConfig.getFcmTokenUrl());
-      print('🔔 Unregistering FCM token from: ${url.toString()}');
+      AppLogger.debug('🔔 Unregistering FCM token from: ${url.toString()}');
       
       final body = fcmToken != null
           ? json.encode({'fcm_token': fcmToken})
@@ -741,17 +742,17 @@ class PushNotificationService {
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        print('✅ FCM token unregistered successfully');
+        AppLogger.debug('✅ FCM token unregistered successfully');
         // Clear local token
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('fcm_token');
         _fcmToken = null;
       } else {
-        print('⚠️ Failed to unregister FCM token: ${response.statusCode}');
-        print('Response: ${response.body}');
+        AppLogger.warning('⚠️ Failed to unregister FCM token: ${response.statusCode}');
+        AppLogger.debug('Response: ${response.body}');
       }
     } catch (e) {
-      print('❌ Error unregistering FCM token: $e');
+      AppLogger.warning('❌ Error unregistering FCM token: $e');
     }
   }
 
@@ -768,9 +769,9 @@ class PushNotificationService {
       await prefs.remove('fcm_token');
       _fcmToken = null;
       
-      print('✅ FCM token deleted from Firebase and backend');
+      AppLogger.debug('✅ FCM token deleted from Firebase and backend');
     } catch (e) {
-      print('❌ Error deleting FCM token: $e');
+      AppLogger.warning('❌ Error deleting FCM token: $e');
     }
   }
 
@@ -797,9 +798,9 @@ class PushNotificationService {
           ),
         ),
       );
-      print('✅ Test notification sent');
+      AppLogger.debug('✅ Test notification sent');
     } catch (e) {
-      print('❌ Error showing test notification: $e');
+      AppLogger.warning('❌ Error showing test notification: $e');
     }
   }
 
@@ -812,7 +813,7 @@ class PushNotificationService {
     final prefs = await SharedPreferences.getInstance();
     _badgeCount = prefs.getInt('badge_count') ?? 0;
     await badgeService.updateBadgeCount(_badgeCount);
-    print('🔢 Badge count loaded: $_badgeCount');
+    AppLogger.debug('🔢 Badge count loaded: $_badgeCount');
   }
 
   /// Increment badge count
@@ -821,7 +822,7 @@ class PushNotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('badge_count', _badgeCount);
     await badgeService.updateBadgeCount(_badgeCount);
-    print('🔢 Badge count incremented to: $_badgeCount');
+    AppLogger.debug('🔢 Badge count incremented to: $_badgeCount');
   }
 
   /// Update badge count to specific value (called from notification provider)
@@ -830,7 +831,7 @@ class PushNotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('badge_count', _badgeCount);
     await badgeService.updateBadgeCount(_badgeCount);
-    print('🔢 Badge count updated to: $_badgeCount');
+    AppLogger.debug('🔢 Badge count updated to: $_badgeCount');
   }
 
   /// Clear badge count (called when user views notifications)
@@ -839,7 +840,7 @@ class PushNotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('badge_count', 0);
     await badgeService.removeBadge();
-    print('🔢 Badge count cleared');
+    AppLogger.debug('🔢 Badge count cleared');
   }
 
   /// Get current badge count

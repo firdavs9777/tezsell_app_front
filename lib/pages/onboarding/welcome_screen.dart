@@ -13,6 +13,7 @@ import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/service/token_refresh_service.dart';
 import 'package:app/service/authentication_service.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
@@ -53,7 +54,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       final tokenRefreshService = TokenRefreshService(authService);
       tokenRefreshService.start();
     } catch (e) {
-      if (kDebugMode) print('Error starting token refresh: $e');
+      if (kDebugMode) AppLogger.warning('Error starting token refresh: $e');
     }
   }
 
@@ -68,7 +69,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         await prefs.setString(_appleNameKey, name);
       }
     } catch (e) {
-      if (kDebugMode) print('Error caching Apple credentials: $e');
+      if (kDebugMode) AppLogger.warning('Error caching Apple credentials: $e');
     }
   }
 
@@ -125,7 +126,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         _showError(response.error ?? 'Google sign-in failed');
       }
     } catch (e) {
-      if (kDebugMode) print('Google Sign-In error: $e');
+      if (kDebugMode) AppLogger.warning('Google Sign-In error: $e');
       if (mounted) _showError('Google sign-in failed. Please try again.');
     } finally {
       if (mounted) setState(() => _isGoogleLoading = false);
@@ -182,7 +183,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         _showError('Apple sign-in failed. Please try again.');
       }
     } catch (e) {
-      if (kDebugMode) print('Apple Sign-In error: $e');
+      if (kDebugMode) AppLogger.warning('Apple Sign-In error: $e');
       if (mounted) _showError('Apple sign-in failed. Please try again.');
     } finally {
       if (mounted) setState(() => _isAppleLoading = false);

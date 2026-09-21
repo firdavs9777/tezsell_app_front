@@ -32,9 +32,9 @@ UserInfo _dummyUser() => const UserInfo(
 Comments _dummyComment(int i) => Comments(
       id: i,
       text: '',
-      service_id: 1,
+      serviceId: 1,
       user: _dummyUser(),
-      created_at: '2026-01-01T00:00:00Z',
+      createdAt: '2026-01-01T00:00:00Z',
     );
 
 Services _buildService({

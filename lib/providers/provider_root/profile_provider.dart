@@ -17,6 +17,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/service/auth_interceptor.dart';
+import 'package:app/utils/app_logger.dart';
 
 class ProfileService {
   Future<UserInfo> getUserInfo() async {
@@ -57,10 +58,10 @@ class ProfileService {
     File? profileImage,
     String? countryCode,
   }) async {
-    print('[ProfileService] updateUserInfo called with district_id: $locationId, country_code: $countryCode');
+    AppLogger.debug('[ProfileService] updateUserInfo called with district_id: $locationId, country_code: $countryCode');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = await TokenStore.instance.getAccessToken();
-    print('[ProfileService] Token: ${token != null ? "present" : "missing"}');
+    AppLogger.debug('[ProfileService] Token: ${token != null ? "present" : "missing"}');
 
     final Map<String, dynamic> formDataMap = {};
 
@@ -73,7 +74,7 @@ class ProfileService {
       formDataMap['country_code'] = countryCode;
     }
 
-    print('[ProfileService] Form data: $formDataMap');
+    AppLogger.debug('[ProfileService] Form data: $formDataMap');
 
     // Only add username if it's provided and not empty
     if (username != null && username.isNotEmpty) {
@@ -98,7 +99,7 @@ class ProfileService {
     // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
     final dio = buildAuthedDio(baseUrl);
 
-    print('[ProfileService] Sending PUT to: $baseUrl$USER_INFO');
+    AppLogger.debug('[ProfileService] Sending PUT to: $baseUrl$USER_INFO');
     final response = await dio.put(
       '$baseUrl$USER_INFO',
       data: formData,
@@ -112,14 +113,14 @@ class ProfileService {
       ),
     );
 
-    print('[ProfileService] Response status: ${response.statusCode}');
-    print('[ProfileService] Response data: ${response.data}');
+    AppLogger.debug('[ProfileService] Response status: ${response.statusCode}');
+    AppLogger.debug('[ProfileService] Response data: ${response.data}');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Update the userLocation in SharedPreferences for future use
       if (locationId != null) {
         await prefs.setString('userLocation', locationId.toString());
-        print('[ProfileService] Updated userLocation in SharedPreferences: $locationId');
+        AppLogger.debug('[ProfileService] Updated userLocation in SharedPreferences: $locationId');
       }
 
       // Handle different response structures
@@ -144,7 +145,7 @@ class ProfileService {
         return await getUserInfo();
       }
     } else {
-      print('[ProfileService] ERROR: Status ${response.statusCode}, Data: ${response.data}');
+      AppLogger.warning('[ProfileService] ERROR: Status ${response.statusCode}, Data: ${response.data}');
       final errorMessage = response.data is Map
           ? response.data.toString()
           : 'Failed to update user info';
@@ -434,7 +435,7 @@ class ProfileService {
     final String? token = await TokenStore.instance.getAccessToken();
 
     final url = AppConfig.getUserProfileUrl(userId);
-    print('🔍 Fetching profile from: $url');
+    AppLogger.debug('🔍 Fetching profile from: $url');
 
     try {
       final response = await http.get(
@@ -446,34 +447,34 @@ class ProfileService {
         },
       );
 
-      print('📡 Profile response status: ${response.statusCode}');
-      print('📦 Profile response body: ${response.body.substring(0, response.body.length.clamp(0, 500))}');
+      AppLogger.debug('📡 Profile response status: ${response.statusCode}');
+      AppLogger.debug('📦 Profile response body: ${response.body.substring(0, response.body.length.clamp(0, 500))}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // Handle wrapped response: {"data": {"profile": {...}}}
         if (data['data'] != null && data['data']['profile'] != null) {
-          print('✅ Parsing from data.profile');
+          AppLogger.debug('✅ Parsing from data.profile');
           return UserProfile.fromJson(data['data']['profile']);
         }
         // Handle: {"data": {...}}
         if (data['data'] != null) {
-          print('✅ Parsing from data');
+          AppLogger.debug('✅ Parsing from data');
           return UserProfile.fromJson(data['data']);
         }
         // Handle: {"profile": {...}}
         if (data['profile'] != null) {
-          print('✅ Parsing from profile');
+          AppLogger.debug('✅ Parsing from profile');
           return UserProfile.fromJson(data['profile']);
         }
-        print('✅ Parsing from root');
+        AppLogger.debug('✅ Parsing from root');
         return UserProfile.fromJson(data);
       } else {
-        print('❌ Profile fetch failed: ${response.statusCode}');
+        AppLogger.warning('❌ Profile fetch failed: ${response.statusCode}');
         throw ApiException.fromResponse(response.statusCode, json.decode(response.body));
       }
     } catch (e) {
-      print('❌ Profile fetch error: $e');
+      AppLogger.warning('❌ Profile fetch error: $e');
       rethrow;
     }
   }
@@ -709,7 +710,7 @@ class ProfileService {
 
     try {
       final url = AppConfig.getUserProductsUrl(userId);
-      print('🔍 Fetching user products from: $url');
+      AppLogger.debug('🔍 Fetching user products from: $url');
 
       final response = await http.get(
         Uri.parse(url),
@@ -720,7 +721,7 @@ class ProfileService {
         },
       );
 
-      print('📡 User products response status: ${response.statusCode}');
+      AppLogger.debug('📡 User products response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -749,11 +750,11 @@ class ProfileService {
       } else if (response.statusCode == 404) {
         return [];
       } else {
-        print('❌ User products fetch failed: ${response.statusCode}');
+        AppLogger.warning('❌ User products fetch failed: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('❌ User products fetch error: $e');
+      AppLogger.warning('❌ User products fetch error: $e');
       return [];
     }
   }
@@ -764,7 +765,7 @@ class ProfileService {
 
     try {
       final url = AppConfig.getUserServicesUrl(userId);
-      print('🔍 Fetching user services from: $url');
+      AppLogger.debug('🔍 Fetching user services from: $url');
 
       final response = await http.get(
         Uri.parse(url),
@@ -775,7 +776,7 @@ class ProfileService {
         },
       );
 
-      print('📡 User services response status: ${response.statusCode}');
+      AppLogger.debug('📡 User services response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -804,11 +805,11 @@ class ProfileService {
       } else if (response.statusCode == 404) {
         return [];
       } else {
-        print('❌ User services fetch failed: ${response.statusCode}');
+        AppLogger.warning('❌ User services fetch failed: ${response.statusCode}');
         return [];
       }
     } catch (e) {
-      print('❌ User services fetch error: $e');
+      AppLogger.warning('❌ User services fetch error: $e');
       return [];
     }
   }

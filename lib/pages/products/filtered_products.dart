@@ -239,7 +239,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () {
             if (context.mounted) {
               context.go('/tabs');
@@ -248,13 +248,13 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               context.push('/product/search');
             },
           ),
           IconButton(
-            icon: Icon(Icons.category),
+            icon: const Icon(Icons.category),
             onPressed: () {
               if (context.mounted) {
                 context.go('/products?region=${widget.regionName}&district=${widget.districtName}${widget.districtId != null ? '&districtId=${widget.districtId}' : ''}');
@@ -264,7 +264,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
         ],
         title: Text(
           AppLocalizations.of(context)?.filtered_products ??
-              "Filtered Products",
+              'Filtered Products',
         ),
       ),
       body: Column(
@@ -292,7 +292,7 @@ class _FilteredProductsState extends ConsumerState<FilteredProducts> {
       final colorScheme = Theme.of(context).colorScheme;
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
             child: Padding(

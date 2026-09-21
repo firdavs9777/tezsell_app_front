@@ -1,6 +1,7 @@
 // lib/providers/provider_models/message_model.dart
 
 import 'dart:convert';
+import 'package:app/utils/app_logger.dart';
 
 class User {
   final int id;
@@ -52,7 +53,10 @@ class User {
           if (RegExp(r'[가-힣]').hasMatch(fixed) || fixed != text) {
             return fixed;
           }
-        } catch (e) {}
+        } catch (e) {
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[message_model] ignored: $e');
+        }
       }
 
       return text;
@@ -332,7 +336,10 @@ class ChatRoom {
               (fixed != text && fixed.length <= text.length * 2)) {
             return fixed;
           }
-        } catch (e) {}
+        } catch (e) {
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[message_model] ignored: $e');
+        }
       }
 
       return text;
@@ -402,7 +409,7 @@ class ChatRoom {
             .map((p) {
               if (p is Map<String, dynamic>) {
                 // 🔍 Debug: Log participant online status
-                print(
+                AppLogger.debug(
                   '👤 [ChatRoom] Participant: ${p['username']}, is_online=${p['is_online']}, last_seen=${p['last_seen']}',
                 );
                 return User.fromJson(p);
@@ -414,7 +421,7 @@ class ChatRoom {
             .whereType<User>()
             .toList();
       } catch (e) {
-        print('❌ [ChatRoom] Error parsing participants: $e');
+        AppLogger.warning('❌ [ChatRoom] Error parsing participants: $e');
       }
     } else if (json['participant_ids'] != null &&
         json['participant_ids'] is List) {
@@ -429,7 +436,10 @@ class ChatRoom {
             })
             .whereType<User>()
             .toList();
-      } catch (e) {}
+      } catch (e) {
+        // Non-fatal: the caller continues without this value.
+        AppLogger.debug('[message_model] ignored: $e');
+      }
     }
 
     // 🔥 NEW: Parse listing anchor summary (product/service/property), if any
@@ -750,7 +760,10 @@ class ChatMessage {
               (fixed != text && fixed.length <= text.length * 2)) {
             return fixed;
           }
-        } catch (e) {}
+        } catch (e) {
+          // Non-fatal: the caller continues without this value.
+          AppLogger.debug('[message_model] ignored: $e');
+        }
       }
 
       return text;
@@ -765,7 +778,7 @@ class ChatMessage {
     final messageType = MessageType.fromJson(messageTypeStr);
 
     // Parse content - can be null for image/voice messages
-    String? rawContent = json['content'] ?? json['message'];
+    final String? rawContent = json['content'] ?? json['message'];
     String? fixedContent;
     if (rawContent != null && rawContent.isNotEmpty) {
       // 🔥 Fix encoding for message content
@@ -842,7 +855,7 @@ class ChatMessage {
     }
 
     // Parse reactions: {"👍": [1, 2], "❤️": [3]}
-    Map<String, List<int>> reactionsMap = {};
+    final Map<String, List<int>> reactionsMap = {};
     if (json['reactions'] != null && json['reactions'] is Map) {
       final reactionsData = json['reactions'] as Map<String, dynamic>;
       reactionsData.forEach((emoji, userIds) {

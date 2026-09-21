@@ -351,18 +351,18 @@ class ServiceSkeletonItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Name skeleton
-                          const SkeletonBox(
+                          SkeletonBox(
                             width: double.infinity,
                             height: 16,
                             borderRadius: 4,
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
                           // Category chip skeleton
-                          const SkeletonBox(
+                          SkeletonBox(
                             width: 80,
                             height: 22,
                             borderRadius: 6,
@@ -387,8 +387,8 @@ class ServiceSkeletonItem extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           // Stats row
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               SkeletonBox(
                                 width: 50,
                                 height: 22,

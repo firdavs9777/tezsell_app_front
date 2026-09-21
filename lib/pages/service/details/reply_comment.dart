@@ -21,7 +21,7 @@ class ReplyCommentWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ReplyCommentWidgetState createState() => _ReplyCommentWidgetState();
+  State<ReplyCommentWidget> createState() => _ReplyCommentWidgetState();
 }
 
 class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {

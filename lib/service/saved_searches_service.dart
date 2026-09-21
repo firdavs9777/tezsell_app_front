@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/saved_search_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Saved Searches API Service
 class SavedSearchesService {
@@ -33,7 +34,7 @@ class SavedSearchesService {
       }
       return [];
     } catch (e) {
-      print('Error getting saved searches: $e');
+      AppLogger.warning('Error getting saved searches: $e');
       return [];
     }
   }
@@ -81,7 +82,7 @@ class SavedSearchesService {
 
       return null;
     } catch (e) {
-      print('Error creating saved search: $e');
+      AppLogger.warning('Error creating saved search: $e');
       rethrow;
     }
   }
@@ -103,7 +104,7 @@ class SavedSearchesService {
       }
       return null;
     } catch (e) {
-      print('Error using saved search: $e');
+      AppLogger.warning('Error using saved search: $e');
       return null;
     }
   }
@@ -147,7 +148,7 @@ class SavedSearchesService {
       }
       return null;
     } catch (e) {
-      print('Error updating saved search: $e');
+      AppLogger.warning('Error updating saved search: $e');
       return null;
     }
   }
@@ -163,7 +164,7 @@ class SavedSearchesService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error deleting saved search: $e');
+      AppLogger.warning('Error deleting saved search: $e');
       return false;
     }
   }

@@ -340,8 +340,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return localizations?.enterVerificationCode ?? 'Enter verification code';
+                      }
                       if (value.length != 6) return localizations?.codeMustBe6Digits ?? 'Code must be 6 digits';
                       return null;
                     },
@@ -368,8 +369,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return localizations?.enterNewPassword ?? 'Enter new password';
+                      }
                       if (value.length < 8) return localizations?.minimum8Characters ?? 'Minimum 8 characters';
                       return null;
                     },
@@ -397,8 +399,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       ),
                     ),
                     validator: (value) {
-                      if (value != newPasswordController.text)
+                      if (value != newPasswordController.text) {
                         return localizations?.passwordsDoNotMatch ?? 'Passwords do not match';
+                      }
                       return null;
                     },
                   ),

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/enhanced_favorite_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Enhanced Favorites API Service with collections and price tracking
 class FavoritesService {
@@ -53,7 +54,7 @@ class FavoritesService {
         'message': 'Failed to toggle favorite',
       };
     } catch (e) {
-      print('Error toggling favorite: $e');
+      AppLogger.warning('Error toggling favorite: $e');
       return {
         'success': false,
         'message': 'Network error: $e',
@@ -91,7 +92,7 @@ class FavoritesService {
       }
       return [];
     } catch (e) {
-      print('Error getting favorites: $e');
+      AppLogger.warning('Error getting favorites: $e');
       return [];
     }
   }
@@ -116,7 +117,7 @@ class FavoritesService {
 
       return FavoriteCheckResult(isFavorited: false);
     } catch (e) {
-      print('Error checking favorite: $e');
+      AppLogger.debug('Error checking favorite: $e');
       return FavoriteCheckResult(isFavorited: false);
     }
   }
@@ -145,7 +146,7 @@ class FavoritesService {
         propertyCount: 0,
       );
     } catch (e) {
-      print('Error getting favorites count: $e');
+      AppLogger.warning('Error getting favorites count: $e');
       return FavoritesCount(
         totalCount: 0,
         productCount: 0,
@@ -181,7 +182,7 @@ class FavoritesService {
       }
       return null;
     } catch (e) {
-      print('Error updating favorite: $e');
+      AppLogger.warning('Error updating favorite: $e');
       return null;
     }
   }
@@ -197,7 +198,7 @@ class FavoritesService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error deleting favorite: $e');
+      AppLogger.warning('Error deleting favorite: $e');
       return false;
     }
   }
@@ -223,7 +224,7 @@ class FavoritesService {
       }
       return [];
     } catch (e) {
-      print('Error getting collections: $e');
+      AppLogger.warning('Error getting collections: $e');
       return [];
     }
   }
@@ -254,7 +255,7 @@ class FavoritesService {
       }
       return null;
     } catch (e) {
-      print('Error creating collection: $e');
+      AppLogger.warning('Error creating collection: $e');
       return null;
     }
   }
@@ -287,7 +288,7 @@ class FavoritesService {
       }
       return null;
     } catch (e) {
-      print('Error updating collection: $e');
+      AppLogger.warning('Error updating collection: $e');
       return null;
     }
   }
@@ -303,7 +304,7 @@ class FavoritesService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error deleting collection: $e');
+      AppLogger.warning('Error deleting collection: $e');
       return false;
     }
   }
@@ -323,7 +324,7 @@ class FavoritesService {
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
-      print('Error adding to collection: $e');
+      AppLogger.warning('Error adding to collection: $e');
       return false;
     }
   }
@@ -343,7 +344,7 @@ class FavoritesService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error removing from collection: $e');
+      AppLogger.warning('Error removing from collection: $e');
       return false;
     }
   }
@@ -367,7 +368,7 @@ class FavoritesService {
       }
       return [];
     } catch (e) {
-      print('Error getting collection items: $e');
+      AppLogger.warning('Error getting collection items: $e');
       return [];
     }
   }

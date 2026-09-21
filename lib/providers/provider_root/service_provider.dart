@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/service/auth_interceptor.dart';
+import 'package:app/utils/app_logger.dart';
 
 class ServiceProvider {
   // Initialize Dio instance with base URL.
@@ -54,7 +55,7 @@ class ServiceProvider {
       final responseData = json.decode(response.body);
 
       if (kDebugMode) {
-        print('🔍 Service Detail API Response keys: ${responseData.keys}');
+        AppLogger.debug('🔍 Service Detail API Response keys: ${responseData.keys}');
       }
 
       // Handle different API response formats
@@ -64,7 +65,7 @@ class ServiceProvider {
       if (responseData['success'] == true && responseData['data'] != null) {
         final data = responseData['data'];
         if (kDebugMode) {
-          print('🔍 Using success/data wrapper, data keys: ${data.keys}');
+          AppLogger.debug('🔍 Using success/data wrapper, data keys: ${data.keys}');
         }
 
         if (data['service'] != null) {
@@ -85,7 +86,7 @@ class ServiceProvider {
       }
 
       if (kDebugMode) {
-        print('🔍 Service data images: ${serviceData['images']}');
+        AppLogger.debug('🔍 Service data images: ${serviceData['images']}');
       }
 
       return Services.fromJson(serviceData);
@@ -123,7 +124,7 @@ class ServiceProvider {
         final data = json.decode(response.body);
 
         if (kDebugMode) {
-          print('📦 Service Categories API response type: ${data.runtimeType}');
+          AppLogger.debug('📦 Service Categories API response type: ${data.runtimeType}');
         }
 
         // Handle both List and Map responses
@@ -146,7 +147,7 @@ class ServiceProvider {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error fetching service categories: $e');
+        AppLogger.warning('❌ Error fetching service categories: $e');
       }
       rethrow;
     }
@@ -167,18 +168,18 @@ class ServiceProvider {
     String? cityName,
   }) async {
     const url = '$baseUrl$SERVICES_URL/';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = await TokenStore.instance.getAccessToken();
-    String? userLocation = prefs.getString('userLocation');
-    String? userId = prefs.getString('userId');
-    Dio dio = buildAuthedDio(baseUrl);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = await TokenStore.instance.getAccessToken();
+    final String? userLocation = prefs.getString('userLocation');
+    final String? userId = prefs.getString('userId');
+    final Dio dio = buildAuthedDio(baseUrl);
 
     // Always fetch fresh location from backend to ensure we have the latest
     int? locationId;
     final userIdInt = userId != null ? int.tryParse(userId) : null;
 
     if (kDebugMode) {
-      print('[ServiceProvider] Fetching fresh user location from backend...');
+      AppLogger.debug('[ServiceProvider] Fetching fresh user location from backend...');
     }
     try {
       final response = await http.get(
@@ -199,14 +200,14 @@ class ServiceProvider {
           if (locationId != null) {
             await prefs.setString('userLocation', locationId.toString());
             if (kDebugMode) {
-              print('[ServiceProvider] Using location_id: $locationId (from backend)');
+              AppLogger.debug('[ServiceProvider] Using location_id: $locationId (from backend)');
             }
           }
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('[ServiceProvider] Error fetching user location: $e, falling back to cached');
+        AppLogger.warning('[ServiceProvider] Error fetching user location: $e, falling back to cached');
       }
       // Fallback to cached value if backend fails
       locationId = userLocation != null ? int.tryParse(userLocation) : null;
@@ -220,10 +221,10 @@ class ServiceProvider {
     }
 
     if (kDebugMode) {
-      print('[ServiceProvider] Creating service with location_id: $locationId');
+      AppLogger.debug('[ServiceProvider] Creating service with location_id: $locationId');
     }
 
-    FormData formData = FormData.fromMap({
+    final FormData formData = FormData.fromMap({
       'name': name,
       'description': description,
       'category_id': categoryId,
@@ -293,13 +294,13 @@ class ServiceProvider {
     List<int>? existingImageIds, // Changed from URLs to IDs
   }) async {
     final url = '$baseUrl$SERVICES_URL/$serviceId/';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = await TokenStore.instance.getAccessToken();
-    String? userId = prefs.getString('userId');
-    Dio dio = buildAuthedDio(baseUrl);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = await TokenStore.instance.getAccessToken();
+    final String? userId = prefs.getString('userId');
+    final Dio dio = buildAuthedDio(baseUrl);
 
     // Create FormData for the update
-    Map<String, dynamic> formDataMap = {
+    final Map<String, dynamic> formDataMap = {
       'name': name,
       'description': description,
       'category_id': categoryId,
@@ -319,7 +320,7 @@ class ServiceProvider {
           .toList();
     }
 
-    FormData formData = FormData.fromMap(formDataMap);
+    final FormData formData = FormData.fromMap(formDataMap);
 
     try {
       final response = await dio.put(
@@ -400,7 +401,7 @@ class ServiceProvider {
 // Delete service method
   Future<bool> deleteService(int serviceId) async {
     final url = '$baseUrl$SERVICES_URL/$serviceId/';
-    String? token = await TokenStore.instance.getAccessToken();
+    final String? token = await TokenStore.instance.getAccessToken();
 
     try {
       final response = await http.delete(
@@ -464,14 +465,14 @@ class ServiceProvider {
       if (districtId != null && districtId > 0) {
         queryParams['district_id'] = districtId.toString();
         if (kDebugMode) {
-          print('🔧 [ServicesAPI] Filtering by district_id: $districtId');
+          AppLogger.debug('🔧 [ServicesAPI] Filtering by district_id: $districtId');
         }
       } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
         // Fallback to name-based filtering
         if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
         if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
         if (kDebugMode) {
-          print('🔧 [ServicesAPI] Filtering by names: region=$regionName, district=$districtName');
+          AppLogger.debug('🔧 [ServicesAPI] Filtering by names: region=$regionName, district=$districtName');
         }
       }
 
@@ -513,10 +514,10 @@ class ServiceProvider {
   Future<List<Services>> getFilteredServices({
     int currentPage = 1,
     int pageSize = 12,
-    String categoryName = "",
-    String regionName = "",
-    String districtName = "",
-    String serviceName = "",
+    String categoryName = '',
+    String regionName = '',
+    String districtName = '',
+    String serviceName = '',
     int? districtId,
     String? neighborhoodId,
     double? radiusKm,

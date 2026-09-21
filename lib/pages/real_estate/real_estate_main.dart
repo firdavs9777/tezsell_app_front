@@ -12,6 +12,7 @@ import 'package:app/providers/provider_root/real_estate_provider.dart';
 import 'package:app/widgets/fresh_nearest_toggle.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:app/utils/app_logger.dart';
 
 class RealEstateMain extends ConsumerStatefulWidget {
   final String regionName;
@@ -43,7 +44,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
   _BrowseMode _browseMode = _BrowseMode.list;
 
   String _selectedPropertyType = '';
-  String _selectedListingType = '';
+  final String _selectedListingType = '';
   // In-memory only (per-screen) — resets on navigation away, per Plan B Task 3.
   ListingSort _sortMode = ListingSort.fresh;
 
@@ -143,11 +144,11 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
       if (useNeighborhood) {
-        print('🏠 [RealEstateMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
+        AppLogger.debug('🏠 [RealEstateMain] GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=${radius}km');
       } else if (widget.districtId != null && widget.districtId! > 0) {
-        print('🏠 [RealEstateMain] DISTRICT filter: id=${widget.districtId}');
+        AppLogger.debug('🏠 [RealEstateMain] DISTRICT filter: id=${widget.districtId}');
       } else {
-        print('🏠 [RealEstateMain] NO filter — loading all properties');
+        AppLogger.debug('🏠 [RealEstateMain] NO filter — loading all properties');
       }
       final rawProperties =
           await ref.read(realEstateServiceProvider).getFilteredProperties(
@@ -263,7 +264,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
     if (propCity.isNotEmpty && (propCity.contains(city) || city.contains(propCity))) return true;
     if (propDistrict.isNotEmpty && (propDistrict.contains(city) || city.contains(propDistrict))) return true;
     if (propCity.isEmpty && propDistrict.isEmpty && propRegion.isNotEmpty &&
-        (propRegion.contains(region) || region.contains(propRegion))) return true;
+        (propRegion.contains(region) || region.contains(propRegion))) {
+      return true;
+    }
     return false;
   }
 
@@ -332,7 +335,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 BoxShadow(
                   color: theme.colorScheme.shadow.withValues(alpha: 0.05),
                   blurRadius: 10,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -343,7 +346,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     widget.districtName.isNotEmpty)
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     child: Row(
                       children: [
@@ -352,7 +355,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                           size: 16,
                           color: theme.colorScheme.primary,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           widget.districtName.isNotEmpty ? widget.districtName : widget.regionName,
                           style: theme.textTheme.labelMedium?.copyWith(
@@ -360,7 +363,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
                           localizations?.n_properties(_allProperties.length) ?? '${_allProperties.length} properties',
                           style: theme.textTheme.labelSmall?.copyWith(
@@ -393,7 +396,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
                 // Tab Bar with localized labels
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: TabBar(
                     controller: _tabController,
                     isScrollable: true,
@@ -415,7 +418,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                       return Tab(
                         child: Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -423,7 +426,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                                 type['icon'],
                                 size: 16,
                               ),
-                              SizedBox(width: 6),
+                              const SizedBox(width: 6),
                               Text(_getPropertyTypeLabel(type)),
                             ],
                           ),
@@ -432,7 +435,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     }).toList(),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -484,7 +487,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
             CircularProgressIndicator(
               color: theme.colorScheme.primary,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               localizations?.properties_loading ?? 'Loading properties...',
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -502,15 +505,15 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
     if (_allProperties.isEmpty) {
       return SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Container(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceContainerHighest,
                     shape: BoxShape.circle,
@@ -521,7 +524,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   localizations?.no_properties_found ??
                       'No properties found',
@@ -529,7 +532,7 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   localizations?.no_category_properties ??
                       'No properties in this category',
@@ -539,9 +542,9 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
                 ),
                 if (widget.regionName.isNotEmpty ||
                     widget.districtName.isNotEmpty) ...[
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(20),
@@ -565,8 +568,8 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
     return ListView.builder(
       controller: _scrollController,
-      physics: AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16.0),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
       itemCount: _allProperties.length + (_hasMoreData ? 1 : 0),
       itemBuilder: (context, index) {
         if (index < _allProperties.length) {
@@ -576,19 +579,19 @@ class _RealEstateMainState extends ConsumerState<RealEstateMain>
 
         if (_hasMoreData) {
           return Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Center(
               child: _isLoadingMore
                   ? CircularProgressIndicator(
                       color: theme.colorScheme.primary,
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             ),
           );
         }
 
         return Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Text(
               localizations?.all_properties_loaded ?? 'All properties loaded',

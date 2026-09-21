@@ -29,7 +29,7 @@ class ServiceDetail extends ConsumerStatefulWidget {
   const ServiceDetail({Key? key, required this.service}) : super(key: key);
 
   @override
-  _ServiceDetailState createState() => _ServiceDetailState();
+  ConsumerState<ServiceDetail> createState() => _ServiceDetailState();
 }
 
 class _ServiceDetailState extends ConsumerState<ServiceDetail> {

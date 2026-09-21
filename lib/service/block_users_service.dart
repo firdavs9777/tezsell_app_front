@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/block_user_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Service for handling user blocking operations
 class BlockUsersService {
@@ -33,7 +34,7 @@ class BlockUsersService {
     );
 
     if (kDebugMode) {
-      print('Block User Response: ${response.statusCode}');
+      AppLogger.debug('Block User Response: ${response.statusCode}');
     }
 
     if (response.statusCode != 200 && response.statusCode != 201) {

@@ -471,7 +471,7 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
         focusNode: _focusNode,
         decoration: InputDecoration(
           hintText: AppLocalizations.of(context)?.searchProductPlaceholder ??
-              "Search products",
+              'Search products',
           hintStyle: TextStyle(
             color: colorScheme.onSurfaceVariant,
             fontSize: 15,
@@ -532,7 +532,7 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
             const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context)?.product_search_placeholder ??
-                  "Search for products",
+                  'Search for products',
               style: TextStyle(
                 fontSize: 16,
                 color: colorScheme.onSurfaceVariant,
@@ -544,7 +544,7 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                AppLocalizations.of(context)?.search_products_subtitle ?? "Find great deals in your neighborhood",
+                AppLocalizations.of(context)?.search_products_subtitle ?? 'Find great deals in your neighborhood',
                 style: TextStyle(
                   fontSize: 14,
                   color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -573,7 +573,7 @@ class _ProductSearchState extends ConsumerState<ProductSearch> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)?.productError ?? "No products found",
+              AppLocalizations.of(context)?.productError ?? 'No products found',
               style: TextStyle(
                 fontSize: 16,
                 color: colorScheme.onSurfaceVariant,

@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/utils/image_utils.dart';
+import 'package:app/utils/app_logger.dart';
 
 class CommentsMain extends ConsumerStatefulWidget {
   const CommentsMain({
@@ -45,8 +46,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
 
   String _formatLocalTime(String utcTimeString, BuildContext context) {
     try {
-      DateTime utcTime = DateTime.parse(utcTimeString);
-      DateTime localTime = utcTime.toLocal();
+      final DateTime utcTime = DateTime.parse(utcTimeString);
+      final DateTime localTime = utcTime.toLocal();
       return DateFormat(
         'M/d/yyyy, h:mm:ss a',
         Localizations.localeOf(context).languageCode,
@@ -66,6 +67,8 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
         });
       }
     } catch (e) {
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[comments] ignored: $e');
     }
   }
 
@@ -104,7 +107,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                         reply.user.profileImage!.image.startsWith('http://') ||
                                 reply.user.profileImage!.image.startsWith('https://')
                             ? reply.user.profileImage!.image
-                            : '${baseUrl}${reply.user.profileImage!.image}'),
+                            : '$baseUrl${reply.user.profileImage!.image}'),
                     backgroundColor: colorScheme.surfaceContainerHighest,
                   )
                 : CircleAvatar(
@@ -432,9 +435,9 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    comment.created_at.isNotEmpty
+                                    comment.createdAt.isNotEmpty
                                         ? _formatLocalTime(
-                                            comment.created_at, context)
+                                            comment.createdAt, context)
                                         : l10n.unknown_date,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: colorScheme.onSurfaceVariant,

@@ -16,7 +16,7 @@ class EditCommentWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _EditCommentWidgetState createState() => _EditCommentWidgetState();
+  State<EditCommentWidget> createState() => _EditCommentWidgetState();
 }
 
 class _EditCommentWidgetState extends State<EditCommentWidget> {

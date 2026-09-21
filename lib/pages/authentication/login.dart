@@ -253,18 +253,18 @@ class _LoginState extends ConsumerState<Login> {
       if (email != null && email.isNotEmpty) {
         await prefs.setString(_appleEmailKey, email);
         if (kDebugMode) {
-          print('🍎 Cached Apple email: $email');
+          AppLogger.debug('🍎 Cached Apple email: $email');
         }
       }
       if (name != null && name.isNotEmpty) {
         await prefs.setString(_appleNameKey, name);
         if (kDebugMode) {
-          print('🍎 Cached Apple name: $name');
+          AppLogger.debug('🍎 Cached Apple name: $name');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error caching Apple credentials: $e');
+        AppLogger.warning('❌ Error caching Apple credentials: $e');
       }
     }
   }
@@ -279,7 +279,7 @@ class _LoginState extends ConsumerState<Login> {
       };
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error getting cached Apple credentials: $e');
+        AppLogger.warning('❌ Error getting cached Apple credentials: $e');
       }
       return {'email': null, 'name': null};
     }
@@ -298,10 +298,10 @@ class _LoginState extends ConsumerState<Login> {
         response.userInfo?.needsLocationSetup == true;
 
     if (kDebugMode) {
-      print('📍 Social auth navigation check:');
-      print('   isNewUser: ${response.isNewUser}');
-      print('   needsLocationSetup: ${response.userInfo?.needsLocationSetup}');
-      print('   navigating to: ${needsLocationSetup ? "/location-setup" : "/tabs"}');
+      AppLogger.debug('📍 Social auth navigation check:');
+      AppLogger.debug('   isNewUser: ${response.isNewUser}');
+      AppLogger.debug('   needsLocationSetup: ${response.userInfo?.needsLocationSetup}');
+      AppLogger.debug('   navigating to: ${needsLocationSetup ? "/location-setup" : "/tabs"}');
     }
 
     if (!mounted) return;
@@ -320,16 +320,16 @@ class _LoginState extends ConsumerState<Login> {
       final refreshToken = await _authService.getStoredRefreshToken();
       if (refreshToken != null && refreshToken.isNotEmpty) {
         if (kDebugMode) {
-          print('🔐 Refreshing token before navigation...');
+          AppLogger.debug('🔐 Refreshing token before navigation...');
         }
         await _authService.refreshToken();
         if (kDebugMode) {
-          print('🔐 Token refreshed, safe to navigate now');
+          AppLogger.debug('🔐 Token refreshed, safe to navigate now');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('⚠️ Pre-navigation token refresh failed (non-fatal): $e');
+        AppLogger.warning('⚠️ Pre-navigation token refresh failed (non-fatal): $e');
       }
       // Non-fatal — the existing token should still work
     }
@@ -345,20 +345,20 @@ class _LoginState extends ConsumerState<Login> {
 
     try {
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] Step 1: Signing out previous session...');
+        AppLogger.debug('🔐 [Google Sign-In] Step 1: Signing out previous session...');
       }
       // Sign out first to ensure fresh login
       await _googleSignIn.signOut();
 
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] Step 2: Opening Google sign-in dialog...');
+        AppLogger.debug('🔐 [Google Sign-In] Step 2: Opening Google sign-in dialog...');
       }
       // Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         if (kDebugMode) {
-          print('🔐 [Google Sign-In] User cancelled sign-in');
+          AppLogger.debug('🔐 [Google Sign-In] User cancelled sign-in');
         }
         // User cancelled the sign-in
         if (mounted) {
@@ -370,8 +370,8 @@ class _LoginState extends ConsumerState<Login> {
       }
 
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] Step 3: Got Google account: ${googleUser.email}');
-        print('🔐 [Google Sign-In] Step 4: Getting authentication tokens...');
+        AppLogger.debug('🔐 [Google Sign-In] Step 3: Got Google account: ${googleUser.email}');
+        AppLogger.debug('🔐 [Google Sign-In] Step 4: Getting authentication tokens...');
       }
 
       // Get authentication tokens
@@ -382,14 +382,14 @@ class _LoginState extends ConsumerState<Login> {
       final String? accessToken = googleAuth.accessToken;
 
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] idToken: ${idToken != null ? "${idToken.substring(0, 20)}..." : "NULL"}');
-        print('🔐 [Google Sign-In] accessToken: ${accessToken != null ? "${accessToken.substring(0, 20)}..." : "NULL"}');
+        AppLogger.debug('🔐 [Google Sign-In] idToken: ${idToken != null ? "${idToken.substring(0, 20)}..." : "NULL"}');
+        AppLogger.debug('🔐 [Google Sign-In] accessToken: ${accessToken != null ? "${accessToken.substring(0, 20)}..." : "NULL"}');
       }
 
       if (idToken == null) {
         if (kDebugMode) {
-          print('❌ [Google Sign-In] FAILED: idToken is null!');
-          print('   serverClientId: ${_googleSignIn.serverClientId}');
+          AppLogger.warning('❌ [Google Sign-In] FAILED: idToken is null!');
+          AppLogger.debug('   serverClientId: ${_googleSignIn.serverClientId}');
         }
         _showError('Failed to get Google authentication token. Check serverClientId config.');
         if (mounted) {
@@ -401,10 +401,10 @@ class _LoginState extends ConsumerState<Login> {
       }
 
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] Step 5: Sending to backend...');
-        print('   Email: ${googleUser.email}');
-        print('   Name: ${googleUser.displayName}');
-        print('   PhotoUrl: ${googleUser.photoUrl}');
+        AppLogger.debug('🔐 [Google Sign-In] Step 5: Sending to backend...');
+        AppLogger.debug('   Email: ${googleUser.email}');
+        AppLogger.debug('   Name: ${googleUser.displayName}');
+        AppLogger.debug('   PhotoUrl: ${googleUser.photoUrl}');
       }
 
       // Send idToken to backend via social auth provider
@@ -417,11 +417,11 @@ class _LoginState extends ConsumerState<Login> {
       if (!mounted) return;
 
       if (kDebugMode) {
-        print('🔐 [Google Sign-In] Step 6: Backend response:');
-        print('   success: ${response.success}');
-        print('   error: ${response.error}');
-        print('   isNewUser: ${response.isNewUser}');
-        print('   hasTokens: ${response.tokens != null}');
+        AppLogger.debug('🔐 [Google Sign-In] Step 6: Backend response:');
+        AppLogger.debug('   success: ${response.success}');
+        AppLogger.warning('   error: ${response.error}');
+        AppLogger.debug('   isNewUser: ${response.isNewUser}');
+        AppLogger.debug('   hasTokens: ${response.tokens != null}');
       }
 
       if (response.success) {
@@ -431,9 +431,9 @@ class _LoginState extends ConsumerState<Login> {
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
-        print('❌ [Google Sign-In] EXCEPTION: $e');
-        print('❌ [Google Sign-In] Type: ${e.runtimeType}');
-        print('❌ [Google Sign-In] Stack: $stackTrace');
+        AppLogger.warning('❌ [Google Sign-In] EXCEPTION: $e');
+        AppLogger.warning('❌ [Google Sign-In] Type: ${e.runtimeType}');
+        AppLogger.warning('❌ [Google Sign-In] Stack: $stackTrace');
       }
       if (mounted) {
         // Show actual error in debug, generic in release
@@ -498,16 +498,16 @@ class _LoginState extends ConsumerState<Login> {
         userEmail = cached['email'];
         userName = cached['name'];
         if (kDebugMode) {
-          print('🍎 Using cached Apple credentials:');
-          print('   Cached email: $userEmail');
-          print('   Cached name: $userName');
+          AppLogger.debug('🍎 Using cached Apple credentials:');
+          AppLogger.debug('   Cached email: $userEmail');
+          AppLogger.debug('   Cached name: $userName');
         }
       }
 
       if (kDebugMode) {
-        print('🍎 Apple Sign-In successful');
-        print('   Email: $userEmail');
-        print('   Name: $userName');
+        AppLogger.debug('🍎 Apple Sign-In successful');
+        AppLogger.debug('   Email: $userEmail');
+        AppLogger.debug('   Name: $userName');
       }
 
       // Send idToken to backend via social auth provider
@@ -527,7 +527,7 @@ class _LoginState extends ConsumerState<Login> {
       }
     } on SignInWithAppleAuthorizationException catch (e) {
       if (kDebugMode) {
-        print('🍎 Apple Sign-In cancelled or failed: ${e.code}');
+        AppLogger.warning('🍎 Apple Sign-In cancelled or failed: ${e.code}');
       }
       // Don't show error for user cancellation
       if (e.code != AuthorizationErrorCode.canceled) {
@@ -537,7 +537,7 @@ class _LoginState extends ConsumerState<Login> {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Apple Sign-In error: $e');
+        AppLogger.warning('❌ Apple Sign-In error: $e');
       }
       if (mounted) {
         _showError('Apple sign-in failed. Please try again.');

@@ -267,7 +267,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
           ),
         ],
         title: Text(
-          AppLocalizations.of(context)?.filtered_services ?? "Filtered Services",
+          AppLocalizations.of(context)?.filtered_services ?? 'Filtered Services',
         ),
       ),
       body: Column(
@@ -294,7 +294,7 @@ class _FilteredServicesState extends ConsumerState<FilteredServices> {
       final colorScheme = Theme.of(context).colorScheme;
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
             child: Padding(

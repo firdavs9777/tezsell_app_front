@@ -17,6 +17,7 @@ import 'package:app/widgets/cached_network_image_widget.dart';
 import 'package:app/utils/error_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:app/utils/app_logger.dart';
 
 class PropertyDetail extends ConsumerStatefulWidget {
   const PropertyDetail({super.key, required this.propertyId});
@@ -83,7 +84,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           userToken = token;
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[real_estate_detail] ignored: $e');
+    }
   }
 
   Future<void> _checkIfPropertySaved() async {
@@ -276,7 +280,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             backgroundColor: isSaved
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.tertiary,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -292,7 +296,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             content:
                 Text('${l10n.alertsUnsavePropertyFailed}: ${error.toString()}'),
             backgroundColor: Theme.of(context).colorScheme.error,
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -580,10 +584,10 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             children: List.generate(imageUrls.length, (index) {
                               final isActive = index == currentImageIndex;
                               return AnimatedContainer(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 width: isActive ? 20 : 6,
                                 height: 6,
-                                margin: EdgeInsets.symmetric(horizontal: 3),
+                                margin: const EdgeInsets.symmetric(horizontal: 3),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(3),
                                   color: isActive
@@ -601,7 +605,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                           right: 16,
                           bottom: 16,
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.6),
@@ -623,7 +627,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                           top: 100,
                           left: 16,
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
                               color: colorScheme.primary,
@@ -643,7 +647,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                             top: 100,
                             right: 16,
                             child: Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFA726),
@@ -652,9 +656,9 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.star,
+                                  const Icon(Icons.star,
                                       color: Colors.white, size: 14),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Text(
                                     l10n.propertyCardFeatured,
                                     style: theme.textTheme.bodySmall?.copyWith(
@@ -700,7 +704,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -713,7 +717,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               BoxShadow(
                 color: colorScheme.shadow.withValues(alpha: 0.1),
                 blurRadius: 8,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -726,7 +730,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
   void _showMoreOptions(BuildContext context, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) => SafeArea(
@@ -736,7 +740,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             Container(
               width: 40,
               height: 4,
-              margin: EdgeInsets.symmetric(vertical: 12),
+              margin: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
@@ -750,7 +754,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 _showReportDialog();
               },
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -762,7 +766,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final colorScheme = theme.colorScheme;
 
     if (isLoading) {
-      return Container(
+      return SizedBox(
         height: 400,
         child: Center(
           child: CircularProgressIndicator(color: colorScheme.primary),
@@ -773,13 +777,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     if (errorMessage != null) {
       return Container(
         height: 400,
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.error_outline, size: 64, color: colorScheme.onSurfaceVariant),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 l10n.loading_property_not_found,
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -787,13 +791,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   color: colorScheme.onSurface,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 l10n.loading_property_not_found_message,
                 style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(
@@ -809,7 +813,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
       );
     }
 
-    if (property == null) return SizedBox.shrink();
+    if (property == null) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -850,7 +854,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
         _buildDetailsSection(context, l10n),
 
         // Bottom padding for the fixed bottom bar
-        SizedBox(height: 100),
+        const SizedBox(height: 100),
       ],
     );
   }
@@ -872,12 +876,12 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: InkWell(
         onTap: () => context.push('/user/$ownerId'),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
             children: [
               CircleAvatar(
@@ -893,7 +897,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   size: 24,
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -905,7 +909,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                         color: colorScheme.onSurface,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       isAgent
                           ? l10n.contact_modal_agent
@@ -936,7 +940,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -944,7 +948,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(4),
@@ -957,7 +961,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   ),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 _getTimeAgo(Localizations.localeOf(context).languageCode),
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -966,7 +970,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
 
           // Title
           Text(
@@ -977,7 +981,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               height: 1.3,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Price
           Text(
@@ -990,7 +994,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
           // Price per sqm
           if (property!.pricePerSqm.isNotEmpty) ...[
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               '${property!.pricePerSqm} ${property!.currency}${l10n.property_info_price_per_sqm}',
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -999,14 +1003,14 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ),
           ],
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Views row
           Row(
             children: [
               Icon(Icons.visibility_outlined,
                   size: 18, color: colorScheme.onSurfaceVariant),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Text(
                 '${property!.viewsCount} ${l10n.property_info_views}',
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -1026,7 +1030,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -1071,7 +1075,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     return Column(
       children: [
         Icon(icon, size: 24, color: colorScheme.onSurfaceVariant),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           value,
           style: theme.textTheme.titleLarge?.copyWith(
@@ -1079,7 +1083,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             color: colorScheme.onSurface,
           ),
         ),
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -1113,7 +1117,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1124,11 +1128,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               color: colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Icon(Icons.location_on_outlined, size: 20, color: colorScheme.onSurfaceVariant),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   locationString,
@@ -1140,11 +1144,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ],
           ),
           if (floor != null || totalFloors != null) ...[
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Icon(Icons.apartment, size: 20, color: colorScheme.onSurfaceVariant),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   floor != null && totalFloors != null
                       ? '${l10n.property_details_floor} $floor ${l10n.property_details_of} $totalFloors'
@@ -1170,7 +1174,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1181,7 +1185,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               color: colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             description!,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -1215,7 +1219,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     if (features.isEmpty) {
       return Container(
         color: colorScheme.surface,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1226,7 +1230,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                 color: colorScheme.onSurface,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               l10n.no_description,
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -1240,7 +1244,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1251,13 +1255,13 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               color: colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: features.map((feature) {
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
@@ -1267,7 +1271,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
                   children: [
                     Icon(feature['icon'] as IconData,
                         size: 18, color: colorScheme.onSurfaceVariant),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text(
                       feature['label'] as String,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -1297,7 +1301,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1308,7 +1312,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               color: colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           if (metroDistance != null)
             _buildAmenityRow(Icons.subway, l10n.amenities_metro, '$metroDistance m'),
           if (schoolDistance != null)
@@ -1327,11 +1331,11 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               label,
@@ -1357,7 +1361,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
 
     return Container(
       color: colorScheme.surface,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1368,7 +1372,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
               color: colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           _buildDetailRow(l10n.property_details_property_type, property!.propertyTypeDisplay),
           _buildDetailRow(l10n.property_details_listing_type, property!.listingTypeDisplay),
           if (yearBuilt != null)
@@ -1387,7 +1391,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -1430,7 +1434,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 10,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
@@ -1465,7 +1469,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             ),
           ),
 
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
 
           // Vertical divider
           Container(
@@ -1474,7 +1478,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             color: colorScheme.outlineVariant,
           ),
 
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
 
           // Price section
           Expanded(
@@ -1504,7 +1508,7 @@ class _PropertyDetailState extends ConsumerState<PropertyDetail> {
             GestureDetector(
               onTap: _startChatWithOwner,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: colorScheme.primary,
                   borderRadius: BorderRadius.circular(8),

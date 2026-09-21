@@ -5,9 +5,9 @@ class Comments {
   const Comments({
     required this.id,
     required this.text,
-    required this.service_id,
+    required this.serviceId,
     required this.user,
-    required this.created_at,
+    required this.createdAt,
     this.repliesCount = 0,
     this.replies,
   });
@@ -15,8 +15,8 @@ class Comments {
   final int id;
   final String text;
   final UserInfo user;
-  final int service_id;
-  final String created_at;
+  final int serviceId;
+  final String createdAt;
   final int repliesCount;
   final List<Reply>? replies;
 
@@ -25,10 +25,10 @@ class Comments {
       id: json['id'] ?? 0,
       text: json['text'] ?? '',
       user: UserInfo.fromJson(json['user'] ?? {}),
-      service_id: json['service_id'] != null
+      serviceId: json['service_id'] != null
           ? int.tryParse(json['service_id'].toString()) ?? 0
           : 0,
-      created_at: json['created_at'] ?? '',
+      createdAt: json['created_at'] ?? '',
       repliesCount: json['replies_count'] ?? 0, // Add this
       replies: json['replies'] != null
           ? (json['replies'] as List)

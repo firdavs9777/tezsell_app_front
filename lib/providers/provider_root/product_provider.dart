@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/service/auth_interceptor.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Extracts a user-facing message from a Django-style validation-error body.
 ///
@@ -279,10 +280,10 @@ class ProductsService {
   Future<List<Products>> getFilteredProducts({
     int currentPage = 1,
     int pageSize = 12,
-    String categoryName = "",
-    String regionName = "",
-    String districtName = "",
-    String productTitle = "",
+    String categoryName = '',
+    String regionName = '',
+    String districtName = '',
+    String productTitle = '',
     int? districtId,  // Added for locale-independent filtering
     String? neighborhoodId,
     double? radiusKm,
@@ -386,21 +387,21 @@ class ProductsService {
       if (districtId != null && districtId > 0) {
         queryParams['district_id'] = districtId.toString();
         if (kDebugMode) {
-          print('📦 [ProductsAPI] Filtering by district_id: $districtId');
+          AppLogger.debug('📦 [ProductsAPI] Filtering by district_id: $districtId');
         }
       } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
         // Fallback to name-based filtering only if names are provided
         if (regionName.isNotEmpty) queryParams['region_name'] = regionName;
         if (districtName.isNotEmpty) queryParams['district_name'] = districtName;
         if (kDebugMode) {
-          print('📦 [ProductsAPI] Filtering by names: region=$regionName, district=$districtName');
+          AppLogger.debug('📦 [ProductsAPI] Filtering by names: region=$regionName, district=$districtName');
         }
       } else {
         if (kDebugMode) {
           if (neighborhoodId != null) {
-            print('📦 [ProductsAPI] Neighbourhood filter only: $neighborhoodId (city-wide, no district override)');
+            AppLogger.debug('📦 [ProductsAPI] Neighbourhood filter only: $neighborhoodId (city-wide, no district override)');
           } else {
-            print('📦 [ProductsAPI] No location filter - loading ALL products');
+            AppLogger.debug('📦 [ProductsAPI] No location filter - loading ALL products');
           }
         }
       }
@@ -421,7 +422,7 @@ class ProductsService {
       if (sort != null && sort.isNotEmpty) queryParams['sort'] = sort;
 
       if (kDebugMode) {
-        print('📦 [ProductsAPI] Fetching with params: $queryParams');
+        AppLogger.debug('📦 [ProductsAPI] Fetching with params: $queryParams');
       }
 
       final response = await dio.get(
@@ -431,18 +432,18 @@ class ProductsService {
 
       if (kDebugMode) {
         final results = response.data?['results'] as List? ?? [];
-        print('📦 [ProductsAPI] ─────────────────────────────────');
-        print('📦 [ProductsAPI] URL: ${response.requestOptions.uri}');
-        print('📦 [ProductsAPI] Status: ${response.statusCode}');
-        print('📦 [ProductsAPI] Count: ${response.data?['count'] ?? 'N/A'}');
-        print('📦 [ProductsAPI] Results length: ${results.length}');
+        AppLogger.debug('📦 [ProductsAPI] ─────────────────────────────────');
+        AppLogger.debug('📦 [ProductsAPI] URL: ${response.requestOptions.uri}');
+        AppLogger.debug('📦 [ProductsAPI] Status: ${response.statusCode}');
+        AppLogger.debug('📦 [ProductsAPI] Count: ${response.data?['count'] ?? 'N/A'}');
+        AppLogger.debug('📦 [ProductsAPI] Results length: ${results.length}');
         // Log all distinct locations to show if backend filter is working
         final locationSummary = results.map((p) {
           final loc = p['location'] as Map<String, dynamic>?;
           return '${loc?['district'] ?? '?'}, ${loc?['region'] ?? '?'}';
         }).toSet().toList();
-        print('📦 [ProductsAPI] Distinct locations in page: $locationSummary');
-        print('📦 [ProductsAPI] ─────────────────────────────────');
+        AppLogger.debug('📦 [ProductsAPI] Distinct locations in page: $locationSummary');
+        AppLogger.debug('📦 [ProductsAPI] ─────────────────────────────────');
       }
 
       if (response.statusCode == 200) {
@@ -510,7 +511,7 @@ class ProductsService {
       final token = await TokenStore.instance.getAccessToken();
 
       final response = await dio.get(
-        '$CATEGORY_URL',
+        CATEGORY_URL,
         options: Options(
           headers: token != null ? {'Authorization': 'Token $token'} : null,
         ),
@@ -520,8 +521,8 @@ class ProductsService {
         final data = response.data;
 
         if (kDebugMode) {
-          print('📦 Categories API response type: ${data.runtimeType}');
-          print('📦 Categories API response: $data');
+          AppLogger.debug('📦 Categories API response type: ${data.runtimeType}');
+          AppLogger.debug('📦 Categories API response: $data');
         }
 
         // Handle both List and Map responses
@@ -548,7 +549,7 @@ class ProductsService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error fetching categories: $e');
+        AppLogger.warning('❌ Error fetching categories: $e');
       }
       rethrow;
     }
@@ -672,7 +673,7 @@ class ProductsService {
       final userIdInt = userId != null ? int.tryParse(userId) : null;
 
       if (kDebugMode) {
-        print('[ProductProvider] Fetching fresh user location from backend...');
+        AppLogger.debug('[ProductProvider] Fetching fresh user location from backend...');
       }
       try {
         final response = await dio.get(
@@ -694,14 +695,14 @@ class ProductsService {
             if (locationId != null) {
               await prefs.setString('userLocation', locationId.toString());
               if (kDebugMode) {
-                print('[ProductProvider] Using location_id: $locationId (from backend)');
+                AppLogger.debug('[ProductProvider] Using location_id: $locationId (from backend)');
               }
             }
           }
         }
       } catch (e) {
         if (kDebugMode) {
-          print('[ProductProvider] Error fetching user location: $e, falling back to cached');
+          AppLogger.warning('[ProductProvider] Error fetching user location: $e, falling back to cached');
         }
         // Fallback to cached value if backend fails
         locationId = userLocation != null ? int.tryParse(userLocation) : null;
@@ -720,7 +721,7 @@ class ProductsService {
       if (locationId == 0) locationId = null;
 
       if (kDebugMode) {
-        print('[ProductProvider] Creating product with location_id: $locationId '
+        AppLogger.debug('[ProductProvider] Creating product with location_id: $locationId '
             '(lat=$latitude, lng=$longitude)');
       }
 
@@ -880,7 +881,7 @@ class ProductsService {
       // Debug logging to see what's being sent
 
       final response = await dio.put(
-        "${baseUrl}/products/api/user/products/$productId/",
+        '$baseUrl/products/api/user/products/$productId/',
         data: formData,
         options: Options(
           headers: {
@@ -905,7 +906,7 @@ class ProductsService {
 
         if (response.data is Map) {
           final errorData = response.data as Map<String, dynamic>;
-          List<String> errors = [];
+          final List<String> errors = [];
 
           errorData.forEach((key, value) {
             if (value is List) {
@@ -1046,7 +1047,7 @@ class ProductsService {
       }
 
       final response = await dio.delete(
-        "${baseUrl}/products/api/user/products/$productId/",
+        '$baseUrl/products/api/user/products/$productId/',
         options: Options(
           headers: {
             'Authorization': 'Token $token',
@@ -1152,10 +1153,10 @@ class ProductFilterParams {
   const ProductFilterParams({
     this.currentPage = 1,
     this.pageSize = 12,
-    this.categoryName = "",
-    this.regionName = "",
-    this.districtName = "",
-    this.productTitle = "",
+    this.categoryName = '',
+    this.regionName = '',
+    this.districtName = '',
+    this.productTitle = '',
   });
 
   @override

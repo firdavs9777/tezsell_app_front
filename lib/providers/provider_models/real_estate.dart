@@ -1,3 +1,5 @@
+import 'package:app/utils/app_logger.dart';
+
 class RealEstate {
   const RealEstate({
     required this.id,
@@ -110,11 +112,11 @@ class RealEstate {
         distanceKm: _toDouble(json['distance_km']),
       );
     } catch (e) {
-      print('[RealEstate.fromJson] ERROR parsing: $e');
-      print('[RealEstate.fromJson] JSON keys: ${json.keys.toList()}');
-      print('[RealEstate.fromJson] id type: ${json['id']?.runtimeType}, value: ${json['id']}');
-      print('[RealEstate.fromJson] owner type: ${json['owner']?.runtimeType}');
-      print('[RealEstate.fromJson] user_location type: ${json['user_location']?.runtimeType}');
+      AppLogger.warning('[RealEstate.fromJson] ERROR parsing: $e');
+      AppLogger.debug('[RealEstate.fromJson] JSON keys: ${json.keys.toList()}');
+      AppLogger.debug('[RealEstate.fromJson] id type: ${json['id']?.runtimeType}, value: ${json['id']}');
+      AppLogger.debug('[RealEstate.fromJson] owner type: ${json['owner']?.runtimeType}');
+      AppLogger.debug('[RealEstate.fromJson] user_location type: ${json['user_location']?.runtimeType}');
       rethrow;
     }
   }

@@ -6,6 +6,7 @@ import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/review_model.dart';
 import 'package:app/service/session_manager.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Reviews & Trust Score API Service
 class ReviewsService {
@@ -42,7 +43,7 @@ class ReviewsService {
       // Return default score if not found
       return TrustScore.defaultScore(userId, '');
     } catch (e) {
-      print('Error getting trust score: $e');
+      AppLogger.warning('Error getting trust score: $e');
       return TrustScore.defaultScore(userId, '');
     }
   }
@@ -65,7 +66,7 @@ class ReviewsService {
       }
       return [];
     } catch (e) {
-      print('Error getting badges: $e');
+      AppLogger.warning('Error getting badges: $e');
       return [];
     }
   }
@@ -102,7 +103,7 @@ class ReviewsService {
       }
       return null;
     } catch (e) {
-      print('Error creating transaction: $e');
+      AppLogger.warning('Error creating transaction: $e');
       return null;
     }
   }
@@ -140,7 +141,7 @@ class ReviewsService {
       }
       return [];
     } catch (e) {
-      print('Error getting transactions: $e');
+      AppLogger.warning('Error getting transactions: $e');
       return [];
     }
   }
@@ -172,7 +173,7 @@ class ReviewsService {
       }
       return null;
     } catch (e) {
-      print('Error updating transaction: $e');
+      AppLogger.warning('Error updating transaction: $e');
       return null;
     }
   }
@@ -216,7 +217,7 @@ class ReviewsService {
       }
       return null;
     } catch (e) {
-      print('Error submitting review: $e');
+      AppLogger.warning('Error submitting review: $e');
       return null;
     }
   }
@@ -249,7 +250,7 @@ class ReviewsService {
       }
       return {'summary': null, 'reviews': []};
     } catch (e) {
-      print('Error getting user reviews: $e');
+      AppLogger.warning('Error getting user reviews: $e');
       return {'summary': null, 'reviews': []};
     }
   }
@@ -317,7 +318,7 @@ class ReviewsService {
       // Return predefined tags as fallback
       return ReviewTags.all;
     } catch (e) {
-      print('Error getting review tags: $e');
+      AppLogger.warning('Error getting review tags: $e');
       return ReviewTags.all;
     }
   }
@@ -350,7 +351,7 @@ class ReviewsService {
       }
       return {'transactions': <Transaction>[], 'count': 0};
     } catch (e) {
-      print('Error getting pending reviews: $e');
+      AppLogger.warning('Error getting pending reviews: $e');
       return {'transactions': <Transaction>[], 'count': 0};
     }
   }

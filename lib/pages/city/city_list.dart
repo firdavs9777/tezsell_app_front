@@ -128,8 +128,8 @@ class CityList extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => TownsList(
-                      city_id: cityId[index],
-                      city_name: cityList[index],
+                      cityId: cityId[index],
+                      cityName: cityList[index],
                       countryCode: countryCode,
                     ),
                   ),

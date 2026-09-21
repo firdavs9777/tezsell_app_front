@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:app/service/connection_state_controller.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 class ChatListWebSocketService {
   WebSocketChannel? _channel;
@@ -40,7 +41,8 @@ class ChatListWebSocketService {
 
             _messageController.add(message);
           } catch (e) {
-
+            // Non-fatal: the caller continues without this value.
+            AppLogger.debug('[websocket_service] ignored: $e');
           }
         },
         onError: (error) {
@@ -80,7 +82,8 @@ class ChatListWebSocketService {
       _channel!.sink.add(message);
 
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[websocket_service] ignored: $e');
     }
   }
 
@@ -117,11 +120,11 @@ class ChatRoomWebSocketService {
   static const String wsBaseUrl = 'wss://api.webtezsell.com';
 
   Future<void> connectToChatRoom(int roomId) async {
-    print('🔌 connectToChatRoom called for room $roomId');
-    print('🔌 _isConnecting: $_isConnecting, _isConnected: $_isConnected');
+    AppLogger.debug('🔌 connectToChatRoom called for room $roomId');
+    AppLogger.debug('🔌 _isConnecting: $_isConnecting, _isConnected: $_isConnected');
 
     if (_isConnecting) {
-      print('🔌 Already connecting, waiting for ready...');
+      AppLogger.debug('🔌 Already connecting, waiting for ready...');
       return ready;
     }
 
@@ -137,12 +140,12 @@ class ChatRoomWebSocketService {
       final token = await TokenStore.instance.getAccessToken();
 
       if (token == null) {
-        print('❌ No authentication token found');
+        AppLogger.warning('❌ No authentication token found');
         throw Exception('No authentication token found');
       }
 
       final wsUrl = 'wss://api.webtezsell.com/ws/chat/$roomId/?token=$token';
-      print('🔌 Connecting to WebSocket: $wsUrl');
+      AppLogger.debug('🔌 Connecting to WebSocket: $wsUrl');
       final uri = Uri.parse(wsUrl);
 
       _channel = WebSocketChannel.connect(uri);
@@ -152,12 +155,12 @@ class ChatRoomWebSocketService {
       _channel!.stream.listen(
         (data) {
           try {
-            print('📨 WebSocket received data: $data');
+            AppLogger.debug('📨 WebSocket received data: $data');
             final message = json.decode(data);
 
             // Mark as connected when we get connection_established
             if (message['type'] == 'connection_established') {
-              print('✅ Connection established message received!');
+              AppLogger.debug('✅ Connection established message received!');
               _isConnected = true;
               _isConnecting = false;
               ConnectionStateController.instance.setSocketState(true);
@@ -170,11 +173,11 @@ class ChatRoomWebSocketService {
               _messageController.add(message);
             }
           } catch (e) {
-            print('❌ Error parsing WebSocket data: $e');
+            AppLogger.warning('❌ Error parsing WebSocket data: $e');
           }
         },
         onError: (error) {
-          print('❌ WebSocket error: $error');
+          AppLogger.warning('❌ WebSocket error: $error');
           _isConnected = false;
           _isConnecting = false;
           ConnectionStateController.instance.setSocketState(false);
@@ -184,7 +187,7 @@ class ChatRoomWebSocketService {
           _attemptReconnect(roomId);
         },
         onDone: () {
-          print('🔌 WebSocket stream done (closed)');
+          AppLogger.debug('🔌 WebSocket stream done (closed)');
           _isConnected = false;
           _isConnecting = false;
           ConnectionStateController.instance.setSocketState(false);
@@ -199,21 +202,21 @@ class ChatRoomWebSocketService {
       );
 
       // Wait for connection or timeout
-      print('🔌 Waiting for connection_established or timeout...');
+      AppLogger.debug('🔌 Waiting for connection_established or timeout...');
       await ready.timeout(
         const Duration(seconds: 5),
         onTimeout: () {
-          print('⏱️ Connection timeout - setting _isConnected = true anyway');
+          AppLogger.debug('⏱️ Connection timeout - setting _isConnected = true anyway');
           _isConnected = true;
           _isConnecting = false;
           ConnectionStateController.instance.setSocketState(true);
         },
       );
 
-      print('🔌 Connection complete. _isConnected: $_isConnected');
+      AppLogger.debug('🔌 Connection complete. _isConnected: $_isConnected');
 
     } catch (e) {
-      print('❌ Connection error: $e');
+      AppLogger.warning('❌ Connection error: $e');
       _isConnected = false;
       _isConnecting = false;
       ConnectionStateController.instance.setSocketState(false);
@@ -246,11 +249,11 @@ class ChatRoomWebSocketService {
   /// broadcast so the sender can match its optimistic bubble to the
   /// persisted message without creating a duplicate.
   void sendChatMessage(String content, {String? localId}) {
-    print('📤 sendChatMessage called with: "$content", localId: $localId');
-    print('📤 _isConnected: $_isConnected, _channel: ${_channel != null ? "exists" : "null"}');
+    AppLogger.debug('📤 sendChatMessage called with: "$content", localId: $localId');
+    AppLogger.debug('📤 _isConnected: $_isConnected, _channel: ${_channel != null ? "exists" : "null"}');
 
     if (!_isConnected || _channel == null) {
-      print('❌ Cannot send message: not connected or channel is null');
+      AppLogger.warning('❌ Cannot send message: not connected or channel is null');
       return;
     }
 
@@ -265,13 +268,13 @@ class ChatRoomWebSocketService {
         if (localId != null) 'local_id': localId,
       });
 
-      print('📤 Sending WebSocket message: $message');
+      AppLogger.debug('📤 Sending WebSocket message: $message');
       // 🔥 Ensure UTF-8 encoding when sending
       _channel!.sink.add(message);
-      print('✅ Message sent to WebSocket');
+      AppLogger.debug('✅ Message sent to WebSocket');
 
     } catch (e) {
-      print('❌ Error sending message: $e');
+      AppLogger.warning('❌ Error sending message: $e');
       _isConnected = false;
       ConnectionStateController.instance.setSocketState(false);
     }
@@ -292,7 +295,7 @@ class ChatRoomWebSocketService {
       });
       _channel!.sink.add(message);
     } catch (e) {
-      print('❌ Error sending typing status: $e');
+      AppLogger.warning('❌ Error sending typing status: $e');
     }
   }
 
@@ -308,16 +311,16 @@ class ChatRoomWebSocketService {
         'type': 'mark_read',
       });
       _channel!.sink.add(message);
-      print('✅ Read receipt sent (mark_read)');
+      AppLogger.debug('✅ Read receipt sent (mark_read)');
     } catch (e) {
-      print('❌ Error sending read receipt: $e');
+      AppLogger.warning('❌ Error sending read receipt: $e');
     }
   }
 
   /// 🔥 NEW: Mark specific message as read
   void markMessageAsRead(int messageId) {
     if (!_isConnected || _channel == null) {
-      print('❌ Cannot mark message as read: not connected');
+      AppLogger.warning('❌ Cannot mark message as read: not connected');
       return;
     }
 
@@ -327,9 +330,9 @@ class ChatRoomWebSocketService {
         'message_id': messageId,
       });
       _channel!.sink.add(message);
-      print('✅ Marked message $messageId as read');
+      AppLogger.debug('✅ Marked message $messageId as read');
     } catch (e) {
-      print('❌ Error marking message as read: $e');
+      AppLogger.warning('❌ Error marking message as read: $e');
     }
   }
 
@@ -345,7 +348,8 @@ class ChatRoomWebSocketService {
       await _channel?.sink.close();
       _channel = null;
     } catch (e) {
-
+      // Non-fatal: the caller continues without this value.
+      AppLogger.debug('[websocket_service] ignored: $e');
     }
   }
 

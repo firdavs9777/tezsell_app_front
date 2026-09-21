@@ -7,6 +7,7 @@ import 'package:app/providers/provider_models/country_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -41,16 +42,16 @@ class _RegisterState extends State<Register> {
 
   void _initializeCountries() {
     developer.log('[Register] Initializing countries list', name: 'Register');
-    print('[Register] Initializing countries list');
+    AppLogger.debug('[Register] Initializing countries list');
     countries = CountryModel.supportedCountries;
     developer.log('[Register] Loaded ${countries.length} countries', name: 'Register');
-    print('[Register] Loaded ${countries.length} countries');
+    AppLogger.debug('[Register] Loaded ${countries.length} countries');
   }
 
   Future<void> fetchRegions(String countryCode) async {
     if (!mounted) return;
 
-    print('[Register] Fetching regions for country: $countryCode');
+    AppLogger.debug('[Register] Fetching regions for country: $countryCode');
     developer.log('[Register] Fetching regions for country: $countryCode', name: 'Register');
 
     setState(() {
@@ -64,7 +65,7 @@ class _RegisterState extends State<Register> {
 
     // Try with country filter first, then fallback to without filter
     String url = '$baseUrl/accounts/regions/?country=$countryCode';
-    print('[Register] API URL: $url');
+    AppLogger.debug('[Register] API URL: $url');
     developer.log('[Register] API URL: $url', name: 'Register');
 
     try {
@@ -82,8 +83,8 @@ class _RegisterState extends State<Register> {
         },
       );
 
-      print('[Register] Response status: ${response.statusCode}');
-      print('[Register] Response body: ${response.body}');
+      AppLogger.debug('[Register] Response status: ${response.statusCode}');
+      AppLogger.debug('[Register] Response body: ${response.body}');
       developer.log('[Register] Response status: ${response.statusCode}', name: 'Register');
       developer.log('[Register] Response body: ${response.body}', name: 'Register');
 
@@ -126,12 +127,12 @@ class _RegisterState extends State<Register> {
           isLoadingRegions = false;
         });
 
-        print('[Register] Region IDs: $cityId');
+        AppLogger.debug('[Register] Region IDs: $cityId');
 
-        print('[Register] Loaded ${cities.length} regions: $cities');
+        AppLogger.debug('[Register] Loaded ${cities.length} regions: $cities');
         developer.log('[Register] Loaded ${cities.length} regions', name: 'Register');
       } else {
-        print('[Register] Error response: ${response.body}');
+        AppLogger.warning('[Register] Error response: ${response.body}');
         developer.log('[Register] Error response: ${response.body}', name: 'Register');
         setState(() {
           isLoadingRegions = false;
@@ -139,7 +140,7 @@ class _RegisterState extends State<Register> {
         });
       }
     } catch (error) {
-      print('[Register] Error fetching regions: $error');
+      AppLogger.warning('[Register] Error fetching regions: $error');
       developer.log('[Register] Error fetching regions: $error', name: 'Register');
 
       if (!mounted) return;
@@ -152,7 +153,7 @@ class _RegisterState extends State<Register> {
   }
 
   void _showCountryPicker() {
-    print('[Register] Opening country picker with ${countries.length} countries');
+    AppLogger.debug('[Register] Opening country picker with ${countries.length} countries');
     developer.log('[Register] Opening country picker', name: 'Register');
     final locale = Localizations.localeOf(context).languageCode;
     final colorScheme = Theme.of(context).colorScheme;
@@ -219,7 +220,7 @@ class _RegisterState extends State<Register> {
                           ? Icon(Icons.check_circle, color: colorScheme.primary)
                           : null,
                       onTap: () {
-                        print('[Register] Selected country: ${country.code} - ${country.name}');
+                        AppLogger.debug('[Register] Selected country: ${country.code} - ${country.name}');
                         developer.log('[Register] Selected country: ${country.code} - ${country.name}', name: 'Register');
                         Navigator.pop(context);
                         setState(() {

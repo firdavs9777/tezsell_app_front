@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 // Avatar color palette — consistent per-user color from name hash
 const _avatarColors = [
@@ -116,7 +117,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
         // If the chat list is becoming active again and there's a stale room
         // error (from a failed room WebSocket), reload rooms so it's cleared.
         if (ref.read(chatProvider).error != null) {
-          print('🔵 [ChatList] didChangeDependencies — stale error found, reloading rooms');
+          AppLogger.warning('🔵 [ChatList] didChangeDependencies — stale error found, reloading rooms');
           notifier.loadChatRooms();
         }
       });
@@ -252,7 +253,7 @@ class _MessagesListState extends ConsumerState<MessagesList>
           ? const ChatListShimmer()
           : chatState.error != null
               ? Builder(builder: (ctx) {
-                  print('🔴 [ChatList] showing error state: "${chatState.error}"');
+                  AppLogger.warning('🔴 [ChatList] showing error state: "${chatState.error}"');
                   return _buildErrorState(ctx, chatState.error!);
                 })
               : Column(

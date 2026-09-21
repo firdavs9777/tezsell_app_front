@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Social Authentication Service for Google and Apple Sign-In
 class SocialAuthService {
@@ -48,14 +49,14 @@ class SocialAuthService {
       }
     }
     if (kDebugMode) {
-      print('🔐 Auth data saved to SharedPreferences');
-      print('   token: ${tokens.access.substring(0, 10)}...');
+      AppLogger.debug('🔐 Auth data saved to SharedPreferences');
+      AppLogger.debug('   token: ${tokens.access.substring(0, 10)}...');
       if (userInfo != null) {
-        print('   userId: ${userInfo.id}');
-        print('   username: ${userInfo.username}');
+        AppLogger.debug('   userId: ${userInfo.id}');
+        AppLogger.debug('   username: ${userInfo.username}');
       }
       if (photoUrl != null) {
-        print('   photoUrl: $photoUrl');
+        AppLogger.debug('   photoUrl: $photoUrl');
       }
     }
   }
@@ -92,15 +93,15 @@ class SocialAuthService {
         }
 
         if (kDebugMode) {
-          print('🔐 User info fetched and saved');
-          print('   userId: ${userData['id']}');
-          print('   username: ${userData['username']}');
-          print('   avatar: ${userData['avatar']}');
+          AppLogger.debug('🔐 User info fetched and saved');
+          AppLogger.debug('   userId: ${userData['id']}');
+          AppLogger.debug('   username: ${userData['username']}');
+          AppLogger.debug('   avatar: ${userData['avatar']}');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('⚠️ Failed to fetch user info: $e');
+        AppLogger.warning('⚠️ Failed to fetch user info: $e');
       }
     }
   }
@@ -112,7 +113,7 @@ class SocialAuthService {
     try {
       const url = '$baseUrl/accounts/auth/google/';
       if (kDebugMode) {
-        print('🔐 Google login API call to: $url');
+        AppLogger.debug('🔐 Google login API call to: $url');
       }
 
       final body = <String, dynamic>{'id_token': idToken};
@@ -125,8 +126,8 @@ class SocialAuthService {
       );
 
       if (kDebugMode) {
-        print('🔐 Google login response status: ${response.statusCode}');
-        print('🔐 Google login response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}');
+        AppLogger.debug('🔐 Google login response status: ${response.statusCode}');
+        AppLogger.debug('🔐 Google login response body: ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}');
       }
 
       final data = jsonDecode(response.body);
@@ -158,7 +159,7 @@ class SocialAuthService {
         data['error'] ?? 'Google login failed',
       );
     } catch (e) {
-      print('Error with Google login: $e');
+      AppLogger.warning('Error with Google login: $e');
       return SocialAuthResponse.error('Network error: $e');
     }
   }
@@ -204,7 +205,7 @@ class SocialAuthService {
         data['error'] ?? 'Apple login failed',
       );
     } catch (e) {
-      print('Error with Apple login: $e');
+      AppLogger.warning('Error with Apple login: $e');
       return SocialAuthResponse.error('Network error: $e');
     }
   }
@@ -230,7 +231,7 @@ class SocialAuthService {
       }
       return [];
     } catch (e) {
-      print('Error getting linked accounts: $e');
+      AppLogger.warning('Error getting linked accounts: $e');
       return [];
     }
   }
@@ -258,7 +259,7 @@ class SocialAuthService {
         'error': data['error'] ?? 'Failed to unlink account',
       };
     } catch (e) {
-      print('Error unlinking account: $e');
+      AppLogger.warning('Error unlinking account: $e');
       return {
         'success': false,
         'error': 'Network error: $e',
@@ -290,7 +291,7 @@ class SocialAuthService {
         'error': data['error'] ?? 'Failed to link Google account',
       };
     } catch (e) {
-      print('Error linking Google account: $e');
+      AppLogger.warning('Error linking Google account: $e');
       return {
         'success': false,
         'error': 'Network error: $e',
@@ -330,7 +331,7 @@ class SocialAuthService {
         'error': data['error'] ?? 'Failed to link Apple account',
       };
     } catch (e) {
-      print('Error linking Apple account: $e');
+      AppLogger.warning('Error linking Apple account: $e');
       return {
         'success': false,
         'error': 'Network error: $e',
@@ -359,7 +360,7 @@ class SocialAuthService {
       }
       return [];
     } catch (e) {
-      print('Error getting login history: $e');
+      AppLogger.warning('Error getting login history: $e');
       return [];
     }
   }

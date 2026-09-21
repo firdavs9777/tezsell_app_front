@@ -7,6 +7,7 @@ import '../../service/notification_websocket_service.dart';
 import '../../service/authentication_service.dart';
 import '../../service/notification_service.dart';
 import '../../service/push_notification_service.dart';
+import 'package:app/utils/app_logger.dart';
 
 // Notification State
 class NotificationState {
@@ -56,7 +57,7 @@ class NotificationState {
     );
     // Debug: Log state changes
     if (unreadCount != null && unreadCount != this.unreadCount) {
-      print('📊 State changed: unreadCount ${this.unreadCount} -> $unreadCount');
+      AppLogger.debug('📊 State changed: unreadCount ${this.unreadCount} -> $unreadCount');
     }
     return newState;
   }
@@ -135,7 +136,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           // Check if notification already exists (avoid duplicates)
           final exists = state.notifications.any((n) => n.id == notification.id);
           if (!exists) {
-            print('✅ [$_notificationType] Adding notification ID ${notification.id}, unread: ${!notification.isRead}');
+            AppLogger.debug('✅ [$_notificationType] Adding notification ID ${notification.id}, unread: ${!notification.isRead}');
             final newUnreadCount = notification.isRead
                 ? state.unreadCount
                 : state.unreadCount + 1;
@@ -145,7 +146,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
               unreadCount: newUnreadCount,
             );
 
-            print('✅ [$_notificationType] State updated: unreadCount=${state.unreadCount}, total=${state.notifications.length}');
+            AppLogger.debug('✅ [$_notificationType] State updated: unreadCount=${state.unreadCount}, total=${state.notifications.length}');
 
             // Update OS badge count for unread notifications (only for global provider)
             if (_isGlobal && !notification.isRead) {
@@ -157,13 +158,13 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
               _showLocalNotification(notification);
             }
           } else {
-            print('⚠️ [$_notificationType] Notification ID ${notification.id} already exists, skipping');
+            AppLogger.warning('⚠️ [$_notificationType] Notification ID ${notification.id} already exists, skipping');
           }
         }
         // Silently ignore notifications that don't match this provider's type
       },
       onError: (error) {
-        print('❌ WebSocket stream error in provider [$_notificationType]: $error');
+        AppLogger.warning('❌ WebSocket stream error in provider [$_notificationType]: $error');
       },
     );
   }
@@ -188,9 +189,9 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
         payload: payload,
       );
       
-      print('✅ Local notification shown for chat message: ${notification.body}');
+      AppLogger.debug('✅ Local notification shown for chat message: ${notification.body}');
     } catch (e) {
-      print('❌ Error showing local notification: $e');
+      AppLogger.warning('❌ Error showing local notification: $e');
     }
   }
 
@@ -268,7 +269,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       }
     } catch (e) {
       // Silently fail - don't update state on error
-      print('⚠️ Error fetching unread count: $e');
+      AppLogger.warning('⚠️ Error fetching unread count: $e');
     }
   }
 
@@ -355,7 +356,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       await _webSocketService.connect();
     } catch (e) {
       // WebSocket is optional - REST API will still work for notifications
-      print('⚠️ WebSocket connection failed (optional): $e');
+      AppLogger.warning('⚠️ WebSocket connection failed (optional): $e');
     }
   }
 

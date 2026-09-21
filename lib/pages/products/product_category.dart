@@ -249,7 +249,7 @@ class _ProductFilterState extends ConsumerState<ProductFilter> {
                         itemCount: filteredCategories.length,
                         itemBuilder: (context, index) {
                           final category = filteredCategories[index];
-                          IconData? iconData = iconMap[category.icon];
+                          final IconData? iconData = iconMap[category.icon];
 
                           return Material(
                             color: Colors.transparent,

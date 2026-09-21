@@ -5,6 +5,7 @@ import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/offer_model.dart';
 import 'package:app/service/session_manager.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Service for handling offer/negotiation operations
 class OffersService {
@@ -35,7 +36,7 @@ class OffersService {
     });
 
     if (kDebugMode) {
-      print('Create Offer Response: ${response.statusCode}');
+      AppLogger.debug('Create Offer Response: ${response.statusCode}');
     }
 
     if (response.statusCode == 200 || response.statusCode == 201) {

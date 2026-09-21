@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:app/service/endpoints.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:app/utils/app_logger.dart';
 
 class ChatWebSocketService {
   WebSocketChannel? _channel;
@@ -41,6 +42,8 @@ class ChatWebSocketService {
             final decoded = json.decode(data) as Map<String, dynamic>;
             _messageController!.add(decoded);
           } catch (e) {
+            // Non-fatal: the caller continues without this value.
+            AppLogger.debug('[message_provider] ignored: $e');
           }
         },
         onError: (error) {
@@ -72,6 +75,8 @@ class ChatWebSocketService {
         final jsonMessage = json.encode(message);
         _channel!.sink.add(jsonMessage);
       } catch (e) {
+        // Non-fatal: the caller continues without this value.
+        AppLogger.debug('[message_provider] ignored: $e');
       }
     } else {
     }

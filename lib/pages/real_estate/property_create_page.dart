@@ -57,7 +57,7 @@ class _PropertyCreatePageState extends ConsumerState<PropertyCreatePage> {
   // Location selection
   String? _selectedRegion;
   Districts? _selectedDistrict;
-  bool _isGeocoding = false;
+  final bool _isGeocoding = false;
  // Cache for UserLocations with coordinates
 
   // Features

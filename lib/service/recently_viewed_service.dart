@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/recently_viewed_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Recently Viewed API Service
 class RecentlyViewedService {
@@ -46,7 +47,7 @@ class RecentlyViewedService {
       }
       return [];
     } catch (e) {
-      print('Error getting recently viewed: $e');
+      AppLogger.warning('Error getting recently viewed: $e');
       return [];
     }
   }
@@ -69,7 +70,7 @@ class RecentlyViewedService {
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {
-      print('Error recording view: $e');
+      AppLogger.warning('Error recording view: $e');
       return false;
     }
   }
@@ -85,7 +86,7 @@ class RecentlyViewedService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Error clearing history: $e');
+      AppLogger.warning('Error clearing history: $e');
       return false;
     }
   }

@@ -9,6 +9,7 @@ import 'service/push_notification_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:app/config/app_config.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:app/utils/app_logger.dart';
 // import 'service/notification_service.dart'; // Remove if redundant
 
 // Global navigator key for handling notification navigation
@@ -18,11 +19,11 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print('🔔 📱 BACKGROUND message received!');
-  print('   Title: ${message.notification?.title}');
-  print('   Body: ${message.notification?.body}');
-  print('   Data: ${message.data}');
-  print('   Message ID: ${message.messageId}');
+  AppLogger.debug('🔔 📱 BACKGROUND message received!');
+  AppLogger.debug('   Title: ${message.notification?.title}');
+  AppLogger.debug('   Body: ${message.notification?.body}');
+  AppLogger.debug('   Data: ${message.data}');
+  AppLogger.debug('   Message ID: ${message.messageId}');
 }
 
 void main() async {
@@ -49,7 +50,7 @@ void main() async {
 }
 
 Future<void> _bootstrap() async {
-  print('🚀 Starting app initialization...');
+  AppLogger.debug('🚀 Starting app initialization...');
 
   // Load locale-specific date symbols so DateFormat(pattern, locale) can
   // render month/weekday names in ru/uz rather than throwing
@@ -60,9 +61,9 @@ Future<void> _bootstrap() async {
   // (splash screen, router redirect, etc. all read via TokenStore).
   try {
     await TokenStore.instance.init();
-    print('✅ Token store initialized');
+    AppLogger.debug('✅ Token store initialized');
   } catch (e) {
-    print('❌ Token store init error: $e');
+    AppLogger.warning('❌ Token store init error: $e');
   }
 
   try {
@@ -70,21 +71,21 @@ Future<void> _bootstrap() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized');
+    AppLogger.debug('✅ Firebase initialized');
 
     // Set background message handler
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    print('✅ Background handler set');
+    AppLogger.debug('✅ Background handler set');
 
     // Initialize push notifications
     final pushNotificationService = PushNotificationService();
     await pushNotificationService.initialize();
-    print('✅ Push notifications initialized');
+    AppLogger.debug('✅ Push notifications initialized');
 
     // Set up notification tap handler
     pushNotificationService.onNotificationTap = (RemoteMessage message) {
-      print('🔔 Notification tapped!');
-      print('   Data: ${message.data}');
+      AppLogger.debug('🔔 Notification tapped!');
+      AppLogger.debug('   Data: ${message.data}');
 
       // Handle navigation based on notification data
       _handleNotificationNavigation(message.data);
@@ -96,7 +97,7 @@ Future<void> _bootstrap() async {
       ),
     );
   } catch (e) {
-    print('❌ Initialization error: $e');
+    AppLogger.warning('❌ Initialization error: $e');
     // Still run app even if notifications fail
     runApp(const ProviderScope(child: MyApp()));
   }
@@ -106,17 +107,17 @@ Future<void> _bootstrap() async {
 void _handleNotificationNavigation(Map<String, dynamic> data) {
   final context = navigatorKey.currentContext;
   if (context == null) {
-    print('⚠️ Navigator context is null');
+    AppLogger.warning('⚠️ Navigator context is null');
     return;
   }
 
   final type = data['type'] as String?;
   final id = data['id'] as String?;
 
-  print('🔔 Navigating to: type=$type, id=$id');
+  AppLogger.debug('🔔 Navigating to: type=$type, id=$id');
 
   if (type == null || id == null) {
-    print('⚠️ Invalid notification data');
+    AppLogger.warning('⚠️ Invalid notification data');
     return;
   }
 

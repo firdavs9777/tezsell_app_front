@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Neighborhood JSON', () {
     test('round-trips', () {
-      final n = Neighborhood(
+      const n = Neighborhood(
         id: 'UZ:12345',
         name: 'Yunusabad',
         displayName: 'Yunusabad, Tashkent, Uzbekistan',
@@ -22,7 +22,7 @@ void main() {
   });
 
   group('VerifiedNeighborhood', () {
-    final nbhd = Neighborhood(
+    const nbhd = Neighborhood(
       id: 'UZ:1',
       name: 'X',
       displayName: 'X',

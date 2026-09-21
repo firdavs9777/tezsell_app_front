@@ -214,7 +214,7 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
 
   void _startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeLeft > 0) {
         setState(() {
           _timeLeft--;
@@ -229,8 +229,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
   }
 
   String get formattedTime {
-    int minutes = _timeLeft ~/ 60;
-    int seconds = _timeLeft % 60;
+    final int minutes = _timeLeft ~/ 60;
+    final int seconds = _timeLeft % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
@@ -542,10 +542,10 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                           ),
                         ),
                         child: isVerifyingCode
-                            ? Row(
+                            ? const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(
+                                  SizedBox(
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
@@ -554,8 +554,8 @@ class _MobileAuthenticationState extends State<MobileAuthentication> {
                                           Colors.white),
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
-                                  const Text(
+                                  SizedBox(width: 12),
+                                  Text(
                                     'Verifying...',
                                     style: TextStyle(
                                       fontSize: 16,

@@ -20,7 +20,7 @@ import '../pages/service/details/service_detail.dart';
 import '../pages/service/new/service_new.dart';
 import '../pages/service/main/service_search.dart';
 import '../pages/service/main/main_service.dart';
-import '../pages/service/main/service-filter.dart';
+import '../pages/service/main/service_filter.dart';
 import '../pages/service/main/filtered_services.dart';
 import '../pages/real_estate/real_estate_detail.dart';
 import '../pages/real_estate/real_estate_main.dart';
@@ -60,6 +60,7 @@ import '../providers/provider_models/product_model.dart';
 import '../providers/provider_models/service_model.dart';
 import '../constants/constants.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 // Router provider
 final routerProvider = Provider<GoRouter>((ref) {
@@ -336,12 +337,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/favorites/products',
         name: 'favorite-products',
-        builder: (context, state) => _FavoriteProductsWrapper(),
+        builder: (context, state) => const _FavoriteProductsWrapper(),
       ),
       GoRoute(
         path: '/profile/favorites/services',
         name: 'favorite-services',
-        builder: (context, state) => _FavoriteServicesWrapper(),
+        builder: (context, state) => const _FavoriteServicesWrapper(),
       ),
       GoRoute(
         path: '/profile/my-products',
@@ -700,7 +701,7 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
 
   Future<void> _loadChatRoom() async {
     try {
-      print('🔔 [ChatRoomWrapper] Loading chat with ID: ${widget.chatId}');
+      AppLogger.debug('🔔 [ChatRoomWrapper] Loading chat with ID: ${widget.chatId}');
 
       final chatIdInt = int.tryParse(widget.chatId);
       if (chatIdInt == null) {
@@ -714,7 +715,7 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
       // Wait for chat rooms to load if needed
       var chatState = ref.read(chatProvider);
       if (chatState.chatRooms.isEmpty && chatState.isAuthenticated) {
-        print('🔔 [ChatRoomWrapper] Chat rooms empty, loading...');
+        AppLogger.debug('🔔 [ChatRoomWrapper] Chat rooms empty, loading...');
         await chatNotifier.loadChatRooms();
         chatState = ref.read(chatProvider);
       }
@@ -723,9 +724,9 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
       ChatRoom? room;
       try {
         room = chatState.chatRooms.firstWhere((r) => r.id == chatIdInt);
-        print('✅ [ChatRoomWrapper] Found chat room in local state: ${room.name}');
+        AppLogger.debug('✅ [ChatRoomWrapper] Found chat room in local state: ${room.name}');
       } catch (e) {
-        print('⚠️ [ChatRoomWrapper] Chat not found locally, fetching from API...');
+        AppLogger.warning('⚠️ [ChatRoomWrapper] Chat not found locally, fetching from API...');
         // Chat not found locally - this can happen when opening from notification
         // Try to get or create the chat room via API
         // For now, create a minimal room that will be populated when entering
@@ -744,7 +745,7 @@ class _ChatRoomWrapperState extends ConsumerState<_ChatRoomWrapper> {
         });
       }
     } catch (e) {
-      print('❌ [ChatRoomWrapper] Error loading chat: $e');
+      AppLogger.warning('❌ [ChatRoomWrapper] Error loading chat: $e');
       if (mounted) {
         setState(() {
           _error = e.toString();

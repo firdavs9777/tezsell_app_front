@@ -62,7 +62,7 @@ void main() {
 
   group('Place backend JSON round-trip', () {
     test('serializes only non-null fields', () {
-      final p = Place(
+      const p = Place(
         placeId: 'p1',
         formattedAddress: '123 Main St',
         lat: 1.0,
@@ -77,7 +77,7 @@ void main() {
     });
 
     test('round-trips through fromJson', () {
-      final p = Place(
+      const p = Place(
         placeId: 'p1',
         formattedAddress: 'addr',
         lat: 1.5,

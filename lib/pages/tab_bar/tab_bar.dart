@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/utils/app_logger.dart';
 
 // Provider to get local location as fallback (includes districtId)
 final localLocationProvider = FutureProvider<Map<String, dynamic>>((ref) async {
@@ -57,10 +58,10 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
       ref.read(realEstateNotificationProvider);
       ref.read(commentNotificationProvider);
       ref.read(communityNotificationProvider);
-      print('✅ All notification providers initialized');
+      AppLogger.debug('✅ All notification providers initialized');
 
       ref.read(chatProvider.notifier).initialize();
-      print('✅ Chat provider initialized - socket will connect automatically');
+      AppLogger.debug('✅ Chat provider initialized - socket will connect automatically');
 
       final notificationWebSocketService = ref.read(
         notificationWebSocketServiceProvider,
@@ -68,7 +69,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
       PushNotificationService().setNotificationWebSocketService(
         notificationWebSocketService,
       );
-      print(
+      AppLogger.debug(
         '✅ Push notification service connected to notification WebSocket service',
       );
     });
@@ -78,7 +79,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
   void didUpdateWidget(TabsScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialIndex != widget.initialIndex) {
-      print(
+      AppLogger.debug(
         '📱 TabsScreen: initialIndex changed from ${oldWidget.initialIndex} to ${widget.initialIndex}',
       );
       setState(() {
@@ -121,7 +122,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
       if (countryCode != null && countryCode.isNotEmpty) {
         await prefs.setString('localCountryCode', countryCode);
       }
-      print(
+      AppLogger.debug(
         '📍 [TabBar] Synced local storage with backend: districtId=$districtId',
       );
       ref.invalidate(localLocationProvider);
@@ -167,7 +168,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               // products/services list pages prefer activeNeighborhood path
               // when this is the case.
               districtId = null;
-              print(
+              AppLogger.debug(
                 '📍 [TabBar] Using ACTIVE PICK: ${activeNbhd.neighborhood.displayName}',
               );
             } else if (localDistrictId != null &&
@@ -179,16 +180,16 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               if (snapshot.hasData) {
                 final loc = snapshot.data!.location;
                 if (loc.id != localDistrictId) {
-                  print(
+                  AppLogger.debug(
                     '📍 [TabBar] Using LOCAL (newer): districtId=$localDistrictId (backend cache has stale id=${loc.id})',
                   );
                 } else {
-                  print(
+                  AppLogger.debug(
                     '📍 [TabBar] Location: id=$districtId, region=$regionName, district=$districtName',
                   );
                 }
               } else {
-                print(
+                AppLogger.debug(
                   '📍 [TabBar] Using LOCAL: districtId=$localDistrictId, region=$localRegion, district=$localDistrict',
                 );
               }
@@ -197,12 +198,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               regionName = loc.region;
               districtName = loc.district;
               districtId = loc.id;
-              print(
+              AppLogger.debug(
                 '📍 [TabBar] Using BACKEND: id=${loc.id}, region=${loc.region}, district=${loc.district}',
               );
               _syncLocalLocation(loc.id, loc.region, loc.district, loc.countryCode);
             } else {
-              print('📍 [TabBar] Waiting for location data...');
+              AppLogger.debug('📍 [TabBar] Waiting for location data...');
             }
 
             final pageInfo = _getPageInfo(
@@ -276,7 +277,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               HapticFeedback.lightImpact();
               _navigateToSearch(regionName, districtName);
             },
-            icon: Icon(Icons.search_rounded, size: 24),
+            icon: const Icon(Icons.search_rounded, size: 24),
           ),
         if (_shouldShowNotification())
           Consumer(
@@ -284,7 +285,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen>
               final provider = _getNotificationProvider();
               if (provider == null) return const SizedBox.shrink();
               final state = ref.watch(provider);
-              print(
+              AppLogger.debug(
                 '🔔 AppBar Consumer: watching provider, unreadCount=${state.unreadCount}',
               );
               return NotificationBell(

@@ -8,6 +8,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
+import 'package:app/utils/app_logger.dart';
 
 class UserListScreen extends ConsumerStatefulWidget {
   const UserListScreen({super.key});
@@ -176,7 +177,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     final startingChatText = localizations?.starting_chat ?? 'Starting chat...';
 
     try {
-      print('🔍 [UserList] Starting chat with userId: $userId');
+      AppLogger.debug('🔍 [UserList] Starting chat with userId: $userId');
 
       showDialog(
         context: context,
@@ -204,13 +205,13 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ),
       );
 
-      print('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat...');
+      AppLogger.debug('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat...');
 
       // Use new start chat endpoint (it's integrated in getOrCreateDirectChat)
       // This will check for existing chat and only create if needed
       final chatRoom = await ref.read(chatProvider.notifier).getOrCreateDirectChat(userId);
 
-      print('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
+      AppLogger.debug('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
 
       if (mounted) Navigator.of(context).pop();
 
@@ -260,7 +261,7 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
     final startingChatText = localizations?.starting_chat ?? 'Starting chat...';
 
     try {
-      print('🔍 [UserList] _startChatWithUser called for user: ${user.id} (${user.username})');
+      AppLogger.debug('🔍 [UserList] _startChatWithUser called for user: ${user.id} (${user.username})');
 
       showDialog(
         context: context,
@@ -288,12 +289,12 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
         ),
       );
 
-      print('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat for user.id: ${user.id}');
+      AppLogger.debug('🔍 [UserList] Dialog shown, calling getOrCreateDirectChat for user.id: ${user.id}');
 
       final chatRoom =
           await ref.read(chatProvider.notifier).getOrCreateDirectChat(user.id);
 
-      print('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
+      AppLogger.debug('🔍 [UserList] getOrCreateDirectChat returned: ${chatRoom?.id}');
 
       if (mounted) Navigator.of(context).pop();
 

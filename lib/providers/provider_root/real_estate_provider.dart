@@ -116,7 +116,7 @@ class RealEstateService {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
+      AppLogger.debug(response.body);
       final data = json.decode(response.body);
       return (data['results'] as List)
           .map((propertyJson) => RealEstate.fromJson(propertyJson))
@@ -141,7 +141,7 @@ class RealEstateService {
     double? centerLng,
     double? radiusKm,
     String? ordering,
-    String search = "",
+    String search = '',
   }) async {
     try {
       final queryParams = <String, String>{
@@ -170,24 +170,24 @@ class RealEstateService {
         queryParams['center_lng'] = centerLng.toStringAsFixed(6);
         queryParams['radius_km'] = effectiveRadius.toStringAsFixed(0);
         if (kDebugMode) {
-          print('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${effectiveRadius}km');
+          AppLogger.debug('🏠 [RealEstateAPI] Geo-radius: ($centerLat, $centerLng) r=${effectiveRadius}km');
         }
       } else {
         if (neighborhoodId != null) {
           queryParams['neighborhood_id'] = neighborhoodId;
           if (kDebugMode) {
-            print('🏠 [RealEstateAPI] Neighbourhood filter: $neighborhoodId (city-wide)');
+            AppLogger.debug('🏠 [RealEstateAPI] Neighbourhood filter: $neighborhoodId (city-wide)');
           }
         } else if (districtId != null && districtId > 0) {
           queryParams['district_id'] = districtId.toString();
           if (kDebugMode) {
-            print('🏠 [RealEstateAPI] Filtering by district_id: $districtId');
+            AppLogger.debug('🏠 [RealEstateAPI] Filtering by district_id: $districtId');
           }
         } else if (regionName.isNotEmpty || districtName.isNotEmpty) {
           if (regionName.isNotEmpty) queryParams['city'] = regionName;
           if (districtName.isNotEmpty) queryParams['district'] = districtName;
           if (kDebugMode) {
-            print('🏠 [RealEstateAPI] Filtering by names: region=$regionName, district=$districtName');
+            AppLogger.debug('🏠 [RealEstateAPI] Filtering by names: region=$regionName, district=$districtName');
           }
         }
       }
@@ -196,11 +196,11 @@ class RealEstateService {
       if (maxPrice.isNotEmpty) queryParams['max_price'] = maxPrice;
 
       final response = await dio.get(
-        '$REAL_ESTATE_PROPERTIES',
+        REAL_ESTATE_PROPERTIES,
         queryParameters: queryParams,
       );
-      print(response.data);
-      print(queryParams);
+      AppLogger.debug('${response.data}');
+      AppLogger.debug('$queryParams');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -267,19 +267,19 @@ class RealEstateService {
   Future<List<RealEstate>> getFilteredProperties({
     int currentPage = 1,
     int pageSize = 12,
-    String propertyType = "",
-    String listingType = "",
-    String regionName = "",
-    String districtName = "",
-    String minPrice = "",
-    String maxPrice = "",
+    String propertyType = '',
+    String listingType = '',
+    String regionName = '',
+    String districtName = '',
+    String minPrice = '',
+    String maxPrice = '',
     int? districtId,
     String? neighborhoodId,
     double? centerLat,
     double? centerLng,
     double? radiusKm,
     String? ordering,
-    String search = "",
+    String search = '',
   }) async {
     final cacheKey =
         'filtered_properties_${currentPage}_${pageSize}_${propertyType}_${listingType}_${regionName}_${districtName}_${districtId}_${neighborhoodId ?? ""}_${centerLat ?? ""}_${centerLng ?? ""}_${radiusKm ?? ""}_${ordering ?? ""}_${minPrice}_${maxPrice}_$search';
@@ -524,7 +524,7 @@ class RealEstateService {
 
     try {
       final response = await dio.post(
-        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -561,7 +561,7 @@ class RealEstateService {
 
     try {
       final response = await dio.delete(
-        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -595,7 +595,7 @@ class RealEstateService {
   }) async {
     try {
       final response = await dio.get(
-        '${REAL_ESTATE_PROPERTIES}${propertyId}/save/',
+        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -627,7 +627,7 @@ class RealEstateService {
   }) async {
     try {
       final response = await dio.post(
-        '${AppConfig.realEstateInquiriesPath}',
+        AppConfig.realEstateInquiriesPath,
         data: {
           'property': propertyId,
           'inquiry_type': inquiryType,

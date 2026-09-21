@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/utils/app_logger.dart';
 
 class ProductsList extends ConsumerStatefulWidget {
   final String regionName;
@@ -67,7 +68,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
   @override
   void initState() {
     super.initState();
-    print('📦 ProductsList: initState called, loading initial products...');
+    AppLogger.debug('📦 ProductsList: initState called, loading initial products...');
     _scrollController.addListener(_onScroll);
     _loadCategories();
     _loadInitialProducts();
@@ -216,17 +217,17 @@ class _ProductsListState extends ConsumerState<ProductsList> {
       final activeNbhd = ref.read(activeNeighborhoodProvider);
       final radius = ref.read(radiusProvider);
       final useNeighborhood = activeNbhd != null;
-      print('📦 [ProductsList] ═══════════════════════════════════════');
-      print('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
+      AppLogger.debug('📦 [ProductsList] ═══════════════════════════════════════');
+      AppLogger.debug('📦 [ProductsList] Loading products... (gen=$thisGeneration)');
       if (useNeighborhood) {
         final radiusLabel = radius.isFinite ? '${radius}km' : 'city-wide';
-        print('📦 [ProductsList]   GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=$radiusLabel');
+        AppLogger.debug('📦 [ProductsList]   GEO filter: ${activeNbhd.neighborhood.displayName} (${activeNbhd.neighborhood.centroidLat}, ${activeNbhd.neighborhood.centroidLng}) r=$radiusLabel');
       } else if (widget.districtId != null && widget.districtId! > 0) {
-        print('📦 [ProductsList]   DISTRICT filter: id=${widget.districtId}');
+        AppLogger.debug('📦 [ProductsList]   DISTRICT filter: id=${widget.districtId}');
       } else {
-        print('📦 [ProductsList]   NO filter — loading all products');
+        AppLogger.debug('📦 [ProductsList]   NO filter — loading all products');
       }
-      print('📦 [ProductsList] ═══════════════════════════════════════');
+      AppLogger.debug('📦 [ProductsList] ═══════════════════════════════════════');
       final rawProducts =
           await ref.read(productsServiceProvider).getFilteredProducts(
                 currentPage: 1,
@@ -249,7 +250,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
 
       // Ignore if a newer load was triggered while this was in-flight
       if (thisGeneration != _loadGeneration) {
-        print('📦 [ProductsList] Stale response ignored (gen=$thisGeneration, current=$_loadGeneration)');
+        AppLogger.debug('📦 [ProductsList] Stale response ignored (gen=$thisGeneration, current=$_loadGeneration)');
         return;
       }
 
@@ -262,7 +263,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
           ? rawProducts.where((p) => _matchesNeighbourhood(p, activeNbhd)).toList()
           : rawProducts;
 
-      print('📦 [ProductsList] After city-guard: ${products.length}/${rawProducts.length} products');
+      AppLogger.debug('📦 [ProductsList] After city-guard: ${products.length}/${rawProducts.length} products');
 
       if (mounted && !_isDisposed) {
         setState(() {
@@ -391,7 +392,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     // Listen for refresh trigger from product creation
     ref.listen<int>(productsRefreshProvider, (previous, next) {
       if (previous != null && previous != next) {
-        print('🔄 ProductsList: Refresh triggered! $previous -> $next, reloading products...');
+        AppLogger.debug('🔄 ProductsList: Refresh triggered! $previous -> $next, reloading products...');
         _loadInitialProducts();
       }
     });
@@ -812,7 +813,7 @@ class _ProductsListState extends ConsumerState<ProductsList> {
     if (_allProducts.isEmpty) {
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.6,
           child: Center(
             child: Padding(

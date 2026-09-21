@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/analytics_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Service for handling seller analytics operations
 class AnalyticsService {
@@ -32,7 +33,7 @@ class AnalyticsService {
     );
 
     if (kDebugMode) {
-      print('Analytics Response: ${response.statusCode}');
+      AppLogger.debug('Analytics Response: ${response.statusCode}');
     }
 
     if (response.statusCode == 200) {
@@ -85,12 +86,12 @@ class AnalyticsService {
       );
 
       if (kDebugMode) {
-        print('Record View Response: ${response.statusCode}');
+        AppLogger.debug('Record View Response: ${response.statusCode}');
       }
     } catch (e) {
       // Silently fail - view tracking shouldn't break the app
       if (kDebugMode) {
-        print('Failed to record view: $e');
+        AppLogger.warning('Failed to record view: $e');
       }
     }
   }

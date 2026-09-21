@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/utils/app_logger.dart';
 
 class WebSocketService {
   static const String wsUrl = 'wss://api.webtezsell.com';
@@ -92,6 +93,8 @@ class WebSocketService {
 
             _messageController!.add(decoded);
           } catch (e) {
+            // Non-fatal: the caller continues without this value.
+            AppLogger.debug('[web_socket_service] ignored: $e');
           }
         },
         onError: (error) {
@@ -126,6 +129,8 @@ class WebSocketService {
 
         _channel!.sink.add(jsonMessage);
       } catch (e) {
+        // Non-fatal: the caller continues without this value.
+        AppLogger.debug('[web_socket_service] ignored: $e');
       }
     } else {
     }

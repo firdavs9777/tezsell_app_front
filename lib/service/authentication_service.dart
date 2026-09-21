@@ -70,7 +70,7 @@ class AuthenticationService {
   }
 
   AuthenticationService(
-    StateNotifierProvider<authStateProvider, List<dynamic>> authStatesProvider,
+    StateNotifierProvider<AuthStateProvider, List<dynamic>> authStatesProvider,
   );
 
   Future<SharedPreferences> _getPrefs() async {
@@ -390,9 +390,9 @@ class AuthenticationService {
           .timeout(
             const Duration(seconds: 15), // Reduced timeout from 30s
             onTimeout: () {
-              throw TimeoutException(
+              throw const TimeoutException(
                 'Login request timed out after 15 seconds',
-                const Duration(seconds: 15),
+                Duration(seconds: 15),
               );
             },
           );
@@ -861,9 +861,9 @@ class AuthenticationService {
           .timeout(
             const Duration(seconds: 15),
             onTimeout: () {
-              throw TimeoutException(
+              throw const TimeoutException(
                 'Token refresh timed out',
-                const Duration(seconds: 15),
+                Duration(seconds: 15),
               );
             },
           );
@@ -948,9 +948,9 @@ class AuthenticationService {
           .timeout(
             const Duration(seconds: 10),
             onTimeout: () {
-              throw TimeoutException(
+              throw const TimeoutException(
                 'Token verification timed out',
-                const Duration(seconds: 10),
+                Duration(seconds: 10),
               );
             },
           );

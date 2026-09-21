@@ -220,7 +220,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
         focusNode: _focusNode,
         decoration: InputDecoration(
           hintText: AppLocalizations.of(context)?.searchServicePlaceholder ??
-              "Search services",
+              'Search services',
           hintStyle: TextStyle(
             color: colorScheme.onSurfaceVariant,
             fontSize: 15,
@@ -280,7 +280,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)?.service ?? "Search for services",
+              AppLocalizations.of(context)?.service ?? 'Search for services',
               style: TextStyle(
                 fontSize: 16,
                 color: colorScheme.onSurfaceVariant,
@@ -292,7 +292,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                AppLocalizations.of(context)?.search_services_subtitle ?? "Find professionals in your neighborhood",
+                AppLocalizations.of(context)?.search_services_subtitle ?? 'Find professionals in your neighborhood',
                 style: TextStyle(
                   fontSize: 14,
                   color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
@@ -321,7 +321,7 @@ class _ServiceSearchState extends ConsumerState<ServiceSearch> {
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context)?.no_services_found ?? "No services found",
+              AppLocalizations.of(context)?.no_services_found ?? 'No services found',
               style: TextStyle(
                 fontSize: 16,
                 color: colorScheme.onSurfaceVariant,

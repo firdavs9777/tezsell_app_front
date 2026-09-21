@@ -33,7 +33,7 @@ class PasswordReset extends StatefulWidget {
 
 class _PasswordResetState extends State<PasswordReset> {
   bool _isObscure = true;
-  bool _isObscure_secondary = true;
+  bool _isObscureSecondary = true;
   bool _isLoading = false;
   bool _termsAccepted = false;
   late AuthenticationService authService;
@@ -434,7 +434,7 @@ class _PasswordResetState extends State<PasswordReset> {
               // Password confirmation field - matching login style
               TextFormField(
                 controller: _passwordConfirmationController,
-                obscureText: _isObscure_secondary,
+                obscureText: _isObscureSecondary,
                 enabled: !_isLoading,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -473,7 +473,7 @@ class _PasswordResetState extends State<PasswordReset> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isObscure_secondary
+                      _isObscureSecondary
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: _isLoading
@@ -485,7 +485,7 @@ class _PasswordResetState extends State<PasswordReset> {
                         ? null
                         : () {
                             setState(() {
-                              _isObscure_secondary = !_isObscure_secondary;
+                              _isObscureSecondary = !_isObscureSecondary;
                             });
                           },
                   ),

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/vacation_mode_model.dart';
 import 'package:app/service/token_store.dart';
+import 'package:app/utils/app_logger.dart';
 
 /// Vacation Mode API Service
 class VacationModeService {
@@ -32,7 +33,7 @@ class VacationModeService {
 
       return VacationStatus();
     } catch (e) {
-      print('Error getting vacation status: $e');
+      AppLogger.warning('Error getting vacation status: $e');
       return VacationStatus();
     }
   }
@@ -60,7 +61,7 @@ class VacationModeService {
         isOnVacation: false,
       );
     } catch (e) {
-      print('Error toggling vacation mode: $e');
+      AppLogger.warning('Error toggling vacation mode: $e');
       return VacationToggleResponse(
         success: false,
         message: 'Network error: $e',

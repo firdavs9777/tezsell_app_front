@@ -34,6 +34,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:io';
 import 'dart:async';
+import 'package:app/utils/app_logger.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
   final ChatRoom chatRoom;
@@ -157,7 +158,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     Future.microtask(() {
       if (mounted) {
-        print('🔵 [ChatRoom] initState → connectToChatRoom(${widget.chatRoom.id})');
+        AppLogger.debug('🔵 [ChatRoom] initState → connectToChatRoom(${widget.chatRoom.id})');
         // 🔥 FIX: Task 19 (review round 1) — rooms just created from a
         // listing detail page (product/service/real-estate) via
         // `ChatApiService.startFromListing()` never went through the
@@ -221,14 +222,14 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       ).toList();
       
       if (roomNotifications.isNotEmpty) {
-        print('📬 Marking ${roomNotifications.length} chat notifications as read for room $roomId');
+        AppLogger.debug('📬 Marking ${roomNotifications.length} chat notifications as read for room $roomId');
         // Mark each notification as read
         for (final notification in roomNotifications) {
           chatNotificationNotifier.markAsRead(notification.id);
         }
       }
     } catch (e) {
-      print('⚠️ Error marking chat notifications as read: $e');
+      AppLogger.warning('⚠️ Error marking chat notifications as read: $e');
     }
   }
 
@@ -322,10 +323,10 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     Future(() {
       try {
         if (hadTyping) notifier.sendTypingStatus(false);
-        print('🔵 [ChatRoom] dispose deferred → disconnectFromChatRoom()');
+        AppLogger.debug('🔵 [ChatRoom] dispose deferred → disconnectFromChatRoom()');
         notifier.disconnectFromChatRoom();
       } catch (e) {
-        print('🔴 [ChatRoom] dispose deferred error: $e');
+        AppLogger.warning('🔴 [ChatRoom] dispose deferred error: $e');
       }
     });
 
@@ -390,12 +391,12 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _sendMessage() {
-    print('📤 _sendMessage() called in chat_room.dart');
+    AppLogger.debug('📤 _sendMessage() called in chat_room.dart');
     final content = _messageController.text.trim();
-    print('📤 Content: "$content", mounted: $mounted');
+    AppLogger.debug('📤 Content: "$content", mounted: $mounted');
     if (content.isNotEmpty && mounted) {
       if (_replyingToMessageId != null) {
-        print('📤 Sending reply to message $_replyingToMessageId');
+        AppLogger.debug('📤 Sending reply to message $_replyingToMessageId');
         ref
             .read(chatProvider.notifier)
             .sendMessageWithReply(content, _replyingToMessageId);
@@ -406,7 +407,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           });
         }
       } else {
-        print('📤 Calling chatProvider.sendMessage');
+        AppLogger.debug('📤 Calling chatProvider.sendMessage');
         ref.read(chatProvider.notifier).sendMessage(content);
       }
       // 🔥 NEW: Task 19 — clear the persisted draft once handed off to send.
@@ -415,7 +416,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       _messageController.clear();
       _scrollToBottom();
     } else {
-      print('❌ Message not sent: content empty or not mounted');
+      AppLogger.warning('❌ Message not sent: content empty or not mounted');
     }
   }
 
@@ -1295,8 +1296,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final error = chatState.error;
 
     ref.listen(chatProvider, (previous, next) {
-      if (!mounted || _isDisposed)
+      if (!mounted || _isDisposed) {
         return; // Guard against updates after disposal
+      }
 
       final justFinishedLoading = previous?.isLoadingMessages == true &&
           next.isLoadingMessages == false;
@@ -1371,7 +1373,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (didPop && !_isDisconnecting) {
           _isDisconnecting = true;
-          print('🔵 [ChatRoom] onPopInvoked → disconnectFromChatRoom()');
+          AppLogger.debug('🔵 [ChatRoom] onPopInvoked → disconnectFromChatRoom()');
           _chatNotifier.disconnectFromChatRoom();
         }
       },
@@ -1562,7 +1564,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                   setState(() {});
                 }
               },
-              config: Config(checkPlatformCompatibility: true),
+              config: const Config(checkPlatformCompatibility: true),
             ),
           ),
       ],
