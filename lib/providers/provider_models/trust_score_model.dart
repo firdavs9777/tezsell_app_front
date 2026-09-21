@@ -19,6 +19,12 @@ class TrustScore {
   final int avgResponseTimeMinutes;
   final List<UserBadge> badges;
 
+  /// Public, per-user vacation status. Served on the trust-score payload so
+  /// a profile screen can show the badge for the user being viewed rather
+  /// than for whoever is logged in.
+  final bool isOnVacation;
+  final String vacationMessage;
+
   TrustScore({
     required this.userId,
     required this.username,
@@ -35,6 +41,8 @@ class TrustScore {
     required this.responseRate,
     required this.avgResponseTimeMinutes,
     required this.badges,
+    this.isOnVacation = false,
+    this.vacationMessage = '',
   });
 
   factory TrustScore.fromJson(Map<String, dynamic> json) {
@@ -57,6 +65,8 @@ class TrustScore {
               ?.map((b) => UserBadge.fromJson(b))
               .toList() ??
           [],
+      isOnVacation: json['is_on_vacation'] ?? false,
+      vacationMessage: json['vacation_message'] ?? '',
     );
   }
 

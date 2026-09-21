@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/widgets/vacation_mode_widget.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final int userId;
@@ -354,15 +355,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
   /// unexpected error still renders something instead of leaving a
   /// permanently-loading widget.
   ///
-  /// TODO(plan-g): Vacation badge omitted here on purpose. `VacationBadge`
-  /// exists but `vacationModeProvider`/`isOnVacationProvider` only expose the
-  /// CURRENTLY-LOGGED-IN user's vacation status (no per-user family, no
-  /// userId param -- see vacation_mode_provider.dart), and neither
-  /// `UserProfile` nor the trust-score payload expose another user's
-  /// vacation status publicly. Wiring the current-user provider here would
-  /// wrongly show the viewer's own vacation state on someone else's profile.
-  /// Surfacing this correctly needs a public per-user vacation field added
-  /// to the profile/trust-score API first.
+  /// The vacation badge reads `trustScore.isOnVacation`, not
+  /// `vacationModeProvider` -- that provider only knows the CURRENTLY-LOGGED-IN
+  /// user's status (no per-user family), so using it here would show the
+  /// viewer's own vacation state on someone else's profile. The backend now
+  /// serves a public per-user `is_on_vacation`/`vacation_message` on the
+  /// trust-score payload this section already fetches.
   Widget _buildTrustSection(
     BuildContext context,
     ThemeData theme,
@@ -391,6 +389,14 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
             emoji: trustScore.temperatureEmoji,
             showLabel: false,
           ),
+          if (trustScore.isOnVacation) ...[
+            const SizedBox(height: 8),
+            VacationBadge(
+              message: trustScore.vacationMessage.isEmpty
+                  ? null
+                  : trustScore.vacationMessage,
+            ),
+          ],
           if (trustScore.badges.isNotEmpty) ...[
             const SizedBox(height: 8),
             _buildBadgesRow(trustScore.badges, locale),
