@@ -4,6 +4,7 @@ import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/trust_score_model.dart';
 import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/review_model.dart';
+import 'package:app/service/session_manager.dart';
 import 'package:app/service/token_store.dart';
 
 /// Reviews & Trust Score API Service
@@ -79,17 +80,19 @@ class ReviewsService {
     int? chatRoomId,
   }) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await _client.post(
-        Uri.parse('$baseUrl/api/reviews/transactions/'),
-        headers: headers,
-        body: jsonEncode({
-          'seller_id': sellerId,
-          'item_type': itemType,
-          'item_id': itemId,
-          if (chatRoomId != null) 'chat_room_id': chatRoomId,
-        }),
-      );
+      final response = await authedHttp(() async {
+        final headers = await _getAuthHeaders();
+        return _client.post(
+          Uri.parse('$baseUrl/api/reviews/transactions/'),
+          headers: headers,
+          body: jsonEncode({
+            'seller_id': sellerId,
+            'item_type': itemType,
+            'item_id': itemId,
+            if (chatRoomId != null) 'chat_room_id': chatRoomId,
+          }),
+        );
+      });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
@@ -110,8 +113,6 @@ class ReviewsService {
     String? status,
   }) async {
     try {
-      final headers = await _getAuthHeaders();
-
       var url = '$baseUrl/api/reviews/transactions/';
       final queryParams = <String, String>{};
       if (role != null) queryParams['role'] = role;
@@ -121,10 +122,13 @@ class ReviewsService {
         url += '?${Uri(queryParameters: queryParams).query}';
       }
 
-      final response = await _client.get(
-        Uri.parse(url),
-        headers: headers,
-      );
+      final response = await authedHttp(() async {
+        final headers = await _getAuthHeaders();
+        return _client.get(
+          Uri.parse(url),
+          headers: headers,
+        );
+      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -148,15 +152,17 @@ class ReviewsService {
     String? agreedPrice,
   }) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await _client.patch(
-        Uri.parse('$baseUrl/api/reviews/transactions/$transactionId/'),
-        headers: headers,
-        body: jsonEncode({
-          'status': status,
-          if (agreedPrice != null) 'agreed_price': agreedPrice,
-        }),
-      );
+      final response = await authedHttp(() async {
+        final headers = await _getAuthHeaders();
+        return _client.patch(
+          Uri.parse('$baseUrl/api/reviews/transactions/$transactionId/'),
+          headers: headers,
+          body: jsonEncode({
+            'status': status,
+            if (agreedPrice != null) 'agreed_price': agreedPrice,
+          }),
+        );
+      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -186,19 +192,21 @@ class ReviewsService {
     List<int> tags = const [],
   }) async {
     try {
-      final headers = await _getAuthHeaders();
       final trimmedText = reviewText?.trim();
-      final response = await _client.post(
-        Uri.parse('$baseUrl/api/reviews/'),
-        headers: headers,
-        body: jsonEncode({
-          'transaction_id': transactionId,
-          'rating': rating,
-          if (trimmedText != null && trimmedText.isNotEmpty)
-            'review_text': trimmedText,
-          'tags': tags,
-        }),
-      );
+      final response = await authedHttp(() async {
+        final headers = await _getAuthHeaders();
+        return _client.post(
+          Uri.parse('$baseUrl/api/reviews/'),
+          headers: headers,
+          body: jsonEncode({
+            'transaction_id': transactionId,
+            'rating': rating,
+            if (trimmedText != null && trimmedText.isNotEmpty)
+              'review_text': trimmedText,
+            'tags': tags,
+          }),
+        );
+      });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
@@ -319,11 +327,13 @@ class ReviewsService {
   /// matching the `{success, data: {transactions, count}}` envelope.
   Future<Map<String, dynamic>> getPendingReviews() async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await _client.get(
-        Uri.parse('$baseUrl/api/reviews/pending/'),
-        headers: headers,
-      );
+      final response = await authedHttp(() async {
+        final headers = await _getAuthHeaders();
+        return _client.get(
+          Uri.parse('$baseUrl/api/reviews/pending/'),
+          headers: headers,
+        );
+      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
