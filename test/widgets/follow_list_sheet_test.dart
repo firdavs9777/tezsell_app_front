@@ -7,6 +7,8 @@ import 'package:app/providers/provider_models/user_profile_model.dart';
 /// `resolveFollowToggle`, so the flip-then-revert-on-failure logic can be
 /// exercised without mounting the widget tree.
 void main() {
+  _followStateResyncTests();
+
   _inlineTemperatureTests();
 
   group('resolveFollowToggle', () {
@@ -62,6 +64,27 @@ void _inlineTemperatureTests() {
       });
 
       expect(user.copyWithFollowStatus(true).temperature, 38.0);
+    });
+  });
+}
+
+void _followStateResyncTests() {
+  group('FollowUser identity for list keys', () {
+    test('rows are distinguishable by id so a ValueKey is meaningful', () {
+      final a = FollowUser.fromJson({'id': 1, 'username': 'a', 'is_following': true});
+      final b = FollowUser.fromJson({'id': 2, 'username': 'b', 'is_following': false});
+
+      expect(a.id == b.id, isFalse);
+      expect(a.isFollowing, isNot(b.isFollowing));
+    });
+
+    test('a refresh can change is_following for the same id', () {
+      // This is the case didUpdateWidget resyncs: same user, new server value.
+      final before = FollowUser.fromJson({'id': 1, 'username': 'a', 'is_following': false});
+      final after = FollowUser.fromJson({'id': 1, 'username': 'a', 'is_following': true});
+
+      expect(before.id, after.id);
+      expect(before.isFollowing, isNot(after.isFollowing));
     });
   });
 }

@@ -109,7 +109,16 @@ class FollowListSheet extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: response.results.length,
                     itemBuilder: (context, index) {
-                      return _FollowUserTile(user: response.results[index]);
+                      final user = response.results[index];
+                      // Keyed by user id, not list position: _FollowUserTile
+                      // holds follow state in its State, and without a key
+                      // Flutter matches State by index — so appending a page
+                      // or reordering on refresh would leave one user's
+                      // button showing another user's follow status.
+                      return _FollowUserTile(
+                        key: ValueKey(user.id),
+                        user: user,
+                      );
                     },
                   );
                 },
@@ -135,7 +144,7 @@ bool resolveFollowToggle({required bool wasFollowing, required bool succeeded}) 
 }
 
 class _FollowUserTile extends ConsumerStatefulWidget {
-  const _FollowUserTile({required this.user});
+  const _FollowUserTile({super.key, required this.user});
 
   final FollowUser user;
 
@@ -151,6 +160,20 @@ class _FollowUserTileState extends ConsumerState<_FollowUserTile> {
   void initState() {
     super.initState();
     _isFollowing = widget.user.isFollowing;
+  }
+
+  @override
+  void didUpdateWidget(_FollowUserTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Resync when this State is handed a different user, or the same user
+    // with a server-updated status after a refresh. The key above makes the
+    // first case rare, but an in-flight optimistic toggle must not survive
+    // into another row.
+    if (oldWidget.user.id != widget.user.id ||
+        oldWidget.user.isFollowing != widget.user.isFollowing) {
+      _isFollowing = widget.user.isFollowing;
+      _isLoading = false;
+    }
   }
 
   Future<void> _toggleFollow() async {
