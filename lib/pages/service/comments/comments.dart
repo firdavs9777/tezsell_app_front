@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -107,7 +107,7 @@ class _CommentsMainState extends ConsumerState<CommentsMain> {
                         reply.user.profileImage!.image.startsWith('http://') ||
                                 reply.user.profileImage!.image.startsWith('https://')
                             ? reply.user.profileImage!.image
-                            : '$baseUrl${reply.user.profileImage!.image}'),
+                            : '${AppConfig.baseUrl}${reply.user.profileImage!.image}'),
                     backgroundColor: colorScheme.surfaceContainerHighest,
                   )
                 : CircleAvatar(

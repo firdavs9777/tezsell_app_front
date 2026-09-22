@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/recently_viewed_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -23,7 +23,7 @@ class RecentlyViewedService {
     try {
       final headers = await _getAuthHeaders();
 
-      var url = '$baseUrl/api/favorites/recently-viewed/';
+      var url = '${AppConfig.baseUrl}/api/favorites/recently-viewed/';
       final queryParams = <String, String>{};
       if (limit != null) queryParams['limit'] = limit.toString();
       if (itemType != null) queryParams['type'] = itemType;
@@ -60,7 +60,7 @@ class RecentlyViewedService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/favorites/recently-viewed/record/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/recently-viewed/record/'),
         headers: headers,
         body: jsonEncode({
           'item_type': itemType,
@@ -80,7 +80,7 @@ class RecentlyViewedService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/api/favorites/recently-viewed/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/recently-viewed/'),
         headers: headers,
       );
 

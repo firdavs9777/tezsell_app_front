@@ -1,5 +1,5 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/providers/provider_models/replies_model.dart';
 import 'package:app/service/token_store.dart';
@@ -11,7 +11,7 @@ class CommentsService {
     final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.get(
-      Uri.parse('$baseUrl$SERVICES_URL/$serviceId/$COMMENT_URL'),
+      Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/${AppConfig.commentPath}'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -30,7 +30,7 @@ class CommentsService {
   }
 
   Future<Comments> createComment({required title, required id}) async {
-    final url = Uri.parse('$baseUrl$SERVICES_URL/$id$COMMENT_URL/');
+    final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$id${AppConfig.commentPath}/');
     final String? token = await TokenStore.instance.getAccessToken();
     final response = await http.post(
       url,
@@ -55,7 +55,7 @@ class CommentsService {
   Future<Comments> editComment(
       {required title, required serviceId, required commentId}) async {
     final url =
-        Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/$commentId/');
+        Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId${AppConfig.commentPath}/$commentId/');
     final String? token = await TokenStore.instance.getAccessToken();
     final response = await http.put(
       url,
@@ -79,7 +79,7 @@ class CommentsService {
 
   Future<bool> deleteComment({required serviceId, required commentId}) async {
     final url =
-        Uri.parse('$baseUrl$SERVICES_URL/$serviceId$COMMENT_URL/$commentId/');
+        Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId${AppConfig.commentPath}/$commentId/');
     final String? token = await TokenStore.instance.getAccessToken();
 
     try {
@@ -103,7 +103,7 @@ class CommentsService {
     final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.get(
-      Uri.parse('$baseUrl/services/api$COMMENT_URL/$commmentId/replies/'),
+      Uri.parse('${AppConfig.baseUrl}/services/api${AppConfig.commentPath}/$commmentId/replies/'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -138,7 +138,7 @@ class CommentsService {
 
       final response = await http.post(
         Uri.parse(
-            '$baseUrl/services/api/comments/$commentId/replies/'), // Full URL with baseUrl
+            '${AppConfig.baseUrl}/services/api/comments/$commentId/replies/'), // Full URL with AppConfig.baseUrl
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

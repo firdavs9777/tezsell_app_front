@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:app/providers/provider_root/active_neighborhood_provider.dart';
@@ -194,7 +194,7 @@ String? _resolveProfileImageUrl(UserInfo user) {
   if (image.startsWith('http://') || image.startsWith('https://')) {
     return image;
   }
-  return '$baseUrl$image';
+  return '${AppConfig.baseUrl}$image';
 }
 
 class _Avatar extends StatelessWidget {

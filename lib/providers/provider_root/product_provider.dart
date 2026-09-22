@@ -1,9 +1,9 @@
+import 'package:app/config/app_config.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,9 +63,9 @@ class ProductsService {
   static void _initializeDio() {
     // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
     _dio = buildAuthedDio(
-      baseUrl,
+      AppConfig.baseUrl,
       options: BaseOptions(
-        baseUrl: baseUrl,
+        baseUrl: AppConfig.baseUrl,
         connectTimeout: const Duration(seconds: 30), // Increased for mobile
         receiveTimeout: const Duration(seconds: 30), // Increased for mobile
         sendTimeout: const Duration(seconds: 60), // Increased for file uploads
@@ -199,7 +199,7 @@ class ProductsService {
         qp['radius_km'] = radiusKm.toStringAsFixed(0);
       }
       final response = await dio.get(
-        '/$PRODUCTS_URL/',
+        '/${AppConfig.productsPath}/',
         queryParameters: qp.isEmpty ? null : qp,
         options: Options(
           extra: {'retryCount': 0}, // Initialize retry count
@@ -426,7 +426,7 @@ class ProductsService {
       }
 
       final response = await dio.get(
-        '/$PRODUCTS_URL/', // Fixed with leading slash
+        '/${AppConfig.productsPath}/', // Fixed with leading slash
         queryParameters: queryParams,
       );
 
@@ -511,7 +511,7 @@ class ProductsService {
       final token = await TokenStore.instance.getAccessToken();
 
       final response = await dio.get(
-        CATEGORY_URL,
+        AppConfig.categoriesPath,
         options: Options(
           headers: token != null ? {'Authorization': 'Token $token'} : null,
         ),
@@ -583,7 +583,7 @@ class ProductsService {
 
   Future<List<Products>> _fetchSingleProduct(String productId) async {
     try {
-      final response = await dio.get('$PRODUCTS_URL/$productId/');
+      final response = await dio.get('${AppConfig.productsPath}/$productId/');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -756,7 +756,7 @@ class ProductsService {
       }
 
       final response = await dio.post(
-        '/$PRODUCTS_URL/', // Fixed with leading slash
+        '/${AppConfig.productsPath}/', // Fixed with leading slash
         data: formData,
         options: Options(
           headers: {
@@ -881,7 +881,7 @@ class ProductsService {
       // Debug logging to see what's being sent
 
       final response = await dio.put(
-        '$baseUrl/products/api/user/products/$productId/',
+        '${AppConfig.baseUrl}/products/api/user/products/$productId/',
         data: formData,
         options: Options(
           headers: {
@@ -961,7 +961,7 @@ class ProductsService {
     };
 
     final response = await dio.put(
-      '$PRODUCTS_URL$productId/',
+      '${AppConfig.productsPath}$productId/',
       data: body,
       options: Options(
         headers: {
@@ -1009,7 +1009,7 @@ class ProductsService {
     }
 
     final response = await dio.get(
-      '$PRODUCTS_URL$productId/chat-buyers/',
+      '${AppConfig.productsPath}$productId/chat-buyers/',
       options: Options(
         headers: {'Authorization': 'Token $token'},
         validateStatus: (status) => status != null && status < 500,
@@ -1047,7 +1047,7 @@ class ProductsService {
       }
 
       final response = await dio.delete(
-        '$baseUrl/products/api/user/products/$productId/',
+        '${AppConfig.baseUrl}/products/api/user/products/$productId/',
         options: Options(
           headers: {
             'Authorization': 'Token $token',

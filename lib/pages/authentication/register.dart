@@ -1,7 +1,7 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'dart:developer' as developer;
 
-import 'package:app/constants/constants.dart';
 import 'package:app/pages/city/city_list.dart';
 import 'package:app/providers/provider_models/country_model.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +64,7 @@ class _RegisterState extends State<Register> {
     });
 
     // Try with country filter first, then fallback to without filter
-    String url = '$baseUrl/accounts/regions/?country=$countryCode';
+    String url = '${AppConfig.baseUrl}/accounts/regions/?country=$countryCode';
     AppLogger.debug('[Register] API URL: $url');
     developer.log('[Register] API URL: $url', name: 'Register');
 
@@ -95,7 +95,7 @@ class _RegisterState extends State<Register> {
 
         if ((regionsList as List).isEmpty && countryCode == 'UZ') {
           developer.log('[Register] Empty response with country filter, trying without filter', name: 'Register');
-          url = '$baseUrl/accounts/regions/';
+          url = '${AppConfig.baseUrl}/accounts/regions/';
           response = await http.get(
             Uri.parse(url),
             headers: {'Content-Type': 'application/json'},

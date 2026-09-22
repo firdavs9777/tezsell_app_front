@@ -1,9 +1,9 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/social_auth_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -65,7 +65,7 @@ class SocialAuthService {
   Future<void> _fetchAndSaveUserInfo(String token) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/accounts/user/info/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/user/info/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -111,7 +111,7 @@ class SocialAuthService {
   /// Login with Google
   Future<SocialAuthResponse> loginWithGoogle(String idToken, {String? photoUrl}) async {
     try {
-      const url = '$baseUrl/accounts/auth/google/';
+      const url = '${AppConfig.baseUrl}/accounts/auth/google/';
       if (kDebugMode) {
         AppLogger.debug('🔐 Google login API call to: $url');
       }
@@ -178,7 +178,7 @@ class SocialAuthService {
       if (userName != null) body['user_name'] = userName;
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/auth/apple/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/auth/apple/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -217,7 +217,7 @@ class SocialAuthService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/accounts/social-accounts/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/social-accounts/'),
         headers: headers,
       );
 
@@ -241,7 +241,7 @@ class SocialAuthService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/accounts/social-accounts/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/social-accounts/'),
         headers: headers,
         body: jsonEncode({'provider': provider}),
       );
@@ -272,7 +272,7 @@ class SocialAuthService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/auth/google/link/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/auth/google/link/'),
         headers: headers,
         body: jsonEncode({'id_token': idToken}),
       );
@@ -312,7 +312,7 @@ class SocialAuthService {
       if (userName != null) body['user_name'] = userName;
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/auth/apple/link/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/auth/apple/link/'),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -346,7 +346,7 @@ class SocialAuthService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/accounts/login-history/?limit=$limit'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/login-history/?limit=$limit'),
         headers: headers,
       );
 

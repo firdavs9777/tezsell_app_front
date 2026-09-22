@@ -85,6 +85,9 @@ class AppConfig {
   static const String productDislikePath = '/global/unlike/product/';
   static const String serviceDislikePath = '/global/unlike/service/';
 
+  // Community Endpoints
+  static const String communityPostsPath = '/community/api/posts';
+
   // Comments Endpoints
   static const String commentPath = '/comments';
 

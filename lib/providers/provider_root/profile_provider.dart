@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/favorite_items.dart';
 import 'package:app/providers/provider_models/location_model.dart';
@@ -23,7 +22,7 @@ class ProfileService {
   Future<UserInfo> getUserInfo() async {
     final String? token = await TokenStore.instance.getAccessToken();
 
-    final response = await http.get(Uri.parse('$baseUrl$USER_INFO'), headers: {
+    final response = await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.userInfoPath}'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
@@ -97,11 +96,11 @@ class ProfileService {
     }
 
     // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
-    final dio = buildAuthedDio(baseUrl);
+    final dio = buildAuthedDio(AppConfig.baseUrl);
 
-    AppLogger.debug('[ProfileService] Sending PUT to: $baseUrl$USER_INFO');
+    AppLogger.debug('[ProfileService] Sending PUT to: ${AppConfig.baseUrl}${AppConfig.userInfoPath}');
     final response = await dio.put(
-      '$baseUrl$USER_INFO',
+      '${AppConfig.baseUrl}${AppConfig.userInfoPath}',
       data: formData,
       options: Options(
         headers: {
@@ -159,7 +158,7 @@ class ProfileService {
 
   Future<List<Regions>> getRegionsList() async {
     final response =
-        await http.get(Uri.parse('$baseUrl$REGIONS_URL'), headers: {
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.regionsPath}'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     });
@@ -179,7 +178,7 @@ class ProfileService {
     required String regionName,
   }) async {
     final response = await http
-        .get(Uri.parse('$baseUrl$DISTRICTS_URL$regionName/'), headers: {
+        .get(Uri.parse('${AppConfig.baseUrl}${AppConfig.districtsPath}$regionName/'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     });
@@ -285,7 +284,7 @@ class ProfileService {
   Future<FavoriteItems> getUserFavoriteItems() async {
     final String? token = await TokenStore.instance.getAccessToken();
     final response =
-        await http.get(Uri.parse('$baseUrl$FAVORITE_ITEMS'), headers: {
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.favoriteItemsPath}'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Token $token',
@@ -301,7 +300,7 @@ class ProfileService {
 
   Future<Products> getSingleUserProduct({required String productId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$USER_PRODUCT/$productId/'));
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.userProductsPath}/$productId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Products.fromJson(data);
@@ -312,7 +311,7 @@ class ProfileService {
 
   Future<Services> getSingleUserService({required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Services.fromJson(data);
@@ -322,7 +321,7 @@ class ProfileService {
   }
 
   Future<Products> likeSingleProduct({required String productId}) async {
-    final url = Uri.parse('$baseUrl$PRODUCT_LIKE$productId/');
+    final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.productLikePath}$productId/');
     final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
@@ -354,7 +353,7 @@ class ProfileService {
   }
 
   Future<Services> likeSingleService({required String serviceId}) async {
-    final url = Uri.parse('$baseUrl$SERVICE_LIKE$serviceId/');
+    final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.serviceLikePath}$serviceId/');
     final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(
@@ -375,7 +374,7 @@ class ProfileService {
   }
 
   Future<Products> dislikeProductItem({required String productId}) async {
-    final url = Uri.parse('$baseUrl$PRODUCT_DISLIKE$productId/');
+    final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.productDislikePath}$productId/');
 
     final String? token = await TokenStore.instance.getAccessToken();
 
@@ -408,7 +407,7 @@ class ProfileService {
   }
 
   Future<Services> dislikeSingleService({required String serviceId}) async {
-    final url = Uri.parse('$baseUrl$SERVICE_DISLIKE$serviceId/');
+    final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.serviceDislikePath}$serviceId/');
     final String? token = await TokenStore.instance.getAccessToken();
 
     final response = await http.post(

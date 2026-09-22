@@ -1,8 +1,8 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart'; // Added missing import
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/category_model.dart';
 import 'package:app/providers/provider_models/service_model.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +15,7 @@ import 'package:app/utils/app_logger.dart';
 class ServiceProvider {
   // Initialize Dio instance with base URL.
   // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
-  final Dio dio = buildAuthedDio(baseUrl);
+  final Dio dio = buildAuthedDio(AppConfig.baseUrl);
 
   // Properties for caching and performance tracking
   final Map<String, Future> _pendingRequests = {};
@@ -34,7 +34,7 @@ class ServiceProvider {
     if (radiusKm != null && radiusKm.isFinite) {
       qp['radius_km'] = radiusKm.toStringAsFixed(0);
     }
-    final uri = Uri.parse('$baseUrl$SERVICES_URL/').replace(
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/').replace(
       queryParameters: qp.isEmpty ? null : qp,
     );
     final response = await http.get(uri);
@@ -50,7 +50,7 @@ class ServiceProvider {
 
   Future<Services> getSingleService({required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/'));
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
 
@@ -98,7 +98,7 @@ class ServiceProvider {
   Future<List<Services>> getRecommendedServices(
       {required String serviceId}) async {
     final response =
-        await http.get(Uri.parse('$baseUrl$SERVICES_URL/$serviceId/'));
+        await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/'));
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
 
@@ -119,7 +119,7 @@ class ServiceProvider {
 
   Future<List<CategoryModel>> getCategories() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl$SERVICE_CATEGORY/'));
+      final response = await http.get(Uri.parse('${AppConfig.baseUrl}${AppConfig.serviceCategoriesPath}/'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
@@ -167,12 +167,12 @@ class ServiceProvider {
     String? regionName,
     String? cityName,
   }) async {
-    const url = '$baseUrl$SERVICES_URL/';
+    const url = '${AppConfig.baseUrl}${AppConfig.servicesPath}/';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = await TokenStore.instance.getAccessToken();
     final String? userLocation = prefs.getString('userLocation');
     final String? userId = prefs.getString('userId');
-    final Dio dio = buildAuthedDio(baseUrl);
+    final Dio dio = buildAuthedDio(AppConfig.baseUrl);
 
     // Always fetch fresh location from backend to ensure we have the latest
     int? locationId;
@@ -183,7 +183,7 @@ class ServiceProvider {
     }
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/accounts/user/info/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/user/info/'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -293,11 +293,11 @@ class ServiceProvider {
     List<File>? newImageFiles,
     List<int>? existingImageIds, // Changed from URLs to IDs
   }) async {
-    final url = '$baseUrl$SERVICES_URL/$serviceId/';
+    final url = '${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/';
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = await TokenStore.instance.getAccessToken();
     final String? userId = prefs.getString('userId');
-    final Dio dio = buildAuthedDio(baseUrl);
+    final Dio dio = buildAuthedDio(AppConfig.baseUrl);
 
     // Create FormData for the update
     final Map<String, dynamic> formDataMap = {
@@ -361,7 +361,7 @@ class ServiceProvider {
     }
 
     final response = await dio.put(
-      '$SERVICES_URL/$serviceId/',
+      '${AppConfig.servicesPath}/$serviceId/',
       data: {'is_active': isActive},
       options: Options(
         headers: {
@@ -400,7 +400,7 @@ class ServiceProvider {
 
 // Delete service method
   Future<bool> deleteService(int serviceId) async {
-    final url = '$baseUrl$SERVICES_URL/$serviceId/';
+    final url = '${AppConfig.baseUrl}${AppConfig.servicesPath}/$serviceId/';
     final String? token = await TokenStore.instance.getAccessToken();
 
     try {
@@ -485,7 +485,7 @@ class ServiceProvider {
       if (sort != null && sort.isNotEmpty) queryParams['sort'] = sort;
 
       final response = await dio.get(
-        '$SERVICES_URL/', // Fixed: removed leading slash to work with baseUrl
+        '${AppConfig.servicesPath}/', // Fixed: removed leading slash to work with AppConfig.baseUrl
         queryParameters: queryParams,
       );
 

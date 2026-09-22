@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/real_estate.dart';
 import 'package:app/utils/app_logger.dart';
@@ -97,7 +96,7 @@ class SavedPropertiesResponse {
 
 class RealEstateService {
   // 401 refresh-retry-or-logout via AuthInterceptor (Plan F Task 5).
-  final Dio dio = buildAuthedDio(baseUrl);
+  final Dio dio = buildAuthedDio(AppConfig.baseUrl);
   final Map<String, Future> _pendingRequests = {};
 
   void _logPerformance(String operation, int milliseconds) {
@@ -108,7 +107,7 @@ class RealEstateService {
 
   Future<List<RealEstate>> getAllProperties() async {
     final response = await http.get(
-      Uri.parse('$baseUrl$REAL_ESTATE_PROPERTIES'),
+      Uri.parse('${AppConfig.baseUrl}${AppConfig.realEstatePropertiesPath}'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -196,7 +195,7 @@ class RealEstateService {
       if (maxPrice.isNotEmpty) queryParams['max_price'] = maxPrice;
 
       final response = await dio.get(
-        REAL_ESTATE_PROPERTIES,
+        AppConfig.realEstatePropertiesPath,
         queryParameters: queryParams,
       );
       AppLogger.debug('${response.data}');
@@ -226,8 +225,8 @@ class RealEstateService {
     required String propertyId,
   }) async {
     try {
-      debugPrint('[RealEstateService] fetchSingleFilteredProperty: $REAL_ESTATE_PROPERTIES$propertyId/');
-      final response = await dio.get('$REAL_ESTATE_PROPERTIES$propertyId/');
+      debugPrint('[RealEstateService] fetchSingleFilteredProperty: ${AppConfig.realEstatePropertiesPath}$propertyId/');
+      final response = await dio.get('${AppConfig.realEstatePropertiesPath}$propertyId/');
       debugPrint('[RealEstateService] Response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
@@ -325,7 +324,7 @@ class RealEstateService {
 
   Future<RealEstate> getSingleProperty({required String propertyId}) async {
     final response = await http.get(
-      Uri.parse('$baseUrl$REAL_ESTATE_PROPERTIES/$propertyId/'),
+      Uri.parse('${AppConfig.baseUrl}${AppConfig.realEstatePropertiesPath}/$propertyId/'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -483,7 +482,7 @@ class RealEstateService {
 
     try {
       final response = await dio.get(
-        REAL_ESTATE_SAVED_PROPERTIES,
+        AppConfig.realEstateSavedPropertiesPath,
         queryParameters: {
           'page': page.toString(),
           'page_size': pageSize.toString(),
@@ -524,7 +523,7 @@ class RealEstateService {
 
     try {
       final response = await dio.post(
-        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
+        '${AppConfig.realEstatePropertiesPath}$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -561,7 +560,7 @@ class RealEstateService {
 
     try {
       final response = await dio.delete(
-        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
+        '${AppConfig.realEstatePropertiesPath}$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -595,7 +594,7 @@ class RealEstateService {
   }) async {
     try {
       final response = await dio.get(
-        '$REAL_ESTATE_PROPERTIES$propertyId/save/',
+        '${AppConfig.realEstatePropertiesPath}$propertyId/save/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',

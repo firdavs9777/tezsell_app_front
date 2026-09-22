@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/enhanced_favorite_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -27,7 +27,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/favorites/toggle/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/toggle/'),
         headers: headers,
         body: jsonEncode({
           'item_type': itemType,
@@ -71,7 +71,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
 
-      var url = '$baseUrl/api/favorites/';
+      var url = '${AppConfig.baseUrl}/api/favorites/';
       final queryParams = <String, String>{
         'page': page.toString(),
         'page_size': pageSize.toString(),
@@ -106,7 +106,7 @@ class FavoritesService {
       final headers = await _getAuthHeaders();
       final response = await http.get(
         Uri.parse(
-            '$baseUrl/api/favorites/check/?item_type=$itemType&item_id=$itemId'),
+            '${AppConfig.baseUrl}/api/favorites/check/?item_type=$itemType&item_id=$itemId'),
         headers: headers,
       );
 
@@ -126,7 +126,7 @@ class FavoritesService {
   Future<FavoritesCount> getFavoritesCount({String? itemType}) async {
     try {
       final headers = await _getAuthHeaders();
-      var url = '$baseUrl/api/favorites/count/';
+      var url = '${AppConfig.baseUrl}/api/favorites/count/';
       if (itemType != null) url += '?item_type=$itemType';
 
       final response = await http.get(
@@ -169,7 +169,7 @@ class FavoritesService {
       if (notifyPriceDrop != null) body['notify_price_drop'] = notifyPriceDrop;
 
       final response = await http.patch(
-        Uri.parse('$baseUrl/api/favorites/$favoriteId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/$favoriteId/'),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -192,7 +192,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/api/favorites/$favoriteId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/$favoriteId/'),
         headers: headers,
       );
 
@@ -210,7 +210,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/favorites/collections/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/'),
         headers: headers,
       );
 
@@ -238,7 +238,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/favorites/collections/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/'),
         headers: headers,
         body: jsonEncode({
           'name': name,
@@ -275,7 +275,7 @@ class FavoritesService {
       if (isPublic != null) body['is_public'] = isPublic;
 
       final response = await http.patch(
-        Uri.parse('$baseUrl/api/favorites/collections/$collectionId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/$collectionId/'),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -298,7 +298,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/api/favorites/collections/$collectionId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/$collectionId/'),
         headers: headers,
       );
 
@@ -317,7 +317,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/favorites/collections/$collectionId/items/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/$collectionId/items/'),
         headers: headers,
         body: jsonEncode({'favorite_id': favoriteId}),
       );
@@ -338,7 +338,7 @@ class FavoritesService {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
         Uri.parse(
-            '$baseUrl/api/favorites/collections/$collectionId/items/$favoriteId/'),
+            '${AppConfig.baseUrl}/api/favorites/collections/$collectionId/items/$favoriteId/'),
         headers: headers,
       );
 
@@ -354,7 +354,7 @@ class FavoritesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/favorites/collections/$collectionId/items/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/collections/$collectionId/items/'),
         headers: headers,
       );
 

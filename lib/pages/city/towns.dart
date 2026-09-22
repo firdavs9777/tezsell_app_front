@@ -1,7 +1,7 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:ui';
-import 'package:app/constants/constants.dart';
 import 'package:app/pages/authentication/mobile_authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +36,7 @@ class TownsList extends StatefulWidget {
 }
 
 class _TownsListState extends State<TownsList> {
-  final String districtsUrl = '$baseUrl/accounts/districts';
+  final String districtsUrl = '${AppConfig.baseUrl}/accounts/districts';
   List<District> districts = [];
   List<District> filteredDistricts = [];
   final TextEditingController searchController = TextEditingController();

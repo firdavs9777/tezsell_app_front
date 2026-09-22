@@ -1,5 +1,5 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/service/session_manager.dart';
@@ -63,7 +63,7 @@ class QuickReplyCapException implements Exception {
 }
 
 class ChatApiService {
-  static const String apiBaseUrl = baseUrl;
+  static const String apiBaseUrl = AppConfig.baseUrl;
 
   // Get auth token
   Future<String?> _getToken() async {
@@ -83,7 +83,7 @@ class ChatApiService {
         final freshToken = await _getToken();
         final request = http.MultipartRequest(
           'POST',
-          Uri.parse('$baseUrl/chats/$roomId/messages/'),
+          Uri.parse('${AppConfig.baseUrl}/chats/$roomId/messages/'),
         );
 
         // Add headers
@@ -146,7 +146,7 @@ class ChatApiService {
         final freshToken = await _getToken();
         final request = http.MultipartRequest(
           'POST',
-          Uri.parse('$baseUrl/chats/$roomId/messages/'),
+          Uri.parse('${AppConfig.baseUrl}/chats/$roomId/messages/'),
         );
 
         request.headers['Authorization'] = 'Token $freshToken';

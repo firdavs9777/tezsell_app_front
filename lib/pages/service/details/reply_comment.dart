@@ -1,5 +1,5 @@
 // New widget for replying to comments
-import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
 import 'package:app/providers/provider_models/comments_model.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class _ReplyCommentWidgetState extends State<ReplyCommentWidget> {
                             widget.parentComment.user.profileImage.image.startsWith('http://') ||
                                     widget.parentComment.user.profileImage.image.startsWith('https://')
                                 ? widget.parentComment.user.profileImage.image
-                                : '$baseUrl${widget.parentComment.user.profileImage.image}'),
+                                : '${AppConfig.baseUrl}${widget.parentComment.user.profileImage.image}'),
                     backgroundColor: colorScheme.surfaceContainerHighest,
                     child: null,
                   ),

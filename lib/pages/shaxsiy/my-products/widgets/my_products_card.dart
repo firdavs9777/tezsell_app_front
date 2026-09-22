@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/config/app_config.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/product_model.dart';
 import 'package:app/utils/currency_utils.dart';
@@ -40,7 +40,7 @@ class MyProductsCard extends StatelessWidget {
   String? get _imageUrl {
     if (product.images.isEmpty) return null;
     final first = product.images.first.image;
-    return first.startsWith('http') ? first : '$baseUrl$first';
+    return first.startsWith('http') ? first : '${AppConfig.baseUrl}$first';
   }
 
   String _formatPrice() {

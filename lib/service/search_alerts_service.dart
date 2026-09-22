@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/search_alert_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -30,7 +30,7 @@ class SearchAlertsService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/notifications/alerts/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/'),
         headers: headers,
         body: jsonEncode({
           'keyword': keyword,
@@ -70,7 +70,7 @@ class SearchAlertsService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/notifications/alerts/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/'),
         headers: headers,
       );
 
@@ -94,7 +94,7 @@ class SearchAlertsService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/notifications/alerts/$alertId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/$alertId/'),
         headers: headers,
       );
 
@@ -139,7 +139,7 @@ class SearchAlertsService {
       if (notifyEmail != null) body['notify_email'] = notifyEmail;
 
       final response = await http.put(
-        Uri.parse('$baseUrl/api/notifications/alerts/$alertId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/$alertId/'),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -162,7 +162,7 @@ class SearchAlertsService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/notifications/alerts/$alertId/toggle/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/$alertId/toggle/'),
         headers: headers,
       );
 
@@ -193,7 +193,7 @@ class SearchAlertsService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/api/notifications/alerts/$alertId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/notifications/alerts/$alertId/'),
         headers: headers,
       );
 

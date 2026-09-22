@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/vacation_mode_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -20,7 +20,7 @@ class VacationModeService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/accounts/vacation-mode/'),
+        Uri.parse('${AppConfig.baseUrl}/api/accounts/vacation-mode/'),
         headers: headers,
       );
 
@@ -43,7 +43,7 @@ class VacationModeService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/accounts/vacation-mode/'),
+        Uri.parse('${AppConfig.baseUrl}/api/accounts/vacation-mode/'),
         headers: headers,
         body: jsonEncode({
           if (message != null) 'message': message,

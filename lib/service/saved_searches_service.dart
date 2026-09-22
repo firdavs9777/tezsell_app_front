@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/saved_search_model.dart';
 import 'package:app/service/token_store.dart';
 import 'package:app/utils/app_logger.dart';
@@ -20,7 +20,7 @@ class SavedSearchesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/favorites/saved-searches/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/saved-searches/'),
         headers: headers,
       );
 
@@ -53,7 +53,7 @@ class SavedSearchesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/api/favorites/saved-searches/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/saved-searches/'),
         headers: headers,
         body: jsonEncode({
           'query': query,
@@ -92,7 +92,7 @@ class SavedSearchesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/api/favorites/saved-searches/$searchId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/saved-searches/$searchId/'),
         headers: headers,
       );
 
@@ -135,7 +135,7 @@ class SavedSearchesService {
       if (maxPrice != null) body['max_price'] = maxPrice;
 
       final response = await http.put(
-        Uri.parse('$baseUrl/api/favorites/saved-searches/$searchId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/saved-searches/$searchId/'),
         headers: headers,
         body: jsonEncode(body),
       );
@@ -158,7 +158,7 @@ class SavedSearchesService {
     try {
       final headers = await _getAuthHeaders();
       final response = await http.delete(
-        Uri.parse('$baseUrl/api/favorites/saved-searches/$searchId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/favorites/saved-searches/$searchId/'),
         headers: headers,
       );
 

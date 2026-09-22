@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:io';
 
-import 'package:app/constants/constants.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/provider_models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class ProfileEditAvatar extends StatelessWidget {
     if (image == null || image.isEmpty) return null;
     final url = image.startsWith('http://') || image.startsWith('https://')
         ? image
-        : '$baseUrl$image';
+        : '${AppConfig.baseUrl}$image';
     return NetworkImage(url);
   }
 

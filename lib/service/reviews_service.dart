@@ -1,6 +1,6 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/trust_score_model.dart';
 import 'package:app/providers/provider_models/transaction_model.dart';
 import 'package:app/providers/provider_models/review_model.dart';
@@ -29,7 +29,7 @@ class ReviewsService {
   Future<TrustScore> getTrustScore(int userId) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/api/reviews/trust-score/$userId/'),
+        Uri.parse('${AppConfig.baseUrl}/api/reviews/trust-score/$userId/'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -52,7 +52,7 @@ class ReviewsService {
   Future<List<UserBadge>> getAvailableBadges() async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/api/reviews/badges/'),
+        Uri.parse('${AppConfig.baseUrl}/api/reviews/badges/'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -84,7 +84,7 @@ class ReviewsService {
       final response = await authedHttp(() async {
         final headers = await _getAuthHeaders();
         return _client.post(
-          Uri.parse('$baseUrl/api/reviews/transactions/'),
+          Uri.parse('${AppConfig.baseUrl}/api/reviews/transactions/'),
           headers: headers,
           body: jsonEncode({
             'seller_id': sellerId,
@@ -114,7 +114,7 @@ class ReviewsService {
     String? status,
   }) async {
     try {
-      var url = '$baseUrl/api/reviews/transactions/';
+      var url = '${AppConfig.baseUrl}/api/reviews/transactions/';
       final queryParams = <String, String>{};
       if (role != null) queryParams['role'] = role;
       if (status != null) queryParams['status'] = status;
@@ -156,7 +156,7 @@ class ReviewsService {
       final response = await authedHttp(() async {
         final headers = await _getAuthHeaders();
         return _client.patch(
-          Uri.parse('$baseUrl/api/reviews/transactions/$transactionId/'),
+          Uri.parse('${AppConfig.baseUrl}/api/reviews/transactions/$transactionId/'),
           headers: headers,
           body: jsonEncode({
             'status': status,
@@ -197,7 +197,7 @@ class ReviewsService {
       final response = await authedHttp(() async {
         final headers = await _getAuthHeaders();
         return _client.post(
-          Uri.parse('$baseUrl/api/reviews/'),
+          Uri.parse('${AppConfig.baseUrl}/api/reviews/'),
           headers: headers,
           body: jsonEncode({
             'transaction_id': transactionId,
@@ -229,7 +229,7 @@ class ReviewsService {
   }) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/api/reviews/users/$userId/reviews/?type=$type'),
+        Uri.parse('${AppConfig.baseUrl}/api/reviews/users/$userId/reviews/?type=$type'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -268,7 +268,7 @@ class ReviewsService {
     try {
       final response = await _client.get(
         Uri.parse(
-          '$baseUrl/api/reviews/users/$userId/reviews/'
+          '${AppConfig.baseUrl}/api/reviews/users/$userId/reviews/'
           '?type=$type&page=$page&page_size=$pageSize',
         ),
         headers: {'Content-Type': 'application/json'},
@@ -292,7 +292,7 @@ class ReviewsService {
     bool? forSeller,
   }) async {
     try {
-      var url = '$baseUrl/api/reviews/tags/';
+      var url = '${AppConfig.baseUrl}/api/reviews/tags/';
       final queryParams = <String, String>{};
       if (forBuyer != null) queryParams['for_buyer'] = forBuyer.toString();
       if (forSeller != null) queryParams['for_seller'] = forSeller.toString();
@@ -331,7 +331,7 @@ class ReviewsService {
       final response = await authedHttp(() async {
         final headers = await _getAuthHeaders();
         return _client.get(
-          Uri.parse('$baseUrl/api/reviews/pending/'),
+          Uri.parse('${AppConfig.baseUrl}/api/reviews/pending/'),
           headers: headers,
         );
       });

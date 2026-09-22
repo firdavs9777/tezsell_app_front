@@ -1,9 +1,9 @@
+import 'package:app/config/app_config.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:app/constants/constants.dart';
 import 'package:app/providers/provider_models/community_post_model.dart';
 import 'package:app/providers/provider_models/community_comment_model.dart';
 import 'package:app/service/token_store.dart';
@@ -66,7 +66,7 @@ class CommunityProvider {
     final trimmedQuery = query?.trim();
     if (trimmedQuery != null && trimmedQuery.length >= 2) qp['q'] = trimmedQuery;
     if (sort == 'popular') qp['sort'] = 'popular';
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/').replace(queryParameters: qp);
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/').replace(queryParameters: qp);
     final resp = await authedHttp(() async => http.get(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
       final data = json.decode(resp.body);
@@ -82,7 +82,7 @@ class CommunityProvider {
   Future<Map<String, int>> getCounts({int? districtId}) async {
     final qp = <String, String>{};
     if (districtId != null) qp['district_id'] = '$districtId';
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/counts/')
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/counts/')
         .replace(queryParameters: qp.isEmpty ? null : qp);
     final resp = await authedHttp(() async => http.get(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
@@ -98,7 +98,7 @@ class CommunityProvider {
     required String body,
     required String category,
   }) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/');
     final resp = await authedHttp(() async {
       final headers = await _authHeaders();
       headers['Content-Type'] = 'application/json';
@@ -116,7 +116,7 @@ class CommunityProvider {
 
   /// Author-only delete of a post.
   Future<void> deletePost(int postId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/');
     final resp = await authedHttp(() async => http.delete(uri, headers: await _authHeaders()));
     if (resp.statusCode != 200 && resp.statusCode != 204) {
       throw Exception('Failed to delete post (${resp.statusCode})');
@@ -144,7 +144,7 @@ class CommunityProvider {
     String? pollQuestion,
     List<String>? pollOptions,
   }) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/');
     // Rebuilt fresh on every call so a post-refresh retry doesn't replay an
     // already-consumed MultipartRequest (they're single-use).
     final resp = await authedHttp(() async {
@@ -176,7 +176,7 @@ class CommunityProvider {
   }
 
   Future<CommunityPost> getPost(int postId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/');
     final resp = await authedHttp(() async => http.get(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
       return CommunityPost.fromJson(json.decode(resp.body) as Map<String, dynamic>);
@@ -188,7 +188,7 @@ class CommunityProvider {
   /// returns the fresh poll payload (question/options/percents/my_option_id)
   /// so the caller can reconcile its optimistic local state.
   Future<CommunityPoll> votePoll(int postId, int optionId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/poll/vote/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/poll/vote/');
     final resp = await authedHttp(() async {
       final headers = await _authHeaders();
       headers['Content-Type'] = 'application/json';
@@ -205,7 +205,7 @@ class CommunityProvider {
   }
 
   Future<Map<String, dynamic>> toggleLike(int postId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/like/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/like/');
     final resp = await authedHttp(() async => http.post(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
       return json.decode(resp.body) as Map<String, dynamic>;
@@ -217,7 +217,7 @@ class CommunityProvider {
   /// Each result carries its full, chronological `replies` list nested
   /// inline — replies are never paginated separately.
   Future<CommunityCommentsPage> getComments(int postId, {int page = 1}) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/')
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/comments/')
         .replace(queryParameters: {'page': '$page'});
     final resp = await authedHttp(() async => http.get(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
@@ -233,7 +233,7 @@ class CommunityProvider {
   }
 
   Future<CommunityComment> addComment(int postId, String text, {int? parentId}) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/comments/');
     final body = <String, String>{'text': text};
     if (parentId != null) body['parent'] = '$parentId';
     final resp = await authedHttp(
@@ -247,7 +247,7 @@ class CommunityProvider {
 
   /// Toggles the current user's like on a comment or reply.
   Future<Map<String, dynamic>> toggleCommentLike(int postId, int commentId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/$commentId/like/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/comments/$commentId/like/');
     final resp = await authedHttp(() async => http.post(uri, headers: await _authHeaders()));
     if (resp.statusCode == 200) {
       return json.decode(resp.body) as Map<String, dynamic>;
@@ -258,7 +258,7 @@ class CommunityProvider {
   /// Deletes a comment or reply (allowed for its author, or for the post's
   /// author).
   Future<void> deleteComment(int postId, int commentId) async {
-    final uri = Uri.parse('$baseUrl$COMMUNITY_URL/$postId/comments/$commentId/');
+    final uri = Uri.parse('${AppConfig.baseUrl}${AppConfig.communityPostsPath}/$postId/comments/$commentId/');
     final resp = await authedHttp(() async => http.delete(uri, headers: await _authHeaders()));
     if (resp.statusCode != 200 && resp.statusCode != 204) {
       throw Exception('Failed to delete comment (${resp.statusCode})');

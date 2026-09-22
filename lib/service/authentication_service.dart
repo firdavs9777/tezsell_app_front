@@ -7,7 +7,6 @@ import 'package:app/store/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';
-import 'package:app/constants/constants.dart';
 import 'package:app/config/app_config.dart';
 import 'package:app/utils/app_logger.dart';
 import 'package:app/service/token_store.dart';
@@ -87,7 +86,7 @@ class AuthenticationService {
       final token = await getStoredToken();
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/request-account-deletion/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/request-account-deletion/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -107,7 +106,7 @@ class AuthenticationService {
       final token = await getStoredToken();
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/confirm-account-deletion/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/confirm-account-deletion/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -127,7 +126,7 @@ class AuthenticationService {
       final token = await getStoredToken();
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/cancel-account-deletion/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/cancel-account-deletion/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -152,7 +151,7 @@ class AuthenticationService {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/forgot-password/send-otp/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/forgot-password/send-otp/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -194,7 +193,7 @@ class AuthenticationService {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/forgot-password/reset/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/forgot-password/reset/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -230,7 +229,7 @@ class AuthenticationService {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/password/request-update/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/password/request-update/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -273,7 +272,7 @@ class AuthenticationService {
       }
 
       final response = await http.post(
-        Uri.parse('$baseUrl/accounts/password/update/'),
+        Uri.parse('${AppConfig.baseUrl}/accounts/password/update/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token $token',
@@ -343,7 +342,7 @@ class AuthenticationService {
     try {
       // URL preparation timing
       final urlTimer = Stopwatch()..start();
-      final url = Uri.parse('$baseUrl$LOGIN_URL');
+      final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.loginPath}');
       urlTimer.stop();
       _logTiming('URL Parse', urlTimer.elapsed.inMilliseconds);
 
@@ -696,7 +695,7 @@ class AuthenticationService {
   }) async {
     try {
       // Registration endpoint: /accounts/register/
-      final url = Uri.parse('$baseUrl$REGISTER_URL');
+      final url = Uri.parse('${AppConfig.baseUrl}${AppConfig.registerPath}');
 
       // Ensure districtId is not null or empty
       if (districtId.isEmpty) {
@@ -1003,7 +1002,7 @@ class AuthenticationService {
       } else {
         final response = await httpClient
             .post(
-              Uri.parse('$baseUrl/accounts/logout-all/'),
+              Uri.parse('${AppConfig.baseUrl}/accounts/logout-all/'),
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Token $accessToken',
@@ -1044,7 +1043,7 @@ class AuthenticationService {
 
       final response = await httpClient
           .get(
-            Uri.parse('$baseUrl/accounts/login-history/'),
+            Uri.parse('${AppConfig.baseUrl}/accounts/login-history/'),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Token $accessToken',

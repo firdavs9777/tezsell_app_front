@@ -1,3 +1,4 @@
+import 'package:app/config/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -58,7 +59,6 @@ import '../providers/provider_root/chat_provider.dart';
 import '../providers/provider_root/profile_provider.dart';
 import '../providers/provider_models/product_model.dart';
 import '../providers/provider_models/service_model.dart';
-import '../constants/constants.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/utils/app_logger.dart';
 
@@ -514,8 +514,8 @@ class _ProductDetailWrapperState extends ConsumerState<_ProductDetailWrapper> {
 
   Future<void> _loadProduct() async {
     try {
-      final dio = Dio(BaseOptions(baseUrl: baseUrl));
-      final response = await dio.get('$PRODUCTS_URL${widget.productId}/');
+      final dio = Dio(BaseOptions(baseUrl: AppConfig.baseUrl));
+      final response = await dio.get('${AppConfig.productsPath}${widget.productId}/');
 
       if (response.statusCode == 200 && response.data != null) {
         final responseData = response.data;
