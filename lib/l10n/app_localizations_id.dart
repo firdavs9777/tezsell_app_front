@@ -1566,20 +1566,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get in_area => 'di daerah';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'Cari properti berdasarkan judul, lokasi…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => 'Cari properti';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => 'Pencarian terakhir';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'Hapus semua';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => 'Pencarian gagal. Silakan coba lagi.';
 
   @override
   String get pagination_previous => 'Sebelumnya';
@@ -3130,20 +3129,20 @@ class AppLocalizationsId extends AppLocalizations {
   String get logout_all => 'Keluar Semua';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'Riwayat masuk';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'Keluar dari semua perangkat';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      'Ini akan mengeluarkan Anda dari semua perangkat tempat Anda sedang masuk, termasuk perangkat ini.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => 'Perangkat baru';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'Belum ada riwayat masuk';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3152,11 +3151,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'Pembaruan token';
 
   @override
   String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+      'Anda telah keluar dari semua perangkat';
 
   @override
   String get delete_account_confirm => 'Hapus Akun?';
@@ -4128,70 +4127,70 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'Ulasan ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'Belum ada ulasan';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => 'Pengguna ini belum menerima ulasan';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'Anda belum memberi ulasan';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'Tidak ada ulasan lagi';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'Ulasan saya';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => 'Ulasan yang Anda beri dan terima';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => 'Diterima';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => 'Diberikan';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return 'Ulasan tertunda ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle =>
+      'Ketuk untuk menilai transaksi terakhir Anda';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => 'Ulasan tertunda';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => 'Tidak dapat dimuat';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => 'Mode liburan';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => 'Iklan Anda disembunyikan';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => 'Iklan Anda terlihat';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'Tambahkan pesan (opsional)';
 
   @override
   String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+      'Mode liburan gagal diperbarui. Silakan coba lagi.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => 'Analitik penjual';
 
   @override
   String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+      'Pantau tayangan, penawaran, dan penjualan';
 
   @override
   String get linkCopied => 'Tautan disalin ke papan klip';
@@ -4219,10 +4218,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get sold_badge => 'TERJUAL';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => 'DIPESAN';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => 'Baru dilihat';
 
   @override
   String get more_categories => 'Lagi';
@@ -4308,7 +4307,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Belum ada item dengan data lokasi di area ini.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => 'Properti tidak dapat dimuat di peta';
 
   @override
   String get location_picker_title => 'Tetapkan lokasi';
@@ -4434,87 +4433,88 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'Semua';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => 'Pertanyaan';
 
   @override
   String get communityRecommend => 'Tips';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => 'Gratis';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => 'Kehilangan & penemuan';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'Peringatan';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => 'Umum';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => 'Tulis';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'Belum ada postingan. Jadilah yang pertama!';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => 'Postingan';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'Belum ada komentar';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'Tambahkan komentar…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => 'Postingan baru';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => 'Posting';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'Bagikan sesuatu dengan lingkungan Anda…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => 'Gagal memposting';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'Tambahkan jajak pendapat';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'Pertanyaan jajak pendapat';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return 'Opsi $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => 'Tambah opsi';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => 'Tambahkan pertanyaan dan 2-5 opsi';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n suara';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => 'Maksimal 5 foto';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => 'Cari postingan…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed =>
+      'Tidak dapat memuat lagi. Ketuk untuk coba lagi.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      'Beberapa foto tidak ditambahkan (lebih dari 5MB atau format tidak didukung)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4522,229 +4522,231 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'Terjadi kesalahan';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'Beranda';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'Komunitas';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => 'Sekitar';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'Saya';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => 'Jasa';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => 'Properti';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => 'Lowongan';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => 'Toko lokal';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => 'Segera hadir';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => 'Chat dengan penjual';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'Apakah masih tersedia?';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'Bisa kurang harganya?';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'Di mana kita bisa bertemu?';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => 'Pesan';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => 'Tandai terjual';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => 'Kembali tersedia';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => 'Dipesan';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => 'Terjual';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => 'Tersedia';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => 'Penjual menandai barang ini sebagai dipesan';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => 'Penjual menandai barang ini sebagai terjual';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'Barang ini tersedia lagi';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'Beri ulasan';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => 'Balas';
 
   @override
   String get chatEdit => 'Edit';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => 'diedit';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => 'Hapus';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => 'Hapus untuk saya';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => 'Hapus untuk semua';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'Pesan dihapus';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'Salin';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'Disalin';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => 'Teruskan';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => 'Diteruskan';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => 'Teruskan ke…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'Sematkan';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'Lepas sematan';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'Pesan tersemat';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => 'Terjemahkan';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => 'Terjemahan tidak tersedia';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => 'Tampilkan asli';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'Cari di chat';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => 'Tidak ada hasil';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => 'Bisukan';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => 'Bunyikan';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'Arsipkan';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'Keluarkan dari arsip';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'Diarsipkan';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'Sematkan chat';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'Lepas sematan chat';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => 'sedang mengetik…';
 
   @override
   String get chatOnline => 'online';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return 'terakhir dilihat $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'baru saja';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m mnt lalu';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h jam lalu';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => 'Menghubungkan ulang…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => 'Gagal terkirim. Ketuk untuk coba lagi';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'Pesan suara';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint =>
+      'Lepas untuk mengirim, geser untuk membatalkan';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => 'Balasan cepat';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => 'Tambah balasan cepat';
 
   @override
   String get chatMediaGallery => 'Media';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => 'Pesan belum dibaca';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => 'Draf';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError =>
+      'Anda tidak bisa chat tentang iklan Anda sendiri';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => 'Terbaru';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => 'Terdekat';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => 'Populer';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => 'Harga: rendah ke tinggi';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => 'Harga: tinggi ke rendah';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'Hapus postingan ini?';
 
   @override
   String distanceKm(String km) {
@@ -4752,445 +4754,446 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => 'Dekat Anda sekarang';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => 'Radius pencarian';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => 'Seluruh kota';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => 'Terapkan';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return 'Lihat $n balasan';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => 'Penulis';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'Hapus komentar ini?';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'Muat komentar lainnya';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => 'Filter';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => 'Filter';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => 'Rentang harga';
 
   @override
   String get productFilterPriceMin => 'Min';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => 'Maks';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => 'Kondisi';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => 'Terapkan';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'Atur ulang';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'Penawaran';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => 'Pantau negosiasi harga';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'Lanjutkan di chat';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'Penawaran terkirim!';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'Masuk dulu untuk membuat penawaran';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'Tidak dapat membuka chat';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'Belum ada ulasan';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => 'Simpan pencarian';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => 'Pencarian tersimpan';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'Simpan pencarian ini';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle =>
+      'Beri tahu saya jika ada yang cocok';
 
   @override
   String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+      'Kami akan memberi tahu saat ada iklan baru yang cocok';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => 'Pencarian disimpan';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      'Pencarian disimpan. Anda akan diberi tahu jika ada yang cocok.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => 'Anda sudah menyimpan pencarian ini';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => 'Gagal menyimpan pencarian';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => 'Gagal mengaktifkan notifikasi';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => 'Pencarian tersimpan';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => 'Pencarian';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => 'Notifikasi';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => 'Belum ada pencarian tersimpan';
 
   @override
   String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+      'Simpan pencarian agar mudah ditemukan lagi nanti';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => 'Belum ada notifikasi';
 
   @override
   String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+      'Simpan pencarian dan aktifkan notifikasi untuk tahu iklan baru yang cocok';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return 'Dipakai $count kali';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => 'Hapus pencarian tersimpan';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => 'Hapus notifikasi';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => 'Hapus pencarian tersimpan?';
 
   @override
   String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+      'Pencarian tersimpan akan dihapus. Tindakan ini tidak bisa dibatalkan.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => 'Hapus notifikasi?';
 
   @override
   String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+      'Anda tidak akan lagi diberi tahu tentang hasil baru untuk kata kunci ini.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => 'Pencarian tersimpan dihapus';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => 'Notifikasi dihapus';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => 'Gagal menghapus pencarian tersimpan';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => 'Gagal menghapus notifikasi';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => 'Gagal memperbarui notifikasi';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => 'Gagal memuat pencarian tersimpan';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => 'Gagal memuat notifikasi';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'Tulis ulasan';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => 'Bagaimana pengalaman Anda?';
 
   @override
   String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+      'Pilih minimal 1 bintang untuk mengirim';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => 'Apa yang berjalan baik? (opsional)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => 'Komentar tambahan (opsional)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint =>
+      'Ceritakan lebih banyak tentang pengalaman Anda…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'Kirim ulasan';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'Ulasan berhasil dikirim';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => 'Gagal mengirim ulasan. Silakan coba lagi.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => 'Memuat detail transaksi…';
 
   @override
   String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+      'Kami tidak dapat memuat transaksi ini. Silakan coba lagi.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => 'Coba lagi';
 
   @override
-  String get view => 'View';
+  String get view => 'Lihat';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'Opsi lainnya';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => 'Tandai terjual';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => 'Kembali tersedia';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => 'Sembunyikan';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => 'Tampilkan';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => 'DISEMBUNYIKAN';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'Anda menjualnya ke siapa?';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => 'Terjual di tempat lain';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => 'Ditandai terjual';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => 'Iklan tersedia lagi';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => 'Iklan disembunyikan';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => 'Iklan terlihat lagi';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => 'Gagal memperbarui iklan';
 
   @override
   String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+      'Diperbarui — tarik untuk menyegarkan';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => 'Aktif';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => 'Terjual';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => 'Tidak ada iklan aktif';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => 'Belum ada yang terjual';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => 'Nama produk minimal 3 karakter';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => 'Deskripsi minimal 10 karakter';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => 'Tambah lagi';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint =>
+      'Tambahkan foto agar pembeli bisa melihat barangnya';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => 'Pilih lokasi di peta';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint =>
+      'Letakkan pin agar pembeli tahu lokasi barangnya';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => 'Gambar terlalu besar. Maksimal 5MB';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => 'Beberapa gambar di atas 5MB dilewati';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => 'Positif';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => 'Perlu diperbaiki';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => 'Bagus';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => 'Kurang bagus';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'Buat penawaran';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'Kirim penawaran';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => 'Tolak';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => 'Tawar balik';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => 'Terima';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => 'Terima tawaran balik';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'Batalkan penawaran';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => 'Tawaran balik';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => 'Kirim tawaran balik';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return 'Pembeli menawar: $price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return 'Harga diminta: $price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'Penawaran diterima!';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'Gagal menerima penawaran: $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'Penawaran ditolak';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'Gagal menolak penawaran: $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => 'Tawaran balik terkirim!';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return 'Gagal mengirim tawaran balik: $error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => 'Yakin ingin membatalkan penawaran ini?';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'Ya, batalkan';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'Penawaran dibatalkan';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'Gagal membatalkan penawaran: $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => 'Tawaran balik diterima!';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return 'Gagal menerima tawaran balik: $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => 'Belum ada penawaran masuk';
 
   @override
   String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+      'Saat ada yang menawar iklan Anda, penawaran akan muncul di sini';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => 'Belum ada penawaran terkirim';
 
   @override
   String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+      'Saat Anda menawar sebuah iklan, penawaran akan muncul di sini';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return 'Menunggu ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return 'Riwayat ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return 'Aktif ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'Kembali';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return 'Gagal memuat: $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'Pengaturan chat';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => 'Terjemahkan otomatis ke bahasa saya';
 
   @override
   String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+      'Pesan dari orang lain diterjemahkan saat diterima';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => 'Terjemahan otomatis aktif';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => 'Terjemahan otomatis nonaktif';
 }

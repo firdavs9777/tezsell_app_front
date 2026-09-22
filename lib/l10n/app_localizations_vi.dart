@@ -1559,20 +1559,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get in_area => 'trong khu vực';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'Tìm bất động sản theo tiêu đề, vị trí…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => 'Tìm bất động sản';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => 'Tìm kiếm gần đây';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'Xoá tất cả';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => 'Tìm kiếm thất bại. Vui lòng thử lại.';
 
   @override
   String get pagination_previous => 'Trước';
@@ -3125,20 +3124,20 @@ class AppLocalizationsVi extends AppLocalizations {
   String get logout_all => 'Đăng xuất tất cả';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'Lịch sử đăng nhập';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'Đăng xuất mọi thiết bị';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      'Thao tác này sẽ đăng xuất bạn khỏi mọi thiết bị đang đăng nhập, kể cả thiết bị này.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => 'Thiết bị mới';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'Chưa có lịch sử đăng nhập';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3147,11 +3146,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'Làm mới token';
 
   @override
   String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+      'Bạn đã đăng xuất khỏi mọi thiết bị';
 
   @override
   String get delete_account_confirm => 'Xóa tài khoản?';
@@ -4114,70 +4113,70 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'Đánh giá ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'Chưa có đánh giá';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => 'Người này chưa nhận được đánh giá nào';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'Bạn chưa viết đánh giá nào';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'Không còn đánh giá nào';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'Đánh giá của tôi';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => 'Đánh giá bạn đã viết và nhận được';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => 'Đã nhận';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => 'Đã viết';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return 'Đánh giá đang chờ ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle =>
+      'Chạm để đánh giá các giao dịch gần đây';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => 'Đánh giá đang chờ';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => 'Không tải được';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => 'Chế độ nghỉ';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => 'Tin đăng của bạn đang bị ẩn';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => 'Tin đăng của bạn đang hiển thị';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'Thêm lời nhắn (không bắt buộc)';
 
   @override
   String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+      'Không cập nhật được chế độ nghỉ. Vui lòng thử lại.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => 'Thống kê người bán';
 
   @override
   String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+      'Theo dõi lượt xem, đề nghị và doanh số';
 
   @override
   String get linkCopied => 'Đã sao chép liên kết vào bảng nhớ tạm';
@@ -4205,10 +4204,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sold_badge => 'ĐÃ BÁN';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => 'ĐÃ GIỮ';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => 'Vừa xem';
 
   @override
   String get more_categories => 'Hơn';
@@ -4293,7 +4292,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chưa có mục nào có dữ liệu vị trí trong khu vực này.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => 'Không tải được bất động sản trên bản đồ';
 
   @override
   String get location_picker_title => 'Đặt vị trí';
@@ -4420,87 +4419,87 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'Tất cả';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => 'Câu hỏi';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => 'Mẹo';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => 'Miễn phí';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => 'Đồ thất lạc';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'Cảnh báo';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => 'Chung';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => 'Viết';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'Chưa có bài viết. Hãy là người đầu tiên!';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => 'Bài viết';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'Chưa có bình luận';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'Thêm bình luận…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => 'Bài viết mới';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => 'Đăng';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'Chia sẻ điều gì đó với khu phố của bạn…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => 'Đăng bài thất bại';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'Thêm khảo sát';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'Câu hỏi khảo sát';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return 'Lựa chọn $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => 'Thêm lựa chọn';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => 'Thêm câu hỏi và 2-5 lựa chọn';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n lượt bình chọn';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => 'Tối đa 5 ảnh';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => 'Tìm bài viết…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed => 'Không tải thêm được. Chạm để thử lại.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      'Một số ảnh chưa được thêm (quá 5MB hoặc định dạng không hỗ trợ)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4508,229 +4507,230 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'Đã xảy ra lỗi';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'Trang chủ';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'Cộng đồng';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => 'Gần đây';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'Cá nhân';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => 'Dịch vụ';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => 'Bất động sản';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => 'Việc làm';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => 'Cửa hàng địa phương';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => 'Sắp có';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => 'Nhắn cho người bán';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'Còn hàng không ạ?';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'Bớt giá được không ạ?';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'Mình gặp ở đâu được ạ?';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => 'Giữ hàng';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => 'Đánh dấu đã bán';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => 'Mở bán lại';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => 'Đã giữ';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => 'Đã bán';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => 'Còn hàng';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => 'Người bán đã đánh dấu món này là đã giữ';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => 'Người bán đã đánh dấu món này là đã bán';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'Món này đã có lại';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'Viết đánh giá';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => 'Trả lời';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => 'Sửa';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => 'đã sửa';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => 'Xoá';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => 'Xoá ở phía tôi';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => 'Xoá với mọi người';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'Tin nhắn đã xoá';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'Sao chép';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'Đã sao chép';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => 'Chuyển tiếp';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => 'Đã chuyển tiếp';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => 'Chuyển tiếp tới…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'Ghim';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'Bỏ ghim';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'Tin nhắn đã ghim';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => 'Dịch';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => 'Không dịch được';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => 'Xem bản gốc';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'Tìm trong cuộc trò chuyện';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => 'Không có kết quả';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => 'Tắt thông báo';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => 'Bật thông báo';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'Lưu trữ';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'Bỏ lưu trữ';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'Đã lưu trữ';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'Ghim cuộc trò chuyện';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'Bỏ ghim cuộc trò chuyện';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => 'đang nhập…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => 'đang hoạt động';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return 'hoạt động $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'vừa xong';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m phút trước';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h giờ trước';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => 'Đang kết nối lại…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => 'Chưa gửi được. Chạm để thử lại';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'Tin nhắn thoại';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => 'Thả để gửi, vuốt để huỷ';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => 'Trả lời nhanh';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => 'Thêm câu trả lời nhanh';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => 'Phương tiện';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => 'Tin nhắn chưa đọc';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => 'Bản nháp';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError =>
+      'Bạn không thể nhắn tin về tin đăng của chính mình';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => 'Mới nhất';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => 'Gần nhất';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => 'Phổ biến';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => 'Giá: thấp đến cao';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => 'Giá: cao đến thấp';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'Xoá bài viết này?';
 
   @override
   String distanceKm(String km) {
@@ -4738,445 +4738,442 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => 'Gần bạn lúc này';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => 'Bán kính tìm kiếm';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => 'Toàn thành phố';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => 'Áp dụng';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return 'Xem $n trả lời';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => 'Tác giả';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'Xoá bình luận này?';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'Tải thêm bình luận';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => 'Bộ lọc';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => 'Bộ lọc';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => 'Khoảng giá';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => 'Tối thiểu';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => 'Tối đa';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => 'Tình trạng';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => 'Áp dụng';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'Đặt lại';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'Đề nghị';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => 'Theo dõi việc thương lượng giá';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'Tiếp tục trong cuộc trò chuyện';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'Đã gửi đề nghị!';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'Vui lòng đăng nhập để gửi đề nghị';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'Không mở được cuộc trò chuyện';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'Chưa có đánh giá';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => 'Lưu tìm kiếm';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => 'Tìm kiếm đã lưu';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'Lưu tìm kiếm này';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => 'Báo cho tôi khi có kết quả mới';
 
   @override
   String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+      'Chúng tôi sẽ báo khi có tin đăng mới phù hợp';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => 'Đã lưu tìm kiếm';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      'Đã lưu tìm kiếm. Bạn sẽ được báo khi có kết quả mới.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => 'Bạn đã lưu tìm kiếm này rồi';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => 'Không lưu được tìm kiếm';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => 'Không bật được thông báo';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => 'Tìm kiếm đã lưu';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => 'Tìm kiếm';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => 'Thông báo';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => 'Chưa có tìm kiếm nào được lưu';
 
   @override
   String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+      'Lưu một tìm kiếm để tìm lại nhanh sau này';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => 'Chưa có thông báo';
 
   @override
   String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+      'Lưu tìm kiếm và bật thông báo để biết khi có kết quả mới';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return 'Đã dùng $count lần';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => 'Xoá tìm kiếm đã lưu';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => 'Xoá thông báo';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => 'Xoá tìm kiếm đã lưu?';
 
   @override
   String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+      'Tìm kiếm đã lưu sẽ bị xoá. Không thể hoàn tác.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => 'Xoá thông báo?';
 
   @override
   String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+      'Bạn sẽ không còn nhận thông báo về kết quả mới cho từ khoá này.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => 'Đã xoá tìm kiếm đã lưu';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => 'Đã xoá thông báo';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => 'Không xoá được tìm kiếm đã lưu';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => 'Không xoá được thông báo';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => 'Không cập nhật được thông báo';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => 'Không tải được tìm kiếm đã lưu';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => 'Không tải được thông báo';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'Viết đánh giá';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => 'Trải nghiệm của bạn thế nào?';
 
   @override
-  String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+  String get reviewWriteRatingRequiredHint => 'Chọn ít nhất 1 sao để gửi';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => 'Điều gì đã tốt? (không bắt buộc)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => 'Nhận xét thêm (không bắt buộc)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => 'Chia sẻ thêm về trải nghiệm của bạn…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'Gửi đánh giá';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'Đã gửi đánh giá';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => 'Không gửi được đánh giá. Vui lòng thử lại.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => 'Đang tải chi tiết giao dịch…';
 
   @override
   String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+      'Chúng tôi không tải được giao dịch này. Vui lòng thử lại.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => 'Thử lại';
 
   @override
-  String get view => 'View';
+  String get view => 'Xem';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'Tùy chọn khác';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => 'Đánh dấu đã bán';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => 'Mở bán lại';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => 'Ẩn';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => 'Hiện';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => 'ĐÃ ẨN';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'Bạn đã bán cho ai?';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => 'Bán ở nơi khác';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => 'Đã đánh dấu là đã bán';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => 'Tin đăng đã có lại';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => 'Đã ẩn tin đăng';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => 'Tin đăng đã hiển thị lại';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => 'Không cập nhật được tin đăng';
 
   @override
   String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+      'Đã cập nhật — kéo xuống để làm mới';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => 'Đang hoạt động';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => 'Đã bán';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => 'Không có tin đăng nào đang hoạt động';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => 'Chưa bán được món nào';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => 'Tên sản phẩm phải có ít nhất 3 ký tự';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => 'Mô tả phải có ít nhất 10 ký tự';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => 'Thêm ảnh';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint =>
+      'Thêm ảnh để người mua nhìn thấy món hàng';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => 'Chọn vị trí trên bản đồ';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint => 'Đặt ghim để người mua biết món hàng ở đâu';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => 'Ảnh quá lớn. Tối đa 5MB';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => 'Một số ảnh trên 5MB đã bị bỏ qua';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => 'Tích cực';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => 'Cần cải thiện';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => 'Tốt';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => 'Chưa tốt';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'Gửi đề nghị';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'Gửi đề nghị';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => 'Từ chối';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => 'Trả giá';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => 'Chấp nhận';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => 'Chấp nhận mức trả giá';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'Huỷ đề nghị';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => 'Trả giá';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => 'Gửi mức trả giá';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return 'Người mua đề nghị: $price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return 'Giá rao: $price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'Đã chấp nhận đề nghị!';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'Không chấp nhận được đề nghị: $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'Đã từ chối đề nghị';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'Không từ chối được đề nghị: $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => 'Đã gửi mức trả giá!';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return 'Không gửi được mức trả giá: $error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => 'Bạn có chắc muốn huỷ đề nghị này?';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'Có, huỷ';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'Đã huỷ đề nghị';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'Không huỷ được đề nghị: $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => 'Đã chấp nhận mức trả giá!';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return 'Không chấp nhận được mức trả giá: $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => 'Chưa nhận đề nghị nào';
 
   @override
   String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+      'Khi có người đề nghị mua tin đăng của bạn, chúng sẽ hiện ở đây';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => 'Chưa gửi đề nghị nào';
 
   @override
   String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+      'Khi bạn gửi đề nghị cho tin đăng, chúng sẽ hiện ở đây';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return 'Đang chờ ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return 'Lịch sử ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return 'Đang hoạt động ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'Quay lại';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return 'Tải thất bại: $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'Cài đặt trò chuyện';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => 'Tự động dịch sang ngôn ngữ của tôi';
 
   @override
   String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+      'Tin nhắn của người khác được dịch ngay khi nhận';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => 'Đã bật tự động dịch';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => 'Đã tắt tự động dịch';
 }

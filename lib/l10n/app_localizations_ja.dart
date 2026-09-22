@@ -1524,20 +1524,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get in_area => 'エリア内';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'タイトルや地域で物件を検索…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => '物件を検索';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => '最近の検索';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'すべて消去';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => '検索に失敗しました。もう一度お試しください。';
 
   @override
   String get pagination_previous => '前の';
@@ -3036,20 +3035,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get logout_all => 'すべてログアウト';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'ログイン履歴';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'すべての端末からログアウト';
 
   @override
-  String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+  String get securityLogoutAllConfirm => '現在ログイン中のすべての端末（この端末を含む）からログアウトします。';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => '新しい端末';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'ログイン履歴はまだありません';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3058,11 +3056,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'トークン更新';
 
   @override
-  String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+  String get securitySignedOutEverywhere => 'すべての端末からログアウトしました';
 
   @override
   String get delete_account_confirm => 'アカウントを削除しますか?';
@@ -3996,70 +3993,67 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'レビュー（$count件）';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'レビューはまだありません';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => 'このユーザーはまだレビューを受け取っていません';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'まだレビューを投稿していません';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'これ以上のレビューはありません';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'マイレビュー';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => '投稿・受け取ったレビュー';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => '受け取った';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => '投稿した';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return '未投稿のレビュー（$count件）';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle => 'タップして最近の取引を評価';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => '未投稿のレビュー';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => '読み込めませんでした';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => '休暇モード';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => '出品は非表示です';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => '出品は表示されています';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'メッセージを追加（任意）';
 
   @override
-  String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+  String get vacationModeToggleError => '休暇モードを変更できませんでした。もう一度お試しください。';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => '出品者アナリティクス';
 
   @override
-  String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+  String get sellerAnalyticsSubtitle => '閲覧数・オファー・売上を確認';
 
   @override
   String get linkCopied => 'リンクがクリップボードにコピーされました';
@@ -4086,10 +4080,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sold_badge => '販売済み';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => '取り置き中';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => '最近見た商品';
 
   @override
   String get more_categories => 'もっと';
@@ -4170,7 +4164,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browse_no_items_with_location => 'このエリアには位置データを持つアイテムはまだありません。';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => '地図に物件を読み込めませんでした';
 
   @override
   String get location_picker_title => '場所を設定する';
@@ -4292,87 +4286,86 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'すべて';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => '質問';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => 'おすすめ';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => '無料';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => '落とし物';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'お知らせ';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => '雑談';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => '投稿';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'まだ投稿がありません。最初の一人になりましょう！';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => '投稿';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'コメントはまだありません';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'コメントを追加…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => '新しい投稿';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => '投稿する';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'ご近所に何かシェアしましょう…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => '投稿できませんでした';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'アンケートを追加';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'アンケートの質問';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return '選択肢 $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => '選択肢を追加';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => '質問と2〜5個の選択肢を入力してください';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n票';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => '写真は5枚まで';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => '投稿を検索…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed => '読み込めませんでした。タップして再試行。';
 
   @override
-  String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+  String get communityImageRejected => '一部の写真は追加されませんでした（5MB超または非対応形式）';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4380,229 +4373,229 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => '問題が発生しました';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'ホーム';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'コミュニティ';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => '近所';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'マイページ';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => 'サービス';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => '不動産';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => '求人';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => '地域のお店';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => '近日公開';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => '出品者とチャット';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'まだ購入できますか？';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'お値下げできますか？';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'どこで受け取れますか？';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => '取り置き';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => '売却済みにする';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => '販売中に戻す';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => '取り置き中';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => '売却済み';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => '販売中';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => '出品者がこの商品を取り置き中にしました';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => '出品者がこの商品を売却済みにしました';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'この商品は再び販売中です';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'レビューを書く';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => '返信';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => '編集';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => '編集済み';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => '削除';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => '自分の画面から削除';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => '全員の画面から削除';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'メッセージを削除しました';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'コピー';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'コピーしました';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => '転送';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => '転送されました';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => '転送先…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'ピン留め';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'ピン留めを解除';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'ピン留めしたメッセージ';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => '翻訳';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => '翻訳できません';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => '原文を表示';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'チャット内を検索';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => '結果がありません';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => '通知をオフ';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => '通知をオン';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'アーカイブ';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'アーカイブ解除';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'アーカイブ済み';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'チャットをピン留め';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'チャットのピン留めを解除';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => '入力中…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => 'オンライン';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return '最終ログイン $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'たった今';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m分前';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h時間前';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => '再接続中…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => '送信できません。タップして再試行';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'ボイスメッセージ';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => '離すと送信、スライドでキャンセル';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => '定型文';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => '定型文を追加';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => 'メディア';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => '未読メッセージ';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => '下書き';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError => '自分の出品についてはチャットできません';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => '新着順';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => '近い順';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => '人気順';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => '価格が安い順';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => '価格が高い順';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'この投稿を削除しますか？';
 
   @override
   String distanceKm(String km) {
@@ -4610,445 +4603,430 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => '今、近くで';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => '検索範囲';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => '市全体';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => '適用';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return '返信$n件を表示';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => '投稿者';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'このコメントを削除しますか？';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'コメントをもっと見る';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => '絞り込み';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => '絞り込み';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => '価格帯';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => '下限';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => '上限';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => '状態';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => '適用';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'リセット';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'オファー';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => '価格交渉を確認';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'チャットで続ける';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'オファーを送信しました！';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'オファーするにはログインしてください';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'チャットを開けません';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'レビューはまだありません';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => '検索を保存';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => '保存した検索';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'この検索を保存';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => '新着があれば通知';
 
   @override
-  String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+  String get savedSearchNotifyToggleSubtitle => 'この検索に合う出品が出たらお知らせします';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => '検索を保存しました';
 
   @override
-  String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+  String get savedSearchSavedWithAlertSuccess => '検索を保存しました。新着があればお知らせします。';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => 'この検索はすでに保存済みです';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => '検索を保存できませんでした';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => '通知を有効にできませんでした';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => '保存した検索';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => '検索';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => '通知';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => '保存した検索はまだありません';
 
   @override
-  String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+  String get savedSearchesEmptySubtitle => '検索を保存すると、あとから素早く呼び出せます';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => '通知はまだありません';
 
   @override
-  String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+  String get searchAlertsEmptySubtitle => '検索を保存して通知をオンにすると、新着をお知らせします';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return '$count回使用';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => '保存した検索を削除';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => '通知を削除';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => '保存した検索を削除しますか？';
 
   @override
-  String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+  String get savedSearchDeleteConfirmMessage => '保存した検索を削除します。この操作は取り消せません。';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => '通知を削除しますか？';
 
   @override
-  String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+  String get searchAlertDeleteConfirmMessage => 'このキーワードの新着はお知らせされなくなります。';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => '保存した検索を削除しました';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => '通知を削除しました';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => '保存した検索を削除できませんでした';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => '通知を削除できませんでした';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => '通知を更新できませんでした';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => '保存した検索を読み込めませんでした';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => '通知を読み込めませんでした';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'レビューを書く';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => '取引はいかがでしたか？';
 
   @override
-  String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+  String get reviewWriteRatingRequiredHint => '送信するには星を1つ以上選んでください';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => 'よかった点は？（任意）';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => 'その他のコメント（任意）';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => '取引について詳しく教えてください…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'レビューを送信';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'レビューを送信しました';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => 'レビューを送信できませんでした。もう一度お試しください。';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => '取引の詳細を読み込み中…';
 
   @override
-  String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+  String get reviewWriteResolveError => 'この取引を読み込めませんでした。もう一度お試しください。';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => '再試行';
 
   @override
-  String get view => 'View';
+  String get view => '見る';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'その他の操作';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => '売却済みにする';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => '販売中に戻す';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => '非表示にする';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => '再表示する';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => '非表示';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'どなたに売却しましたか？';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => '他で売却';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => '売却済みにしました';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => '出品を再び販売中にしました';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => '出品を非表示にしました';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => '出品を再表示しました';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => '出品を更新できませんでした';
 
   @override
-  String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+  String get listing_updated_refresh_failed => '更新しました — 引っ張って再読み込みしてください';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => '出品中';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => '売却済み';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => '出品中の商品はありません';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => '売却済みの商品はまだありません';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => '商品名は3文字以上で入力してください';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => '説明は10文字以上で入力してください';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => '追加する';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint => '購入希望者が商品を見られるよう写真を追加しましょう';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => '地図で場所を選ぶ';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint => 'ピンを置いて商品の場所を知らせましょう';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => '画像が大きすぎます。上限は5MBです';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => '5MBを超える画像は除外されました';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => '良かった点';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => '改善点';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => '良い';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => '良くない';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'オファーする';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'オファーを送信';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => '辞退する';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => '逆オファー';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => '承諾する';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => '逆オファーを承諾';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'オファーを取り消す';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => '逆オファー';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => '逆オファーを送信';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return '購入希望者の提示額：$price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return '出品価格：$price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'オファーを承諾しました！';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'オファーを承諾できませんでした：$error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'オファーを辞退しました';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'オファーを辞退できませんでした：$error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => '逆オファーを送信しました！';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return '逆オファーを送信できませんでした：$error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => 'このオファーを取り消しますか？';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'はい、取り消す';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'オファーを取り消しました';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'オファーを取り消せませんでした：$error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => '逆オファーを承諾しました！';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return '逆オファーを承諾できませんでした：$error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => '受け取ったオファーはありません';
 
   @override
-  String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+  String get offersNoneReceivedSubtitle => 'あなたの出品にオファーが届くと、ここに表示されます';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => '送信したオファーはありません';
 
   @override
-  String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+  String get offersNoneSentSubtitle => '出品にオファーすると、ここに表示されます';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return '保留中（$count）';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return '履歴（$count）';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return '進行中（$count）';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => '戻る';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return '読み込みに失敗しました：$error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'チャット設定';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => '自分の言語に自動翻訳';
 
   @override
-  String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+  String get chatAutoTranslateSubtitle => '相手のメッセージを受信時に翻訳します';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => '自動翻訳をオンにしました';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => '自動翻訳をオフにしました';
 }

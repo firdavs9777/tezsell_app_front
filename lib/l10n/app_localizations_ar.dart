@@ -1547,20 +1547,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get in_area => 'في المنطقة';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'ابحث عن عقارات بالعنوان أو الموقع…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => 'البحث عن عقارات';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => 'عمليات البحث الأخيرة';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'مسح الكل';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => 'فشل البحث. يرجى المحاولة مرة أخرى.';
 
   @override
   String get pagination_previous => 'سابق';
@@ -3086,20 +3085,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logout_all => 'تسجيل الخروج الكل';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'سجل تسجيل الدخول';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'تسجيل الخروج من كل الأجهزة';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      'سيؤدي هذا إلى تسجيل خروجك من كل الأجهزة التي سجّلت الدخول منها، بما في ذلك هذا الجهاز.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => 'جهاز جديد';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'لا يوجد سجل دخول بعد';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3108,11 +3107,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'تحديث الرمز';
 
   @override
-  String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+  String get securitySignedOutEverywhere => 'تم تسجيل خروجك من كل الأجهزة';
 
   @override
   String get delete_account_confirm => 'هل تريد حذف الحساب؟';
@@ -4065,70 +4063,68 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'التقييمات ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'لا توجد تقييمات بعد';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => 'لم يتلقَّ هذا المستخدم أي تقييم بعد';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'لم تكتب أي تقييم بعد';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'لا مزيد من التقييمات';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'تقييماتي';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => 'التقييمات التي كتبتها وتلقيتها';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => 'المستلمة';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => 'المكتوبة';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return 'تقييمات معلّقة ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle => 'اضغط لتقييم معاملاتك الأخيرة';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => 'التقييمات المعلّقة';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => 'تعذّر التحميل';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => 'وضع الإجازة';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => 'إعلاناتك مخفية';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => 'إعلاناتك ظاهرة';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'أضف رسالة (اختياري)';
 
   @override
   String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+      'تعذّر تحديث وضع الإجازة. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => 'إحصاءات البائع';
 
   @override
-  String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+  String get sellerAnalyticsSubtitle => 'تابع المشاهدات والعروض والمبيعات';
 
   @override
   String get linkCopied => 'تم نسخ الرابط إلى الحافظة';
@@ -4156,10 +4152,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sold_badge => 'مُباع';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => 'محجوز';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => 'شوهدت مؤخرًا';
 
   @override
   String get more_categories => 'أكثر';
@@ -4245,7 +4241,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا توجد عناصر تحتوي على بيانات الموقع في هذه المنطقة حتى الآن.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => 'تعذّر تحميل العقارات على الخريطة';
 
   @override
   String get location_picker_title => 'تحديد الموقع';
@@ -4370,87 +4366,88 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'الكل';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => 'سؤال';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => 'نصائح';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => 'مجاني';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => 'المفقودات';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'تنبيه';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => 'عام';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => 'كتابة';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'لا توجد منشورات بعد. كن أول من يكتب!';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => 'منشور';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'لا توجد تعليقات بعد';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'أضف تعليقًا…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => 'منشور جديد';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => 'نشر';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'شارك شيئًا مع جيرانك…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => 'فشل النشر';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'إضافة استطلاع';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'سؤال الاستطلاع';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return 'الخيار $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => 'إضافة خيار';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => 'أضف سؤالًا ومن ٢ إلى ٥ خيارات';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n صوتًا';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => 'حتى ٥ صور';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => 'ابحث في المنشورات…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed =>
+      'تعذّر تحميل المزيد. اضغط لإعادة المحاولة.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      'لم تُضَف بعض الصور (أكبر من ٥ ميغابايت أو نوع غير مدعوم)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4458,675 +4455,674 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'حدث خطأ ما';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'الرئيسية';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'المجتمع';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => 'بالقرب مني';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'حسابي';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => 'الخدمات';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => 'العقارات';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => 'الوظائف';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => 'المتاجر المحلية';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => 'قريبًا';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => 'محادثة البائع';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'هل ما زال متاحًا؟';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'هل يمكن تخفيض السعر؟';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'أين يمكننا الالتقاء؟';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => 'حجز';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => 'تحديد كمباع';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => 'إعادة إلى متاح';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => 'محجوز';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => 'مباع';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => 'متاح';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => 'حدّد البائع هذا العنصر كمحجوز';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => 'حدّد البائع هذا العنصر كمباع';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'هذا العنصر متاح مرة أخرى';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'اكتب تقييمًا';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => 'رد';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => 'تعديل';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => 'مُعدّل';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => 'حذف';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => 'حذف عندي';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => 'حذف عند الجميع';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'تم حذف الرسالة';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'نسخ';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'تم النسخ';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => 'إعادة توجيه';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => 'أُعيد توجيهها';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => 'إعادة التوجيه إلى…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'تثبيت';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'إلغاء التثبيت';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'الرسائل المثبتة';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => 'ترجمة';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => 'الترجمة غير متاحة';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => 'عرض النص الأصلي';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'البحث في المحادثة';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => 'لا توجد نتائج';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => 'كتم';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => 'إلغاء الكتم';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'أرشفة';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'إلغاء الأرشفة';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'المؤرشفة';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'تثبيت المحادثة';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'إلغاء تثبيت المحادثة';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => 'يكتب…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => 'متصل';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return 'آخر ظهور $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'الآن';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return 'قبل $m د';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return 'قبل $h س';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => 'جارٍ إعادة الاتصال…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => 'لم تُرسل. اضغط لإعادة المحاولة';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'رسالة صوتية';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => 'أفلت للإرسال، اسحب للإلغاء';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => 'ردود سريعة';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => 'إضافة رد سريع';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => 'الوسائط';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => 'رسائل غير مقروءة';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => 'مسودة';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError => 'لا يمكنك بدء محادثة حول إعلانك الخاص';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => 'الأحدث';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => 'الأقرب';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => 'الأكثر رواجًا';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => 'السعر: من الأقل إلى الأعلى';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => 'السعر: من الأعلى إلى الأقل';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'حذف هذا المنشور؟';
 
   @override
   String distanceKm(String km) {
-    return '$km km';
+    return '$km كم';
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => 'بالقرب منك الآن';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => 'نطاق البحث';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => 'المدينة كاملة';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => 'تطبيق';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return 'عرض $n ردًا';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => 'الكاتب';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'حذف هذا التعليق؟';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'تحميل مزيد من التعليقات';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => 'عوامل التصفية';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => 'عوامل التصفية';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => 'نطاق السعر';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => 'الأدنى';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => 'الأعلى';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => 'الحالة';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => 'تطبيق';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'إعادة تعيين';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'العروض';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => 'تابع مفاوضات السعر';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'المتابعة في المحادثة';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'تم إرسال العرض!';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'يرجى تسجيل الدخول لتقديم عرض';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'تعذّر فتح المحادثة';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'لا توجد تقييمات بعد';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => 'حفظ البحث';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => 'عمليات البحث المحفوظة';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'حفظ هذا البحث';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => 'أبلغني بالنتائج الجديدة';
 
   @override
   String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+      'سننبهك عند ظهور إعلانات جديدة تطابق هذا البحث';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => 'تم حفظ البحث';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      'تم حفظ البحث. سننبهك بالنتائج الجديدة.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => 'سبق أن حفظت هذا البحث';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => 'تعذّر حفظ البحث';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => 'تعذّر تفعيل التنبيه';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => 'عمليات البحث المحفوظة';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => 'عمليات البحث';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => 'التنبيهات';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => 'لا توجد عمليات بحث محفوظة';
 
   @override
   String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+      'احفظ بحثًا للعثور عليه بسرعة لاحقًا';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => 'لا توجد تنبيهات بعد';
 
   @override
   String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+      'احفظ بحثًا وفعّل الإشعارات لتنبيهك بالنتائج الجديدة';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return 'استُخدم $count مرة';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => 'حذف البحث المحفوظ';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => 'حذف التنبيه';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => 'حذف البحث المحفوظ؟';
 
   @override
   String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+      'سيُحذف البحث المحفوظ، ولا يمكن التراجع عن ذلك.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => 'حذف التنبيه؟';
 
   @override
   String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+      'لن تتلقى بعد الآن تنبيهات بالنتائج الجديدة لهذه الكلمة.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => 'تم حذف البحث المحفوظ';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => 'تم حذف التنبيه';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => 'تعذّر حذف البحث المحفوظ';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => 'تعذّر حذف التنبيه';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => 'تعذّر تحديث التنبيه';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => 'تعذّر تحميل عمليات البحث المحفوظة';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => 'تعذّر تحميل التنبيهات';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'اكتب تقييمًا';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => 'كيف كانت تجربتك؟';
 
   @override
   String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+      'اختر نجمة واحدة على الأقل للإرسال';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => 'ما الذي سار على ما يرام؟ (اختياري)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => 'ملاحظات إضافية (اختياري)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => 'أخبرنا المزيد عن تجربتك…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'إرسال التقييم';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'تم إرسال التقييم بنجاح';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => 'تعذّر إرسال التقييم. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => 'جارٍ تحميل تفاصيل المعاملة…';
 
   @override
   String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+      'تعذّر تحميل هذه المعاملة. يرجى المحاولة مرة أخرى.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => 'إعادة المحاولة';
 
   @override
-  String get view => 'View';
+  String get view => 'عرض';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'خيارات أخرى';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => 'تحديد كمباع';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => 'إعادة إلى متاح';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => 'إخفاء';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => 'إظهار';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => 'مخفي';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'لمن بعته؟';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => 'بيع في مكان آخر';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => 'تم تحديده كمباع';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => 'الإعلان متاح مرة أخرى';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => 'تم إخفاء الإعلان';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => 'الإعلان ظاهر مرة أخرى';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => 'تعذّر تحديث الإعلان';
 
   @override
   String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+      'تم التحديث — اسحب للأسفل لتحديث العرض';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => 'نشطة';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => 'مباعة';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => 'لا توجد إعلانات نشطة';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => 'لا توجد عناصر مباعة بعد';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => 'يجب ألا يقل اسم المنتج عن ٣ أحرف';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => 'يجب ألا يقل الوصف عن ١٠ أحرف';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => 'إضافة المزيد';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint =>
+      'أضف صورًا ليتمكن المشترون من رؤية العنصر';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => 'اختر الموقع على الخريطة';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint => 'ضع علامة ليعرف المشترون مكان العنصر';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage =>
+      'حجم الصورة كبير جدًا. الحد الأقصى ٥ ميغابايت';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped =>
+      'تم تخطي بعض الصور التي تتجاوز ٥ ميغابايت';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => 'إيجابي';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => 'بحاجة إلى تحسين';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => 'جيد';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => 'غير جيد';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'تقديم عرض';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'إرسال العرض';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => 'رفض';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => 'عرض مضاد';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => 'قبول';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => 'قبول العرض المضاد';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'إلغاء العرض';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => 'عرض مضاد';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => 'إرسال العرض المضاد';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return 'عرض المشتري: $price سوم';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return 'السعر المطلوب: $price سوم';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'تم قبول العرض!';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'تعذّر قبول العرض: $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'تم رفض العرض';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'تعذّر رفض العرض: $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => 'تم إرسال العرض المضاد!';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return 'تعذّر إرسال العرض المضاد: $error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => 'هل تريد بالتأكيد إلغاء هذا العرض؟';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'نعم، إلغاء';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'تم إلغاء العرض';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'تعذّر إلغاء العرض: $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => 'تم قبول العرض المضاد!';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return 'تعذّر قبول العرض المضاد: $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => 'لم تتلقَّ أي عروض';
 
   @override
   String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+      'عندما يقدّم المشترون عروضًا على إعلاناتك ستظهر هنا';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => 'لم ترسل أي عروض';
 
   @override
   String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+      'عندما تقدّم عروضًا على الإعلانات ستظهر هنا';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return 'معلّقة ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return 'السجل ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return 'نشطة ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'رجوع';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return 'فشل التحميل: $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'إعدادات المحادثة';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => 'الترجمة التلقائية إلى لغتي';
 
   @override
-  String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+  String get chatAutoTranslateSubtitle => 'تُترجم رسائل الآخرين فور وصولها';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => 'تم تفعيل الترجمة التلقائية';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => 'تم إيقاف الترجمة التلقائية';
 }

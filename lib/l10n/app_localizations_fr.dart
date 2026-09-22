@@ -1597,20 +1597,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get in_area => 'dans la zone';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'Rechercher par titre, lieu…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => 'Rechercher un bien';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => 'Recherches récentes';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'Tout effacer';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => 'La recherche a échoué. Réessayez.';
 
   @override
   String get pagination_previous => 'Précédent';
@@ -3182,20 +3181,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logout_all => 'Tout déconnecter';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'Historique de connexion';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'Déconnecter tous les appareils';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      'Vous serez déconnecté de tous les appareils où vous êtes actuellement connecté, y compris celui-ci.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => 'Nouvel appareil';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'Aucun historique pour l’instant';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3204,11 +3203,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'Renouvellement du jeton';
 
   @override
   String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+      'Vous avez été déconnecté de tous les appareils';
 
   @override
   String get delete_account_confirm => 'Supprimer le compte ?';
@@ -4197,70 +4196,71 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'Avis ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'Pas encore d’avis';
 
   @override
   String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+      'Cette personne n’a pas encore reçu d’avis';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'Vous n’avez pas encore laissé d’avis';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'Plus d’avis à charger';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'Mes avis';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => 'Avis donnés et reçus';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => 'Reçus';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => 'Donnés';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return 'Avis en attente ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle =>
+      'Touchez pour noter vos dernières transactions';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => 'Avis en attente';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => 'Chargement impossible';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => 'Mode vacances';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => 'Vos annonces sont masquées';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => 'Vos annonces sont visibles';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'Ajouter un message (facultatif)';
 
   @override
   String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+      'Impossible de modifier le mode vacances. Réessayez.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => 'Statistiques vendeur';
 
   @override
   String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+      'Suivez les vues, les offres et les ventes';
 
   @override
   String get linkCopied => 'Lien copié dans le presse-papier';
@@ -4289,10 +4289,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sold_badge => 'VENDU';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => 'RÉSERVÉ';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => 'Vus récemment';
 
   @override
   String get more_categories => 'Plus';
@@ -4379,7 +4379,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucun élément avec des données de localisation dans cette zone pour l\'instant.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => 'Impossible de charger les biens sur la carte';
 
   @override
   String get location_picker_title => 'Définir l\'emplacement';
@@ -4508,58 +4508,58 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'Tout';
 
   @override
   String get communityQuestion => 'Question';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => 'Conseils';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => 'Gratuit';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => 'Objets trouvés';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'Alerte';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => 'Général';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => 'Écrire';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'Aucune publication. Soyez le premier !';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => 'Publication';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'Aucun commentaire';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'Ajouter un commentaire…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => 'Nouvelle publication';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => 'Publier';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'Partagez quelque chose avec votre quartier…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => 'Échec de la publication';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'Ajouter un sondage';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'Question du sondage';
 
   @override
   String communityPollOption(int n) {
@@ -4567,10 +4567,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => 'Ajouter une option';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => 'Ajoutez une question et 2 à 5 options';
 
   @override
   String communityPollVotes(int n) {
@@ -4578,17 +4578,18 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => 'Jusqu’à 5 photos';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => 'Rechercher des publications…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed =>
+      'Chargement impossible. Touchez pour réessayer.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      'Certaines photos n’ont pas été ajoutées (plus de 5 Mo ou format non pris en charge)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4596,229 +4597,230 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'Une erreur est survenue';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'Accueil';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'Communauté';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => 'À proximité';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'Moi';
 
   @override
   String get nearbyServices => 'Services';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => 'Immobilier';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => 'Emplois';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => 'Commerces locaux';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => 'Bientôt disponible';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => 'Discuter avec le vendeur';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'Est-ce toujours disponible ?';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'Pouvez-vous baisser le prix ?';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'Où peut-on se retrouver ?';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => 'Réserver';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => 'Marquer comme vendu';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => 'Remettre en vente';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => 'Réservé';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => 'Vendu';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => 'Disponible';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => 'Le vendeur a marqué cet article comme réservé';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => 'Le vendeur a marqué cet article comme vendu';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'Cet article est de nouveau disponible';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'Laisser un avis';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => 'Répondre';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => 'Modifier';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => 'modifié';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => 'Supprimer';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => 'Supprimer pour moi';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => 'Supprimer pour tout le monde';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'Message supprimé';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'Copier';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'Copié';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => 'Transférer';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => 'Transféré';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => 'Transférer à…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'Épingler';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'Désépingler';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'Messages épinglés';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => 'Traduire';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => 'Traduction indisponible';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => 'Voir l’original';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'Rechercher dans la discussion';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => 'Aucun résultat';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => 'Couper les notifications';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => 'Réactiver les notifications';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'Archiver';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'Désarchiver';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'Archivés';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'Épingler la discussion';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'Désépingler la discussion';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => 'écrit…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => 'en ligne';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return 'vu $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'à l’instant';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return 'il y a $m min';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return 'il y a $h h';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => 'Reconnexion…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => 'Non envoyé. Touchez pour réessayer';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'Message vocal';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => 'Relâchez pour envoyer, glissez pour annuler';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => 'Réponses rapides';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => 'Ajouter une réponse rapide';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => 'Médias';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => 'Messages non lus';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => 'Brouillon';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError =>
+      'Vous ne pouvez pas discuter de votre propre annonce';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => 'Plus récentes';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => 'Plus proches';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => 'Populaires';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => 'Prix croissant';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => 'Prix décroissant';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'Supprimer cette publication ?';
 
   @override
   String distanceKm(String km) {
@@ -4826,39 +4828,39 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => 'Près de vous';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => 'Rayon de recherche';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => 'Toute la ville';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => 'Appliquer';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return 'Voir $n réponses';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => 'Auteur';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'Supprimer ce commentaire ?';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'Charger plus de commentaires';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => 'Filtres';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => 'Filtres';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => 'Fourchette de prix';
 
   @override
   String get productFilterPriceMin => 'Min';
@@ -4867,404 +4869,418 @@ class AppLocalizationsFr extends AppLocalizations {
   String get productFilterPriceMax => 'Max';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => 'État';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => 'Appliquer';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'Réinitialiser';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'Offres';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => 'Suivez les négociations de prix';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'Continuer dans la discussion';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'Offre envoyée !';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'Connectez-vous pour faire une offre';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'Impossible d’ouvrir la discussion';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'Pas encore d’avis';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => 'Enregistrer la recherche';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => 'Recherches enregistrées';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'Enregistrer cette recherche';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => 'M’avertir des nouveaux résultats';
 
   @override
   String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+      'Nous vous préviendrons dès qu’une annonce correspond';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => 'Recherche enregistrée';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      'Recherche enregistrée. Vous serez averti des nouveaux résultats.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved =>
+      'Vous avez déjà enregistré cette recherche';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError =>
+      'Impossible d’enregistrer la recherche';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => 'Impossible d’activer l’alerte';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => 'Recherches enregistrées';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => 'Recherches';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => 'Alertes';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => 'Aucune recherche enregistrée';
 
   @override
   String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+      'Enregistrez une recherche pour la retrouver rapidement';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => 'Aucune alerte';
 
   @override
   String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+      'Enregistrez une recherche et activez les notifications pour être averti';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return 'Utilisée $count fois';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => 'Supprimer la recherche enregistrée';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => 'Supprimer l’alerte';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle =>
+      'Supprimer la recherche enregistrée ?';
 
   @override
   String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+      'La recherche enregistrée sera supprimée. Cette action est irréversible.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => 'Supprimer l’alerte ?';
 
   @override
   String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+      'Vous ne serez plus averti des nouveaux résultats pour ce mot-clé.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => 'Recherche enregistrée supprimée';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => 'Alerte supprimée';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError =>
+      'Impossible de supprimer la recherche enregistrée';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => 'Impossible de supprimer l’alerte';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => 'Impossible de mettre à jour l’alerte';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError =>
+      'Impossible de charger les recherches enregistrées';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => 'Impossible de charger les alertes';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'Rédiger un avis';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel =>
+      'Comment s’est passée votre expérience ?';
 
   @override
   String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+      'Sélectionnez au moins 1 étoile pour envoyer';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel =>
+      'Qu’est-ce qui s’est bien passé ? (facultatif)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel =>
+      'Commentaires supplémentaires (facultatif)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => 'Dites-en plus sur votre expérience…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'Envoyer l’avis';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'Avis envoyé';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => 'Impossible d’envoyer l’avis. Réessayez.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction =>
+      'Chargement des détails de la transaction…';
 
   @override
   String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+      'Impossible de charger cette transaction. Réessayez.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => 'Réessayer';
 
   @override
-  String get view => 'View';
+  String get view => 'Voir';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'Plus d’options';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => 'Marquer comme vendu';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => 'Remettre en vente';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => 'Masquer';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => 'Afficher';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => 'MASQUÉ';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'À qui l’avez-vous vendu ?';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => 'Vendu ailleurs';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => 'Marqué comme vendu';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => 'L’annonce est de nouveau disponible';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => 'Annonce masquée';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => 'L’annonce est de nouveau visible';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing =>
+      'Impossible de mettre à jour l’annonce';
 
   @override
   String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+      'Mis à jour — tirez pour actualiser';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => 'Actives';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => 'Vendues';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => 'Aucune annonce active';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => 'Rien de vendu pour l’instant';
 
   @override
   String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+      'Le nom du produit doit contenir au moins 3 caractères';
 
   @override
   String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+      'La description doit contenir au moins 10 caractères';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => 'Ajouter';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint =>
+      'Ajoutez des photos pour que les acheteurs voient l’article';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => 'Choisir le lieu sur la carte';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint =>
+      'Placez un repère pour que les acheteurs voient où se trouve l’article';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => 'Image trop volumineuse. Maximum 5 Mo';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped =>
+      'Certaines images dépassant 5 Mo ont été ignorées';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => 'Positif';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => 'À améliorer';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => 'Bien';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => 'Pas bien';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'Faire une offre';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'Envoyer l’offre';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => 'Refuser';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => 'Contre-offre';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => 'Accepter';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => 'Accepter la contre-offre';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'Annuler l’offre';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => 'Contre-offre';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => 'Envoyer la contre-offre';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return 'L’acheteur a proposé : $price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return 'Prix demandé : $price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'Offre acceptée !';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'Impossible d’accepter l’offre : $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'Offre refusée';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'Impossible de refuser l’offre : $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => 'Contre-offre envoyée !';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return 'Impossible d’envoyer la contre-offre : $error';
   }
 
   @override
   String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+      'Voulez-vous vraiment annuler cette offre ?';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'Oui, annuler';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'Offre annulée';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'Impossible d’annuler l’offre : $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => 'Contre-offre acceptée !';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return 'Impossible d’accepter la contre-offre : $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => 'Aucune offre reçue';
 
   @override
   String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+      'Les offres faites sur vos annonces apparaîtront ici';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => 'Aucune offre envoyée';
 
   @override
   String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+      'Les offres que vous faites apparaîtront ici';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return 'En attente ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return 'Historique ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return 'Actives ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'Retour';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return 'Échec du chargement : $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'Paramètres de discussion';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle =>
+      'Traduire automatiquement dans ma langue';
 
   @override
   String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+      'Les messages des autres sont traduits dès leur arrivée';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => 'Traduction automatique activée';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => 'Traduction automatique désactivée';
 }

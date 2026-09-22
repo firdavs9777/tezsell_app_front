@@ -1524,20 +1524,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get in_area => '지역에';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => '제목, 지역으로 매물 검색…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => '매물 검색';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => '최근 검색';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => '전체 삭제';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => '검색에 실패했습니다. 다시 시도해 주세요.';
 
   @override
   String get pagination_previous => '이전의';
@@ -3040,33 +3039,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get logout_all => '모두 로그아웃';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => '로그인 기록';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => '모든 기기에서 로그아웃';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      '현재 로그인되어 있는 모든 기기(이 기기 포함)에서 로그아웃됩니다.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => '새 기기';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => '아직 로그인 기록이 없습니다';
 
   @override
-  String get securityMethodGoogle => 'Google';
+  String get securityMethodGoogle => '구글';
 
   @override
-  String get securityMethodApple => 'Apple';
+  String get securityMethodApple => '애플';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => '토큰 갱신';
 
   @override
-  String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+  String get securitySignedOutEverywhere => '모든 기기에서 로그아웃되었습니다';
 
   @override
   String get delete_account_confirm => '계정을 삭제하시겠습니까?';
@@ -3999,70 +3997,67 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return '후기 ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => '아직 후기가 없습니다';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => '아직 받은 후기가 없습니다';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => '아직 작성한 후기가 없습니다';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => '더 이상 후기가 없습니다';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => '내 후기';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => '작성한 후기와 받은 후기';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => '받은 후기';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => '작성한 후기';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return '작성할 후기 ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle => '최근 거래를 평가하려면 누르세요';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => '작성할 후기';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => '불러오지 못했습니다';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => '휴가 모드';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => '내 게시글이 숨겨져 있습니다';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => '내 게시글이 공개되어 있습니다';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => '메시지 추가 (선택)';
 
   @override
-  String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+  String get vacationModeToggleError => '휴가 모드를 변경하지 못했습니다. 다시 시도해 주세요.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => '판매자 통계';
 
   @override
-  String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+  String get sellerAnalyticsSubtitle => '조회수, 제안, 판매 실적 보기';
 
   @override
   String get linkCopied => '링크가 클립보드에 복사되었습니다.';
@@ -4089,10 +4084,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sold_badge => '판매된';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => '예약중';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => '최근 본 상품';
 
   @override
   String get more_categories => '더';
@@ -4174,7 +4169,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get browse_no_items_with_location => '이 지역에는 아직 위치 데이터가 포함된 항목이 없습니다.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => '지도에 매물을 불러오지 못했습니다';
 
   @override
   String get location_picker_title => '위치 설정';
@@ -4297,87 +4292,87 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => '전체';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => '질문';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => '팁';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => '나눔';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => '분실물';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => '알림';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => '일상';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => '글쓰기';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => '아직 게시글이 없어요. 첫 글을 남겨보세요!';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => '게시글';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => '아직 댓글이 없습니다';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => '댓글 달기…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => '새 게시글';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => '게시';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => '우리 동네에 이야기를 나눠보세요…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => '게시하지 못했습니다';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => '투표 추가';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => '투표 질문';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return '항목 $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => '항목 추가';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => '질문과 2~5개의 항목을 입력해 주세요';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n표';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => '사진 최대 5장';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => '게시글 검색…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed => '더 불러오지 못했습니다. 눌러서 다시 시도하세요.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      '일부 사진이 추가되지 않았습니다 (5MB 초과 또는 지원하지 않는 형식)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4385,229 +4380,229 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => '문제가 발생했습니다';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => '홈';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => '동네생활';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => '내 근처';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => '나의 정보';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => '서비스';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => '부동산';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => '일자리';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => '동네 가게';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => '준비 중';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => '판매자와 채팅';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => '아직 판매 중인가요?';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => '가격 조금 깎아주실 수 있나요?';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => '어디서 만날까요?';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => '예약하기';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => '판매완료로 변경';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => '판매중으로 변경';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => '예약중';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => '판매완료';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => '판매중';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => '판매자가 이 상품을 예약중으로 변경했습니다';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => '판매자가 이 상품을 판매완료로 변경했습니다';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => '이 상품이 다시 판매중입니다';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => '후기 남기기';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => '답장';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => '수정';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => '수정됨';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => '삭제';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => '나에게서 삭제';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => '모두에게서 삭제';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => '삭제된 메시지입니다';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => '복사';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => '복사했습니다';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => '전달';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => '전달됨';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => '전달할 대상…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => '고정';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => '고정 해제';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => '고정된 메시지';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => '번역';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => '번역할 수 없습니다';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => '원문 보기';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => '대화 내 검색';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => '결과가 없습니다';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => '알림 끄기';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => '알림 켜기';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => '보관';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => '보관 해제';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => '보관함';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => '채팅 고정';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => '채팅 고정 해제';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => '입력 중…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => '접속 중';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return '마지막 접속 $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => '방금 전';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m분 전';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h시간 전';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => '다시 연결 중…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => '전송되지 않았습니다. 눌러서 다시 시도';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => '음성 메시지';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => '놓으면 전송, 밀면 취소';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => '자주 쓰는 문구';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => '자주 쓰는 문구 추가';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => '미디어';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => '읽지 않은 메시지';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => '임시저장';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError => '내 게시글에는 채팅할 수 없습니다';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => '최신순';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => '가까운순';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => '인기순';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => '낮은 가격순';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => '높은 가격순';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => '이 게시글을 삭제할까요?';
 
   @override
   String distanceKm(String km) {
@@ -4615,445 +4610,431 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => '지금 내 근처';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => '검색 반경';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => '도시 전체';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => '적용';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return '답글 $n개 보기';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => '작성자';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => '이 댓글을 삭제할까요?';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => '댓글 더 보기';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => '필터';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => '필터';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => '가격대';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => '최소';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => '최대';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => '상태';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => '적용';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => '초기화';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => '가격 제안';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => '가격 협상 내역 보기';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => '채팅에서 계속하기';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => '제안을 보냈습니다!';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => '제안하려면 로그인해 주세요';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => '채팅을 열 수 없습니다';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => '아직 후기가 없습니다';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => '검색 저장';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => '저장한 검색';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => '이 검색 저장하기';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => '새 매물이 올라오면 알림 받기';
 
   @override
-  String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+  String get savedSearchNotifyToggleSubtitle => '이 검색과 맞는 새 게시글이 올라오면 알려드릴게요';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => '검색을 저장했습니다';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      '검색을 저장했습니다. 새 매물이 올라오면 알려드릴게요.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => '이미 저장한 검색입니다';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => '검색을 저장하지 못했습니다';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => '알림을 켜지 못했습니다';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => '저장한 검색';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => '검색';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => '알림';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => '저장한 검색이 없습니다';
 
   @override
-  String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+  String get savedSearchesEmptySubtitle => '검색을 저장하면 나중에 빠르게 다시 찾을 수 있어요';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => '알림이 없습니다';
 
   @override
-  String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+  String get searchAlertsEmptySubtitle => '검색을 저장하고 알림을 켜면 새 매물을 알려드려요';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return '$count번 사용';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => '저장한 검색 삭제';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => '알림 삭제';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => '저장한 검색을 삭제할까요?';
 
   @override
-  String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+  String get savedSearchDeleteConfirmMessage => '저장한 검색이 삭제됩니다. 되돌릴 수 없습니다.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => '알림을 삭제할까요?';
 
   @override
-  String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+  String get searchAlertDeleteConfirmMessage => '이 키워드의 새 매물 알림을 더 이상 받지 않습니다.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => '저장한 검색을 삭제했습니다';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => '알림을 삭제했습니다';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => '저장한 검색을 삭제하지 못했습니다';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => '알림을 삭제하지 못했습니다';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => '알림을 변경하지 못했습니다';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => '저장한 검색을 불러오지 못했습니다';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => '알림을 불러오지 못했습니다';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => '후기 작성';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => '거래는 어떠셨나요?';
 
   @override
-  String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+  String get reviewWriteRatingRequiredHint => '보내려면 별을 1개 이상 선택해 주세요';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => '어떤 점이 좋았나요? (선택)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => '추가 의견 (선택)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => '거래 경험을 조금 더 들려주세요…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => '후기 보내기';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => '후기를 보냈습니다';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => '후기를 보내지 못했습니다. 다시 시도해 주세요.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => '거래 정보를 불러오는 중…';
 
   @override
-  String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+  String get reviewWriteResolveError => '이 거래를 불러오지 못했습니다. 다시 시도해 주세요.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => '다시 시도';
 
   @override
-  String get view => 'View';
+  String get view => '보기';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => '더보기';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => '판매완료로 변경';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => '판매중으로 변경';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => '숨기기';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => '다시 보이기';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => '숨김';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => '누구에게 판매하셨나요?';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => '다른 곳에서 판매';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => '판매완료로 변경했습니다';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => '게시글이 다시 판매중입니다';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => '게시글을 숨겼습니다';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => '게시글이 다시 보입니다';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => '게시글을 변경하지 못했습니다';
 
   @override
-  String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+  String get listing_updated_refresh_failed => '변경되었습니다 — 당겨서 새로고침하세요';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => '판매중';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => '판매완료';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => '판매중인 게시글이 없습니다';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => '아직 판매한 상품이 없습니다';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => '상품명은 3자 이상 입력해 주세요';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => '설명은 10자 이상 입력해 주세요';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => '더 추가';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint => '구매자가 상품을 볼 수 있도록 사진을 추가해 주세요';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => '지도에서 위치 선택';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint => '핀을 찍어 상품 위치를 알려주세요';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => '이미지가 너무 큽니다. 최대 5MB입니다';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => '5MB가 넘는 일부 이미지는 제외되었습니다';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => '좋았던 점';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => '아쉬운 점';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => '좋아요';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => '별로예요';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => '가격 제안하기';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => '제안 보내기';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => '거절';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => '역제안';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => '수락';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => '역제안 수락';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => '제안 취소';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => '역제안';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => '역제안 보내기';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return '구매자 제안가: $price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return '판매 희망가: $price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => '제안을 수락했습니다!';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return '제안을 수락하지 못했습니다: $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => '제안을 거절했습니다';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return '제안을 거절하지 못했습니다: $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => '역제안을 보냈습니다!';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return '역제안을 보내지 못했습니다: $error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => '이 제안을 취소할까요?';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => '네, 취소합니다';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => '제안을 취소했습니다';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return '제안을 취소하지 못했습니다: $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => '역제안을 수락했습니다!';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return '역제안을 수락하지 못했습니다: $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => '받은 제안이 없습니다';
 
   @override
-  String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+  String get offersNoneReceivedSubtitle => '내 게시글에 가격 제안이 오면 여기에 표시됩니다';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => '보낸 제안이 없습니다';
 
   @override
-  String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+  String get offersNoneSentSubtitle => '게시글에 가격을 제안하면 여기에 표시됩니다';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return '대기중 ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return '지난 내역 ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return '진행중 ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => '돌아가기';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return '불러오지 못했습니다: $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => '채팅 설정';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => '내 언어로 자동 번역';
 
   @override
-  String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+  String get chatAutoTranslateSubtitle => '상대방의 메시지를 받는 즉시 번역합니다';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => '자동 번역을 켰습니다';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => '자동 번역을 껐습니다';
 }

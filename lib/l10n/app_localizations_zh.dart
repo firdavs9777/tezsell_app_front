@@ -1519,20 +1519,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get in_area => '在地区';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => '按标题、位置搜索房源…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => '搜索房源';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => '最近搜索';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => '全部清除';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => '搜索失败，请重试。';
 
   @override
   String get pagination_previous => '以前的';
@@ -3027,20 +3026,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logout_all => '全部注销';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => '登录记录';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => '退出所有设备';
 
   @override
-  String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+  String get securityLogoutAllConfirm => '这将退出你当前登录的所有设备，包括这台设备。';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => '新设备';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => '暂无登录记录';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3049,11 +3047,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => '令牌刷新';
 
   @override
-  String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+  String get securitySignedOutEverywhere => '已退出所有设备';
 
   @override
   String get delete_account_confirm => '删除帐户？';
@@ -3978,70 +3975,67 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return '评价（$count）';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => '暂无评价';
 
   @override
-  String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+  String get profile_user_no_reviews => '该用户还没有收到评价';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => '你还没有写过评价';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => '没有更多评价了';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => '我的评价';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => '你写过和收到的评价';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => '收到的';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => '写过的';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return '待写评价（$count）';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle => '点按评价最近的交易';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => '待写评价';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => '加载失败';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => '休假模式';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => '你的商品已隐藏';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => '你的商品正在展示';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => '添加留言（可选）';
 
   @override
-  String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+  String get vacationModeToggleError => '无法更新休假模式，请重试。';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => '卖家数据';
 
   @override
-  String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+  String get sellerAnalyticsSubtitle => '查看浏览量、出价和成交情况';
 
   @override
   String get linkCopied => '链接已复制到剪贴板';
@@ -4068,10 +4062,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sold_badge => '卖';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => '已预订';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => '最近浏览';
 
   @override
   String get more_categories => '更多的';
@@ -4152,7 +4146,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browse_no_items_with_location => '该区域还没有包含位置数据的项目。';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => '无法在地图上加载房源';
 
   @override
   String get location_picker_title => '设置位置';
@@ -4271,87 +4265,86 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => '全部';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => '提问';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => '经验分享';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => '免费送';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => '失物招领';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => '提醒';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => '日常';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => '发帖';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => '还没有帖子，来发第一条吧！';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => '帖子';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => '还没有评论';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => '写评论…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => '发新帖';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => '发布';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => '和邻里分享点什么吧…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => '发布失败';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => '添加投票';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => '投票问题';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return '选项 $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => '添加选项';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => '请填写问题和 2-5 个选项';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n 票';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => '最多 5 张照片';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => '搜索帖子…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed => '加载失败，点按重试。';
 
   @override
-  String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+  String get communityImageRejected => '部分照片未添加（超过 5MB 或格式不支持）';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4359,675 +4352,660 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => '出错了';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => '首页';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => '社区';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => '附近';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => '我的';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => '服务';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => '房产';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => '招聘';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => '本地商家';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => '敬请期待';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => '联系卖家';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => '还在卖吗？';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => '价格能少点吗？';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => '我们在哪儿见面？';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => '预订';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => '标记为已售';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => '重新上架';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => '已预订';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => '已售出';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => '在售';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => '卖家已将该商品标记为已预订';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => '卖家已将该商品标记为已售出';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => '该商品重新上架了';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => '写评价';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => '回复';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => '编辑';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => '已编辑';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => '删除';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => '仅删除我这边';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => '为所有人删除';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => '消息已删除';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => '复制';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => '已复制';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => '转发';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => '已转发';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => '转发给…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => '置顶';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => '取消置顶';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => '置顶消息';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => '翻译';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => '暂时无法翻译';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => '查看原文';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => '在聊天中搜索';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => '没有结果';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => '关闭通知';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => '开启通知';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => '归档';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => '取消归档';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => '已归档';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => '置顶聊天';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => '取消置顶聊天';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => '正在输入…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => '在线';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return '最后在线 $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => '刚刚';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m 分钟前';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h 小时前';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => '正在重新连接…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => '未发送，点按重试';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => '语音消息';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => '松开发送，滑动取消';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => '快捷回复';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => '添加快捷回复';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => '媒体';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => '未读消息';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => '草稿';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError => '不能就自己的商品发起聊天';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => '最新';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => '最近';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => '最热';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => '价格从低到高';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => '价格从高到低';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => '删除这条帖子？';
 
   @override
   String distanceKm(String km) {
-    return '$km km';
+    return '$km 公里';
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => '此刻在你附近';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => '搜索范围';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => '全城';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => '应用';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return '查看 $n 条回复';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => '作者';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => '删除这条评论？';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => '加载更多评论';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => '筛选';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => '筛选';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => '价格区间';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => '最低';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => '最高';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => '成色';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => '应用';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => '重置';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => '出价';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => '查看议价记录';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => '到聊天继续';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => '出价已发送！';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => '请先登录再出价';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => '无法打开聊天';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => '暂无评价';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => '保存搜索';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => '已保存的搜索';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => '保存此搜索';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => '有新结果时通知我';
 
   @override
-  String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+  String get savedSearchNotifyToggleSubtitle => '有符合此搜索的新商品时我们会通知你';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => '搜索已保存';
 
   @override
-  String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+  String get savedSearchSavedWithAlertSuccess => '搜索已保存，有新结果时会通知你。';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => '你已保存过此搜索';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => '保存搜索失败';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => '开启提醒失败';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => '已保存的搜索';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => '搜索';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => '提醒';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => '还没有保存的搜索';
 
   @override
-  String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+  String get savedSearchesEmptySubtitle => '保存搜索，之后可以快速找回';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => '还没有提醒';
 
   @override
-  String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+  String get searchAlertsEmptySubtitle => '保存搜索并开启通知，有新结果时会提醒你';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return '已使用 $count 次';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => '删除已保存的搜索';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => '删除提醒';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => '删除已保存的搜索？';
 
   @override
-  String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+  String get savedSearchDeleteConfirmMessage => '将移除这条已保存的搜索，此操作无法撤销。';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => '删除提醒？';
 
   @override
-  String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+  String get searchAlertDeleteConfirmMessage => '你将不再收到该关键词的新结果提醒。';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => '已删除保存的搜索';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => '已删除提醒';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => '删除已保存的搜索失败';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => '删除提醒失败';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => '更新提醒失败';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => '加载已保存的搜索失败';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => '加载提醒失败';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => '写评价';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => '这次交易体验如何？';
 
   @override
-  String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+  String get reviewWriteRatingRequiredHint => '至少选择 1 颗星才能提交';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => '哪些地方做得好？（可选）';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => '补充说明（可选）';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => '多说说你的交易体验…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => '提交评价';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => '评价提交成功';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError => '提交评价失败，请重试。';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => '正在加载交易详情…';
 
   @override
-  String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+  String get reviewWriteResolveError => '无法加载这笔交易，请重试。';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => '重试';
 
   @override
-  String get view => 'View';
+  String get view => '查看';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => '更多操作';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => '标记为已售';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => '重新上架';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => '隐藏';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => '取消隐藏';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => '已隐藏';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => '你卖给了谁？';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => '在别处售出';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => '已标记为售出';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => '商品已重新上架';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => '商品已隐藏';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => '商品重新显示';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => '更新商品失败';
 
   @override
-  String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+  String get listing_updated_refresh_failed => '已更新 — 下拉刷新查看变化';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => '在售';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => '已售';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => '没有在售商品';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => '还没有售出的商品';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => '商品名称至少需要 3 个字符';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => '描述至少需要 10 个字符';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => '继续添加';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint => '添加照片，让买家看清商品';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => '在地图上选择位置';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint => '放置定位点，让买家知道商品在哪里';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => '图片太大，最大 5MB';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => '部分超过 5MB 的图片已跳过';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => '做得好的地方';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => '待改进';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => '好';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => '不好';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => '我要出价';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => '发送出价';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => '拒绝';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => '还价';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => '接受';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => '接受还价';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => '取消出价';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => '还价';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => '发送还价';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return '买家出价：$price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return '标价：$price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => '已接受出价！';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return '接受出价失败：$error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => '已拒绝出价';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return '拒绝出价失败：$error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => '还价已发送！';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return '发送还价失败：$error';
   }
 
   @override
-  String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+  String get offerCancelConfirmBody => '确定要取消这次出价吗？';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => '是，取消';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => '出价已取消';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return '取消出价失败：$error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => '已接受还价！';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return '接受还价失败：$error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => '还没有收到出价';
 
   @override
-  String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+  String get offersNoneReceivedSubtitle => '买家对你的商品出价后会显示在这里';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => '还没有发出出价';
 
   @override
-  String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+  String get offersNoneSentSubtitle => '你对商品出价后会显示在这里';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return '待处理（$count）';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return '历史（$count）';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return '进行中（$count）';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => '返回';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return '加载失败：$error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => '聊天设置';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => '自动翻译成我的语言';
 
   @override
-  String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+  String get chatAutoTranslateSubtitle => '对方的消息会在收到时自动翻译';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => '已开启自动翻译';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => '已关闭自动翻译';
 }

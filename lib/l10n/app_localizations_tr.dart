@@ -1557,20 +1557,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get in_area => 'bölgede';
 
   @override
-  String get realEstateSearchHint => 'Search properties by title, location...';
+  String get realEstateSearchHint => 'Başlık veya konuma göre ara…';
 
   @override
-  String get realEstateSearchPrompt => 'Search for properties';
+  String get realEstateSearchPrompt => 'İlan ara';
 
   @override
-  String get recentSearches => 'Recent searches';
+  String get recentSearches => 'Son aramalar';
 
   @override
-  String get clearRecentSearches => 'Clear all';
+  String get clearRecentSearches => 'Tümünü temizle';
 
   @override
-  String get searchPropertiesError =>
-      'Failed to search properties. Please try again.';
+  String get searchPropertiesError => 'Arama başarısız. Lütfen tekrar deneyin.';
 
   @override
   String get pagination_previous => 'Öncesi';
@@ -3115,20 +3114,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get logout_all => 'Tümünden çıkış yap';
 
   @override
-  String get securityLoginHistory => 'Login History';
+  String get securityLoginHistory => 'Giriş geçmişi';
 
   @override
-  String get securityLogoutAll => 'Logout All Devices';
+  String get securityLogoutAll => 'Tüm cihazlardan çıkış yap';
 
   @override
   String get securityLogoutAllConfirm =>
-      'This will sign you out on every device where you\'re currently logged in, including this one.';
+      'Bu işlem, şu anda giriş yaptığınız tüm cihazlardan (bu cihaz dahil) çıkış yapmanızı sağlar.';
 
   @override
-  String get securityNewDevice => 'New device';
+  String get securityNewDevice => 'Yeni cihaz';
 
   @override
-  String get securityNoHistory => 'No login history yet';
+  String get securityNoHistory => 'Henüz giriş geçmişi yok';
 
   @override
   String get securityMethodGoogle => 'Google';
@@ -3137,11 +3136,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get securityMethodApple => 'Apple';
 
   @override
-  String get securityMethodTokenRefresh => 'Token refresh';
+  String get securityMethodTokenRefresh => 'Token yenileme';
 
   @override
-  String get securitySignedOutEverywhere =>
-      'You\'ve been signed out of all devices';
+  String get securitySignedOutEverywhere => 'Tüm cihazlardan çıkış yapıldı';
 
   @override
   String get delete_account_confirm => 'Hesap Silinsin mi?';
@@ -4099,70 +4097,71 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String profile_reviews_count(int count) {
-    return 'Reviews ($count)';
+    return 'Değerlendirmeler ($count)';
   }
 
   @override
-  String get profile_no_reviews_yet => 'No reviews yet';
+  String get profile_no_reviews_yet => 'Henüz değerlendirme yok';
 
   @override
   String get profile_user_no_reviews =>
-      'This user hasn\'t received any reviews yet';
+      'Bu kullanıcı henüz değerlendirme almadı';
 
   @override
-  String get profile_no_given_reviews => 'You haven\'t given any reviews yet';
+  String get profile_no_given_reviews => 'Henüz değerlendirme yapmadınız';
 
   @override
-  String get no_more_reviews => 'No more reviews to load';
+  String get no_more_reviews => 'Başka değerlendirme yok';
 
   @override
-  String get myReviewsTitle => 'My Reviews';
+  String get myReviewsTitle => 'Değerlendirmelerim';
 
   @override
-  String get myReviewsSubtitle => 'Reviews you\'ve given and received';
+  String get myReviewsSubtitle => 'Yaptığınız ve aldığınız değerlendirmeler';
 
   @override
-  String get myReviewsReceivedTab => 'Received';
+  String get myReviewsReceivedTab => 'Alınan';
 
   @override
-  String get myReviewsGivenTab => 'Given';
+  String get myReviewsGivenTab => 'Yapılan';
 
   @override
   String pendingReviewsNudgeTitle(int count) {
-    return 'Pending reviews ($count)';
+    return 'Bekleyen değerlendirmeler ($count)';
   }
 
   @override
-  String get pendingReviewsNudgeSubtitle => 'Tap to rate your recent trades';
+  String get pendingReviewsNudgeSubtitle =>
+      'Son alışverişlerinizi puanlamak için dokunun';
 
   @override
-  String get pendingReviewsSheetTitle => 'Pending Reviews';
+  String get pendingReviewsSheetTitle => 'Bekleyen değerlendirmeler';
 
   @override
-  String get profileSectionLoadError => 'Couldn\'t load';
+  String get profileSectionLoadError => 'Yüklenemedi';
 
   @override
-  String get vacationModeTitle => 'Vacation Mode';
+  String get vacationModeTitle => 'Tatil modu';
 
   @override
-  String get vacationModeActiveSubtitle => 'Your listings are hidden';
+  String get vacationModeActiveSubtitle => 'İlanlarınız gizli';
 
   @override
-  String get vacationModeInactiveSubtitle => 'Your listings are visible';
+  String get vacationModeInactiveSubtitle => 'İlanlarınız görünür';
 
   @override
-  String get vacationModeMessageHint => 'Add a message (optional)';
+  String get vacationModeMessageHint => 'Mesaj ekleyin (isteğe bağlı)';
 
   @override
   String get vacationModeToggleError =>
-      'Couldn\'t update vacation mode. Please try again.';
+      'Tatil modu güncellenemedi. Lütfen tekrar deneyin.';
 
   @override
-  String get sellerAnalyticsTitle => 'Seller Analytics';
+  String get sellerAnalyticsTitle => 'Satıcı istatistikleri';
 
   @override
   String get sellerAnalyticsSubtitle =>
-      'Track views, offers, and sales performance';
+      'Görüntülenme, teklif ve satışları takip edin';
 
   @override
   String get linkCopied => 'Bağlantı panoya kopyalandı';
@@ -4190,10 +4189,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sold_badge => 'SATILMIŞ';
 
   @override
-  String get reserved_badge => 'RESERVED';
+  String get reserved_badge => 'REZERVE';
 
   @override
-  String get recently_viewed_title => 'Recently viewed';
+  String get recently_viewed_title => 'Son görüntülenenler';
 
   @override
   String get more_categories => 'Daha';
@@ -4279,7 +4278,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu alanda henüz konum verisi olan öğe yok.';
 
   @override
-  String get mapLoadError => 'Could not load properties on the map';
+  String get mapLoadError => 'İlanlar haritada yüklenemedi';
 
   @override
   String get location_picker_title => 'Konumu ayarla';
@@ -4405,87 +4404,88 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get communityAll => 'All';
+  String get communityAll => 'Tümü';
 
   @override
-  String get communityQuestion => 'Question';
+  String get communityQuestion => 'Soru';
 
   @override
-  String get communityRecommend => 'Tips';
+  String get communityRecommend => 'Öneriler';
 
   @override
-  String get communityFree => 'Free';
+  String get communityFree => 'Ücretsiz';
 
   @override
-  String get communityLostFound => 'Lost & Found';
+  String get communityLostFound => 'Kayıp eşya';
 
   @override
-  String get communityAlert => 'Alert';
+  String get communityAlert => 'Uyarı';
 
   @override
-  String get communityGeneral => 'General';
+  String get communityGeneral => 'Genel';
 
   @override
-  String get communityWrite => 'Write';
+  String get communityWrite => 'Yaz';
 
   @override
-  String get communityEmpty => 'No posts yet. Be the first!';
+  String get communityEmpty => 'Henüz gönderi yok. İlk siz olun!';
 
   @override
-  String get communityPostTitle => 'Post';
+  String get communityPostTitle => 'Gönderi';
 
   @override
-  String get communityNoComments => 'No comments yet';
+  String get communityNoComments => 'Henüz yorum yok';
 
   @override
-  String get communityAddComment => 'Add a comment…';
+  String get communityAddComment => 'Yorum ekle…';
 
   @override
-  String get communityNewPost => 'New post';
+  String get communityNewPost => 'Yeni gönderi';
 
   @override
-  String get communityPublish => 'Post';
+  String get communityPublish => 'Paylaş';
 
   @override
-  String get communityBodyHint => 'Share something with your neighborhood…';
+  String get communityBodyHint => 'Mahallenizle bir şeyler paylaşın…';
 
   @override
-  String get communityPostFailed => 'Failed to post';
+  String get communityPostFailed => 'Gönderi paylaşılamadı';
 
   @override
-  String get communityAddPoll => 'Add poll';
+  String get communityAddPoll => 'Anket ekle';
 
   @override
-  String get communityPollQuestion => 'Poll question';
+  String get communityPollQuestion => 'Anket sorusu';
 
   @override
   String communityPollOption(int n) {
-    return 'Option $n';
+    return 'Seçenek $n';
   }
 
   @override
-  String get communityAddOption => 'Add option';
+  String get communityAddOption => 'Seçenek ekle';
 
   @override
-  String get communityPollValidation => 'Add a question and 2-5 options';
+  String get communityPollValidation => 'Bir soru ve 2-5 seçenek ekleyin';
 
   @override
   String communityPollVotes(int n) {
-    return '$n votes';
+    return '$n oy';
   }
 
   @override
-  String get communityMaxImages => 'Up to 5 photos';
+  String get communityMaxImages => 'En fazla 5 fotoğraf';
 
   @override
-  String get communitySearchHint => 'Search posts…';
+  String get communitySearchHint => 'Gönderilerde ara…';
 
   @override
-  String get communityLoadMoreFailed => 'Couldn\'t load more. Tap to retry.';
+  String get communityLoadMoreFailed =>
+      'Daha fazlası yüklenemedi. Yeniden denemek için dokunun.';
 
   @override
   String get communityImageRejected =>
-      'Some photos weren\'t added (over 5MB or an unsupported type)';
+      'Bazı fotoğraflar eklenmedi (5 MB üzeri veya desteklenmeyen tür)';
 
   @override
   String communityPhotoCount(int count, int max) {
@@ -4493,229 +4493,229 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get errorGeneric => 'Something went wrong';
+  String get errorGeneric => 'Bir şeyler ters gitti';
 
   @override
-  String get tabHome => 'Home';
+  String get tabHome => 'Ana sayfa';
 
   @override
-  String get tabCommunity => 'Community';
+  String get tabCommunity => 'Topluluk';
 
   @override
-  String get tabNearby => 'Nearby';
+  String get tabNearby => 'Yakınımda';
 
   @override
-  String get tabMy => 'My';
+  String get tabMy => 'Profilim';
 
   @override
-  String get nearbyServices => 'Services';
+  String get nearbyServices => 'Hizmetler';
 
   @override
-  String get nearbyRealEstate => 'Real Estate';
+  String get nearbyRealEstate => 'Emlak';
 
   @override
-  String get nearbyJobs => 'Jobs';
+  String get nearbyJobs => 'İş ilanları';
 
   @override
-  String get nearbyShops => 'Local shops';
+  String get nearbyShops => 'Yerel işletmeler';
 
   @override
-  String get nearbyComingSoon => 'Coming soon';
+  String get nearbyComingSoon => 'Yakında';
 
   @override
-  String get chatWithSeller => 'Chat with seller';
+  String get chatWithSeller => 'Satıcıyla sohbet et';
 
   @override
-  String get chatQuickAvailable => 'Is this still available?';
+  String get chatQuickAvailable => 'Hâlâ satılık mı?';
 
   @override
-  String get chatQuickPrice => 'Can you lower the price?';
+  String get chatQuickPrice => 'Fiyatta indirim yapar mısınız?';
 
   @override
-  String get chatQuickMeet => 'Where can we meet?';
+  String get chatQuickMeet => 'Nerede buluşabiliriz?';
 
   @override
-  String get chatReserve => 'Reserve';
+  String get chatReserve => 'Rezerve et';
 
   @override
-  String get chatMarkSold => 'Mark as sold';
+  String get chatMarkSold => 'Satıldı olarak işaretle';
 
   @override
-  String get chatMarkAvailable => 'Back to available';
+  String get chatMarkAvailable => 'Tekrar satışa aç';
 
   @override
-  String get chatStatusReserved => 'Reserved';
+  String get chatStatusReserved => 'Rezerve';
 
   @override
-  String get chatStatusSold => 'Sold';
+  String get chatStatusSold => 'Satıldı';
 
   @override
-  String get chatStatusAvailable => 'Available';
+  String get chatStatusAvailable => 'Satılık';
 
   @override
-  String get chatSysReserved => 'Seller marked this item as reserved';
+  String get chatSysReserved => 'Satıcı bu ürünü rezerve olarak işaretledi';
 
   @override
-  String get chatSysSold => 'Seller marked this item as sold';
+  String get chatSysSold => 'Satıcı bu ürünü satıldı olarak işaretledi';
 
   @override
-  String get chatSysAvailable => 'This item is available again';
+  String get chatSysAvailable => 'Bu ürün tekrar satışta';
 
   @override
-  String get chatLeaveReview => 'Leave a review';
+  String get chatLeaveReview => 'Değerlendirme yap';
 
   @override
-  String get chatReply => 'Reply';
+  String get chatReply => 'Yanıtla';
 
   @override
-  String get chatEdit => 'Edit';
+  String get chatEdit => 'Düzenle';
 
   @override
-  String get chatEdited => 'edited';
+  String get chatEdited => 'düzenlendi';
 
   @override
-  String get chatDelete => 'Delete';
+  String get chatDelete => 'Sil';
 
   @override
-  String get chatDeleteForMe => 'Delete for me';
+  String get chatDeleteForMe => 'Benden sil';
 
   @override
-  String get chatDeleteForEveryone => 'Delete for everyone';
+  String get chatDeleteForEveryone => 'Herkesten sil';
 
   @override
-  String get chatMessageDeleted => 'Message deleted';
+  String get chatMessageDeleted => 'Mesaj silindi';
 
   @override
-  String get chatCopy => 'Copy';
+  String get chatCopy => 'Kopyala';
 
   @override
-  String get chatCopied => 'Copied';
+  String get chatCopied => 'Kopyalandı';
 
   @override
-  String get chatForward => 'Forward';
+  String get chatForward => 'İlet';
 
   @override
-  String get chatForwarded => 'Forwarded';
+  String get chatForwarded => 'İletildi';
 
   @override
-  String get chatForwardTo => 'Forward to…';
+  String get chatForwardTo => 'Şuna ilet…';
 
   @override
-  String get chatPin => 'Pin';
+  String get chatPin => 'Sabitle';
 
   @override
-  String get chatUnpin => 'Unpin';
+  String get chatUnpin => 'Sabitlemeyi kaldır';
 
   @override
-  String get chatPinnedMessages => 'Pinned messages';
+  String get chatPinnedMessages => 'Sabitlenen mesajlar';
 
   @override
-  String get chatTranslate => 'Translate';
+  String get chatTranslate => 'Çevir';
 
   @override
-  String get chatTranslationFailed => 'Translation unavailable';
+  String get chatTranslationFailed => 'Çeviri kullanılamıyor';
 
   @override
-  String get chatShowOriginal => 'Show original';
+  String get chatShowOriginal => 'Orijinali göster';
 
   @override
-  String get chatSearchInChat => 'Search in chat';
+  String get chatSearchInChat => 'Sohbette ara';
 
   @override
-  String get chatNoResults => 'No results';
+  String get chatNoResults => 'Sonuç yok';
 
   @override
-  String get chatMute => 'Mute';
+  String get chatMute => 'Sessize al';
 
   @override
-  String get chatUnmute => 'Unmute';
+  String get chatUnmute => 'Sesi aç';
 
   @override
-  String get chatArchive => 'Archive';
+  String get chatArchive => 'Arşivle';
 
   @override
-  String get chatUnarchive => 'Unarchive';
+  String get chatUnarchive => 'Arşivden çıkar';
 
   @override
-  String get chatArchived => 'Archived';
+  String get chatArchived => 'Arşivlenenler';
 
   @override
-  String get chatPinChat => 'Pin chat';
+  String get chatPinChat => 'Sohbeti sabitle';
 
   @override
-  String get chatUnpinChat => 'Unpin chat';
+  String get chatUnpinChat => 'Sohbet sabitlemesini kaldır';
 
   @override
-  String get chatTyping => 'typing…';
+  String get chatTyping => 'yazıyor…';
 
   @override
-  String get chatOnline => 'online';
+  String get chatOnline => 'çevrimiçi';
 
   @override
   String chatLastSeen(Object time) {
-    return 'last seen $time';
+    return 'son görülme $time';
   }
 
   @override
-  String get timeJustNow => 'just now';
+  String get timeJustNow => 'az önce';
 
   @override
   String timeMinutesShort(Object m) {
-    return '${m}m ago';
+    return '$m dk önce';
   }
 
   @override
   String timeHoursShort(Object h) {
-    return '${h}h ago';
+    return '$h sa önce';
   }
 
   @override
-  String get chatConnecting => 'Reconnecting…';
+  String get chatConnecting => 'Yeniden bağlanıyor…';
 
   @override
-  String get chatSendFailed => 'Not sent. Tap to retry';
+  String get chatSendFailed => 'Gönderilemedi. Yeniden denemek için dokunun';
 
   @override
-  String get chatVoiceMessage => 'Voice message';
+  String get chatVoiceMessage => 'Sesli mesaj';
 
   @override
-  String get chatRecordingHint => 'Release to send, slide to cancel';
+  String get chatRecordingHint => 'Göndermek için bırakın, iptal için kaydırın';
 
   @override
-  String get chatQuickReplies => 'Quick replies';
+  String get chatQuickReplies => 'Hızlı yanıtlar';
 
   @override
-  String get chatAddQuickReply => 'Add quick reply';
+  String get chatAddQuickReply => 'Hızlı yanıt ekle';
 
   @override
-  String get chatMediaGallery => 'Media';
+  String get chatMediaGallery => 'Medya';
 
   @override
-  String get chatUnreadDivider => 'Unread messages';
+  String get chatUnreadDivider => 'Okunmamış mesajlar';
 
   @override
-  String get chatDraft => 'Draft';
+  String get chatDraft => 'Taslak';
 
   @override
-  String get chatSelfChatError => 'You can\'t chat about your own listing';
+  String get chatSelfChatError => 'Kendi ilanınız hakkında sohbet edemezsiniz';
 
   @override
-  String get sortFresh => 'Newest';
+  String get sortFresh => 'En yeni';
 
   @override
-  String get sortNearest => 'Nearest';
+  String get sortNearest => 'En yakın';
 
   @override
-  String get sortPopular => 'Popular';
+  String get sortPopular => 'Popüler';
 
   @override
-  String get sortPriceAsc => 'Price: low to high';
+  String get sortPriceAsc => 'Fiyat: düşükten yükseğe';
 
   @override
-  String get sortPriceDesc => 'Price: high to low';
+  String get sortPriceDesc => 'Fiyat: yüksekten düşüğe';
 
   @override
-  String get communityDeleteConfirm => 'Delete this post?';
+  String get communityDeleteConfirm => 'Bu gönderi silinsin mi?';
 
   @override
   String distanceKm(String km) {
@@ -4723,445 +4723,446 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get nearYouNow => 'Near you now';
+  String get nearYouNow => 'Şu an yakınınızda';
 
   @override
-  String get radiusPickerTitle => 'Search radius';
+  String get radiusPickerTitle => 'Arama yarıçapı';
 
   @override
-  String get radiusCityWide => 'City-wide';
+  String get radiusCityWide => 'Şehir geneli';
 
   @override
-  String get radiusApply => 'Apply';
+  String get radiusApply => 'Uygula';
 
   @override
   String communityViewReplies(int n) {
-    return 'View $n replies';
+    return '$n yanıtı gör';
   }
 
   @override
-  String get communityAuthorBadge => 'Author';
+  String get communityAuthorBadge => 'Yazar';
 
   @override
-  String get communityDeleteCommentConfirm => 'Delete this comment?';
+  String get communityDeleteCommentConfirm => 'Bu yorum silinsin mi?';
 
   @override
-  String get communityLoadMoreComments => 'Load more comments';
+  String get communityLoadMoreComments => 'Daha fazla yorum yükle';
 
   @override
-  String get productFiltersTitle => 'Filters';
+  String get productFiltersTitle => 'Filtreler';
 
   @override
-  String get productFiltersTooltip => 'Filters';
+  String get productFiltersTooltip => 'Filtreler';
 
   @override
-  String get productFilterPriceRange => 'Price range';
+  String get productFilterPriceRange => 'Fiyat aralığı';
 
   @override
-  String get productFilterPriceMin => 'Min';
+  String get productFilterPriceMin => 'En az';
 
   @override
-  String get productFilterPriceMax => 'Max';
+  String get productFilterPriceMax => 'En çok';
 
   @override
-  String get productFilterCondition => 'Condition';
+  String get productFilterCondition => 'Durum';
 
   @override
-  String get productFilterApply => 'Apply';
+  String get productFilterApply => 'Uygula';
 
   @override
-  String get productFilterReset => 'Reset';
+  String get productFilterReset => 'Sıfırla';
 
   @override
-  String get offersMenuTitle => 'Offers';
+  String get offersMenuTitle => 'Teklifler';
 
   @override
-  String get offersMenuSubtitle => 'Track price negotiations';
+  String get offersMenuSubtitle => 'Fiyat pazarlıklarını takip edin';
 
   @override
-  String get offerContinueChat => 'Continue in chat';
+  String get offerContinueChat => 'Sohbette devam et';
 
   @override
-  String get offerSendSuccess => 'Offer sent!';
+  String get offerSendSuccess => 'Teklif gönderildi!';
 
   @override
-  String get offerLoginRequired => 'Please log in to make an offer';
+  String get offerLoginRequired => 'Teklif vermek için giriş yapın';
 
   @override
-  String get offerOpenChatError => 'Unable to open chat';
+  String get offerOpenChatError => 'Sohbet açılamıyor';
 
   @override
-  String get sellerNoReviews => 'No reviews yet';
+  String get sellerNoReviews => 'Henüz değerlendirme yok';
 
   @override
-  String get savedSearchSaveTooltip => 'Save search';
+  String get savedSearchSaveTooltip => 'Aramayı kaydet';
 
   @override
-  String get savedSearchesManageTooltip => 'Saved searches';
+  String get savedSearchesManageTooltip => 'Kayıtlı aramalar';
 
   @override
-  String get savedSearchSheetTitle => 'Save this search';
+  String get savedSearchSheetTitle => 'Bu aramayı kaydet';
 
   @override
-  String get savedSearchNotifyToggleTitle => 'Notify me about new matches';
+  String get savedSearchNotifyToggleTitle => 'Yeni sonuçlarda bana haber ver';
 
   @override
   String get savedSearchNotifyToggleSubtitle =>
-      'We\'ll alert you when new listings match this search';
+      'Bu aramaya uyan yeni ilanlar çıktığında sizi bilgilendireceğiz';
 
   @override
-  String get savedSearchSavedSuccess => 'Search saved';
+  String get savedSearchSavedSuccess => 'Arama kaydedildi';
 
   @override
   String get savedSearchSavedWithAlertSuccess =>
-      'Search saved. You\'ll be notified about new matches.';
+      'Arama kaydedildi. Yeni sonuçlar için bilgilendirileceksiniz.';
 
   @override
-  String get savedSearchAlreadySaved => 'You already saved this search';
+  String get savedSearchAlreadySaved => 'Bu aramayı zaten kaydettiniz';
 
   @override
-  String get savedSearchSaveGenericError => 'Failed to save search';
+  String get savedSearchSaveGenericError => 'Arama kaydedilemedi';
 
   @override
-  String get searchAlertCreateGenericError => 'Failed to enable alert';
+  String get searchAlertCreateGenericError => 'Uyarı etkinleştirilemedi';
 
   @override
-  String get savedSearchesScreenTitle => 'Saved Searches';
+  String get savedSearchesScreenTitle => 'Kayıtlı aramalar';
 
   @override
-  String get savedSearchesTabLabel => 'Searches';
+  String get savedSearchesTabLabel => 'Aramalar';
 
   @override
-  String get searchAlertsTabLabel => 'Alerts';
+  String get searchAlertsTabLabel => 'Uyarılar';
 
   @override
-  String get savedSearchesEmptyTitle => 'No saved searches yet';
+  String get savedSearchesEmptyTitle => 'Henüz kayıtlı arama yok';
 
   @override
   String get savedSearchesEmptySubtitle =>
-      'Save a search to quickly find it again later';
+      'Sonradan hızlıca bulmak için bir aramayı kaydedin';
 
   @override
-  String get searchAlertsEmptyTitle => 'No alerts yet';
+  String get searchAlertsEmptyTitle => 'Henüz uyarı yok';
 
   @override
   String get searchAlertsEmptySubtitle =>
-      'Save a search and turn on notifications to get alerted about new matches';
+      'Bir aramayı kaydedip bildirimleri açarak yeni sonuçlardan haberdar olun';
 
   @override
   String savedSearchUseCount(int count) {
-    return 'Used $count times';
+    return '$count kez kullanıldı';
   }
 
   @override
-  String get savedSearchDeleteTooltip => 'Delete saved search';
+  String get savedSearchDeleteTooltip => 'Kayıtlı aramayı sil';
 
   @override
-  String get searchAlertDeleteTooltip => 'Delete alert';
+  String get searchAlertDeleteTooltip => 'Uyarıyı sil';
 
   @override
-  String get savedSearchDeleteConfirmTitle => 'Delete saved search?';
+  String get savedSearchDeleteConfirmTitle => 'Kayıtlı arama silinsin mi?';
 
   @override
   String get savedSearchDeleteConfirmMessage =>
-      'This will remove the saved search. This action cannot be undone.';
+      'Kayıtlı arama kaldırılacak. Bu işlem geri alınamaz.';
 
   @override
-  String get searchAlertDeleteConfirmTitle => 'Delete alert?';
+  String get searchAlertDeleteConfirmTitle => 'Uyarı silinsin mi?';
 
   @override
   String get searchAlertDeleteConfirmMessage =>
-      'You will no longer be notified about new matches for this keyword.';
+      'Bu anahtar kelimeyle eşleşen yeni sonuçlar için artık bildirim almayacaksınız.';
 
   @override
-  String get savedSearchDeletedSuccess => 'Saved search deleted';
+  String get savedSearchDeletedSuccess => 'Kayıtlı arama silindi';
 
   @override
-  String get searchAlertDeletedSuccess => 'Alert deleted';
+  String get searchAlertDeletedSuccess => 'Uyarı silindi';
 
   @override
-  String get savedSearchDeleteError => 'Failed to delete saved search';
+  String get savedSearchDeleteError => 'Kayıtlı arama silinemedi';
 
   @override
-  String get searchAlertDeleteError => 'Failed to delete alert';
+  String get searchAlertDeleteError => 'Uyarı silinemedi';
 
   @override
-  String get searchAlertToggleError => 'Failed to update alert';
+  String get searchAlertToggleError => 'Uyarı güncellenemedi';
 
   @override
-  String get savedSearchesLoadError => 'Failed to load saved searches';
+  String get savedSearchesLoadError => 'Kayıtlı aramalar yüklenemedi';
 
   @override
-  String get searchAlertsLoadError => 'Failed to load alerts';
+  String get searchAlertsLoadError => 'Uyarılar yüklenemedi';
 
   @override
-  String get reviewWriteTitle => 'Write a review';
+  String get reviewWriteTitle => 'Değerlendirme yaz';
 
   @override
-  String get reviewWriteRatingLabel => 'How was your experience?';
+  String get reviewWriteRatingLabel => 'Deneyiminiz nasıldı?';
 
   @override
   String get reviewWriteRatingRequiredHint =>
-      'Select at least 1 star to submit';
+      'Göndermek için en az 1 yıldız seçin';
 
   @override
-  String get reviewWriteTagsLabel => 'What went well? (optional)';
+  String get reviewWriteTagsLabel => 'Neler iyi gitti? (isteğe bağlı)';
 
   @override
-  String get reviewWriteCommentLabel => 'Additional comments (optional)';
+  String get reviewWriteCommentLabel => 'Ek yorumlar (isteğe bağlı)';
 
   @override
-  String get reviewWriteCommentHint => 'Share more about your experience…';
+  String get reviewWriteCommentHint => 'Deneyiminizi biraz daha anlatın…';
 
   @override
-  String get reviewWriteSubmitButton => 'Submit review';
+  String get reviewWriteSubmitButton => 'Değerlendirmeyi gönder';
 
   @override
-  String get reviewWriteSuccess => 'Review submitted successfully';
+  String get reviewWriteSuccess => 'Değerlendirme gönderildi';
 
   @override
-  String get reviewWriteError => 'Failed to submit review. Please try again.';
+  String get reviewWriteError =>
+      'Değerlendirme gönderilemedi. Lütfen tekrar deneyin.';
 
   @override
-  String get reviewWriteLoadingTransaction => 'Loading transaction details…';
+  String get reviewWriteLoadingTransaction => 'İşlem bilgileri yükleniyor…';
 
   @override
   String get reviewWriteResolveError =>
-      'We couldn\'t load this transaction. Please try again.';
+      'Bu işlemi yükleyemedik. Lütfen tekrar deneyin.';
 
   @override
-  String get reviewWriteRetry => 'Retry';
+  String get reviewWriteRetry => 'Tekrar dene';
 
   @override
-  String get view => 'View';
+  String get view => 'Görüntüle';
 
   @override
-  String get more_options => 'More options';
+  String get more_options => 'Diğer seçenekler';
 
   @override
-  String get mark_as_sold => 'Mark as sold';
+  String get mark_as_sold => 'Satıldı olarak işaretle';
 
   @override
-  String get back_to_available => 'Back to available';
+  String get back_to_available => 'Tekrar satışa aç';
 
   @override
-  String get hide_listing => 'Hide';
+  String get hide_listing => 'Gizle';
 
   @override
-  String get unhide_listing => 'Unhide';
+  String get unhide_listing => 'Göster';
 
   @override
-  String get hidden_badge => 'HIDDEN';
+  String get hidden_badge => 'GİZLİ';
 
   @override
-  String get who_did_you_sell_to => 'Who did you sell to?';
+  String get who_did_you_sell_to => 'Kime sattınız?';
 
   @override
-  String get sold_elsewhere => 'Sold elsewhere';
+  String get sold_elsewhere => 'Başka yerde satıldı';
 
   @override
-  String get marked_as_sold => 'Marked as sold';
+  String get marked_as_sold => 'Satıldı olarak işaretlendi';
 
   @override
-  String get listing_available_again => 'Listing is available again';
+  String get listing_available_again => 'İlan tekrar yayında';
 
   @override
-  String get listing_hidden => 'Listing hidden';
+  String get listing_hidden => 'İlan gizlendi';
 
   @override
-  String get listing_unhidden => 'Listing is visible again';
+  String get listing_unhidden => 'İlan tekrar görünür';
 
   @override
-  String get failed_to_update_listing => 'Failed to update listing';
+  String get failed_to_update_listing => 'İlan güncellenemedi';
 
   @override
   String get listing_updated_refresh_failed =>
-      'Updated — pull to refresh to see changes';
+      'Güncellendi — değişiklikler için aşağı çekin';
 
   @override
-  String get active_tab => 'Active';
+  String get active_tab => 'Aktif';
 
   @override
-  String get sold_tab => 'Sold';
+  String get sold_tab => 'Satılan';
 
   @override
-  String get no_active_listings => 'No active listings';
+  String get no_active_listings => 'Aktif ilan yok';
 
   @override
-  String get no_sold_listings => 'No sold items yet';
+  String get no_sold_listings => 'Henüz satılan ürün yok';
 
   @override
-  String get productNameTooShort =>
-      'Product name must be at least 3 characters';
+  String get productNameTooShort => 'Ürün adı en az 3 karakter olmalı';
 
   @override
-  String get descriptionTooShort =>
-      'Description must be at least 10 characters';
+  String get descriptionTooShort => 'Açıklama en az 10 karakter olmalı';
 
   @override
-  String get addMorePhotos => 'Add More';
+  String get addMorePhotos => 'Daha ekle';
 
   @override
-  String get addPhotosEmptyStateHint => 'Add photos so buyers can see the item';
+  String get addPhotosEmptyStateHint =>
+      'Alıcıların ürünü görmesi için fotoğraf ekleyin';
 
   @override
-  String get pickLocationOnMap => 'Pick location on map';
+  String get pickLocationOnMap => 'Haritadan konum seç';
 
   @override
-  String get dropPinBuyersHint => 'Drop a pin so buyers see where the item is';
+  String get dropPinBuyersHint =>
+      'Alıcıların ürünün yerini görmesi için işaret bırakın';
 
   @override
-  String get imageTooLargeMessage => 'Image is too large. Maximum size is 5MB';
+  String get imageTooLargeMessage => 'Görsel çok büyük. En fazla 5 MB';
 
   @override
-  String get imagesTooLargeSkipped => 'Some images exceed 5MB and were skipped';
+  String get imagesTooLargeSkipped => '5 MB üzerindeki bazı görseller atlandı';
 
   @override
-  String get reviewTagsPositiveHeading => 'Positive';
+  String get reviewTagsPositiveHeading => 'Olumlu';
 
   @override
-  String get reviewTagsNegativeHeading => 'Needs Improvement';
+  String get reviewTagsNegativeHeading => 'Geliştirilmeli';
 
   @override
-  String get reviewSentimentGood => 'Good';
+  String get reviewSentimentGood => 'İyi';
 
   @override
-  String get reviewSentimentBad => 'Not Good';
+  String get reviewSentimentBad => 'Kötü';
 
   @override
-  String get offerMakeTitle => 'Make an Offer';
+  String get offerMakeTitle => 'Teklif ver';
 
   @override
-  String get offerSendButton => 'Send Offer';
+  String get offerSendButton => 'Teklifi gönder';
 
   @override
-  String get offerDecline => 'Decline';
+  String get offerDecline => 'Reddet';
 
   @override
-  String get offerCounter => 'Counter';
+  String get offerCounter => 'Karşı teklif';
 
   @override
-  String get offerAccept => 'Accept';
+  String get offerAccept => 'Kabul et';
 
   @override
-  String get offerAcceptCounter => 'Accept Counter';
+  String get offerAcceptCounter => 'Karşı teklifi kabul et';
 
   @override
-  String get offerCancelOffer => 'Cancel Offer';
+  String get offerCancelOffer => 'Teklifi iptal et';
 
   @override
-  String get offerCounterTitle => 'Counter Offer';
+  String get offerCounterTitle => 'Karşı teklif';
 
   @override
-  String get offerSendCounter => 'Send Counter';
+  String get offerSendCounter => 'Karşı teklifi gönder';
 
   @override
   String offerBuyerOffered(String price) {
-    return 'Buyer offered: $price UZS';
+    return 'Alıcının teklifi: $price UZS';
   }
 
   @override
   String offerAskingPrice(String price) {
-    return 'Asking price: $price UZS';
+    return 'İstenen fiyat: $price UZS';
   }
 
   @override
-  String get offerAcceptedMessage => 'Offer accepted!';
+  String get offerAcceptedMessage => 'Teklif kabul edildi!';
 
   @override
   String offerAcceptError(String error) {
-    return 'Failed to accept offer: $error';
+    return 'Teklif kabul edilemedi: $error';
   }
 
   @override
-  String get offerDeclinedMessage => 'Offer declined';
+  String get offerDeclinedMessage => 'Teklif reddedildi';
 
   @override
   String offerDeclineError(String error) {
-    return 'Failed to decline offer: $error';
+    return 'Teklif reddedilemedi: $error';
   }
 
   @override
-  String get offerCounterSentMessage => 'Counter offer sent!';
+  String get offerCounterSentMessage => 'Karşı teklif gönderildi!';
 
   @override
   String offerCounterSendError(String error) {
-    return 'Failed to send counter offer: $error';
+    return 'Karşı teklif gönderilemedi: $error';
   }
 
   @override
   String get offerCancelConfirmBody =>
-      'Are you sure you want to cancel this offer?';
+      'Bu teklifi iptal etmek istediğinizden emin misiniz?';
 
   @override
-  String get offerCancelConfirmYes => 'Yes, Cancel';
+  String get offerCancelConfirmYes => 'Evet, iptal et';
 
   @override
-  String get offerCancelledMessage => 'Offer cancelled';
+  String get offerCancelledMessage => 'Teklif iptal edildi';
 
   @override
   String offerCancelError(String error) {
-    return 'Failed to cancel offer: $error';
+    return 'Teklif iptal edilemedi: $error';
   }
 
   @override
-  String get offerCounterAcceptedMessage => 'Counter offer accepted!';
+  String get offerCounterAcceptedMessage => 'Karşı teklif kabul edildi!';
 
   @override
   String offerCounterAcceptError(String error) {
-    return 'Failed to accept counter offer: $error';
+    return 'Karşı teklif kabul edilemedi: $error';
   }
 
   @override
-  String get offersNoneReceivedTitle => 'No offers received';
+  String get offersNoneReceivedTitle => 'Gelen teklif yok';
 
   @override
   String get offersNoneReceivedSubtitle =>
-      'When buyers make offers on your listings, they will appear here';
+      'İlanlarınıza teklif geldiğinde burada görünecek';
 
   @override
-  String get offersNoneSentTitle => 'No offers sent';
+  String get offersNoneSentTitle => 'Gönderilen teklif yok';
 
   @override
   String get offersNoneSentSubtitle =>
-      'When you make offers on listings, they will appear here';
+      'İlanlara teklif verdiğinizde burada görünecek';
 
   @override
   String offersSectionPending(int count) {
-    return 'Pending ($count)';
+    return 'Bekleyen ($count)';
   }
 
   @override
   String offersSectionHistory(int count) {
-    return 'History ($count)';
+    return 'Geçmiş ($count)';
   }
 
   @override
   String offersSectionActive(int count) {
-    return 'Active ($count)';
+    return 'Aktif ($count)';
   }
 
   @override
-  String get goBack => 'Go Back';
+  String get goBack => 'Geri dön';
 
   @override
   String routeLoadFailed(String error) {
-    return 'Failed to load: $error';
+    return 'Yüklenemedi: $error';
   }
 
   @override
-  String get chatSettingsTitle => 'Chat settings';
+  String get chatSettingsTitle => 'Sohbet ayarları';
 
   @override
-  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+  String get chatAutoTranslateTitle => 'Kendi dilime otomatik çevir';
 
   @override
   String get chatAutoTranslateSubtitle =>
-      'Messages from others are translated as they arrive';
+      'Diğer kişilerin mesajları geldikçe çevrilir';
 
   @override
-  String get chatAutoTranslateEnabled => 'Auto-translate on';
+  String get chatAutoTranslateEnabled => 'Otomatik çeviri açık';
 
   @override
-  String get chatAutoTranslateDisabled => 'Auto-translate off';
+  String get chatAutoTranslateDisabled => 'Otomatik çeviri kapalı';
 }
