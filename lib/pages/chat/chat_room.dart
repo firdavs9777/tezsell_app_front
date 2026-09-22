@@ -1289,11 +1289,18 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final chatState = ref.watch(chatProvider);
-    final messages = chatState.messages;
-    final isLoadingMessages = chatState.isLoadingMessages;
-    final currentUserId = chatState.currentUserId;
-    final error = chatState.error;
+    // `.select` per field rather than watching the whole ChatState. This
+    // screen reads six of its fields, but ChatState also carries chatRooms,
+    // onlineUsers, quickReplies and the archived list, all of which churn
+    // while a chat is open -- watching the object rebuilt the entire room on
+    // every one of those.
+    final messages = ref.watch(chatProvider.select((s) => s.messages));
+    final isLoadingMessages =
+        ref.watch(chatProvider.select((s) => s.isLoadingMessages));
+    final currentUserId =
+        ref.watch(chatProvider.select((s) => s.currentUserId));
+    final error = ref.watch(chatProvider.select((s) => s.error));
+    final typingUsers = ref.watch(chatProvider.select((s) => s.typingUsers));
 
     ref.listen(chatProvider, (previous, next) {
       if (!mounted || _isDisposed) {
@@ -1362,8 +1369,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     // the listing summary `widget.chatRoom` was constructed with, so the
     // pinned card's status chip re-renders without a full room refetch.
     final baseListing = widget.chatRoom.listing;
-    final listingStatusOverride =
-        chatState.listingStatusOverrides[widget.chatRoom.id];
+    final listingStatusOverride = ref.watch(
+      chatProvider.select((s) => s.listingStatusOverrides[widget.chatRoom.id]),
+    );
     final effectiveListing = baseListing != null && listingStatusOverride != null
         ? baseListing.copyWith(status: listingStatusOverride)
         : baseListing;
@@ -1406,7 +1414,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 ),
           backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
           body: _buildChatBody(
-            chatState: chatState,
+            typingUsers: typingUsers,
             messages: messages,
             isLoadingMessages: isLoadingMessages,
             currentUserId: currentUserId,
@@ -1421,7 +1429,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   Widget _buildChatBody({
-    required dynamic chatState,
+    required Map<int, bool> typingUsers,
     required List<ChatMessage> messages,
     required bool isLoadingMessages,
     required int? currentUserId,
@@ -1530,7 +1538,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                         ),
                         // Typing indicators
                         TypingIndicator(
-                          typingUsers: chatState.typingUsers,
+                          typingUsers: typingUsers,
                           participants: widget.chatRoom.participants,
                           currentUserId: currentUserId!,
                         ),
@@ -1572,8 +1580,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   Widget _buildMessageInput() {
-    final chatState = ref.watch(chatProvider);
-    final error = chatState.error;
+    // Only `error` is read here, so select it rather than rebuilding the
+    // whole input bar on unrelated ChatState churn.
+    final error = ref.watch(chatProvider.select((s) => s.error));
 
     final isBlocked =
         error != null &&
