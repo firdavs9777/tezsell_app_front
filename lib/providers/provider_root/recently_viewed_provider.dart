@@ -75,8 +75,23 @@ class RecentlyViewedNotifier extends StateNotifier<RecentlyViewedState> {
       );
 
       if (success) {
-        // Refresh the list
-        await fetchRecentlyViewed();
+        // Re-viewing something already in the strip is the common case (the
+        // PDP records a view on every open), and it only changes ordering --
+        // so move it to the front locally instead of spending a second round
+        // trip re-fetching a list we can already derive. A genuinely new item
+        // still needs the server's payload (id, viewedAt, itemDetails), so
+        // that path refetches as before.
+        final existingIndex = state.items.indexWhere(
+          (i) => i.itemType == itemType && i.itemId == itemId,
+        );
+        if (existingIndex >= 0) {
+          final reordered = [...state.items];
+          final moved = reordered.removeAt(existingIndex);
+          reordered.insert(0, moved);
+          state = state.copyWith(items: reordered);
+        } else {
+          await fetchRecentlyViewed();
+        }
       }
 
       return success;
