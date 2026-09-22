@@ -166,6 +166,93 @@ migrate/collectstatic, and deploying the firebase key out of band. Step 3's
 - Map widget tests hit the live network (Plan G Task 2) — **done**, tiles now
   served from memory.
 
+## Closed in the 2026-09-22 pass
+
+- Dev `SECRET_KEY` literal — removed; generated per process when unset.
+- `/pending/` + follow-list trust-temp N-calls — batched. A second N+1 was
+  found alongside it: `is_following` ran an EXISTS query per row.
+- All 12 non-primary locales — complete; all 15 now at 1616/1616.
+- `chat_room` `ref.watch` → `.select`; recently-viewed optimistic update.
+- `constants.dart` → `AppConfig` — migrated (301 references) and deleted.
+- Auto-translate preference — **built**, opt-in per user, default off.
+
+## Still open
+
+- **Flutter:** a few missing `ValueKey`s on list items.
+- **The 12 new locales need a native-speaker pass.** They were written by
+  the model, not reviewed by native speakers. Placeholders are verified
+  programmatically, but register and marketplace conventions are exactly
+  where a non-native translation slips. Arabic is also RTL and that layout
+  has not been exercised on-device.
+- **Test instrumentation:** `CaptureQueriesContext` intermittently reports
+  zero captured queries (~1 run in 20) for requests that demonstrably hit
+  the DB. Root cause unknown; `conftest.capture_queries` retries around it
+  rather than fixing it. Worth revisiting if it spreads.
+
+
+## Test evidence
+
+- Backend: `pytest` → **561 passed, 0 failed**; `manage.py check` clean; `makemigrations --check` → no drift; `check --deploy` clean under production settings.
+- Flutter: `flutter analyze lib/` → **0 errors**; `flutter test` → **189 passed**; `flutter build ios --release` → **✓ built, version 1.9.5+41**.
+
+---
+
+# Addendum — 2026-09-21 follow-up sweep
+
+Everything above describes the state at the 2026-07-25 gate. This records
+what changed since, so the runbook is not followed from a stale copy.
+
+**Verdict unchanged: 🟢 deployable, still gated on the runbook's environment
+checks** — but three of those checks no longer need improvising, and one
+previously-unknown blocker was found and fixed.
+
+## Newly found (not in the original audit)
+
+- **The Docker image could not build.** `Dockerfile` was pinned to
+  `python:3.9`; Django 5.1.5 (requirements.txt) requires 3.10+, so
+  `pip install -r requirements.txt` fails. Now `python:3.11-slim`. Anyone who
+  deployed via compose rather than a host venv would have hit this.
+- **`ChatListView.catchError` type bug** and three sibling null-guard bugs on
+  the Flutter side — see the Flutter repo's `1dba631`.
+
+## Runbook items now satisfied in-repo
+
+| Was | Now |
+|---|---|
+| No Procfile/systemd unit committed | `Procfile` — daphne + a release phase running migrate/collectstatic |
+| `docker-compose.yml` ran `runserver`, no Redis | Redis service added, daphne via the image CMD, healthchecks and env wired |
+| No channel-layer health check | `GET /health/channels/` round-trips through the layer and reports the backend, flagging `InMemoryChannelLayer` as not multi-worker safe |
+| `ENV_EXAMPLE.md` documented 16 of 31 vars | Regenerated from the actual `os.getenv` calls; split required vs per-feature. The 15 missing included `DO_SPACES_*`, `GOOGLE_TRANSLATE_API_KEY`, all social-auth IDs and all Mailgun config |
+| `TELEGRAM_BOT_TOKEN` orphan | Already gone; nothing references it |
+
+**Runbook steps 1–6 still apply as written** — setting host env vars,
+provisioning Redis, running daphne, `pip install -r requirements.txt`,
+migrate/collectstatic, and deploying the firebase key out of band. Step 3's
+"no Procfile is committed; add one" no longer applies.
+
+**The ordering hazard still applies**, and now has a second instance:
+1. Token interceptor (original) — ship the app update before/with the backend.
+2. `ChatListView` page_size stays at **100**, deliberately. The updated client
+   sends `page_size=30` explicitly, but the default governs older builds that
+   read page 1 only. Lowering it before that build leaves circulation would
+   truncate those users' chat lists.
+
+## Follow-ups closed since the gate
+
+- Chat-list client-side load-more — **done** (so the page_size note above).
+- Public per-user vacation badge — **done**, backend field + Flutter badge.
+- Public reviews list not refreshing after submit — **done**.
+- All remaining raw `Image.network` — **done**, zero left in `lib/`.
+- `flutter_native_splash` — **added**.
+- `NSAllowsArbitraryLoads` — **removed**, scoped exception kept.
+- Hardcoded English in `review_tags.dart` / `NeighborhoodGate`; `DateFormat`
+  not locale-aware — **done**, plus the whole offers flow and the route error
+  pages. `initializeDateFormatting()` was also missing, without which
+  locale-aware `DateFormat` throws.
+- Sentry — **added**, opt-in via `--dart-define=SENTRY_DSN`, inert without it.
+- Map widget tests hit the live network (Plan G Task 2) — **done**, tiles now
+  served from memory.
+
 ## Still open
 
 - **Backend:** rotate the committed dev `SECRET_KEY` literal (unreachable in
