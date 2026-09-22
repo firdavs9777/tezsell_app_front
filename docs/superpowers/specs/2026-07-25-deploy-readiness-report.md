@@ -178,7 +178,11 @@ migrate/collectstatic, and deploying the firebase key out of band. Step 3's
 
 ## Still open
 
-- **Flutter:** a few missing `ValueKey`s on list items.
+- ~~Missing `ValueKey`s on list items~~ — **done.** Only one row genuinely
+  needed one (`_FollowUserTile`, which held follow state and showed the
+  wrong user's status after pagination reordered the list). The other 49
+  unkeyed `itemBuilder`s are shimmer placeholders, stateless rows, or route
+  pushes; the two that would throw without a key were already keyed.
 - **The 12 new locales need a native-speaker pass.** They were written by
   the model, not reviewed by native speakers. Placeholders are verified
   programmatically, but register and marketplace conventions are exactly
