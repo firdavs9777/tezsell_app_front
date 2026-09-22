@@ -4285,5 +4285,25 @@
         "type": "String"
       }
     }
+  },
+  "chatSettingsTitle": "Chat settings",
+  "@chatSettingsTitle": {
+    "description": "Title of the chat settings sheet"
+  },
+  "chatAutoTranslateTitle": "Auto-translate to my language",
+  "@chatAutoTranslateTitle": {
+    "description": "Label of the auto-translate toggle"
+  },
+  "chatAutoTranslateSubtitle": "Messages from others are translated as they arrive",
+  "@chatAutoTranslateSubtitle": {
+    "description": "Explains what the auto-translate toggle does"
+  },
+  "chatAutoTranslateEnabled": "Auto-translate on",
+  "@chatAutoTranslateEnabled": {
+    "description": "Snackbar when auto-translate is switched on"
+  },
+  "chatAutoTranslateDisabled": "Auto-translate off",
+  "@chatAutoTranslateDisabled": {
+    "description": "Snackbar when auto-translate is switched off"
   }
 }

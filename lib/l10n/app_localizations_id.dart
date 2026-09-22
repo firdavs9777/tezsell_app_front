@@ -5177,4 +5177,20 @@ class AppLocalizationsId extends AppLocalizations {
   String routeLoadFailed(String error) {
     return 'Failed to load: $error';
   }
+
+  @override
+  String get chatSettingsTitle => 'Chat settings';
+
+  @override
+  String get chatAutoTranslateTitle => 'Auto-translate to my language';
+
+  @override
+  String get chatAutoTranslateSubtitle =>
+      'Messages from others are translated as they arrive';
+
+  @override
+  String get chatAutoTranslateEnabled => 'Auto-translate on';
+
+  @override
+  String get chatAutoTranslateDisabled => 'Auto-translate off';
 }

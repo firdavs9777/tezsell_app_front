@@ -5186,4 +5186,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String routeLoadFailed(String error) {
     return 'Не удалось загрузить: $error';
   }
+
+  @override
+  String get chatSettingsTitle => 'Настройки чата';
+
+  @override
+  String get chatAutoTranslateTitle => 'Автоперевод на мой язык';
+
+  @override
+  String get chatAutoTranslateSubtitle =>
+      'Сообщения собеседника переводятся сразу при получении';
+
+  @override
+  String get chatAutoTranslateEnabled => 'Автоперевод включён';
+
+  @override
+  String get chatAutoTranslateDisabled => 'Автоперевод выключен';
 }

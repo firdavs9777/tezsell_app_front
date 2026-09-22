@@ -3100,5 +3100,10 @@
   "offersSectionHistory": "Tarix ({count})",
   "offersSectionActive": "Faol ({count})",
   "goBack": "Orqaga",
-  "routeLoadFailed": "Yuklab boʻlmadi: {error}"
+  "routeLoadFailed": "Yuklab boʻlmadi: {error}",
+  "chatSettingsTitle": "Chat sozlamalari",
+  "chatAutoTranslateTitle": "Mening tilimga avto-tarjima",
+  "chatAutoTranslateSubtitle": "Suhbatdoshning xabarlari kelishi bilan tarjima qilinadi",
+  "chatAutoTranslateEnabled": "Avto-tarjima yoqildi",
+  "chatAutoTranslateDisabled": "Avto-tarjima o‘chirildi"
 }

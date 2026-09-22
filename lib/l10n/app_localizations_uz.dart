@@ -5211,4 +5211,20 @@ class AppLocalizationsUz extends AppLocalizations {
   String routeLoadFailed(String error) {
     return 'Yuklab boʻlmadi: $error';
   }
+
+  @override
+  String get chatSettingsTitle => 'Chat sozlamalari';
+
+  @override
+  String get chatAutoTranslateTitle => 'Mening tilimga avto-tarjima';
+
+  @override
+  String get chatAutoTranslateSubtitle =>
+      'Suhbatdoshning xabarlari kelishi bilan tarjima qilinadi';
+
+  @override
+  String get chatAutoTranslateEnabled => 'Avto-tarjima yoqildi';
+
+  @override
+  String get chatAutoTranslateDisabled => 'Avto-tarjima o‘chirildi';
 }

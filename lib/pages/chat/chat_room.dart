@@ -1,3 +1,4 @@
+import 'package:app/providers/provider_root/auto_translate_provider.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/providers/provider_root/notification_provider.dart';
@@ -509,6 +510,35 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   /// the actions sheet's Translate / Show original row. Target language is
   /// the app's current locale; the 503 "not configured" / 502 provider /
   /// 400 cases from the backend all surface the same generic
+  /// Translates newly arrived messages from OTHER people when the
+  /// auto-translate preference is on.
+  ///
+  /// Deliberately narrow: own messages are skipped (you wrote them), as are
+  /// messages that already carry a translation and non-text ones. Failures
+  /// are swallowed — a translation that doesn't arrive leaves the original
+  /// text readable, and a snackbar per incoming message would be worse than
+  /// the missing translation.
+  void _autoTranslateNewMessages(
+    List<ChatMessage> previous,
+    List<ChatMessage> next,
+  ) {
+    final currentUserId = ref.read(chatProvider).currentUserId;
+    if (!ref.read(autoTranslateProvider(currentUserId))) return;
+
+    final seen = previous.map((m) => m.id).whereType<int>().toSet();
+    final target = Localizations.localeOf(context).languageCode;
+
+    for (final message in next) {
+      final id = message.id;
+      if (id == null || seen.contains(id)) continue;
+      if (message.sender.id == currentUserId) continue;
+      if (message.translation != null) continue;
+      if ((message.content ?? '').trim().isEmpty) continue;
+
+      ref.read(chatProvider.notifier).translateMessage(id, target);
+    }
+  }
+
   /// `chatTranslationFailed` snackbar per the task contract.
   Future<void> _translateMessage(ChatMessage message) async {
     if (message.id == null) return;
@@ -1335,6 +1365,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             prevLatest == null || (nextLatest != null && nextLatest.isAfter(prevLatest));
 
         if (isNewAtTail) {
+          _autoTranslateNewMessages(previous.messages, next.messages);
           if (_showScrollToBottom) {
             // User is scrolled up reading history — don't yank them down;
             // surface the arrival via the FAB's unseen-count badge instead.

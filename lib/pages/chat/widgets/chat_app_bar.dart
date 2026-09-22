@@ -1,3 +1,4 @@
+import 'package:app/pages/chat/widgets/chat_settings_sheet.dart';
 import 'package:app/providers/provider_models/message_model.dart';
 import 'package:app/providers/provider_root/chat_provider.dart';
 import 'package:app/pages/chat/widgets/chat_helpers.dart';
@@ -244,6 +245,16 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
+              PopupMenuItem(
+                value: 'settings',
+                child: Row(
+                  children: [
+                    const Icon(Icons.translate, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l?.chatSettingsTitle ?? 'Chat settings'),
+                  ],
+                ),
+              ),
               // 🔥 NEW: Task 18 — media gallery (Images/Voice tabs) built
               // from the loaded messages of this room.
               if (onMediaGalleryTap != null)
@@ -386,6 +397,14 @@ class ChatAppBar extends ConsumerWidget implements PreferredSizeWidget {
               onMediaGalleryTap?.call();
             } else if (value == 'mute') {
               _handleMuteToggle(context, ref, effectiveIsMuted);
+            } else if (value == 'settings') {
+              showModalBottomSheet<void>(
+                context: context,
+                showDragHandle: true,
+                builder: (_) => ChatSettingsSheet(
+                  currentUserId: ref.read(chatProvider).currentUserId,
+                ),
+              );
             }
           },
         ),

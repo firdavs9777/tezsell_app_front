@@ -9789,6 +9789,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load: {error}'**
   String routeLoadFailed(String error);
+
+  /// Title of the chat settings sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Chat settings'**
+  String get chatSettingsTitle;
+
+  /// Label of the auto-translate toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-translate to my language'**
+  String get chatAutoTranslateTitle;
+
+  /// Explains what the auto-translate toggle does
+  ///
+  /// In en, this message translates to:
+  /// **'Messages from others are translated as they arrive'**
+  String get chatAutoTranslateSubtitle;
+
+  /// Snackbar when auto-translate is switched on
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-translate on'**
+  String get chatAutoTranslateEnabled;
+
+  /// Snackbar when auto-translate is switched off
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-translate off'**
+  String get chatAutoTranslateDisabled;
 }
 
 class _AppLocalizationsDelegate

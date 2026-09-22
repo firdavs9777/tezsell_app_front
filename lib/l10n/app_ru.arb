@@ -3100,5 +3100,10 @@
   "offersSectionHistory": "История ({count})",
   "offersSectionActive": "Активные ({count})",
   "goBack": "Назад",
-  "routeLoadFailed": "Не удалось загрузить: {error}"
+  "routeLoadFailed": "Не удалось загрузить: {error}",
+  "chatSettingsTitle": "Настройки чата",
+  "chatAutoTranslateTitle": "Автоперевод на мой язык",
+  "chatAutoTranslateSubtitle": "Сообщения собеседника переводятся сразу при получении",
+  "chatAutoTranslateEnabled": "Автоперевод включён",
+  "chatAutoTranslateDisabled": "Автоперевод выключен"
 }
